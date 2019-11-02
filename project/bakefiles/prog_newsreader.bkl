@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<makefile>
+	<!-- Bakefile add-in to automatically create missing directories -->
+ 	<include file="rules/modules/datafiles.bkl"/>
+	<!--Create the bin/ sub directory if it is missing -->
+	<mkdir id="bin">
+		<dir>bin</dir>
+	</mkdir>
+
+	<!-- Primary Program, RSS User Interface using GTK -->
+	<exe id="newsreader">
+		<!--Succesful build depends on existence of bin/ sub directory -->
+		<depends>bin</depends>
+
+		<!--Final program compiler output goes here -->
+		<dirname>bin</dirname>
+
+		<!--Source code used to create the final program -->
+		<!--User interface -->
+		<sources>../source/rss_ui/impl/application.cpp</sources>
+		<sources>../source/rss_ui/app_win/impl/app_win.cpp</sources>
+		<sources>../source/rss_ui/app_win/impl/article_frame.cpp</sources>
+		<sources>../source/rss_ui/app_win/impl/article_header.cpp</sources>
+		<sources>../source/rss_ui/app_win/impl/headlines_frame.cpp</sources>
+		<!--Data/Network interface -->
+		<sources>../source/rss_lib/rss/impl/rss_article.cpp</sources>
+		<sources>../source/rss_lib/rss/impl/reader.cpp</sources>
+		<sources>../source/rss_lib/rss/impl/writer.cpp</sources>
+		<sources>../source/rss_lib/db/impl/db.cpp</sources>
+		<sources>../source/rss_lib/rss_download/impl/feed_download.cpp</sources>
+		<sources>../source/rss_lib/rss_parse/impl/feed_parse.cpp</sources>
+
+		<!--Additional compiler flags -->
+		<cppflags>-std=c++17</cppflags>
+		<cppflags>-Og</cppflags>
+		<cppflags>`pkg-config gtk+-3.0 --cflags`</cppflags>
+		<cppflags>`xml2-config --cflags`</cppflags>
+
+		<!--Additional linker flags -->
+		<ldflags>-std=c++17</ldflags>
+		<ldflags>`pkg-config gtk+-3.0 --libs`</ldflags>
+		<ldflags>`pkg-config sqlite3 --libs`</ldflags>
+		<ldflags>`pkg-config libcurl --libs`</ldflags>
+		<ldflags>`xml2-config --libs`</ldflags>
+
+		<!--Include file directories -->
+		<include>../source</include>
+	</exe>
+</makefile>

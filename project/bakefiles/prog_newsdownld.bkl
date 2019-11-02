@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<makefile>
+	<!-- Bakefile add-in to automatically create missing directories -->
+ 	<include file="rules/modules/datafiles.bkl"/>
+	<!--Create the bin/ sub directory if it is missing -->
+	<mkdir id="bin">
+		<dir>bin</dir>
+	</mkdir>
+
+	<lib id="argtable">
+		<!--Succesful build depends on existence of bin/ sub directory -->
+		<depends>bin</depends>
+
+		<!--Final program compiler output goes here -->
+		<dirname>bin</dirname>
+
+		<!--Source code used to create the object file -->
+		<sources>../source/external/argtable/argtable3.c</sources>
+
+		<!--Additional compiler flags -->
+		<cflags>-c</cflags>
+		<cflags>-std=c17</cflags>
+		<cflags>-O3</cflags>
+	</lib>
+
+	<!-- Command-line RSS Downloader 
+		Also used for testing the APIs in lieu of use in the UI.
+		-->
+	<exe id="newsdownld">
+		<!--Succesful build depends on existence of bin/ sub directory -->
+		<depends>bin</depends>
+
+		<!--Final program compiler output goes here -->
+		<dirname>bin</dirname>
+
+		<depends>argtable</depends>
+
+		<!--Source code used to create the final program -->
+		<!--command-line interface -->
+		<sources>../source/rss_cli/newsdownld.cpp</sources>
+		<!--Data/Network interface -->
+		<sources>../source/rss_lib/db/impl/db.cpp</sources>
+		<sources>../source/rss_lib/rss_download/impl/feed_download.cpp</sources>
+		<sources>../source/rss_lib/rss/impl/reader.cpp</sources>
+		<sources>../source/rss_lib/rss/impl/rss_article.cpp</sources>
+		<sources>../source/rss_lib/rss/impl/writer.cpp</sources>
+		<sources>../source/rss_lib/rss_parse/impl/feed_parse.cpp</sources>
+
+		<!--Additional compiler flags -->
+		<cppflags>-std=c++17</cppflags>
+		<cppflags>-g</cppflags>
+		<cppflags>`xml2-config --cflags`</cppflags>
+
+		<!--Additional linker flags -->
+		<ldflags>-std=c++17</ldflags>
+		<ldflags>argtable_argtable3.o</ldflags>
+		<ldflags>`pkg-config sqlite3 --libs`</ldflags>
+		<ldflags>`pkg-config libcurl --libs`</ldflags>
+		<ldflags>`xml2-config --libs`</ldflags>
+
+		<!--Include file directories -->
+		<include>../source</include>
+	</exe>
+</makefile>
