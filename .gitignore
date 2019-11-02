@@ -1,0 +1,6 @@
+project/xfer
+project/*.xml
+project/*.db
+data/
+build/bin/
+
