@@ -33,6 +33,7 @@
 		<!--Additional compiler flags -->
 		<cppflags>-std=c++17</cppflags>
 		<cppflags>-Og</cppflags>
+		<cppflags>-ggdb</cppflags>
 		<cppflags>`pkg-config gtk+-3.0 --cflags`</cppflags>
 		<cppflags>`xml2-config --cflags`</cppflags>
 
