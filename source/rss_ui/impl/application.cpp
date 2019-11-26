@@ -78,7 +78,7 @@ gautier_rss_ui_app::activate (GtkApplication* application, gpointer user_data)
 std::string
 gautier_rss_ui_app::get_db_file_name()
 {
-	return "../data/rss.db";
+	return "rss.db";
 }
 
 /*
