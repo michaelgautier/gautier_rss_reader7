@@ -201,9 +201,13 @@ parse_rss_feed (xmlNode* parent_xml_node, std::vector<gautier_rss_data_read::rss
 
 			article->article_date = text;
 		} else if (article && (node_name == "description" ||
-		                       node_name == "content" ||
-		                       node_name == "encoded" ||
 		                       node_name == "summary"
+		                      )) {
+			std::string text = (char*)xmlNodeGetContent (xml_node);
+
+			article->article_summary = text;
+		} else if (article && (node_name == "content" ||
+		                       node_name == "encoded"
 		                      )) {
 			std::string text = (char*)xmlNodeGetContent (xml_node);
 
