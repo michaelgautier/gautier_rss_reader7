@@ -22,6 +22,7 @@ namespace gautier_rss_data_read {
 			std::string feed_name;
 			std::string headline;
 			std::string article_date;
+			std::string article_summary;
 			std::string article_text;
 			std::string url;
 	};

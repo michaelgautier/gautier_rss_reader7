@@ -18,6 +18,7 @@ gautier_rss_data_read::clear_feed_data_all (rss_article& feed_data)
 	feed_data.feed_name = "";
 	feed_data.headline = "";
 	feed_data.article_date = "";
+	feed_data.article_summary = "";
 	feed_data.article_text = "";
 	feed_data.url = "";
 
