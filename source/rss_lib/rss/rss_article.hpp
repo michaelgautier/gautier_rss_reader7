@@ -35,5 +35,8 @@ namespace gautier_rss_data_read {
 
 	bool
 	validate_feed_info_missing (std::string feed_name, std::string feed_url);
+
+	bool
+	indicates_html (std::string& text);
 }
 #endif
