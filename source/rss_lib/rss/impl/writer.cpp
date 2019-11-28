@@ -31,7 +31,7 @@ gautier_rss_data_write::initialize_db (std::string db_file_name)
 
 	std::vector<std::string> sql_texts = {
 		"CREATE TABLE feeds (feed_name TEXT, feed_url TEXT, last_retrieved TEXT);",
-		"CREATE TABLE feeds_articles (feed_name TEXT, headline_text TEXT, article_text TEXT, article_date TEXT, article_url TEXT);"
+		"CREATE TABLE feeds_articles (feed_name TEXT, headline_text TEXT, article_summary TEXT, article_text TEXT, article_date TEXT, article_url TEXT);"
 	};
 
 	ns_db::sql_parameter_list_type params;
@@ -82,8 +82,8 @@ gautier_rss_data_write::set_feed_headline (std::string db_file_name,
 	namespace ns_db = gautier_rss_database;
 
 	std::string sql_text =
-	    "INSERT INTO feeds_articles (feed_name, headline_text, article_text, article_date, article_url)\
-		SELECT @feed_name, @headline_text, @article_text, @article_date, @feed_url\
+	    "INSERT INTO feeds_articles (feed_name, headline_text, article_summary, article_text, article_date, article_url)\
+		SELECT @feed_name, @headline_text, @article_summary, @article_text, @article_date, @feed_url\
 		WHERE 0 = (\
 			SELECT COUNT(*) FROM feeds_articles WHERE feed_name = @feed_name AND headline_text = @headline_text\
 		)";
@@ -91,6 +91,7 @@ gautier_rss_data_write::set_feed_headline (std::string db_file_name,
 	ns_db::sql_parameter_list_type params = {
 		article.feed_name,
 		article.headline,
+		article.article_summary,
 		article.article_text,
 		article.article_date,
 		article.url

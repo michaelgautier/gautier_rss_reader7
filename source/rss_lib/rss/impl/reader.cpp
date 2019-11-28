@@ -90,7 +90,7 @@ gautier_rss_data_read::get_feed_article_summary (std::string db_file_name, std::
 
 	ns_db::sql_rowset_type rows;
 	std::string sql_text =
-	    "SELECT article_text, article_date, article_url FROM feeds_articles WHERE feed_name = @feed_name AND headline_text = @headline_text";
+	    "SELECT article_summary, article_text, article_date, article_url FROM feeds_articles WHERE feed_name = @feed_name AND headline_text = @headline_text";
 
 	ns_db::sql_parameter_list_type params = {
 		feed_name,
@@ -104,7 +104,9 @@ gautier_rss_data_read::get_feed_article_summary (std::string db_file_name, std::
 
 	for (ns_db::sql_row_type row : rows) {
 		for (ns_db::sql_row_type::value_type field : row) {
-			if (field.first == "article_text") {
+			if (field.first == "article_summary") {
+				article.article_summary = field.second;
+			} else if (field.first == "article_text") {
 				article.article_text = field.second;
 			} else if (field.first == "article_date") {
 				article.article_date = field.second;
