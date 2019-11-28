@@ -68,6 +68,9 @@ static GtkWidget*
 article_date = NULL;
 
 static GtkWidget*
+article_summary = NULL;
+
+static GtkWidget*
 article_details = NULL;
 
 static int
@@ -118,6 +121,17 @@ gautier_rss_win_main::create (
 	{
 		namespace ns = gautier_rss_win_main_article_header;
 		ns::initialize_article_header_bar (header_bar);
+	}
+
+	/*
+		Article Summary
+	*/
+	article_summary = gtk_text_view_new();
+	{
+		gtk_text_view_set_editable (GTK_TEXT_VIEW (article_summary), false);
+		gtk_text_view_set_cursor_visible (GTK_TEXT_VIEW (article_summary), false);
+		gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (article_summary), GTK_WRAP_WORD_CHAR);
+		gtk_text_view_set_accepts_tab (GTK_TEXT_VIEW (article_summary), true);
 	}
 
 	/*
@@ -191,7 +205,8 @@ gautier_rss_win_main::create (
 	{
 		namespace ns = gautier_rss_win_main_article_frame;
 		ns::initialize_article_frame (article_frame);
-		ns::layout_article_frame (article_frame, header_bar, article_details, article_date, primary_function_buttons,
+		ns::layout_article_frame (article_frame, header_bar, article_summary, article_details, article_date,
+		                          primary_function_buttons,
 		                          info_bar);
 	}
 	/*
@@ -325,14 +340,42 @@ headline_view_select_row (GtkListBox*    list_box,
 	gtk_label_set_text (GTK_LABEL (article_date), _feed_data.article_date.data());
 
 	/*
+		Article summary.
+	*/
+	{
+		GtkTextBuffer* text_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (article_summary));
+
+		bool indicates_html = gautier_rss_data_read::indicates_html (_feed_data.article_summary);
+
+		if (_feed_data.article_summary.empty() == false && indicates_html == false) {
+			std::string article_summary = _feed_data.article_summary;
+			size_t article_summary_l = article_summary.size();
+
+			gtk_text_buffer_set_text (text_buffer, article_summary.data(), article_summary_l);
+		} else {
+			std::string article_summary = _feed_data.headline;
+			size_t article_summary_l = article_summary.size();
+
+			gtk_text_buffer_set_text (text_buffer, article_summary.data(), article_summary_l);
+		}
+	}
+
+	/*
 		Article text.
 	*/
-	GtkTextBuffer* text_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (article_details));
+	{
+		GtkTextBuffer* text_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (article_details));
 
-	std::string article_text = _feed_data.article_text;
-	size_t article_text_l = article_text.size();
+		std::string article_text = _feed_data.article_text;
 
-	gtk_text_buffer_set_text (text_buffer, article_text.data(), article_text_l);
+		if (article_text.empty()) {
+			article_text = _feed_data.article_summary;
+		}
+
+		size_t article_text_l = article_text.size();
+
+		gtk_text_buffer_set_text (text_buffer, article_text.data(), article_text_l);
+	}
 
 	return;
 }

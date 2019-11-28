@@ -20,7 +20,8 @@ gautier_rss_win_main_article_frame:: initialize_article_frame (GtkWidget* articl
 
 void
 gautier_rss_win_main_article_frame::layout_article_frame (GtkWidget* article_frame, GtkWidget* header_bar,
-        GtkWidget* article_text, GtkWidget* article_date, GtkWidget* primary_function_buttons, GtkWidget* info_bar)
+        GtkWidget* article_summary, GtkWidget* article_text, GtkWidget* article_date,
+        GtkWidget* primary_function_buttons, GtkWidget* info_bar)
 {
 	bool box_child_is_expanded = false;
 	bool box_child_is_fills = false;
@@ -29,6 +30,11 @@ gautier_rss_win_main_article_frame::layout_article_frame (GtkWidget* article_fra
 		Header Bar
 	*/
 	gtk_box_pack_start (GTK_BOX (article_frame), header_bar, box_child_is_expanded, box_child_is_fills, 4);
+
+	/*
+		Article Summary
+	*/
+	gtk_box_pack_start (GTK_BOX (article_frame), article_summary, box_child_is_expanded, box_child_is_fills, 4);
 
 	/*
 		Article Text

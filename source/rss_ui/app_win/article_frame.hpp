@@ -22,6 +22,7 @@ namespace gautier_rss_win_main_article_frame {
 	void
 	layout_article_frame (GtkWidget* article_frame,
 	                      GtkWidget* header_bar,
+	                      GtkWidget* article_summary,
 	                      GtkWidget* article_text,
 	                      GtkWidget* article_date,
 	                      GtkWidget* primary_function_buttons,
