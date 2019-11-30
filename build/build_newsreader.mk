@@ -32,7 +32,8 @@ LDFLAGS ?=
 
 CPPDEPS = -MT$@ -MF`echo $@ | sed -e 's,\.o$$,.d,'` -MD -MP
 NEWSREADER_CXXFLAGS = -std=c++17 -Og -ggdb `pkg-config gtk+-3.0 --cflags` \
-	`xml2-config --cflags` -I../source $(CPPFLAGS) $(CXXFLAGS)
+	`pkg-config webkit2gtk-4.0 --cflags` `xml2-config --cflags` -I../source \
+	$(CPPFLAGS) $(CXXFLAGS)
 NEWSREADER_OBJECTS =  \
 	newsreader_application.o \
 	newsreader_app_win.o \
@@ -67,7 +68,7 @@ bin:
 	@mkdir -p bin
 
 bin/newsreader: $(NEWSREADER_OBJECTS) bin
-	$(CXX) -o $@ $(NEWSREADER_OBJECTS)  -std=c++17 `pkg-config gtk+-3.0 --libs` `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `xml2-config --libs` $(LDFLAGS)
+	$(CXX) -o $@ $(NEWSREADER_OBJECTS)  -std=c++17 `pkg-config gtk+-3.0 --libs` `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `pkg-config webkit2gtk-4.0 --libs` `xml2-config --libs` $(LDFLAGS)
 
 newsreader_application.o: ./../source/rss_ui/impl/application.cpp
 	$(CXX) -c -o $@ $(NEWSREADER_CXXFLAGS) $(CPPDEPS) $<
