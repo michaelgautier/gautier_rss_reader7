@@ -35,6 +35,7 @@
 		<cppflags>-Og</cppflags>
 		<cppflags>-ggdb</cppflags>
 		<cppflags>`pkg-config gtk+-3.0 --cflags`</cppflags>
+		<cppflags>`pkg-config webkit2gtk-4.0 --cflags`</cppflags>
 		<cppflags>`xml2-config --cflags`</cppflags>
 
 		<!--Additional linker flags -->
@@ -42,6 +43,7 @@
 		<ldflags>`pkg-config gtk+-3.0 --libs`</ldflags>
 		<ldflags>`pkg-config sqlite3 --libs`</ldflags>
 		<ldflags>`pkg-config libcurl --libs`</ldflags>
+		<ldflags>`pkg-config webkit2gtk-4.0 --libs`</ldflags>
 		<ldflags>`xml2-config --libs`</ldflags>
 
 		<!--Include file directories -->
