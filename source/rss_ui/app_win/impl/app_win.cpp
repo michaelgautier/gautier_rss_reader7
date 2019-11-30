@@ -18,6 +18,8 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 #include "rss_lib/rss/rss_reader.hpp"
 
+#include <webkit2/webkit2.h>
+
 #include <iostream>
 
 /*
@@ -137,12 +139,27 @@ gautier_rss_win_main::create (
 	/*
 		Article Text
 	*/
-	article_details = gtk_text_view_new();
 	{
-		gtk_text_view_set_editable (GTK_TEXT_VIEW (article_details), false);
-		gtk_text_view_set_cursor_visible (GTK_TEXT_VIEW (article_details), false);
-		gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (article_details), GTK_WRAP_WORD_CHAR);
-		gtk_text_view_set_accepts_tab (GTK_TEXT_VIEW (article_details), true);
+		WebKitSettings* settings = webkit_settings_new();
+
+		/*Do not want images, just HTML*/
+		webkit_settings_set_auto_load_images (settings, false);
+
+		/*The objective is to render HTML, but no JavaScript, local HTML databases, etc*/
+		webkit_settings_set_enable_html5_database (settings, false);
+		webkit_settings_set_enable_html5_local_storage (settings, false);
+		webkit_settings_set_enable_java (settings, false);
+		webkit_settings_set_enable_javascript (settings, false);
+		webkit_settings_set_enable_offline_web_application_cache (settings, false);
+		webkit_settings_set_enable_plugins (settings, false);
+		webkit_settings_set_enable_webaudio (settings, false);
+		webkit_settings_set_enable_webgl (settings, false);
+		webkit_settings_set_enable_page_cache (settings, false);
+		webkit_settings_set_enable_media_stream (settings, false);
+
+		WebKitWebContext* web_context = webkit_web_context_new_ephemeral();
+		article_details = webkit_web_view_new_with_context (web_context);
+		webkit_web_view_set_settings (WEBKIT_WEB_VIEW (article_details), settings);
 	}
 
 	/*
@@ -364,17 +381,13 @@ headline_view_select_row (GtkListBox*    list_box,
 		Article text.
 	*/
 	{
-		GtkTextBuffer* text_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (article_details));
-
 		std::string article_text = _feed_data.article_text;
 
 		if (article_text.empty()) {
 			article_text = _feed_data.article_summary;
 		}
 
-		size_t article_text_l = article_text.size();
-
-		gtk_text_buffer_set_text (text_buffer, article_text.data(), article_text_l);
+		webkit_web_view_load_html (WEBKIT_WEB_VIEW (article_details), article_text.data(), NULL);
 	}
 
 	return;
