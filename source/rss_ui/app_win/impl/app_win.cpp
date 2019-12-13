@@ -438,7 +438,7 @@ rss_operation_click (GtkButton* button,
 
 void
 manage_feeds_click (GtkButton* button,
-                   gpointer   user_data)
+                    gpointer   user_data)
 {
 	gautier_rss_win_rss_manage::show_dialog (NULL, win);
 
@@ -447,7 +447,7 @@ manage_feeds_click (GtkButton* button,
 
 void
 refresh_feed_click (GtkButton* button,
-                   gpointer   user_data)
+                    gpointer   user_data)
 {
 	//stub callback to implement later.
 
