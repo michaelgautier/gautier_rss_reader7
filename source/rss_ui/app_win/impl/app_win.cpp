@@ -18,6 +18,8 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 #include "rss_lib/rss/rss_reader.hpp"
 
+#include "rss_ui/rss_manage/rss_manage.hpp"
+
 #include <webkit2/webkit2.h>
 
 #include <iostream>
@@ -45,6 +47,11 @@ connect_headline_list_box_select_row (GtkWidget* list_box);
 extern "C"
 void
 rss_operation_click (GtkButton* button, gpointer user_data);
+
+extern "C"
+void
+manage_feed_click (GtkButton* button, gpointer user_data);
+
 /*
 	Operations.
 */
@@ -180,7 +187,15 @@ gautier_rss_win_main::create (
 
 		g_signal_connect (view_article_button, "clicked", G_CALLBACK (rss_operation_click), &rss_op_view_article);
 
+		/*
+			Manage Feeds
+		*/
+		GtkWidget* manage_feeds_button = gtk_button_new_with_label ("Manage Feeds");
+
+		g_signal_connect (manage_feeds_button, "clicked", G_CALLBACK (manage_feed_click), NULL);
+
 		gtk_container_add (GTK_CONTAINER (primary_function_buttons), view_article_button);
+		gtk_container_add (GTK_CONTAINER (primary_function_buttons), manage_feeds_button);
 	}
 
 	/*
@@ -405,6 +420,15 @@ rss_operation_click (GtkButton* button,
 			}
 			break;
 	}
+
+	return;
+}
+
+void
+manage_feed_click (GtkButton* button,
+                   gpointer   user_data)
+{
+	gautier_rss_win_rss_manage::show_dialog (NULL, win);
 
 	return;
 }
