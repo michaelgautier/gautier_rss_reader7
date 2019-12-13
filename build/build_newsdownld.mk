@@ -84,7 +84,7 @@ bin/libargtable.a: $(ARGTABLE_OBJECTS) bin
 	$(RANLIB) $@
 
 bin/newsdownld: $(NEWSDOWNLD_OBJECTS) bin bin/libargtable.a
-	$(CXX) -o $@ $(NEWSDOWNLD_OBJECTS)  -std=c++17 argtable_argtable3.o `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `xml2-config --libs` $(LDFLAGS)
+	$(CXX) -o $@ $(NEWSDOWNLD_OBJECTS)  -std=c++17 -no-pie argtable_argtable3.o `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `xml2-config --libs` $(LDFLAGS)
 
 argtable_argtable3.o: ./../source/external/argtable/argtable3.c
 	$(CC) -c -o $@ $(ARGTABLE_CFLAGS) $(CPPDEPS) $<

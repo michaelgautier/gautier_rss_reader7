@@ -22,6 +22,7 @@
 		<sources>../source/rss_ui/app_win/impl/article_frame.cpp</sources>
 		<sources>../source/rss_ui/app_win/impl/article_header.cpp</sources>
 		<sources>../source/rss_ui/app_win/impl/headlines_frame.cpp</sources>
+		<sources>../source/rss_ui/rss_manage/impl/rss_manage.cpp</sources>
 		<!--Data/Network interface -->
 		<sources>../source/rss_lib/rss/impl/rss_article.cpp</sources>
 		<sources>../source/rss_lib/rss/impl/reader.cpp</sources>
@@ -40,6 +41,7 @@
 
 		<!--Additional linker flags -->
 		<ldflags>-std=c++17</ldflags>
+		<ldflags>-no-pie</ldflags>
 		<ldflags>`pkg-config gtk+-3.0 --libs`</ldflags>
 		<ldflags>`pkg-config sqlite3 --libs`</ldflags>
 		<ldflags>`pkg-config libcurl --libs`</ldflags>

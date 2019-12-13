@@ -84,7 +84,7 @@ bin/libargtable.a: $(ARGTABLE_OBJECTS) bin
 	$(RANLIB) $@
 
 bin/rss_io_test: $(RSS_IO_TEST_OBJECTS) bin bin/libargtable.a
-	$(CXX) -o $@ $(RSS_IO_TEST_OBJECTS)  -std=c++17 argtable_argtable3.o `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `xml2-config --libs` $(LDFLAGS)
+	$(CXX) -o $@ $(RSS_IO_TEST_OBJECTS)  -std=c++17 -no-pie argtable_argtable3.o `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `xml2-config --libs` $(LDFLAGS)
 
 argtable_argtable3.o: ./../source/external/argtable/argtable3.c
 	$(CC) -c -o $@ $(ARGTABLE_CFLAGS) $(CPPDEPS) $<

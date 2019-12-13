@@ -40,6 +40,7 @@ NEWSREADER_OBJECTS =  \
 	newsreader_article_frame.o \
 	newsreader_article_header.o \
 	newsreader_headlines_frame.o \
+	newsreader_rss_manage.o \
 	newsreader_rss_article.o \
 	newsreader_reader.o \
 	newsreader_writer.o \
@@ -68,7 +69,7 @@ bin:
 	@mkdir -p bin
 
 bin/newsreader: $(NEWSREADER_OBJECTS) bin
-	$(CXX) -o $@ $(NEWSREADER_OBJECTS)  -std=c++17 `pkg-config gtk+-3.0 --libs` `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `pkg-config webkit2gtk-4.0 --libs` `xml2-config --libs` $(LDFLAGS)
+	$(CXX) -o $@ $(NEWSREADER_OBJECTS)  -std=c++17 -no-pie `pkg-config gtk+-3.0 --libs` `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `pkg-config webkit2gtk-4.0 --libs` `xml2-config --libs` $(LDFLAGS)
 
 newsreader_application.o: ./../source/rss_ui/impl/application.cpp
 	$(CXX) -c -o $@ $(NEWSREADER_CXXFLAGS) $(CPPDEPS) $<
@@ -83,6 +84,9 @@ newsreader_article_header.o: ./../source/rss_ui/app_win/impl/article_header.cpp
 	$(CXX) -c -o $@ $(NEWSREADER_CXXFLAGS) $(CPPDEPS) $<
 
 newsreader_headlines_frame.o: ./../source/rss_ui/app_win/impl/headlines_frame.cpp
+	$(CXX) -c -o $@ $(NEWSREADER_CXXFLAGS) $(CPPDEPS) $<
+
+newsreader_rss_manage.o: ./../source/rss_ui/rss_manage/impl/rss_manage.cpp
 	$(CXX) -c -o $@ $(NEWSREADER_CXXFLAGS) $(CPPDEPS) $<
 
 newsreader_rss_article.o: ./../source/rss_lib/rss/impl/rss_article.cpp
