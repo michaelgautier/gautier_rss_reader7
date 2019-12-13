@@ -50,7 +50,11 @@ rss_operation_click (GtkButton* button, gpointer user_data);
 
 extern "C"
 void
-manage_feed_click (GtkButton* button, gpointer user_data);
+manage_feeds_click (GtkButton* button, gpointer user_data);
+
+extern "C"
+void
+refresh_feed_click (GtkButton* button, gpointer user_data);
 
 /*
 	Operations.
@@ -192,10 +196,18 @@ gautier_rss_win_main::create (
 		*/
 		GtkWidget* manage_feeds_button = gtk_button_new_with_label ("Manage Feeds");
 
-		g_signal_connect (manage_feeds_button, "clicked", G_CALLBACK (manage_feed_click), NULL);
+		g_signal_connect (manage_feeds_button, "clicked", G_CALLBACK (manage_feeds_click), NULL);
+
+		/*
+			Refesh Feed
+		*/
+		GtkWidget* refresh_feed_button = gtk_button_new_with_label ("Refresh Feed");
+
+		g_signal_connect (refresh_feed_button, "clicked", G_CALLBACK (refresh_feed_click), NULL);
 
 		gtk_container_add (GTK_CONTAINER (primary_function_buttons), view_article_button);
 		gtk_container_add (GTK_CONTAINER (primary_function_buttons), manage_feeds_button);
+		gtk_container_add (GTK_CONTAINER (primary_function_buttons), refresh_feed_button);
 	}
 
 	/*
@@ -425,10 +437,19 @@ rss_operation_click (GtkButton* button,
 }
 
 void
-manage_feed_click (GtkButton* button,
+manage_feeds_click (GtkButton* button,
                    gpointer   user_data)
 {
 	gautier_rss_win_rss_manage::show_dialog (NULL, win);
+
+	return;
+}
+
+void
+refresh_feed_click (GtkButton* button,
+                   gpointer   user_data)
+{
+	//stub callback to implement later.
 
 	return;
 }
