@@ -98,6 +98,12 @@ monitor_x = 0;
 static int
 monitor_y = 0;
 
+static int
+window_width = 0;
+
+static int
+window_height = 0;
+
 static rss_operation_enum
 rss_op_view_article = rss_operation_enum::view_article;
 
@@ -108,6 +114,10 @@ win = NULL;
 */
 void
 get_screen_dimensions (GtkWindow* window);
+
+extern "C"
+void
+window_size_allocate (GtkWidget* widget, GdkRectangle* allocation, gpointer user_data);
 
 void
 set_window_attributes (GtkWidget* window, std::string title, int width, int height);
@@ -123,6 +133,9 @@ gautier_rss_win_main::create (
 		Window
 	*/
 	GtkWidget* window = gtk_application_window_new (application);
+
+	g_signal_connect (window, "size-allocate", G_CALLBACK (window_size_allocate), NULL);
+
 	win = GTK_WINDOW (window);
 	get_screen_dimensions (win);
 	set_window_attributes (window, gautier_rss_ui_app::get_application_name(), monitor_width, monitor_height);
@@ -440,7 +453,7 @@ void
 manage_feeds_click (GtkButton* button,
                     gpointer   user_data)
 {
-	gautier_rss_win_rss_manage::show_dialog (NULL, win);
+	gautier_rss_win_rss_manage::show_dialog (NULL, win, window_width, window_height);
 
 	return;
 }
@@ -454,3 +467,23 @@ refresh_feed_click (GtkButton* button,
 	return;
 }
 
+void
+window_size_allocate (GtkWidget* widget, GdkRectangle* allocation, gpointer user_data)
+{
+	window_width = 0;
+	window_height = 0;
+
+	/*
+		GtkAllocation is a typedef for GdkRectangle
+		The rectangle struct is defined as
+
+			int x,y,width,height;
+	*/
+	if (allocation) {
+		window_width = allocation->width;
+		window_height = allocation->height;
+	}
+
+
+	return;
+}
