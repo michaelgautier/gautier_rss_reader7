@@ -17,6 +17,6 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 namespace gautier_rss_win_rss_manage {
 	void
-	show_dialog (GtkApplication* app, GtkWindow* parent);
+	show_dialog (GtkApplication* app, GtkWindow* parent, int window_width, int window_height);
 }
 #endif
