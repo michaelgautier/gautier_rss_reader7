@@ -74,18 +74,34 @@ gautier_rss_win_rss_manage::show_dialog (GtkApplication* app, GtkWindow* parent,
 	/*
 		Add feed entry area to main layout.
 	*/
-	gtk_container_add (GTK_CONTAINER (window_layout), feed_entry_layout_row1);
-	gtk_container_add (GTK_CONTAINER (window_layout), feed_entry_layout_row2);
-	gtk_container_add (GTK_CONTAINER (window_layout), feed_entry_layout_row3);
+	bool content_expands = false;
+	bool content_fills = false;
+
+	gtk_box_pack_start (GTK_BOX (window_layout), feed_entry_layout_row1, content_expands, content_fills, 4);
+	gtk_box_pack_start (GTK_BOX (window_layout), feed_entry_layout_row2, content_expands, content_fills, 4);
+	gtk_box_pack_start (GTK_BOX (window_layout), feed_entry_layout_row3, content_expands, content_fills, 4);
 
 	/*
 		RSS Configuration Table
 	*/
 	GtkWidget* rss_tree_view = gtk_tree_view_new();
+	gtk_widget_set_size_request (rss_tree_view, -1, window_height * 2);
+
+	GtkWidget* scroll_win = gtk_scrolled_window_new (NULL, NULL);
+	gtk_widget_set_valign (scroll_win, GTK_ALIGN_FILL);
+
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll_win), GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
+	gtk_container_add (GTK_CONTAINER (scroll_win), rss_tree_view);
 
 	layout_rss_tree_view (rss_tree_view);
 
-	gtk_container_add (GTK_CONTAINER (window_layout), rss_tree_view);
+	content_expands = false;
+	content_fills = true;
+
+	gtk_widget_set_hexpand (scroll_win, true);
+	gtk_widget_set_vexpand (scroll_win, true);
+
+	gtk_box_pack_start (GTK_BOX (window_layout), scroll_win, content_expands, content_fills, 4);
 
 	/*
 		Window Presentation
