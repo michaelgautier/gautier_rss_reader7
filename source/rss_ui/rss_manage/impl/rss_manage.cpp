@@ -183,13 +183,22 @@ update_configuration_click (GtkButton* button, gpointer user_data)
 void
 layout_rss_tree_view (GtkWidget* rss_tree_view)
 {
+	int col_pos_feed_name = 0;
+	int col_pos_feed_article_count = 1;
+	int col_pos_feed_retrieved = 2;
+	int col_pos_feed_retention = 3;
+	int col_pos_feed_webaddress = 4;
+	int col_pos_stop = -1;
+
 	/*
 		Tree Model to describe the columns
 	*/
-	GtkListStore* list_store = gtk_list_store_new (3 /*3 columns*/,
+	GtkListStore* list_store = gtk_list_store_new (5 /*5 columns*/,
 	                           G_TYPE_STRING,/*feed name*/
-	                           G_TYPE_STRING,/*feed url*/
-	                           G_TYPE_STRING /*last retrieved*/);
+	                           G_TYPE_STRING,/*article count*/
+	                           G_TYPE_STRING,/*last retrieved*/
+	                           G_TYPE_STRING,/*retention in days*/
+	                           G_TYPE_STRING /*web url*/);
 
 
 	GtkTreeIter iter;
@@ -219,8 +228,10 @@ layout_rss_tree_view (GtkWidget* rss_tree_view)
 
 	for (rss_ns::rss_feed feed : feed_info) {
 		gchar* feed_name = feed.feed_name.data();
-		gchar* feed_url = feed.feed_url.data();
+		gchar* article_count = std::string ("0").data();
 		gchar* last_retrieved = feed.last_retrieved.data();
+		gchar* retention_period = std::string ("forever").data();
+		gchar* feed_url = feed.feed_url.data();
 
 		/*
 			Adds a new row in the Tree Model.
@@ -231,10 +242,12 @@ layout_rss_tree_view (GtkWidget* rss_tree_view)
 			Links specific data to column positions in the row.
 		*/
 		gtk_list_store_set (list_store, &iter,
-		                    0 /*0 = feed name column*/, feed_name,
-		                    1 /*1 = feed url column*/, feed_url,
-		                    2 /*2 = last retrieved column*/, last_retrieved,
-		                    -1);
+		                    col_pos_feed_name, feed_name,
+		                    col_pos_feed_article_count, article_count,
+		                    col_pos_feed_retrieved, last_retrieved,
+		                    col_pos_feed_retention, retention_period,
+		                    col_pos_feed_webaddress, feed_url,
+		                    col_pos_stop);
 	}
 
 	/*
@@ -242,25 +255,44 @@ layout_rss_tree_view (GtkWidget* rss_tree_view)
 	*/
 	GtkCellRenderer* column_renderer_feed_name = gtk_cell_renderer_text_new();
 	GtkTreeViewColumn* column_feed_name = gtk_tree_view_column_new_with_attributes ("Feed",
-	                                      column_renderer_feed_name, "text", 0, NULL);
+	                                      column_renderer_feed_name, "text", col_pos_feed_name, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (rss_tree_view), column_feed_name);
 
 	/*
-		Column: Feed Url
+		Column: Article Count
 	*/
-	GtkCellRenderer* column_renderer_feed_url = gtk_cell_renderer_text_new();
-	GtkTreeViewColumn* column_feed_url = gtk_tree_view_column_new_with_attributes ("Web addres",
-	                                     column_renderer_feed_url, "text", 1, NULL);
-	gtk_tree_view_append_column (GTK_TREE_VIEW (rss_tree_view), column_feed_url);
+	GtkCellRenderer* column_renderer_feed_article_count = gtk_cell_renderer_text_new();
+	GtkTreeViewColumn* column_feed_article_count = gtk_tree_view_column_new_with_attributes ("Article Count",
+	        column_renderer_feed_article_count, "text", col_pos_feed_article_count, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (rss_tree_view), column_feed_article_count);
 
 	/*
 		Column: Last Retrieved
 	*/
 	GtkCellRenderer* column_renderer_feed_last_retrieved = gtk_cell_renderer_text_new();
 	GtkTreeViewColumn* column_feed_last_retrieved = gtk_tree_view_column_new_with_attributes ("Last updated",
-	        column_renderer_feed_last_retrieved, "text", 2, NULL);
+	        column_renderer_feed_last_retrieved, "text", col_pos_feed_retrieved, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (rss_tree_view), column_feed_last_retrieved);
 
+	/*
+		Column: Retention Period
+	*/
+	GtkCellRenderer* column_renderer_feed_retention_period = gtk_cell_renderer_text_new();
+	GtkTreeViewColumn* column_feed_retention_period = gtk_tree_view_column_new_with_attributes ("Retention",
+	        column_renderer_feed_retention_period, "text", col_pos_feed_retention, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (rss_tree_view), column_feed_retention_period);
+
+	/*
+		Column: Feed Url
+	*/
+	GtkCellRenderer* column_renderer_feed_url = gtk_cell_renderer_text_new();
+	GtkTreeViewColumn* column_feed_url = gtk_tree_view_column_new_with_attributes ("Web address",
+	                                     column_renderer_feed_url, "text", col_pos_feed_webaddress, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (rss_tree_view), column_feed_url);
+
+	/*
+		Populate tree
+	*/
 	gtk_tree_view_set_model (GTK_TREE_VIEW (rss_tree_view), GTK_TREE_MODEL (list_store));
 
 	return;
