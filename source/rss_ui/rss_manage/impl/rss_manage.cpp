@@ -118,9 +118,19 @@ create_window (GtkApplication* app, GtkWindow* parent, int window_width, int win
 
 	win = GTK_WINDOW (gtk_window_new (GTK_WINDOW_TOPLEVEL));
 
-	int win_width = 800;
-	int win_height = 640;
+	/*
+		Default size of the window.
+		Exists in case main application window size is unavailable.
+		These values should be overriden at runtime by the values
+			provided by the main application window.
+	*/
+	int win_width = 720;
+	int win_height = 440;
 
+	/*
+		Determine actual window size based on the size of the
+			main application window that spawned this one.
+	*/
 	if (window_width > 0) {
 		win_width = window_width - 120;
 	}
@@ -129,6 +139,9 @@ create_window (GtkApplication* app, GtkWindow* parent, int window_width, int win
 		win_height = window_height - 120;
 	}
 
+	gtk_window_set_skip_taskbar_hint (win, true); /*Do not show in the taskbar*/
+	gtk_window_set_urgency_hint (win, true); /*Flash the window*/
+	gtk_window_set_type_hint (win, GDK_WINDOW_TYPE_HINT_DIALOG);/*Show only the close button*/
 	gtk_window_set_title (win, "Manage Feeds");
 	gtk_window_set_resizable (win, false);
 	gtk_window_set_modal (win, true);
