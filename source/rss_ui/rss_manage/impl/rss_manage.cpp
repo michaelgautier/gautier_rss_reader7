@@ -64,6 +64,7 @@ gautier_rss_win_rss_manage::show_dialog (GtkApplication* app, GtkWindow* parent,
 		Horizontal Layout 3: Buttons.
 	*/
 	GtkWidget* feed_entry_layout_row3 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
+	gtk_widget_set_halign (feed_entry_layout_row3, GTK_ALIGN_END);
 
 	/*
 		Setup the feed entry area.
