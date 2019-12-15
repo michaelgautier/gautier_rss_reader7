@@ -25,8 +25,8 @@ static void
 create_window (GtkApplication* app, GtkWindow* parent, int window_width, int window_height);
 
 static void
-layout_rss_feed_entry_row (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_entry_layout_row2,
-                           GtkWidget* feed_entry_layout_row3, GtkWindow* win);
+layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_entry_layout_row2,
+                            GtkWidget* feed_entry_layout_row3, GtkWindow* win);
 
 static void
 layout_rss_tree_view (GtkWidget* rss_tree_view);
@@ -39,29 +39,56 @@ void
 gautier_rss_win_rss_manage::show_dialog (GtkApplication* app, GtkWindow* parent, int window_width,
         int window_height)
 {
+	/*
+		RSS Management Window.
+	*/
 	create_window (app, parent, window_width, window_height);
 
+	/*
+		Vertical layout for the window's contents.
+	*/
 	GtkWidget* window_layout = gtk_box_new (GTK_ORIENTATION_VERTICAL, 4);
+	gtk_container_add (GTK_CONTAINER (win), window_layout);
 
+	/*
+		Horizontal Layout 1: RSS entry fields.
+	*/
 	GtkWidget* feed_entry_layout_row1 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
+
+	/*
+		Horizontal Layout 2: RSS retention options.
+	*/
 	GtkWidget* feed_entry_layout_row2 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
+
+	/*
+		Horizontal Layout 3: Buttons.
+	*/
 	GtkWidget* feed_entry_layout_row3 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
 
-	layout_rss_feed_entry_row (feed_entry_layout_row1, feed_entry_layout_row2, feed_entry_layout_row3, win);
+	/*
+		Setup the feed entry area.
+	*/
+	layout_rss_feed_entry_area (feed_entry_layout_row1, feed_entry_layout_row2, feed_entry_layout_row3, win);
 
+	/*
+		Add feed entry area to main layout.
+	*/
 	gtk_container_add (GTK_CONTAINER (window_layout), feed_entry_layout_row1);
 	gtk_container_add (GTK_CONTAINER (window_layout), feed_entry_layout_row2);
 	gtk_container_add (GTK_CONTAINER (window_layout), feed_entry_layout_row3);
 
+	/*
+		RSS Configuration Table
+	*/
 	GtkWidget* rss_tree_view = gtk_tree_view_new();
 
 	layout_rss_tree_view (rss_tree_view);
 
 	gtk_container_add (GTK_CONTAINER (window_layout), rss_tree_view);
 
-	gtk_container_add (GTK_CONTAINER (win), window_layout);
-
-	//call this last
+	/*
+		Window Presentation
+	*/
 	gtk_widget_show_all ((GtkWidget*)win);
 
 	return;
@@ -96,8 +123,8 @@ create_window (GtkApplication* app, GtkWindow* parent, int window_width, int win
 }
 
 static void
-layout_rss_feed_entry_row (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_entry_layout_row2,
-                           GtkWidget* feed_entry_layout_row3, GtkWindow* win)
+layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_entry_layout_row2,
+                            GtkWidget* feed_entry_layout_row3, GtkWindow* win)
 {
 	/*
 		Feed name
@@ -160,7 +187,6 @@ layout_rss_feed_entry_row (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_en
 
 	gtk_container_add (GTK_CONTAINER (feed_entry_layout_row3), update_configuration_button);
 
-
 	return;
 }
 
@@ -189,7 +215,6 @@ layout_rss_tree_view (GtkWidget* rss_tree_view)
 	                           G_TYPE_STRING,/*last retrieved*/
 	                           G_TYPE_STRING,/*retention in days*/
 	                           G_TYPE_STRING /*web url*/);
-
 
 	GtkTreeIter iter;
 
