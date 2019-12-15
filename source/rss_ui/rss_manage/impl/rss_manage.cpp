@@ -103,48 +103,38 @@ layout_rss_feed_entry_row (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_en
 		Feed name
 	*/
 	GtkWidget* feed_name_label = gtk_label_new ("Feed name");
-	gtk_widget_set_valign (feed_name_label, GTK_ALIGN_START);
 
 	GtkWidget* feed_name_entry = gtk_entry_new();
 	gtk_widget_set_size_request (feed_name_entry, 240, 24);
-	gtk_widget_set_valign (feed_name_entry, GTK_ALIGN_START);
 
 	/*
 		Feed url
 	*/
 	GtkWidget* feed_url_label = gtk_label_new ("Feed web address");
-	gtk_widget_set_valign (feed_url_label, GTK_ALIGN_START);
 
 	GtkWidget* feed_url_entry = gtk_entry_new();
 	gtk_widget_set_size_request (feed_url_entry, 330, 24);
-	gtk_widget_set_valign (feed_url_entry, GTK_ALIGN_START);
 
 	/*
 		Feed refresh interval
 	*/
 	GtkWidget* feed_refresh_interval_label = gtk_label_new ("Refresh interval");
-	gtk_widget_set_valign (feed_refresh_interval_label, GTK_ALIGN_START);
 
 	GtkWidget* feed_refresh_interval = gtk_spin_button_new_with_range (1, 4, 1);
 	gtk_widget_set_size_request (feed_refresh_interval, 80, 24);
-	gtk_widget_set_valign (feed_refresh_interval, GTK_ALIGN_START);
 
 	/*
 		Feed retention period
 	*/
 	GtkWidget* feed_retention_option_label = gtk_label_new ("Keep feeds");
-	gtk_widget_set_valign (feed_retention_option_label, GTK_ALIGN_START);
 
 	GtkWidget* feed_option_keep_all = gtk_radio_button_new_with_label (NULL, "Forever");
-	gtk_widget_set_valign (feed_option_keep_all, GTK_ALIGN_START);
 
 	GtkWidget* feed_option_keep_last7 = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (
 	                                        feed_option_keep_all), "7 days");
-	gtk_widget_set_valign (feed_option_keep_last7, GTK_ALIGN_START);
 
 	GtkWidget* feed_option_keep_last24hr = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (
 	        feed_option_keep_all), "1 day");
-	gtk_widget_set_valign (feed_option_keep_last24hr, GTK_ALIGN_START);
 
 	/*
 		Insert/Update/Delete
