@@ -152,14 +152,16 @@ gautier_rss_data_read::is_feed_stale (std::string db_file_name, std::string feed
 
 	for (ns_db::sql_row_type row : rows) {
 		for (ns_db::sql_row_type::value_type field : row) {
-			if (field.first == "article_summary") {
-				article.article_summary = field.second;
-			} else if (field.first == "article_text") {
-				article.article_text = field.second;
-			} else if (field.first == "article_date") {
-				article.article_date = field.second;
-			} else if (field.first == "article_url") {
-				article.url = field.second;
+			if (field.first == "feed_name") {
+				feed.feed_name = field.second;
+			} else if (field.first == "feed_url") {
+				feed.feed_url = field.second;
+			} else if (field.first == "last_retrieved") {
+				feed.last_retrieved = field.second;
+			} else if (field.first == "retrieve_limit_hrs") {
+				feed.retrieve_limit_hrs = field.second;
+			} else if (field.first == "retention_days") {
+				feed.retention_days = field.second;
 			}
 		}
 	}
