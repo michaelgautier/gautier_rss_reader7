@@ -162,6 +162,7 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 	GtkWidget* feed_name_label = gtk_label_new ("Feed name");
 
 	GtkWidget* feed_name_entry = gtk_entry_new();
+	gtk_entry_set_max_length(GTK_ENTRY(feed_name_entry), 100);
 	gtk_widget_set_size_request (feed_name_entry, 240, 24);
 
 	/*
@@ -170,6 +171,7 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 	GtkWidget* feed_url_label = gtk_label_new ("Feed web address");
 
 	GtkWidget* feed_url_entry = gtk_entry_new();
+	gtk_entry_set_max_length(GTK_ENTRY(feed_url_entry), 512);
 	gtk_widget_set_size_request (feed_url_entry, 330, 24);
 
 	/*
