@@ -26,7 +26,7 @@ create_window (GtkApplication* app, GtkWindow* parent, int window_width, int win
 
 static void
 layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_entry_layout_row2,
-                            GtkWidget* feed_entry_layout_row3, GtkWindow* win);
+                            GtkWindow* win);
 
 static void
 layout_rss_tree_view (GtkWidget* rss_tree_view);
@@ -56,20 +56,15 @@ gautier_rss_win_rss_manage::show_dialog (GtkApplication* app, GtkWindow* parent,
 	GtkWidget* feed_entry_layout_row1 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
 
 	/*
-		Horizontal Layout 2: RSS retention options.
+		Horizontal Layout 2: Buttons.
 	*/
 	GtkWidget* feed_entry_layout_row2 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
-
-	/*
-		Horizontal Layout 3: Buttons.
-	*/
-	GtkWidget* feed_entry_layout_row3 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
-	gtk_widget_set_halign (feed_entry_layout_row3, GTK_ALIGN_END);
+	gtk_widget_set_halign (feed_entry_layout_row2, GTK_ALIGN_END);
 
 	/*
 		Setup the feed entry area.
 	*/
-	layout_rss_feed_entry_area (feed_entry_layout_row1, feed_entry_layout_row2, feed_entry_layout_row3, win);
+	layout_rss_feed_entry_area (feed_entry_layout_row1, feed_entry_layout_row2, win);
 
 	/*
 		Add feed entry area to main layout.
@@ -79,7 +74,6 @@ gautier_rss_win_rss_manage::show_dialog (GtkApplication* app, GtkWindow* parent,
 
 	gtk_box_pack_start (GTK_BOX (window_layout), feed_entry_layout_row1, content_expands, content_fills, 4);
 	gtk_box_pack_start (GTK_BOX (window_layout), feed_entry_layout_row2, content_expands, content_fills, 4);
-	gtk_box_pack_start (GTK_BOX (window_layout), feed_entry_layout_row3, content_expands, content_fills, 4);
 
 	/*
 		RSS Configuration Table
@@ -154,7 +148,7 @@ create_window (GtkApplication* app, GtkWindow* parent, int window_width, int win
 
 static void
 layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_entry_layout_row2,
-                            GtkWidget* feed_entry_layout_row3, GtkWindow* win)
+                            GtkWindow* win)
 {
 	/*
 		Feed name
@@ -162,7 +156,7 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 	GtkWidget* feed_name_label = gtk_label_new ("Feed name");
 
 	GtkWidget* feed_name_entry = gtk_entry_new();
-	gtk_entry_set_max_length(GTK_ENTRY(feed_name_entry), 100);
+	gtk_entry_set_max_length (GTK_ENTRY (feed_name_entry), 100);
 	gtk_widget_set_size_request (feed_name_entry, 240, 24);
 
 	/*
@@ -171,7 +165,7 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 	GtkWidget* feed_url_label = gtk_label_new ("Feed web address");
 
 	GtkWidget* feed_url_entry = gtk_entry_new();
-	gtk_entry_set_max_length(GTK_ENTRY(feed_url_entry), 512);
+	gtk_entry_set_max_length (GTK_ENTRY (feed_url_entry), 512);
 	gtk_widget_set_size_request (feed_url_entry, 330, 24);
 
 	/*
@@ -187,13 +181,11 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 	*/
 	GtkWidget* feed_retention_option_label = gtk_label_new ("Keep feeds");
 
-	GtkWidget* feed_option_keep_all = gtk_radio_button_new_with_label (NULL, "Forever");
-
-	GtkWidget* feed_option_keep_last7 = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (
-	                                        feed_option_keep_all), "7 days");
-
-	GtkWidget* feed_option_keep_last24hr = gtk_radio_button_new_with_label_from_widget (GTK_RADIO_BUTTON (
-	        feed_option_keep_all), "1 day");
+	GtkWidget* feed_retention_option = gtk_combo_box_text_new();
+	gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (feed_retention_option), "1", "Forever");
+	gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (feed_retention_option), "2", "7 days");
+	gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (feed_retention_option), "3", "1 day");
+	gtk_combo_box_set_active (GTK_COMBO_BOX (feed_retention_option), 0);
 
 	/*
 		Insert/Update/Delete
@@ -213,13 +205,10 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 	gtk_container_add (GTK_CONTAINER (feed_entry_layout_row1), feed_url_entry);
 	gtk_container_add (GTK_CONTAINER (feed_entry_layout_row1), feed_refresh_interval_label);
 	gtk_container_add (GTK_CONTAINER (feed_entry_layout_row1), feed_refresh_interval);
+	gtk_container_add (GTK_CONTAINER (feed_entry_layout_row1), feed_retention_option_label);
+	gtk_container_add (GTK_CONTAINER (feed_entry_layout_row1), feed_retention_option);
 
-	gtk_container_add (GTK_CONTAINER (feed_entry_layout_row2), feed_retention_option_label);
-	gtk_container_add (GTK_CONTAINER (feed_entry_layout_row2), feed_option_keep_all);
-	gtk_container_add (GTK_CONTAINER (feed_entry_layout_row2), feed_option_keep_last7);
-	gtk_container_add (GTK_CONTAINER (feed_entry_layout_row2), feed_option_keep_last24hr);
-
-	gtk_container_add (GTK_CONTAINER (feed_entry_layout_row3), update_configuration_button);
+	gtk_container_add (GTK_CONTAINER (feed_entry_layout_row2), update_configuration_button);
 
 	return;
 }
