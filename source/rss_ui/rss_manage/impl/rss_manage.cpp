@@ -197,6 +197,8 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 		Insert/Update/Delete
 	*/
 	GtkWidget* update_configuration_button = gtk_button_new_with_label ("Update");
+	/*Begin with the button disabled until a valid imput is made.*/
+	gtk_widget_set_sensitive (update_configuration_button, false);
 
 	g_signal_connect (update_configuration_button, "clicked", G_CALLBACK (update_configuration_click), NULL);
 
