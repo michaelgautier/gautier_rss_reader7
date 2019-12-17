@@ -22,7 +22,8 @@ gautier_rss_data_read::get_feed_names (std::string db_file_name, std::vector <rs
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;
-	std::string sql_text = "SELECT feed_name, feed_url, last_retrieved FROM feeds;";
+	std::string sql_text =
+	    "SELECT feed_name, feed_url, last_retrieved, retrieve_limit_hrs, retention_days FROM feeds;";
 
 	ns_db::sql_parameter_list_type params;
 
@@ -39,6 +40,10 @@ gautier_rss_data_read::get_feed_names (std::string db_file_name, std::vector <rs
 				feed->feed_url = field.second;
 			} else if (field.first == "last_retrieved") {
 				feed->last_retrieved = field.second;
+			} else if (field.first == "retrieve_limit_hrs") {
+				feed->retrieve_limit_hrs = field.second;
+			} else if (field.first == "retention_days") {
+				feed->retention_days = field.second;
 			}
 		}
 	}
@@ -134,7 +139,8 @@ gautier_rss_data_read::is_feed_stale (std::string db_file_name, std::string feed
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;
-	std::string sql_text = "SELECT feed_name, feed_url, last_retrieved FROM feeds;";
+	std::string sql_text =
+	    "SELECT feed_name, feed_url, last_retrieved, retrieve_limit_hrs, retention_days FROM feeds;";
 
 	ns_db::sql_parameter_list_type params;
 
@@ -142,25 +148,33 @@ gautier_rss_data_read::is_feed_stale (std::string db_file_name, std::string feed
 
 	bool is_feed_stale = false;
 
+	rss_feed feed;
+
 	for (ns_db::sql_row_type row : rows) {
 		for (ns_db::sql_row_type::value_type field : row) {
-			if (field.first == "last_retrieved") {
-				std::string last_retrieved = field.second;
-
-				/*
-					Compare the last_retrieved date to the current date
-
-					assign result:
-
-					is_feed_stale = (last_retrieved + 1 hour > current date and time);
-				*/
-
-				break;
+			if (field.first == "article_summary") {
+				article.article_summary = field.second;
+			} else if (field.first == "article_text") {
+				article.article_text = field.second;
+			} else if (field.first == "article_date") {
+				article.article_date = field.second;
+			} else if (field.first == "article_url") {
+				article.url = field.second;
 			}
 		}
 	}
 
 	ns_db::close_db (&db);
+
+	if (feed.feed_name.empty() == false) {
+		/*
+			Compare the last_retrieved date to the current date
+
+			assign result:
+
+			is_feed_stale = (last_retrieved + 1 hour > current date and time);
+		*/
+	}
 
 	return false;
 }
