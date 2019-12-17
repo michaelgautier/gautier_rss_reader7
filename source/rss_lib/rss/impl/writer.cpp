@@ -30,7 +30,7 @@ gautier_rss_data_write::initialize_db (std::string db_file_name)
 	ns_db::open_db (db_file_name, &db);
 
 	std::vector<std::string> sql_texts = {
-		"CREATE TABLE feeds (feed_name TEXT, feed_url TEXT, last_retrieved TEXT);",
+		"CREATE TABLE feeds (feed_name TEXT, feed_url TEXT, last_retrieved TEXT, retrieve_limit_hrs TEXT, retention_days TEXT);",
 		"CREATE TABLE feeds_articles (feed_name TEXT, headline_text TEXT, article_summary TEXT, article_text TEXT, article_date TEXT, article_url TEXT);"
 	};
 
@@ -46,13 +46,17 @@ gautier_rss_data_write::initialize_db (std::string db_file_name)
 }
 
 void
-gautier_rss_data_write::set_feed_name (std::string db_file_name, std::string feed_name,
-                                       std::string feed_url)
+gautier_rss_data_write::set_feed_name (std::string db_file_name,
+                                       std::string feed_name,
+                                       std::string feed_url,
+                                       std::string retrieve_limit_hrs,
+                                       std::string retention_days)
 {
 	namespace ns_db = gautier_rss_database;
 
-	std::string sql_text = "INSERT INTO feeds (feed_name, feed_url, last_retrieved)\
-		SELECT @feed_name, @feed_url, @feed_date\
+	std::string sql_text =
+	    "INSERT INTO feeds (feed_name, feed_url, last_retrieved, retrieve_limit_hrs, retention_days)\
+		SELECT @feed_name, @feed_url, @feed_date, @retrieve_limit_hrs, @retention_days\
 		WHERE 0 = (\
 			SELECT COUNT(*) FROM feeds WHERE feed_name = @feed_name\
 		)";
@@ -145,14 +149,17 @@ gautier_rss_data_write::update_rss_feeds (std::string db_file_name)
 }
 
 void
-gautier_rss_data_write::update_rss_db_from_rss_xml (std::string db_file_name, std::string feed_name,
-        std::string feed_url)
+gautier_rss_data_write::update_rss_db_from_rss_xml (std::string db_file_name,
+        std::string feed_name,
+        std::string feed_url,
+        std::string retrieve_limit_hrs,
+        std::string retention_days)
 {
 	namespace ns_parse = gautier_rss_data_parse;
 
 	namespace ns_data = gautier_rss_data_read;
 
-	set_feed_name (db_file_name, feed_name, feed_url);
+	set_feed_name (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
 	std::string feed_data;
 
@@ -172,14 +179,17 @@ gautier_rss_data_write::update_rss_db_from_rss_xml (std::string db_file_name, st
 }
 
 void
-gautier_rss_data_write::update_rss_xml_from_network (std::string db_file_name, std::string feed_name,
-        std::string feed_url)
+gautier_rss_data_write::update_rss_xml_from_network (std::string db_file_name,
+        std::string feed_name,
+        std::string feed_url,
+        std::string retrieve_limit_hrs,
+        std::string retention_days)
 {
 	namespace ns_parse = gautier_rss_data_parse;
 
 	namespace ns_data = gautier_rss_data_read;
 
-	set_feed_name (db_file_name, feed_name, feed_url);
+	set_feed_name (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
 	std::string feed_data;
 
@@ -191,14 +201,17 @@ gautier_rss_data_write::update_rss_xml_from_network (std::string db_file_name, s
 }
 
 void
-gautier_rss_data_write::update_rss_xml_db_from_network (std::string db_file_name, std::string feed_name,
-        std::string feed_url)
+gautier_rss_data_write::update_rss_xml_db_from_network (std::string db_file_name,
+        std::string feed_name,
+        std::string feed_url,
+        std::string retrieve_limit_hrs,
+        std::string retention_days)
 {
 	namespace ns_parse = gautier_rss_data_parse;
 
 	namespace ns_data = gautier_rss_data_read;
 
-	set_feed_name (db_file_name, feed_name, feed_url);
+	set_feed_name (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
 	std::string feed_data;
 
@@ -220,14 +233,17 @@ gautier_rss_data_write::update_rss_xml_db_from_network (std::string db_file_name
 }
 
 void
-gautier_rss_data_write::update_rss_db_from_network (std::string db_file_name, std::string feed_name,
-        std::string feed_url)
+gautier_rss_data_write::update_rss_db_from_network (std::string db_file_name,
+        std::string feed_name,
+        std::string feed_url,
+        std::string retrieve_limit_hrs,
+        std::string retention_days)
 {
 	namespace ns_parse = gautier_rss_data_parse;
 
 	namespace ns_data = gautier_rss_data_read;
 
-	set_feed_name (db_file_name, feed_name, feed_url);
+	set_feed_name (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
 	std::string feed_data;
 

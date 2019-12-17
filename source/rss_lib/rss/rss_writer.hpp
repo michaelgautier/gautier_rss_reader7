@@ -24,7 +24,9 @@ namespace gautier_rss_data_write {
 	void
 	set_feed_name (std::string db_file_name,
 	               std::string feed_name,
-	               std::string feed_url);
+	               std::string feed_url,
+	               std::string retrieve_limit_hrs,
+	               std::string retention_days);
 
 	void
 	set_feed_headline (std::string db_file_name,
@@ -35,15 +37,31 @@ namespace gautier_rss_data_write {
 	update_rss_feeds (std::string db_file_name);
 
 	void
-	update_rss_db_from_rss_xml (std::string db_file_name, std::string feed_name, std::string feed_url);
+	update_rss_db_from_rss_xml (std::string db_file_name,
+	                            std::string feed_name,
+	                            std::string feed_url,
+	                            std::string retrieve_limit_hrs,
+	                            std::string retention_days);
 
 	void
-	update_rss_xml_from_network (std::string db_file_name, std::string feed_name, std::string feed_url);
+	update_rss_xml_from_network (std::string db_file_name,
+	                             std::string feed_name,
+	                             std::string feed_url,
+	                             std::string retrieve_limit_hrs,
+	                             std::string retention_days);
 
 	void
-	update_rss_xml_db_from_network (std::string db_file_name, std::string feed_name, std::string feed_url);
+	update_rss_xml_db_from_network (std::string db_file_name,
+	                                std::string feed_name,
+	                                std::string feed_url,
+	                                std::string retrieve_limit_hrs,
+	                                std::string retention_days);
 
 	void
-	update_rss_db_from_network (std::string db_file_name, std::string feed_name, std::string feed_url);
+	update_rss_db_from_network (std::string db_file_name,
+	                            std::string feed_name,
+	                            std::string feed_url,
+	                            std::string retrieve_limit_hrs,
+	                            std::string retention_days);
 }
 #endif
