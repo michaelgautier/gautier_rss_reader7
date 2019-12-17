@@ -23,6 +23,8 @@ namespace gautier_rss_data_read {
 			std::string feed_name;
 			std::string feed_url;
 			std::string last_retrieved;
+			std::string retrieve_limit_hrs;
+			std::string retention_days;
 	};
 }
 #endif
