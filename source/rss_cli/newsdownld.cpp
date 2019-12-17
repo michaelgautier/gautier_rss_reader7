@@ -193,6 +193,9 @@ main (int argc, char** argv)
 		feed_url = *cli_rss_feed_url->sval;
 	}
 
+	std::string feed_retrieve_limit_hrs = "2";
+	std::string feed_retention_days = "-1";
+
 	bool http_scenario = false;
 	bool http_feed_info_good = false;
 
@@ -237,7 +240,8 @@ main (int argc, char** argv)
 		} else {
 			std::cout << "Read offline XML file into database: \"" << feed_name << "\" \"" << feed_url << "\"\n";
 
-			ns_write::update_rss_db_from_rss_xml (db_file_name, feed_name, feed_url);
+			ns_write::update_rss_db_from_rss_xml (db_file_name, feed_name, feed_url, feed_retrieve_limit_hrs,
+			                                      feed_retention_days);
 		}
 
 		if (verbose) {
@@ -258,7 +262,8 @@ main (int argc, char** argv)
 		if (http_feed_info_good) {
 			std::cout << "Save RSS feed to offline XML file: \"" << feed_name << "\" \"" << feed_url << "\"\n";
 
-			ns_write::update_rss_xml_from_network (db_file_name, feed_name, feed_url);
+			ns_write::update_rss_xml_from_network (db_file_name, feed_name, feed_url, feed_retrieve_limit_hrs,
+			                                       feed_retention_days);
 
 			if (verbose) {
 				std::cout << "HTTP/XML Feed -> XML File process finished.\n";
@@ -279,7 +284,8 @@ main (int argc, char** argv)
 		if (http_feed_info_good) {
 			std::cout << "Save RSS feed to offline XML file and database: \"" << feed_name << "\" \"" << feed_url << "\"\n";
 
-			ns_write::update_rss_xml_db_from_network (db_file_name, feed_name, feed_url);
+			ns_write::update_rss_xml_db_from_network (db_file_name, feed_name, feed_url, feed_retrieve_limit_hrs,
+			        feed_retention_days);
 
 			if (verbose) {
 				std::cout << "HTTP/XML Feed -> [XML File, Database] process finished.\n";
@@ -300,7 +306,8 @@ main (int argc, char** argv)
 		if (http_feed_info_good) {
 			std::cout << "Save RSS feed to database: \"" << feed_name << "\" \"" << feed_url << "\"\n";
 
-			ns_write::update_rss_db_from_network (db_file_name, feed_name, feed_url);
+			ns_write::update_rss_db_from_network (db_file_name, feed_name, feed_url, feed_retrieve_limit_hrs,
+			                                      feed_retention_days);
 
 			if (verbose) {
 				std::cout << "HTTP/XML Feed -> Database process finished.\n";
