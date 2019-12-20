@@ -13,6 +13,7 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include <iostream>
 
 #include "rss_lib/rss/rss_writer.hpp"
+#include "rss_lib/rss/rss_reader.hpp"
 
 #include "external/argtable/argtable3.h"
 
@@ -77,6 +78,18 @@ main (int argc, char** argv)
 	struct arg_str* cli_rss_feed_url;	//RSS Feed URL
 
 	/*
+		Date time values
+	*/
+	struct arg_lit* cli_op_datetime_sec;	//datetime seconds option
+	struct arg_str* cli_datetime1;		//datetime value 1
+	struct arg_str* cli_datetime2;		//datetime value 2
+
+	/*
+		Service access limits
+	*/
+	struct arg_lit* cli_check_time_limit;
+
+	/*
 		Linux command-line program minimum options.
 	*/
 	struct arg_lit* cli_help;
@@ -108,6 +121,11 @@ main (int argc, char** argv)
 		cli_alt_db_name		= arg_strn (NULL, "alt-dbname", "<string>", 0, 1, "Useful for testing, i.e. rss_test.db"),
 		cli_rss_feed_name	= arg_strn (NULL, "rss-feedname", "<string>", 0, 1, "Name of the RSS Feed"),
 		cli_rss_feed_url	= arg_strn (NULL, "rss-url", "<string>", 0, 1, "Network address containing latest feed content for rss-feedname"),
+
+		cli_op_datetime_sec 	= arg_litn /*6*/ (NULL, "datetime-sec", 0, 1, "Use SQLite to obtain the seconds that passed between two date time values"),
+		cli_check_time_limit	= arg_litn /*7*/ (NULL, "check-timelimit", 0, 1, "true/false to see a diagnostic output of the time limit"),
+		cli_datetime1		= arg_strn (NULL, "datetime1", "<string>", 0, 1, "datetime-1"),
+		cli_datetime2		= arg_strn (NULL, "datetime2", "<string>", 0, 1, "datetime-2"),
 
 		/*
 			TABLE END
@@ -196,8 +214,21 @@ main (int argc, char** argv)
 	std::string feed_retrieve_limit_hrs = "2";
 	std::string feed_retention_days = "-1";
 
+	std::string check_feed_retrieve_limit_text;
+
 	bool http_scenario = false;
 	bool http_feed_info_good = false;
+
+	if (cli_check_time_limit->count > 0) {
+		if (feed_name.empty() == false) {
+			bool is_stale = ns_read::is_feed_stale (db_file_name, feed_name);
+
+			std::cout << "is feed network retrieval permitted: " << is_stale << "\n";
+		} else {
+			std::cout << "feed name missing see --rss-feedname\n";
+			exit_code = 1;
+		}
+	}
 
 	/*
 		Automatic RSS update process.
@@ -313,6 +344,19 @@ main (int argc, char** argv)
 				std::cout << "HTTP/XML Feed -> Database process finished.\n";
 			}
 		}
+	}
+
+	/*
+		Get Seconds from two dates times.
+	*/
+
+	else if (cli_op_datetime_sec->count > 0) {
+		std::string datetime1 = *cli_datetime1->sval;
+		std::string datetime2 = *cli_datetime2->sval;
+
+		int seconds = ns_read::get_time_difference_in_seconds (datetime1, datetime2);
+
+		std::cout << "elapsed seconds: " << seconds << "\n";
 	}
 
 	/*
