@@ -9,9 +9,50 @@ You should have received a copy of the GNU Lesser General Public License along w
 
 Author: Michael Gautier <michaelgautier.wordpress.com>
 */
+#include <iostream>
+#include <ctime>
+#include <iomanip>
+#include <sstream>
 
 #include "rss_lib/rss/rss_reader.hpp"
 #include "rss_lib/db/db.hpp"
+
+static void
+create_feed_from_sql_row (gautier_rss_database::sql_row_type& row, gautier_rss_data_read::rss_feed& feed);
+
+static std::string
+get_current_date_time_utc();
+
+void
+gautier_rss_data_read::get_feed (std::string db_file_name, std::string feed_name, rss_feed& feed)
+{
+	namespace ns_db = gautier_rss_database;
+
+	sqlite3* db = NULL;
+	ns_db::open_db (db_file_name, &db);
+
+	ns_db::sql_rowset_type rows;
+	std::string sql_text =
+	    "SELECT feed_name, feed_url, last_retrieved, retrieve_limit_hrs, retention_days FROM feeds WHERE feed_name = @feed_name;";
+
+	ns_db::sql_parameter_list_type params = {
+		feed_name
+	};
+
+	ns_db::process_sql (&db, sql_text, params, rows);
+
+	for (ns_db::sql_row_type row : rows) {
+		rss_feed feed_info;
+
+		create_feed_from_sql_row (row, feed_info);
+
+		feed = feed_info;
+	}
+
+	ns_db::close_db (&db);
+
+	return;
+}
 
 void
 gautier_rss_data_read::get_feed_names (std::string db_file_name, std::vector <rss_feed>& feed_names)
@@ -30,25 +71,34 @@ gautier_rss_data_read::get_feed_names (std::string db_file_name, std::vector <rs
 	ns_db::process_sql (&db, sql_text, params, rows);
 
 	for (ns_db::sql_row_type row : rows) {
-		feed_names.emplace_back (rss_feed());
-		rss_feed* feed = &feed_names.back();
+		rss_feed feed;
 
-		for (ns_db::sql_row_type::value_type field : row) {
-			if (field.first == "feed_name") {
-				feed->feed_name = field.second;
-			} else if (field.first == "feed_url") {
-				feed->feed_url = field.second;
-			} else if (field.first == "last_retrieved") {
-				feed->last_retrieved = field.second;
-			} else if (field.first == "retrieve_limit_hrs") {
-				feed->retrieve_limit_hrs = field.second;
-			} else if (field.first == "retention_days") {
-				feed->retention_days = field.second;
-			}
-		}
+		create_feed_from_sql_row (row, feed);
+
+		feed_names.emplace_back (feed);
 	}
 
 	ns_db::close_db (&db);
+
+	return;
+}
+
+static void
+create_feed_from_sql_row (gautier_rss_database::sql_row_type& row, gautier_rss_data_read::rss_feed& feed)
+{
+	for (gautier_rss_database::sql_row_type::value_type field : row) {
+		if (field.first == "feed_name") {
+			feed.feed_name = field.second;
+		} else if (field.first == "feed_url") {
+			feed.feed_url = field.second;
+		} else if (field.first == "last_retrieved") {
+			feed.last_retrieved = field.second;
+		} else if (field.first == "retrieve_limit_hrs") {
+			feed.retrieve_limit_hrs = field.second;
+		} else if (field.first == "retention_days") {
+			feed.retention_days = field.second;
+		}
+	}
 
 	return;
 }
@@ -129,54 +179,108 @@ gautier_rss_data_read::get_feed_article_summary (std::string db_file_name, std::
 	return;
 }
 
-/*checks if the feed can be retrieved based on expiration date. */
-bool
-gautier_rss_data_read::is_feed_stale (std::string db_file_name, std::string feed_name)
+
+int
+gautier_rss_data_read::get_time_difference_in_seconds (std::string date1, std::string date2)
 {
+	//See SQLite documentation: SQL As Understood By SQLite - Date And Time Functions
+
+	std::string db_file_name = ":memory:";
+	int seconds = 0;
+
 	namespace ns_db = gautier_rss_database;
 
 	sqlite3* db = NULL;
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;
-	std::string sql_text =
-	    "SELECT feed_name, feed_url, last_retrieved, retrieve_limit_hrs, retention_days FROM feeds;";
+	std::string sql_text = "select abs(strftime('%s', @date1) - strftime('%s', @date2)) as result;";
 
-	ns_db::sql_parameter_list_type params;
+	std::string datetime1 = date1;
+	std::string datetime2 = date2;
+
+	if (date1.empty()) {
+		datetime1 = get_current_date_time_utc();
+	}
+
+	if (date2.empty()) {
+		datetime2 = get_current_date_time_utc();
+	}
+
+	ns_db::sql_parameter_list_type params = {
+		datetime1,
+		datetime2
+	};
 
 	ns_db::process_sql (&db, sql_text, params, rows);
 
-	bool is_feed_stale = false;
-
-	rss_feed feed;
-
 	for (ns_db::sql_row_type row : rows) {
 		for (ns_db::sql_row_type::value_type field : row) {
-			if (field.first == "feed_name") {
-				feed.feed_name = field.second;
-			} else if (field.first == "feed_url") {
-				feed.feed_url = field.second;
-			} else if (field.first == "last_retrieved") {
-				feed.last_retrieved = field.second;
-			} else if (field.first == "retrieve_limit_hrs") {
-				feed.retrieve_limit_hrs = field.second;
-			} else if (field.first == "retention_days") {
-				feed.retention_days = field.second;
+			if (field.first == "result") {
+				std::string result = field.second;
+
+				seconds = std::stoi (result);
 			}
 		}
 	}
 
 	ns_db::close_db (&db);
 
+	return seconds;
+}
+
+/*checks if the feed can be retrieved based on expiration date. */
+bool
+gautier_rss_data_read::is_feed_stale (std::string db_file_name, std::string feed_name)
+{
+	bool is_feed_stale = false;
+
+	rss_feed feed;
+
+	get_feed (db_file_name, feed_name, feed);
+
 	if (feed.feed_name.empty() == false) {
-		/*
-			Compare the last_retrieved date to the current date
+		std::string current_date_time_utc = get_current_date_time_utc();
 
-			assign result:
+		int seconds_elapsed = get_time_difference_in_seconds ("", feed.last_retrieved);
 
-			is_feed_stale = (last_retrieved + 1 hour > current date and time);
-		*/
+		int retrieve_limit_hrs = std::stoi (feed.retrieve_limit_hrs);
+
+		int minutes_elapsed = seconds_elapsed / 60;
+		int hours_elapsed = minutes_elapsed / 60;
+
+		std::cout << "Feed " << feed.feed_name << "(" << feed.feed_url << ")" << "\n";
+		std::cout << "Retrieve Limit (hrs) " << retrieve_limit_hrs << "\n";
+		std::cout << "Current date/time " << current_date_time_utc << "\n";
+		std::cout << "Last retrieved " << feed.last_retrieved << "\n";
+		std::cout << "Elapsed hours " << hours_elapsed << "\n";
+		std::cout << "Elapsed minutes " << minutes_elapsed << "\n";
+		std::cout << "Elapsed seconds " << seconds_elapsed << "\n";
+
+		is_feed_stale = (hours_elapsed >= retrieve_limit_hrs);
 	}
 
-	return false;
+	return is_feed_stale;
+}
+
+static std::string
+get_current_date_time_utc()
+{
+	/*
+		Gets the current date and time.
+		Provides the date/time in a format understood by many
+		systems such as SQLite.
+	*/
+	std::string datetime;
+	{
+		std::time_t result = std::time (nullptr);
+
+		std::stringstream strout;
+
+		strout << std::put_time (std::gmtime (&result), "%F %T") << std::ends;
+
+		datetime = strout.str();
+	}
+
+	return datetime;
 }

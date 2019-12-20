@@ -21,6 +21,9 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 namespace gautier_rss_data_read {
 	void
+	get_feed (std::string db_file_name, std::string feed_name, rss_feed& feed);
+
+	void
 	get_feed_names (std::string db_file_name, std::vector < rss_feed >& feed_names);
 
 	void
@@ -29,6 +32,10 @@ namespace gautier_rss_data_read {
 	void
 	get_feed_article_summary (std::string db_file_name, std::string feed_name, std::string headline,
 	                          rss_article& article);
+
+	//See SQLite documentation: SQL As Understood By SQLite - Date And Time Functions
+	int
+	get_time_difference_in_seconds (std::string date1, std::string date2);
 
 	//checks if the feed can be retrieved based on expiration date.
 	bool
