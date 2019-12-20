@@ -56,7 +56,7 @@ gautier_rss_data_write::set_feed_name (std::string db_file_name,
 
 	std::string sql_text =
 	    "INSERT INTO feeds (feed_name, feed_url, last_retrieved, retrieve_limit_hrs, retention_days)\
-		SELECT @feed_name, @feed_url, @feed_date, @retrieve_limit_hrs, @retention_days\
+		SELECT @feed_name, @feed_url, datetime(), @retrieve_limit_hrs, @retention_days\
 		WHERE 0 = (\
 			SELECT COUNT(*) FROM feeds WHERE feed_name = @feed_name\
 		)";
@@ -64,7 +64,8 @@ gautier_rss_data_write::set_feed_name (std::string db_file_name,
 	ns_db::sql_parameter_list_type params = {
 		feed_name,
 		feed_url,
-		"10/10/2019"
+		retrieve_limit_hrs,
+		retention_days
 	};
 
 	sqlite3* db = NULL;
