@@ -35,6 +35,10 @@ extern "C"
 void
 update_configuration_click (GtkButton* button, gpointer user_data);
 
+extern "C"
+void
+delete_configuration_click (GtkButton* button, gpointer user_data);
+
 void
 gautier_rss_win_rss_manage::show_dialog (GtkApplication* app, GtkWindow* parent, int window_width,
         int window_height)
@@ -196,6 +200,11 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 
 	g_signal_connect (update_configuration_button, "clicked", G_CALLBACK (update_configuration_click), NULL);
 
+	GtkWidget* delete_configuration_button = gtk_button_new_with_label ("delete");
+	gtk_widget_set_sensitive (delete_configuration_button, false);
+
+	g_signal_connect (delete_configuration_button, "clicked", G_CALLBACK (delete_configuration_click), NULL);
+
 	/*
 		Layout and arrange
 	*/
@@ -208,6 +217,7 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 	gtk_container_add (GTK_CONTAINER (feed_entry_layout_row1), feed_retention_option_label);
 	gtk_container_add (GTK_CONTAINER (feed_entry_layout_row1), feed_retention_option);
 
+	gtk_container_add (GTK_CONTAINER (feed_entry_layout_row2), delete_configuration_button);
 	gtk_container_add (GTK_CONTAINER (feed_entry_layout_row2), update_configuration_button);
 
 	return;
@@ -215,6 +225,12 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 
 void
 update_configuration_click (GtkButton* button, gpointer user_data)
+{
+	return;
+}
+
+void
+delete_configuration_click (GtkButton* button, gpointer user_data)
 {
 	return;
 }
