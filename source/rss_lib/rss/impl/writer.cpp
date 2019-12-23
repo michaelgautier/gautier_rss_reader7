@@ -131,18 +131,22 @@ gautier_rss_data_write::update_rss_feeds (std::string db_file_name)
 		std::string feed_name = feed.feed_name;
 		std::string feed_url = feed.feed_url;
 
-		std::string feed_data;
+		bool is_stale = gautier_rss_data_read::is_feed_stale (db_file_name, feed_name);
 
-		ns_data::download_rss_feed (feed_url, feed_data);
+		if (is_stale == false) {
+			std::string feed_data;
 
-		std::vector<ns_data::rss_article> feed_lines;
+			ns_data::download_rss_feed (feed_url, feed_data);
 
-		ns_parse::get_feed_lines (feed_data, feed_lines);
+			std::vector<ns_data::rss_article> feed_lines;
 
-		for (ns_data::rss_article article : feed_lines) {
-			article.feed_name = feed_name;
+			ns_parse::get_feed_lines (feed_data, feed_lines);
 
-			set_feed_headline (db_file_name, article);
+			for (ns_data::rss_article article : feed_lines) {
+				article.feed_name = feed_name;
+
+				set_feed_headline (db_file_name, article);
+			}
 		}
 	}
 
@@ -192,11 +196,15 @@ gautier_rss_data_write::update_rss_xml_from_network (std::string db_file_name,
 
 	set_feed_name (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
-	std::string feed_data;
+	bool is_stale = gautier_rss_data_read::is_feed_stale (db_file_name, feed_name);
 
-	ns_data::download_rss_feed (feed_url, feed_data);
+	if (is_stale == false) {
+		std::string feed_data;
 
-	ns_parse::save_feed_data_to_file (feed_name, ".xml", feed_data);
+		ns_data::download_rss_feed (feed_url, feed_data);
+
+		ns_parse::save_feed_data_to_file (feed_name, ".xml", feed_data);
+	}
 
 	return;
 }
@@ -214,20 +222,24 @@ gautier_rss_data_write::update_rss_xml_db_from_network (std::string db_file_name
 
 	set_feed_name (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
-	std::string feed_data;
+	bool is_stale = gautier_rss_data_read::is_feed_stale (db_file_name, feed_name);
 
-	ns_data::download_rss_feed (feed_url, feed_data);
+	if (is_stale == false) {
+		std::string feed_data;
 
-	ns_parse::save_feed_data_to_file (feed_name, ".xml", feed_data);
+		ns_data::download_rss_feed (feed_url, feed_data);
 
-	std::vector<ns_data::rss_article> feed_lines;
+		ns_parse::save_feed_data_to_file (feed_name, ".xml", feed_data);
 
-	ns_parse::get_feed_lines (feed_data, feed_lines);
+		std::vector<ns_data::rss_article> feed_lines;
 
-	for (ns_data::rss_article article : feed_lines) {
-		article.feed_name = feed_name;
+		ns_parse::get_feed_lines (feed_data, feed_lines);
 
-		set_feed_headline (db_file_name, article);
+		for (ns_data::rss_article article : feed_lines) {
+			article.feed_name = feed_name;
+
+			set_feed_headline (db_file_name, article);
+		}
 	}
 
 	return;
@@ -246,18 +258,22 @@ gautier_rss_data_write::update_rss_db_from_network (std::string db_file_name,
 
 	set_feed_name (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
-	std::string feed_data;
+	bool is_stale = gautier_rss_data_read::is_feed_stale (db_file_name, feed_name);
 
-	ns_data::download_rss_feed (feed_url, feed_data);
+	if (is_stale == false) {
+		std::string feed_data;
 
-	std::vector<ns_data::rss_article> feed_lines;
+		ns_data::download_rss_feed (feed_url, feed_data);
 
-	ns_parse::get_feed_lines (feed_data, feed_lines);
+		std::vector<ns_data::rss_article> feed_lines;
 
-	for (ns_data::rss_article article : feed_lines) {
-		article.feed_name = feed_name;
+		ns_parse::get_feed_lines (feed_data, feed_lines);
 
-		set_feed_headline (db_file_name, article);
+		for (ns_data::rss_article article : feed_lines) {
+			article.feed_name = feed_name;
+
+			set_feed_headline (db_file_name, article);
+		}
 	}
 
 	return;

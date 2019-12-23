@@ -12,6 +12,8 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 #include <iostream>
 
+#include "rss_lib/rss/rss_reader.hpp"
+#include "rss_lib/rss/rss_writer.hpp"
 #include "rss_lib/rss_parse/feed_parse.hpp"
 #include "rss_lib/rss_download/feed_download.hpp"
 
@@ -212,18 +214,27 @@ main (int argc, char** argv)
 
 			std::string headlines;
 
-			ns_read::download_rss_feed (feed_url, headlines);
+			std::string db_file_name = "rss_test.db";
 
-			if (headlines.empty() == false) {
-				ns_parse::save_feed_data_to_file (feed_name, ".xml", headlines);
+			gautier_rss_data_write::initialize_db (db_file_name);
+			bool is_stale = gautier_rss_data_read::is_feed_stale (db_file_name, feed_name);
+
+			if (is_stale == false) {
+				ns_read::download_rss_feed (feed_url, headlines);
+
+				if (headlines.empty() == false) {
+					ns_parse::save_feed_data_to_file (feed_name, ".xml", headlines);
+				} else {
+					std::cout << "empty result\n";
+
+					return cleanup_argtable (argtable, exit_code);
+				}
+
+				if (verbose) {
+					std::cout << "Downloaded data, file contents size: " << headlines.size() << "\n";
+				}
 			} else {
-				std::cout << "empty result\n";
-
-				return cleanup_argtable (argtable, exit_code);
-			}
-
-			if (verbose) {
-				std::cout << "Downloaded data, file contents size: " << headlines.size() << "\n";
+				std::cout << "Too early to download from remote third-party.\n";
 			}
 		} else {
 			std::cout << "get-rss: Missing either feed name [rss-feedname] or feed url [rss-url]\n";
