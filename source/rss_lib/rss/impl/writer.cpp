@@ -21,6 +21,21 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include "rss_lib/rss/rss_reader.hpp"
 #include "rss_lib/rss/rss_writer.hpp"
 
+/*
+	REQUIRED!
+
+	Always call this function first.
+	Creates a database if it does not exist.
+	Manages the database schema.
+	Creates any tables needed.
+
+	This function does not keep the database open.
+	All it does is initialize the database.
+
+	You only need to call it once at the start of a program.
+	Call it once near the start of a program before any other 
+	function that access the database (read or write).
+*/
 void
 gautier_rss_data_write::initialize_db (std::string db_file_name)
 {
@@ -45,6 +60,11 @@ gautier_rss_data_write::initialize_db (std::string db_file_name)
 	return;
 }
 
+/*
+	RSS FEED CONFIGURATION
+
+	Creates and manages RSS feed configuration.
+*/
 void
 gautier_rss_data_write::set_feed_name (std::string db_file_name,
                                        std::string feed_name,
@@ -80,6 +100,11 @@ gautier_rss_data_write::set_feed_name (std::string db_file_name,
 	return;
 }
 
+/*
+	RSS HEADLINE/ARTICLE
+
+	Stores an individual line from an RSS feed.
+*/
 void
 gautier_rss_data_write::set_feed_headline (std::string db_file_name,
         gautier_rss_data_read::rss_article& article)
