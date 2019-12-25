@@ -42,7 +42,7 @@ namespace gautier_rss_data_write {
 		Creates and manages RSS feed configuration.
 	*/
 	void
-	set_feed_name (std::string db_file_name,
+	set_feed_config (std::string db_file_name,
 	               std::string feed_name,
 	               std::string feed_url,
 	               std::string retrieve_limit_hrs,

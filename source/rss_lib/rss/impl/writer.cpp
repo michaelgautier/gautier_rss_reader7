@@ -66,7 +66,7 @@ gautier_rss_data_write::initialize_db (std::string db_file_name)
 	Creates and manages RSS feed configuration.
 */
 void
-gautier_rss_data_write::set_feed_name (std::string db_file_name,
+gautier_rss_data_write::set_feed_config (std::string db_file_name,
                                        std::string feed_name,
                                        std::string feed_url,
                                        std::string retrieve_limit_hrs,
@@ -227,7 +227,7 @@ gautier_rss_data_write::update_rss_db_from_rss_xml (std::string db_file_name,
 
 	namespace ns_data = gautier_rss_data_read;
 
-	set_feed_name (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
+	set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
 	std::string feed_data;
 
@@ -267,7 +267,7 @@ gautier_rss_data_write::update_rss_xml_from_network (std::string db_file_name,
 
 	namespace ns_data = gautier_rss_data_read;
 
-	set_feed_name (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
+	set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
 	bool is_stale = gautier_rss_data_read::is_feed_stale (db_file_name, feed_name);
 
@@ -306,7 +306,7 @@ gautier_rss_data_write::update_rss_xml_db_from_network (std::string db_file_name
 
 	namespace ns_data = gautier_rss_data_read;
 
-	set_feed_name (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
+	set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
 	bool is_stale = gautier_rss_data_read::is_feed_stale (db_file_name, feed_name);
 
@@ -350,7 +350,7 @@ gautier_rss_data_write::update_rss_db_from_network (std::string db_file_name,
 
 	namespace ns_data = gautier_rss_data_read;
 
-	set_feed_name (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
+	set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
 	bool is_stale = gautier_rss_data_read::is_feed_stale (db_file_name, feed_name);
 
