@@ -115,7 +115,21 @@ gautier_rss_data_write::set_feed_headline (std::string db_file_name,
 }
 
 
-//Higher level routines
+/*
+	Higher level routines
+
+	Modifies the RSS database. Provides application-level routines for
+	gathering RSS data and storing it in the database.
+*/
+
+/*
+	Primary RSS function.
+
+	Automates the RSS feed retrieval and database update process.
+	Visits each feed url stored in the database.
+	Retrieves the data for the feed.
+	Stores the feed data in the database.
+*/
 void
 gautier_rss_data_write::update_rss_feeds (std::string db_file_name)
 {
@@ -130,24 +144,10 @@ gautier_rss_data_write::update_rss_feeds (std::string db_file_name)
 	for (ns_data::rss_feed feed : rss_feeds) {
 		std::string feed_name = feed.feed_name;
 		std::string feed_url = feed.feed_url;
+		std::string retrieve_limit_hrs = feed.retrieve_limit_hrs;
+		std::string retention_days = feed.retention_days;
 
-		bool is_stale = gautier_rss_data_read::is_feed_stale (db_file_name, feed_name);
-
-		if (is_stale == false) {
-			std::string feed_data;
-
-			ns_data::download_rss_feed (feed_url, feed_data);
-
-			std::vector<ns_data::rss_article> feed_lines;
-
-			ns_parse::get_feed_lines (feed_data, feed_lines);
-
-			for (ns_data::rss_article article : feed_lines) {
-				article.feed_name = feed_name;
-
-				set_feed_headline (db_file_name, article);
-			}
-		}
+		update_rss_db_from_network (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 	}
 
 	return;
@@ -245,6 +245,14 @@ gautier_rss_data_write::update_rss_xml_db_from_network (std::string db_file_name
 	return;
 }
 
+/*
+	Foundation RSS function.
+
+	Downloads a single RSS feed.
+	Visits the feed url.
+	Retrieves the data for the feed.
+	Stores the feed data in the database.
+*/
 void
 gautier_rss_data_write::update_rss_db_from_network (std::string db_file_name,
         std::string feed_name,
