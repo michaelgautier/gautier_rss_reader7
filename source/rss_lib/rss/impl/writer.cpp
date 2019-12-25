@@ -33,7 +33,7 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 	All it does is initialize the database.
 
 	You only need to call it once at the start of a program.
-	Call it once near the start of a program before any other 
+	Call it once near the start of a program before any other
 	function that access the database (read or write).
 */
 void
@@ -97,6 +97,33 @@ gautier_rss_data_write::set_feed_name (std::string db_file_name,
 
 	ns_db::close_db (&db);
 
+	return;
+}
+
+/*
+	RSS FEED REMOVAL
+
+	Removes an RSS feed.
+
+	The actual implementation can manage feed data removal a few ways:
+
+	1.)	Actual deletion followed by an SQLite vacuum.
+	2.)	Mark the feed as deleted but leave data intact.
+
+	Decided to go with the first option.
+
+	The fundamental element that must be unique in the RSS system overall
+	is the feed url. Whether a website address, FTP, or direct TCP socket,
+	the address must be unique. Exist only once in the entire system.
+
+	That does not mean it is the primary key from a data management
+	standpoint but that it can be used to reliably remove all related
+	information.
+*/
+void
+delete_feed (std::string db_file_name,
+             std::string feed_url)
+{
 	return;
 }
 
