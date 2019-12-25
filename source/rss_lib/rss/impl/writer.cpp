@@ -63,14 +63,14 @@ gautier_rss_data_write::initialize_db (std::string db_file_name)
 /*
 	RSS FEED CONFIGURATION
 
-	Creates and manages RSS feed configuration.
+	Creates an RSS feed configuration.
 */
 void
 gautier_rss_data_write::set_feed_config (std::string db_file_name,
-                                       std::string feed_name,
-                                       std::string feed_url,
-                                       std::string retrieve_limit_hrs,
-                                       std::string retention_days)
+        std::string feed_name,
+        std::string feed_url,
+        std::string retrieve_limit_hrs,
+        std::string retention_days)
 {
 	namespace ns_db = gautier_rss_database;
 
@@ -86,6 +86,49 @@ gautier_rss_data_write::set_feed_config (std::string db_file_name,
 		feed_url,
 		retrieve_limit_hrs,
 		retention_days
+	};
+
+	sqlite3* db = NULL;
+	ns_db::open_db (db_file_name, &db);
+
+	ns_db::sql_rowset_type rows;
+
+	ns_db::process_sql (&db, sql_text, params, rows);
+
+	ns_db::close_db (&db);
+
+	return;
+}
+
+/*
+	RSS FEED CONFIGURATION
+
+	Updates an RSS feed configuration.
+*/
+void
+gautier_rss_data_write::update_feed_config (std::string db_file_name,
+        std::string row_id,
+        std::string feed_name,
+        std::string feed_url,
+        std::string retrieve_limit_hrs,
+        std::string retention_days)
+{
+	namespace ns_db = gautier_rss_database;
+
+	std::string sql_text =
+	    "UPDATE feeds SET\
+		feed_name = @feed_name, \
+		feed_url = @feed_url, \
+		retrieve_limit_hrs = @retrieve_limit_hrs, \
+		retention_days = @retention_days \
+		WHERE row_id = @row_id";
+
+	ns_db::sql_parameter_list_type params = {
+		feed_name,
+		feed_url,
+		retrieve_limit_hrs,
+		retention_days,
+		row_id
 	};
 
 	sqlite3* db = NULL;
