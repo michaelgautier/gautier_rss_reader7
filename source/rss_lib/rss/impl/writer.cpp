@@ -167,6 +167,25 @@ void
 delete_feed (std::string db_file_name,
              std::string feed_url)
 {
+	namespace ns_db = gautier_rss_database;
+
+	std::string sql_text =
+	    "DELETE FROM feeds\
+		WHERE feed_url = @feed_url";
+
+	ns_db::sql_parameter_list_type params = {
+		feed_url
+	};
+
+	sqlite3* db = NULL;
+	ns_db::open_db (db_file_name, &db);
+
+	ns_db::sql_rowset_type rows;
+
+	ns_db::process_sql (&db, sql_text, params, rows);
+
+	ns_db::close_db (&db);
+
 	return;
 }
 
