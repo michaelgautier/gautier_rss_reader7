@@ -121,7 +121,7 @@ gautier_rss_data_write::update_feed_config (std::string db_file_name,
 		feed_url = @feed_url, \
 		retrieve_limit_hrs = @retrieve_limit_hrs, \
 		retention_days = @retention_days \
-		WHERE row_id = @row_id";
+		WHERE rowid = @row_id";
 
 	ns_db::sql_parameter_list_type params = {
 		feed_name,
