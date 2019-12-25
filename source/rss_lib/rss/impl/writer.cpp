@@ -153,6 +153,17 @@ gautier_rss_data_write::update_rss_feeds (std::string db_file_name)
 	return;
 }
 
+/*
+	RSS XML file to SQLite Db
+
+	Used during the development of RSS data transfer processing.
+	1.)	Stores the XML data to a file.
+	2.)	Updates the database using only the XML file.
+
+	Developing an XML parsing routine can require multiple steps
+	and rounds of debugging before the routine accurately parses
+	the input data. This function greatly assist that effort.
+*/
 void
 gautier_rss_data_write::update_rss_db_from_rss_xml (std::string db_file_name,
         std::string feed_name,
@@ -183,6 +194,16 @@ gautier_rss_data_write::update_rss_db_from_rss_xml (std::string db_file_name,
 	return;
 }
 
+/*
+	RSS XML (HTTP) to RSS XML (LOCAL FILE)
+
+	An alternative way to process RSS information.
+	1.)	Gets RSS XML data from a web server.
+	2.)	Stores the XML data to a file.
+
+	Often used during development of RSS to get RSS data samples
+	for inspection and analysis. Used to calibrate parsing functions.
+*/
 void
 gautier_rss_data_write::update_rss_xml_from_network (std::string db_file_name,
         std::string feed_name,
@@ -209,6 +230,19 @@ gautier_rss_data_write::update_rss_xml_from_network (std::string db_file_name,
 	return;
 }
 
+/*
+	RSS XML (HTTP) to RSS XML (LOCAL FILE) to SQLite Db
+
+	Often used during the development of RSS data transfer processing.
+	1.)	Gets RSS XML data from a web server.
+	2.)	Stores the XML data to a file.
+	3.)	Updates the database from setup #1.
+
+	Step #2 provides diagnostic information that can be used to inspect
+	the data that is downloaded. Sometimes this is needed to troubleshoot
+	XML parsing for example but can have another purpose in providing
+	an alternative source of offline/recovery information.
+*/
 void
 gautier_rss_data_write::update_rss_xml_db_from_network (std::string db_file_name,
         std::string feed_name,
