@@ -179,6 +179,39 @@ gautier_rss_data_read::get_feed_article_summary (std::string db_file_name, std::
 	return;
 }
 
+std::string
+gautier_rss_data_read::get_row_id (std::string db_file_name, std::string feed_url)
+{
+	std::string row_id;
+
+	namespace ns_db = gautier_rss_database;
+
+	sqlite3* db = NULL;
+	ns_db::open_db (db_file_name, &db);
+
+	ns_db::sql_rowset_type rows;
+	std::string sql_text = "SELECT rowid FROM feeds WHERE feed_url = @feed_url";
+
+	ns_db::sql_parameter_list_type params = {
+		feed_url
+	};
+
+	ns_db::process_sql (&db, sql_text, params, rows);
+
+	for (ns_db::sql_row_type row : rows) {
+		for (ns_db::sql_row_type::value_type field : row) {
+			if (field.first == "rowid") {
+				row_id = field.second;
+
+				break;
+			}
+		}
+	}
+
+	ns_db::close_db (&db);
+
+	return row_id;
+}
 
 int
 gautier_rss_data_read::get_time_difference_in_seconds (std::string date1, std::string date2)
