@@ -164,8 +164,8 @@ gautier_rss_data_write::update_feed_config (std::string db_file_name,
 	information.
 */
 void
-delete_feed (std::string db_file_name,
-             std::string feed_url)
+gautier_rss_data_write::delete_feed (std::string db_file_name,
+                                     std::string feed_url)
 {
 	namespace ns_db = gautier_rss_database;
 
