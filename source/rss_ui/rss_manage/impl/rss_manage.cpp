@@ -14,6 +14,8 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include "rss_ui/rss_manage/rss_manage.hpp"
 
 #include "rss_lib/rss/rss_reader.hpp"
+#include "rss_lib/rss/rss_writer.hpp"
+#include "rss_lib/rss/rss_feed.hpp"
 
 static GtkWindow*
 win = NULL;
@@ -28,7 +30,9 @@ static void
 layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_entry_layout_row2,
                             GtkWindow* win);
 
-namespace rss_ns = gautier_rss_data_read;
+namespace ns_app = gautier_rss_ui_app;
+namespace ns_read = gautier_rss_data_read;
+namespace ns_write = gautier_rss_data_write;
 
 /*
 	RSS Table
@@ -67,6 +71,11 @@ rss_tree_view_selected (GtkTreeSelection* tree_selection, gpointer user_data);
 static void
 layout_rss_tree_view (GtkWidget* rss_tree_view);
 
+static void
+populate_rss_tree_view (GtkWidget* rss_tree_view);
+
+GtkWidget* rss_tree_view;
+GtkListStore* list_store;
 GtkTreeSelection* rss_tree_selection_manager;
 
 /*
@@ -194,7 +203,7 @@ gautier_rss_win_rss_manage::show_dialog (GtkApplication* app, GtkWindow* parent,
 	/*
 		RSS Configuration Table
 	*/
-	GtkWidget* rss_tree_view = gtk_tree_view_new();
+	rss_tree_view = gtk_tree_view_new();
 	gtk_widget_set_size_request (rss_tree_view, -1, window_height * 2);
 	rss_tree_selection_manager = gtk_tree_view_get_selection (GTK_TREE_VIEW (rss_tree_view));
 	gtk_tree_selection_set_mode (rss_tree_selection_manager, GTK_SELECTION_SINGLE);
@@ -367,6 +376,20 @@ update_configuration_click (GtkButton* button, gpointer user_data)
 void
 delete_configuration_click (GtkButton* button, gpointer user_data)
 {
+	if (row_id_now > 0) {
+		std::string db_file_name = ns_app::get_db_file_name();
+
+		std::string rss_url = gtk_entry_get_text (GTK_ENTRY (feed_url_entry));
+
+		ns_write::delete_feed (db_file_name, rss_url);
+
+		gtk_list_store_clear (list_store);
+
+		populate_rss_tree_view (rss_tree_view);
+
+		reset_data_entry();
+	}
+
 	return;
 }
 
@@ -405,74 +428,13 @@ layout_rss_tree_view (GtkWidget* rss_tree_view)
 	/*
 		Tree Model to describe the columns
 	*/
-	GtkListStore* list_store = gtk_list_store_new (6 /*6 columns*/,
-	                           G_TYPE_STRING,/*feed name*/
-	                           G_TYPE_STRING,/*article count*/
-	                           G_TYPE_STRING,/*last retrieved*/
-	                           G_TYPE_STRING,/*retention in days*/
-	                           G_TYPE_STRING,/*retrieve limit*/
-	                           G_TYPE_STRING /*web url*/);
-
-	GtkTreeIter iter;
-
-
-	/*
-		Make a row for each feed/url
-	*/
-	std::vector<rss_ns::rss_feed> feed_info;
-
-	/*
-		std::string feed_name;
-		std::string feed_url;
-		std::string last_retrieved;
-	*/
-
-	std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
-
-	rss_ns::get_feed_names (db_file_name, feed_info);
-
-	/*
-		TO-DO ITEM	Later on ... replace the literals 0,1,2 etc.
-		with named constants to ensure proper coordination of positions
-		to names / conceptual representations.
-	*/
-
-	for (rss_ns::rss_feed feed : feed_info) {
-		gchar* feed_name = feed.feed_name.data();
-		gchar* article_count = std::string ("0").data();
-		gchar* last_retrieved = feed.last_retrieved.data();
-		gchar* retrieve_limit_hrs = feed.retrieve_limit_hrs.data();
-		gchar* feed_url = feed.feed_url.data();
-
-		std::string retention_period;
-
-		int retention_days = std::stoi (feed.retention_days);
-
-		if (retention_days == 1) {
-			retention_period = "1 days";
-		} else if (retention_days == 7) {
-			retention_period = "7 days";
-		} else {
-			retention_period = "Forever";
-		}
-
-		/*
-			Adds a new row in the Tree Model.
-		*/
-		gtk_list_store_append (list_store, &iter);
-
-		/*
-			Links specific data to column positions in the row.
-		*/
-		gtk_list_store_set (list_store, &iter,
-		                    col_pos_feed_name, feed_name,
-		                    col_pos_feed_article_count, article_count,
-		                    col_pos_feed_retrieved, last_retrieved,
-		                    col_pos_feed_retention_days, retention_period.data(),
-		                    col_pos_feed_retrieve_limit_hrs, retrieve_limit_hrs,
-		                    col_pos_feed_webaddress, feed_url,
-		                    col_pos_stop);
-	}
+	list_store = gtk_list_store_new (6 /*6 columns*/,
+	                                 G_TYPE_STRING,/*feed name*/
+	                                 G_TYPE_STRING,/*article count*/
+	                                 G_TYPE_STRING,/*last retrieved*/
+	                                 G_TYPE_STRING,/*retention in days*/
+	                                 G_TYPE_STRING,/*retrieve limit*/
+	                                 G_TYPE_STRING /*web url*/);
 
 	/*
 		Column: Feed Name
@@ -527,6 +489,68 @@ layout_rss_tree_view (GtkWidget* rss_tree_view)
 		Populate tree
 	*/
 	gtk_tree_view_set_model (GTK_TREE_VIEW (rss_tree_view), GTK_TREE_MODEL (list_store));
+
+	populate_rss_tree_view (rss_tree_view);
+
+	return;
+}
+
+void
+populate_rss_tree_view (GtkWidget* rss_tree_view)
+{
+	GtkTreeIter iter;
+
+	/*
+		Make a row for each feed/url
+	*/
+	std::vector<ns_read::rss_feed> feed_info;
+
+	/*
+		std::string feed_name;
+		std::string feed_url;
+		std::string last_retrieved;
+	*/
+
+	std::string db_file_name = ns_app::get_db_file_name();
+
+	ns_read::get_feed_names (db_file_name, feed_info);
+
+	for (ns_read::rss_feed feed : feed_info) {
+		gchar* feed_name = feed.feed_name.data();
+		gchar* article_count = std::string ("0").data();
+		gchar* last_retrieved = feed.last_retrieved.data();
+		gchar* retrieve_limit_hrs = feed.retrieve_limit_hrs.data();
+		gchar* feed_url = feed.feed_url.data();
+
+		std::string retention_period;
+
+		int retention_days = std::stoi (feed.retention_days);
+
+		if (retention_days == 1) {
+			retention_period = "1 days";
+		} else if (retention_days == 7) {
+			retention_period = "7 days";
+		} else {
+			retention_period = "Forever";
+		}
+
+		/*
+			Adds a new row in the Tree Model.
+		*/
+		gtk_list_store_append (list_store, &iter);
+
+		/*
+			Links specific data to column positions in the row.
+		*/
+		gtk_list_store_set (list_store, &iter,
+		                    col_pos_feed_name, feed_name,
+		                    col_pos_feed_article_count, article_count,
+		                    col_pos_feed_retrieved, last_retrieved,
+		                    col_pos_feed_retention_days, retention_period.data(),
+		                    col_pos_feed_retrieve_limit_hrs, retrieve_limit_hrs,
+		                    col_pos_feed_webaddress, feed_url,
+		                    col_pos_stop);
+	}
 
 	return;
 }
@@ -587,9 +611,9 @@ rss_tree_view_selected (GtkTreeSelection* tree_selection, gpointer user_data)
 		if (rss_url.empty()) {
 			row_id_now = 0;
 		} else {
-			std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
+			std::string db_file_name = ns_app::get_db_file_name();
 
-			std::string row_id = rss_ns::get_row_id (db_file_name, rss_url);
+			std::string row_id = ns_read::get_row_id (db_file_name, rss_url);
 
 			if (row_id.empty() == false) {
 				row_id_now = std::stoi (row_id);
