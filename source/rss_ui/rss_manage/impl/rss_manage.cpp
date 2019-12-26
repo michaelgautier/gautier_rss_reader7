@@ -28,8 +28,38 @@ static void
 layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_entry_layout_row2,
                             GtkWindow* win);
 
+/*
+	RSS Table
+*/
+static int
+col_pos_feed_name = 0;
+
+static int
+col_pos_feed_article_count = 1;
+
+static int
+col_pos_feed_retrieved = 2;
+
+static int
+col_pos_feed_retention_days = 3;
+
+static int
+col_pos_feed_retrieve_limit_hrs = 4;
+
+static int
+col_pos_feed_webaddress = 5;
+
+static int
+col_pos_stop = -1;
+
+extern "C"
+void
+rss_tree_view_selected (GtkTreeSelection* tree_selection, gpointer user_data);
+
 static void
 layout_rss_tree_view (GtkWidget* rss_tree_view);
+
+GtkTreeSelection* rss_tree_selection_manager;
 
 /*
 	Update Button
@@ -95,6 +125,12 @@ feed_url_deleted (GtkEntryBuffer* buffer, guint position, guint n_chars, gpointe
 static void
 check_feed_keys (GtkEntryBuffer* feed_name_buffer, GtkEntryBuffer* feed_url_buffer);
 
+/*
+	RSS configuration options.
+*/
+GtkWidget* feed_refresh_interval;
+GtkWidget* feed_retention_option;
+
 void
 gautier_rss_win_rss_manage::show_dialog (GtkApplication* app, GtkWindow* parent, int window_width,
         int window_height)
@@ -140,6 +176,9 @@ gautier_rss_win_rss_manage::show_dialog (GtkApplication* app, GtkWindow* parent,
 	*/
 	GtkWidget* rss_tree_view = gtk_tree_view_new();
 	gtk_widget_set_size_request (rss_tree_view, -1, window_height * 2);
+	rss_tree_selection_manager = gtk_tree_view_get_selection (GTK_TREE_VIEW (rss_tree_view));
+	gtk_tree_selection_set_mode (rss_tree_selection_manager, GTK_SELECTION_SINGLE);
+	g_signal_connect (rss_tree_selection_manager, "changed", G_CALLBACK (rss_tree_view_selected), NULL);
 
 	GtkWidget* scroll_win = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_set_valign (scroll_win, GTK_ALIGN_FILL);
@@ -243,7 +282,7 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 	*/
 	GtkWidget* feed_refresh_interval_label = gtk_label_new ("Refresh interval");
 
-	GtkWidget* feed_refresh_interval = gtk_spin_button_new_with_range (1, 4, 1);
+	feed_refresh_interval = gtk_spin_button_new_with_range (1, 4, 1);
 	gtk_widget_set_size_request (feed_refresh_interval, 80, 24);
 
 	/*
@@ -251,7 +290,7 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 	*/
 	GtkWidget* feed_retention_option_label = gtk_label_new ("Keep feeds");
 
-	GtkWidget* feed_retention_option = gtk_combo_box_text_new();
+	feed_retention_option = gtk_combo_box_text_new();
 	gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (feed_retention_option), "1", "Forever");
 	gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (feed_retention_option), "2", "7 days");
 	gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (feed_retention_option), "3", "1 day");
@@ -304,21 +343,15 @@ delete_configuration_click (GtkButton* button, gpointer user_data)
 void
 layout_rss_tree_view (GtkWidget* rss_tree_view)
 {
-	int col_pos_feed_name = 0;
-	int col_pos_feed_article_count = 1;
-	int col_pos_feed_retrieved = 2;
-	int col_pos_feed_retention = 3;
-	int col_pos_feed_webaddress = 4;
-	int col_pos_stop = -1;
-
 	/*
 		Tree Model to describe the columns
 	*/
-	GtkListStore* list_store = gtk_list_store_new (5 /*5 columns*/,
+	GtkListStore* list_store = gtk_list_store_new (6 /*6 columns*/,
 	                           G_TYPE_STRING,/*feed name*/
 	                           G_TYPE_STRING,/*article count*/
 	                           G_TYPE_STRING,/*last retrieved*/
 	                           G_TYPE_STRING,/*retention in days*/
+	                           G_TYPE_STRING,/*retrieve limit*/
 	                           G_TYPE_STRING /*web url*/);
 
 	GtkTreeIter iter;
@@ -350,7 +383,8 @@ layout_rss_tree_view (GtkWidget* rss_tree_view)
 		gchar* feed_name = feed.feed_name.data();
 		gchar* article_count = std::string ("0").data();
 		gchar* last_retrieved = feed.last_retrieved.data();
-		gchar* retention_period = std::string ("forever").data();
+		gchar* retention_period = feed.retention_days.data();
+		gchar* retrieve_limit_hrs = feed.retrieve_limit_hrs.data();
 		gchar* feed_url = feed.feed_url.data();
 
 		/*
@@ -365,7 +399,8 @@ layout_rss_tree_view (GtkWidget* rss_tree_view)
 		                    col_pos_feed_name, feed_name,
 		                    col_pos_feed_article_count, article_count,
 		                    col_pos_feed_retrieved, last_retrieved,
-		                    col_pos_feed_retention, retention_period,
+		                    col_pos_feed_retention_days, retention_period,
+		                    col_pos_feed_retrieve_limit_hrs, retrieve_limit_hrs,
 		                    col_pos_feed_webaddress, feed_url,
 		                    col_pos_stop);
 	}
@@ -398,9 +433,18 @@ layout_rss_tree_view (GtkWidget* rss_tree_view)
 		Column: Retention Period
 	*/
 	GtkCellRenderer* column_renderer_feed_retention_period = gtk_cell_renderer_text_new();
-	GtkTreeViewColumn* column_feed_retention_period = gtk_tree_view_column_new_with_attributes ("Retention",
-	        column_renderer_feed_retention_period, "text", col_pos_feed_retention, NULL);
+	GtkTreeViewColumn* column_feed_retention_period = gtk_tree_view_column_new_with_attributes ("Retention (days)",
+	        column_renderer_feed_retention_period, "text", col_pos_feed_retention_days, NULL);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (rss_tree_view), column_feed_retention_period);
+
+	/*
+		Column: Retrieve Limit
+	*/
+	GtkCellRenderer* column_renderer_feed_retrieve_limit_hrs = gtk_cell_renderer_text_new();
+	GtkTreeViewColumn* column_feed_retrieve_limit_hrs = gtk_tree_view_column_new_with_attributes ("Refresh (hrs)",
+	        column_renderer_feed_retrieve_limit_hrs, "text", col_pos_feed_retrieve_limit_hrs, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (rss_tree_view), column_feed_retrieve_limit_hrs);
+
 
 	/*
 		Column: Feed Url
@@ -414,6 +458,56 @@ layout_rss_tree_view (GtkWidget* rss_tree_view)
 		Populate tree
 	*/
 	gtk_tree_view_set_model (GTK_TREE_VIEW (rss_tree_view), GTK_TREE_MODEL (list_store));
+
+	return;
+}
+
+void
+rss_tree_view_selected (GtkTreeSelection* tree_selection, gpointer user_data)
+{
+	/*
+		GTK documentation says this will not work if the selection mode is GTK_SELECTION_MULTIPLE.
+	*/
+	GtkTreeModel* tree_model;
+	GtkTreeIter tree_iterator;
+
+	bool row_selected = gtk_tree_selection_get_selected (tree_selection, &tree_model, &tree_iterator);
+
+	if (row_selected) {
+		gchar* feed_name;
+		gchar* feed_url;
+		gchar* retrieve_limit_hrs;
+		gchar* retention_days;
+
+		gtk_tree_model_get (tree_model, &tree_iterator, col_pos_feed_name, &feed_name, -1);
+		gtk_tree_model_get (tree_model, &tree_iterator, col_pos_feed_webaddress, &feed_url, -1);
+		gtk_tree_model_get (tree_model, &tree_iterator, col_pos_feed_retrieve_limit_hrs, &retrieve_limit_hrs, -1);
+		gtk_tree_model_get (tree_model, &tree_iterator, col_pos_feed_retention_days, &retention_days, -1);
+
+		gtk_entry_set_text (GTK_ENTRY (feed_name_entry), feed_name);
+		gtk_entry_set_text (GTK_ENTRY (feed_url_entry), feed_url);
+		gtk_spin_button_set_value (GTK_SPIN_BUTTON (feed_refresh_interval), std::stoi (retrieve_limit_hrs));
+
+		std::string active_id;
+
+		if (retention_days == "-1") {
+			//Forever
+			active_id = "1";
+		} else if (retention_days == "1")
+			//1 day
+		{
+			active_id = "2";
+		} else if (retention_days == "7") {
+			//7 days
+			active_id = "3";
+		}
+
+		gboolean row_found = gtk_combo_box_set_active_id (GTK_COMBO_BOX (feed_retention_option), active_id.data());
+
+		if (row_found == false) {
+			gtk_combo_box_set_active_id (GTK_COMBO_BOX (feed_retention_option), "1");
+		}
+	}
 
 	return;
 }
