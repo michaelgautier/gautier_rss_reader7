@@ -28,9 +28,17 @@ static void
 layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_entry_layout_row2,
                             GtkWindow* win);
 
+namespace rss_ns = gautier_rss_data_read;
+
 /*
 	RSS Table
 */
+static int
+row_id_before = 0;
+
+static int
+row_id_now = 0;
+
 static int
 col_pos_feed_name = 0;
 
@@ -78,6 +86,18 @@ GtkWidget* delete_configuration_button;
 extern "C"
 void
 delete_configuration_click (GtkButton* button, gpointer user_data);
+
+/*
+	Reset Button
+*/
+GtkWidget* reset_configuration_button;
+
+extern "C"
+void
+reset_configuration_click (GtkButton* button, gpointer user_data);
+
+static void
+reset_data_entry();
 
 /*
 	Feed name/url
@@ -311,6 +331,15 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 	g_signal_connect (delete_configuration_button, "clicked", G_CALLBACK (delete_configuration_click), NULL);
 
 	/*
+		Reset
+	*/
+	reset_configuration_button = gtk_button_new_with_label ("Reset");
+	gtk_widget_set_sensitive (reset_configuration_button, true);
+
+	g_signal_connect (reset_configuration_button, "clicked", G_CALLBACK (reset_configuration_click), NULL);
+
+
+	/*
 		Layout and arrange
 	*/
 	gtk_container_add (GTK_CONTAINER (feed_entry_layout_row1), feed_name_label);
@@ -322,6 +351,7 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 	gtk_container_add (GTK_CONTAINER (feed_entry_layout_row1), feed_retention_option_label);
 	gtk_container_add (GTK_CONTAINER (feed_entry_layout_row1), feed_retention_option);
 
+	gtk_container_add (GTK_CONTAINER (feed_entry_layout_row2), reset_configuration_button);
 	gtk_container_add (GTK_CONTAINER (feed_entry_layout_row2), delete_configuration_button);
 	gtk_container_add (GTK_CONTAINER (feed_entry_layout_row2), update_configuration_button);
 
@@ -337,6 +367,33 @@ update_configuration_click (GtkButton* button, gpointer user_data)
 void
 delete_configuration_click (GtkButton* button, gpointer user_data)
 {
+	return;
+}
+
+void
+reset_configuration_click (GtkButton* button, gpointer user_data)
+{
+	gint row_count = gtk_tree_selection_count_selected_rows (rss_tree_selection_manager);
+
+	if (row_count > 0) {
+		gtk_tree_selection_unselect_all (rss_tree_selection_manager);
+	} else {
+		reset_data_entry();
+	}
+
+	return;
+}
+
+void
+reset_data_entry()
+{
+	gtk_entry_set_text (GTK_ENTRY (feed_name_entry), "");
+	gtk_entry_set_text (GTK_ENTRY (feed_url_entry), "");
+	gtk_spin_button_set_value (GTK_SPIN_BUTTON (feed_refresh_interval), 1);
+	gtk_combo_box_set_active_id (GTK_COMBO_BOX (feed_retention_option), "1");
+
+	gtk_widget_grab_focus (feed_name_entry);
+
 	return;
 }
 
@@ -360,7 +417,6 @@ layout_rss_tree_view (GtkWidget* rss_tree_view)
 	/*
 		Make a row for each feed/url
 	*/
-	namespace rss_ns = gautier_rss_data_read;
 	std::vector<rss_ns::rss_feed> feed_info;
 
 	/*
@@ -383,9 +439,20 @@ layout_rss_tree_view (GtkWidget* rss_tree_view)
 		gchar* feed_name = feed.feed_name.data();
 		gchar* article_count = std::string ("0").data();
 		gchar* last_retrieved = feed.last_retrieved.data();
-		gchar* retention_period = feed.retention_days.data();
 		gchar* retrieve_limit_hrs = feed.retrieve_limit_hrs.data();
 		gchar* feed_url = feed.feed_url.data();
+
+		std::string retention_period;
+
+		int retention_days = std::stoi (feed.retention_days);
+
+		if (retention_days == 1) {
+			retention_period = "1 days";
+		} else if (retention_days == 7) {
+			retention_period = "7 days";
+		} else {
+			retention_period = "Forever";
+		}
 
 		/*
 			Adds a new row in the Tree Model.
@@ -399,7 +466,7 @@ layout_rss_tree_view (GtkWidget* rss_tree_view)
 		                    col_pos_feed_name, feed_name,
 		                    col_pos_feed_article_count, article_count,
 		                    col_pos_feed_retrieved, last_retrieved,
-		                    col_pos_feed_retention_days, retention_period,
+		                    col_pos_feed_retention_days, retention_period.data(),
 		                    col_pos_feed_retrieve_limit_hrs, retrieve_limit_hrs,
 		                    col_pos_feed_webaddress, feed_url,
 		                    col_pos_stop);
@@ -473,6 +540,8 @@ rss_tree_view_selected (GtkTreeSelection* tree_selection, gpointer user_data)
 
 	bool row_selected = gtk_tree_selection_get_selected (tree_selection, &tree_model, &tree_iterator);
 
+	row_id_before = row_id_now;
+
 	if (row_selected) {
 		gchar* feed_name;
 		gchar* feed_url;
@@ -490,14 +559,14 @@ rss_tree_view_selected (GtkTreeSelection* tree_selection, gpointer user_data)
 
 		std::string active_id;
 
-		if (retention_days == "-1") {
+		if (retention_days == "Forever") {
 			//Forever
 			active_id = "1";
-		} else if (retention_days == "1")
+		} else if (retention_days == "1 days")
 			//1 day
 		{
 			active_id = "2";
-		} else if (retention_days == "7") {
+		} else if (retention_days == "7 days") {
 			//7 days
 			active_id = "3";
 		}
@@ -507,6 +576,22 @@ rss_tree_view_selected (GtkTreeSelection* tree_selection, gpointer user_data)
 		if (row_found == false) {
 			gtk_combo_box_set_active_id (GTK_COMBO_BOX (feed_retention_option), "1");
 		}
+
+		std::string rss_url = feed_url;
+
+		if (rss_url.empty()) {
+			row_id_now = 0;
+		} else {
+			std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
+
+			std::string row_id = rss_ns::get_row_id (db_file_name, rss_url);
+
+			if (row_id.empty() == false) {
+				row_id_now = std::stoi (row_id);
+			}
+		}
+	} else if (row_id_before > 0) {
+		reset_data_entry();
 	}
 
 	return;
