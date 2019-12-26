@@ -383,6 +383,9 @@ delete_configuration_click (GtkButton* button, gpointer user_data)
 
 		ns_write::delete_feed (db_file_name, rss_url);
 
+		row_id_before = 0;
+		row_id_now = 0;
+
 		gtk_list_store_clear (list_store);
 
 		populate_rss_tree_view (rss_tree_view);
