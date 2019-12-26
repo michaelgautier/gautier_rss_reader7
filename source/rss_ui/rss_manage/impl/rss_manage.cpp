@@ -387,6 +387,8 @@ reset_configuration_click (GtkButton* button, gpointer user_data)
 void
 reset_data_entry()
 {
+	gtk_widget_set_sensitive (delete_configuration_button, false);
+
 	gtk_entry_set_text (GTK_ENTRY (feed_name_entry), "");
 	gtk_entry_set_text (GTK_ENTRY (feed_url_entry), "");
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (feed_refresh_interval), 1);
@@ -538,9 +540,12 @@ rss_tree_view_selected (GtkTreeSelection* tree_selection, gpointer user_data)
 	GtkTreeModel* tree_model;
 	GtkTreeIter tree_iterator;
 
+	gtk_widget_set_sensitive (delete_configuration_button, false);
+
 	bool row_selected = gtk_tree_selection_get_selected (tree_selection, &tree_model, &tree_iterator);
 
 	row_id_before = row_id_now;
+	row_id_now = 0;
 
 	if (row_selected) {
 		gchar* feed_name;
@@ -593,6 +598,8 @@ rss_tree_view_selected (GtkTreeSelection* tree_selection, gpointer user_data)
 	} else if (row_id_before > 0) {
 		reset_data_entry();
 	}
+
+	gtk_widget_set_sensitive (delete_configuration_button, row_id_now > 0);
 
 	return;
 }
@@ -687,7 +694,6 @@ check_feed_keys (GtkEntryBuffer* feed_name_buffer, GtkEntryBuffer* feed_url_buff
 	enabled = (feed_name_length > 2 && feed_url_length > 6);
 
 	gtk_widget_set_sensitive (update_configuration_button, enabled);
-	gtk_widget_set_sensitive (delete_configuration_button, enabled);
 
 	return;
 }
