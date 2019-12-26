@@ -31,13 +31,69 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 static void
 layout_rss_tree_view (GtkWidget* rss_tree_view);
 
+/*
+	Update Button
+*/
+GtkWidget* update_configuration_button;
+
 extern "C"
 void
 update_configuration_click (GtkButton* button, gpointer user_data);
 
+/*
+	Delete Button
+*/
+GtkWidget* delete_configuration_button;
+
 extern "C"
 void
 delete_configuration_click (GtkButton* button, gpointer user_data);
+
+/*
+	Feed name/url
+*/
+GtkWidget* feed_name_entry;
+GtkWidget* feed_url_entry;
+
+/*
+	Feed Name Entry - Callbacks
+
+	These callbacks work together to "indicate"" a change has occurred.
+*/
+extern "C"
+void
+feed_name_preedit (GtkEntry* entry, gchar* preedit, gpointer user_data);
+
+extern "C"
+void
+feed_name_inserted (GtkEntryBuffer* buffer, guint position, gchar* chars, guint n_chars, gpointer user_data);
+
+extern "C"
+void
+feed_name_deleted (GtkEntryBuffer* buffer, guint position, guint n_chars, gpointer user_data);
+
+/*
+	Feed Url Entry - Callbacks
+
+	These callbacks work together to "indicate"" a change has occurred.
+*/
+extern "C"
+void
+feed_url_preedit (GtkEntry* entry, gchar* preedit, gpointer user_data);
+
+extern "C"
+void
+feed_url_inserted (GtkEntryBuffer* buffer, guint position, gchar* chars, guint n_chars, gpointer user_data);
+
+extern "C"
+void
+feed_url_deleted (GtkEntryBuffer* buffer, guint position, guint n_chars, gpointer user_data);
+
+/*
+	Validate feed name and url.
+*/
+static void
+check_feed_keys (GtkEntryBuffer* feed_name_buffer, GtkEntryBuffer* feed_url_buffer);
 
 void
 gautier_rss_win_rss_manage::show_dialog (GtkApplication* app, GtkWindow* parent, int window_width,
@@ -159,18 +215,28 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 	*/
 	GtkWidget* feed_name_label = gtk_label_new ("Feed name");
 
-	GtkWidget* feed_name_entry = gtk_entry_new();
+	feed_name_entry = gtk_entry_new();
 	gtk_entry_set_max_length (GTK_ENTRY (feed_name_entry), 100);
 	gtk_widget_set_size_request (feed_name_entry, 240, 24);
+	g_signal_connect (feed_name_entry, "preedit-changed", G_CALLBACK (feed_name_preedit), feed_name_entry);
+	g_signal_connect (gtk_entry_get_buffer (GTK_ENTRY (feed_name_entry)), "inserted-text",
+	                  G_CALLBACK (feed_name_inserted), feed_name_entry);
+	g_signal_connect (gtk_entry_get_buffer (GTK_ENTRY (feed_name_entry)), "deleted-text",
+	                  G_CALLBACK (feed_name_deleted), feed_name_entry);
 
 	/*
 		Feed url
 	*/
 	GtkWidget* feed_url_label = gtk_label_new ("Feed web address");
 
-	GtkWidget* feed_url_entry = gtk_entry_new();
+	feed_url_entry = gtk_entry_new();
 	gtk_entry_set_max_length (GTK_ENTRY (feed_url_entry), 512);
 	gtk_widget_set_size_request (feed_url_entry, 330, 24);
+	g_signal_connect (feed_url_entry, "preedit-changed", G_CALLBACK (feed_url_preedit), feed_url_entry);
+	g_signal_connect (gtk_entry_get_buffer (GTK_ENTRY (feed_url_entry)), "inserted-text",
+	                  G_CALLBACK (feed_url_inserted), feed_url_entry);
+	g_signal_connect (gtk_entry_get_buffer (GTK_ENTRY (feed_url_entry)), "deleted-text",
+	                  G_CALLBACK (feed_url_deleted), feed_url_entry);
 
 	/*
 		Feed refresh interval
@@ -194,13 +260,13 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 	/*
 		Insert/Update/Delete
 	*/
-	GtkWidget* update_configuration_button = gtk_button_new_with_label ("Update");
+	update_configuration_button = gtk_button_new_with_label ("Update");
 	/*Begin with the button disabled until a valid imput is made.*/
 	gtk_widget_set_sensitive (update_configuration_button, false);
 
 	g_signal_connect (update_configuration_button, "clicked", G_CALLBACK (update_configuration_click), NULL);
 
-	GtkWidget* delete_configuration_button = gtk_button_new_with_label ("delete");
+	delete_configuration_button = gtk_button_new_with_label ("delete");
 	gtk_widget_set_sensitive (delete_configuration_button, false);
 
 	g_signal_connect (delete_configuration_button, "clicked", G_CALLBACK (delete_configuration_click), NULL);
@@ -351,3 +417,99 @@ layout_rss_tree_view (GtkWidget* rss_tree_view)
 
 	return;
 }
+
+/*
+	Feed Name Entry - Callbacks
+
+	These callbacks work together to "indicate"" a change has occurred.
+*/
+void
+feed_name_preedit (GtkEntry* entry, gchar* preedit, gpointer user_data)
+{
+	GtkEntryBuffer* feed_name_buffer = gtk_entry_buffer_new (preedit, -1);
+	GtkEntryBuffer* feed_url_buffer = gtk_entry_get_buffer (GTK_ENTRY (feed_url_entry));
+
+	check_feed_keys (feed_name_buffer, feed_url_buffer);
+
+	return;
+}
+
+void
+feed_name_inserted (GtkEntryBuffer* buffer, guint position, gchar* chars, guint n_chars, gpointer user_data)
+{
+	GtkEntryBuffer* feed_name_buffer = buffer;
+	GtkEntryBuffer* feed_url_buffer = gtk_entry_get_buffer (GTK_ENTRY (feed_url_entry));
+
+	check_feed_keys (feed_name_buffer, feed_url_buffer);
+
+	return;
+}
+
+void
+feed_name_deleted (GtkEntryBuffer* buffer, guint position, guint n_chars, gpointer user_data)
+{
+	GtkEntryBuffer* feed_name_buffer = buffer;
+	GtkEntryBuffer* feed_url_buffer = gtk_entry_get_buffer (GTK_ENTRY (feed_url_entry));
+
+	check_feed_keys (feed_name_buffer, feed_url_buffer);
+
+	return;
+}
+
+/*
+	Feed Url Entry - Callbacks
+
+	These callbacks work together to "indicate"" a change has occurred.
+*/
+void
+feed_url_preedit (GtkEntry* entry, gchar* preedit, gpointer user_data)
+{
+	GtkEntryBuffer* feed_name_buffer = gtk_entry_get_buffer (GTK_ENTRY (feed_name_entry));
+	GtkEntryBuffer* feed_url_buffer = gtk_entry_buffer_new (preedit, -1);
+
+	check_feed_keys (feed_name_buffer, feed_url_buffer);
+
+	return;
+}
+
+void
+feed_url_inserted (GtkEntryBuffer* buffer, guint position, gchar* chars, guint n_chars, gpointer user_data)
+{
+	GtkEntryBuffer* feed_name_buffer = gtk_entry_get_buffer (GTK_ENTRY (feed_name_entry));
+	GtkEntryBuffer* feed_url_buffer = buffer;
+
+	check_feed_keys (feed_name_buffer, feed_url_buffer);
+
+	return;
+}
+
+void
+feed_url_deleted (GtkEntryBuffer* buffer, guint position, guint n_chars, gpointer user_data)
+{
+	GtkEntryBuffer* feed_name_buffer = gtk_entry_get_buffer (GTK_ENTRY (feed_name_entry));
+	GtkEntryBuffer* feed_url_buffer = buffer;
+
+	check_feed_keys (feed_name_buffer, feed_url_buffer);
+
+	return;
+}
+
+/*
+	Validate feed name and url.
+*/
+static void
+check_feed_keys (GtkEntryBuffer* feed_name_buffer, GtkEntryBuffer* feed_url_buffer)
+{
+	bool enabled = false;
+
+	gint feed_name_length = gtk_entry_buffer_get_length (feed_name_buffer);
+	gint feed_url_length = gtk_entry_buffer_get_length (feed_url_buffer);
+
+	enabled = (feed_name_length > 2 && feed_url_length > 6);
+
+	gtk_widget_set_sensitive (update_configuration_button, enabled);
+	gtk_widget_set_sensitive (delete_configuration_button, enabled);
+
+	return;
+}
+
