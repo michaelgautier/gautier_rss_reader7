@@ -74,6 +74,9 @@ layout_rss_tree_view (GtkWidget* rss_tree_view);
 static void
 populate_rss_tree_view (GtkWidget* rss_tree_view);
 
+static void
+select_rss_tree_row_by_rss_url (std::string rss_url);
+
 GtkWidget* rss_tree_view;
 GtkListStore* list_store;
 GtkTreeSelection* rss_tree_selection_manager;
@@ -411,6 +414,8 @@ update_configuration_click (GtkButton* button, gpointer user_data)
 
 		if (updated_row_id.empty() == false) {
 			populate_rss_tree_view (rss_tree_view);
+
+			select_rss_tree_row_by_rss_url (feed_url);
 		}
 	}
 
@@ -597,6 +602,32 @@ populate_rss_tree_view (GtkWidget* rss_tree_view)
 		                    col_pos_feed_retrieve_limit_hrs, retrieve_limit_hrs,
 		                    col_pos_feed_webaddress, feed_url,
 		                    col_pos_stop);
+	}
+
+	return;
+}
+
+void
+select_rss_tree_row_by_rss_url (std::string rss_url)
+{
+	GtkTreeModel* tree_model = gtk_tree_view_get_model (GTK_TREE_VIEW (rss_tree_view));
+
+	GtkTreeIter tree_iterator;
+
+	gtk_tree_model_get_iter_first (tree_model, &tree_iterator);
+
+	while (gtk_tree_model_iter_next (tree_model, &tree_iterator)) {
+		gchar* feed_url;
+
+		gtk_tree_model_get (tree_model, &tree_iterator, col_pos_feed_webaddress, &feed_url, -1);
+
+		std::string rss_url_now = feed_url;
+
+		if (feed_url == rss_url) {
+			gtk_tree_selection_select_iter (rss_tree_selection_manager, &tree_iterator);
+
+			break;
+		}
 	}
 
 	return;
