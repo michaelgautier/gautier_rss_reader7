@@ -42,6 +42,7 @@
 		<!--Additional linker flags -->
 		<ldflags>-std=c++17</ldflags>
 		<ldflags>-no-pie</ldflags>
+		<ldflags>-lpthread</ldflags>
 		<ldflags>`pkg-config gtk+-3.0 --libs`</ldflags>
 		<ldflags>`pkg-config sqlite3 --libs`</ldflags>
 		<ldflags>`pkg-config libcurl --libs`</ldflags>
