@@ -55,6 +55,37 @@ gautier_rss_data_read::get_feed (std::string db_file_name, std::string feed_name
 }
 
 void
+gautier_rss_data_read::get_feed_by_row_id (std::string db_file_name, std::string row_id, rss_feed& feed)
+{
+	namespace ns_db = gautier_rss_database;
+
+	sqlite3* db = NULL;
+	ns_db::open_db (db_file_name, &db);
+
+	ns_db::sql_rowset_type rows;
+	std::string sql_text =
+	    "SELECT feed_name, feed_url, last_retrieved, retrieve_limit_hrs, retention_days FROM feeds WHERE rowid = @row_id;";
+
+	ns_db::sql_parameter_list_type params = {
+		row_id
+	};
+
+	ns_db::process_sql (&db, sql_text, params, rows);
+
+	for (ns_db::sql_row_type row : rows) {
+		rss_feed feed_info;
+
+		create_feed_from_sql_row (row, feed_info);
+
+		feed = feed_info;
+	}
+
+	ns_db::close_db (&db);
+
+	return;
+}
+
+void
 gautier_rss_data_read::get_feed_names (std::string db_file_name, std::vector <rss_feed>& feed_names)
 {
 	namespace ns_db = gautier_rss_database;

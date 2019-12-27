@@ -113,6 +113,17 @@ gautier_rss_data_write::update_feed_config (std::string db_file_name,
         std::string retrieve_limit_hrs,
         std::string retention_days)
 {
+
+	namespace ns_read = gautier_rss_data_read;
+
+	ns_read::rss_feed feed;
+
+	ns_read::get_feed_by_row_id (db_file_name, row_id, feed);
+
+	if (feed.feed_name != feed_name) {
+		update_feed_config_related (db_file_name, feed.feed_name, feed_name);
+	}
+
 	namespace ns_db = gautier_rss_database;
 
 	std::string sql_text =
@@ -129,6 +140,41 @@ gautier_rss_data_write::update_feed_config (std::string db_file_name,
 		retrieve_limit_hrs,
 		retention_days,
 		row_id
+	};
+
+	sqlite3* db = NULL;
+
+	ns_db::open_db (db_file_name, &db);
+
+	ns_db::sql_rowset_type rows;
+
+	ns_db::process_sql (&db, sql_text, params, rows);
+
+	ns_db::close_db (&db);
+
+	return;
+}
+
+/*
+	RSS FEED CONFIGURATION - PART III
+
+	Fixes links to the feed configuration.
+*/
+void
+gautier_rss_data_write::update_feed_config_related (std::string db_file_name,
+        std::string feed_name_old,
+        std::string feed_name_new)
+{
+	namespace ns_db = gautier_rss_database;
+
+	std::string sql_text =
+	    "UPDATE feeds_articles SET\
+		feed_name = @feed_name_new\
+		WHERE feed_name = @feed_name_old";
+
+	ns_db::sql_parameter_list_type params = {
+		feed_name_new,
+		feed_name_old
 	};
 
 	sqlite3* db = NULL;

@@ -62,6 +62,14 @@ namespace gautier_rss_data_write {
 	                    std::string retention_days);
 
 	/*
+		RSS FEED CONFIGURATION - PART III
+
+		Fixes links to the feed configuration.
+	*/
+	void
+	update_feed_config_related (std::string db_file_name, std::string feed_name_old, std::string feed_name_new);
+
+	/*
 		RSS FEED REMOVAL
 
 		Removes an RSS feed.
