@@ -10,6 +10,15 @@ You should have received a copy of the GNU Lesser General Public License along w
 Author: Michael Gautier <michaelgautier.wordpress.com>
 */
 
+#include <iostream>
+#include <queue>
+#include <chrono>
+#include <thread>
+
+#include <ctime>
+#include <iomanip>
+#include <sstream>
+
 #include "rss_ui/application.hpp"
 #include "rss_ui/app_win/app_win.hpp"
 #include "rss_ui/app_win/article_header.hpp"
@@ -23,8 +32,17 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 #include <webkit2/webkit2.h>
 
-#include <iostream>
-#include <queue>
+/*
+	RSS Concurrent Modification
+*/
+static
+bool rss_mod_running = true;
+
+static
+std::thread thread_rss_mod;
+
+static void
+process_rss_modifications();
 
 /*
 	Signal response functions.
@@ -117,17 +135,21 @@ win = NULL;
 /*
 	Application GUI Entry Point. The program starts here.
 */
-void
-get_screen_dimensions (GtkWindow* window);
-
 extern "C"
 void
 window_size_allocate (GtkWidget* widget, GdkRectangle* allocation, gpointer user_data);
 
+extern "C"
 void
+window_destroy (GtkWidget* window, gpointer user_data);
+
+static void
+get_screen_dimensions (GtkWindow* window);
+
+static void
 set_window_attributes (GtkWidget* window, std::string title, int width, int height);
 
-void
+static void
 layout_rss_view (GtkWidget* layout_pane, GtkWidget* headlines_view, GtkWidget* article_frame);
 
 void
@@ -140,6 +162,7 @@ gautier_rss_win_main::create (
 	GtkWidget* window = gtk_application_window_new (application);
 
 	g_signal_connect (window, "size-allocate", G_CALLBACK (window_size_allocate), NULL);
+	g_signal_connect (window, "destroy", G_CALLBACK (window_destroy), NULL);
 
 	win = GTK_WINDOW (window);
 	get_screen_dimensions (win);
@@ -282,6 +305,12 @@ gautier_rss_win_main::create (
 	}
 
 	gtk_widget_show_all (window);
+
+	/*
+		RSS Modifications
+	*/
+
+	thread_rss_mod = std::thread (process_rss_modifications);
 
 	return;
 }
@@ -493,3 +522,37 @@ window_size_allocate (GtkWidget* widget, GdkRectangle* allocation, gpointer user
 
 	return;
 }
+
+void
+window_destroy (GtkWidget* window, gpointer user_data)
+{
+	rss_mod_running = false;
+
+	thread_rss_mod.join();
+
+	return;
+}
+
+static void
+process_rss_modifications()
+{
+	while (rss_mod_running) {
+		std::this_thread::sleep_for (std::chrono::seconds (1));
+
+		std::string datetime;
+		{
+			std::time_t result = std::time (nullptr);
+
+			std::stringstream strout;
+
+			strout << std::put_time (std::gmtime (&result), "%F %T") << std::ends;
+
+			datetime = strout.str();
+		}
+
+		std::cout << datetime << "\n";
+	}
+
+	return;
+}
+
