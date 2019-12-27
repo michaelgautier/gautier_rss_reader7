@@ -10,20 +10,26 @@ You should have received a copy of the GNU Lesser General Public License along w
 Author: Michael Gautier <michaelgautier.wordpress.com>
 */
 
-#ifndef michael_gautier_rss_win_rss_manage_h
-#define michael_gautier_rss_win_rss_manage_h
+#ifndef michael_gautier_rss_data_read_feed_mod_h
+#define michael_gautier_rss_data_read_feed_mod_h
 
-#include <gtk/gtk.h>
+#include <string>
 
-#include <queue>
+namespace gautier_rss_data_read {
+	enum class
+	rss_feed_mod_status
+	{
+		none,
+		remove,
+		change,
+		insert
+	};
 
-#include "rss_lib/rss/rss_feed_mod.hpp"
-
-namespace gautier_rss_win_rss_manage {
-	void
-	set_modification_queue (std::queue<gautier_rss_data_read::rss_feed_mod>* updates);
-
-	void
-	show_dialog (GtkApplication* app, GtkWindow* parent, int window_width, int window_height);
+	struct rss_feed_mod
+	{
+		public:
+			std::string feed_name;
+			rss_feed_mod_status status;
+	};
 }
 #endif

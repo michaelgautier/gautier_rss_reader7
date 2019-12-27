@@ -17,12 +17,14 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include "rss_ui/app_win/headlines_frame.hpp"
 
 #include "rss_lib/rss/rss_reader.hpp"
+#include "rss_lib/rss/rss_feed_mod.hpp"
 
 #include "rss_ui/rss_manage/rss_manage.hpp"
 
 #include <webkit2/webkit2.h>
 
 #include <iostream>
+#include <queue>
 
 /*
 	Signal response functions.
@@ -70,6 +72,9 @@ rss_operation_enum
 */
 static gautier_rss_data_read::rss_article
 _feed_data;
+
+static std::queue<gautier_rss_data_read::rss_feed_mod>
+feed_changes;
 
 /*
 	Session UI data.
@@ -453,6 +458,7 @@ void
 manage_feeds_click (GtkButton* button,
                     gpointer   user_data)
 {
+	gautier_rss_win_rss_manage::set_modification_queue (&feed_changes);
 	gautier_rss_win_rss_manage::show_dialog (NULL, win, window_width, window_height);
 
 	return;

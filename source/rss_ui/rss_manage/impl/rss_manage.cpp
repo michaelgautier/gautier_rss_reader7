@@ -10,6 +10,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 Author: Michael Gautier <michaelgautier.wordpress.com>
 */
 
+#include <iostream>
+
 #include "rss_ui/application.hpp"
 #include "rss_ui/rss_manage/rss_manage.hpp"
 
@@ -22,6 +24,9 @@ win = NULL;
 
 static GtkWindow*
 parent_win = NULL;
+
+static std::queue<gautier_rss_data_read::rss_feed_mod>*
+feed_changes;
 
 static void
 create_window (GtkApplication* app, GtkWindow* parent, int window_width, int window_height);
@@ -162,6 +167,14 @@ check_feed_keys (GtkEntryBuffer* feed_name_buffer, GtkEntryBuffer* feed_url_buff
 */
 GtkWidget* feed_refresh_interval;
 GtkWidget* feed_retention_option;
+
+void
+gautier_rss_win_rss_manage::set_modification_queue (std::queue<gautier_rss_data_read::rss_feed_mod>* updates)
+{
+	feed_changes = updates;
+
+	return;
+}
 
 void
 gautier_rss_win_rss_manage::show_dialog (GtkApplication* app, GtkWindow* parent, int window_width,
@@ -402,17 +415,69 @@ update_configuration_click (GtkButton* button, gpointer user_data)
 	}
 
 	if (feed_name.empty() == false && feed_url.empty() == false) {
+		bool changed = false;
+		bool added = false;
+
+		std::string existing_row_id = ns_read::get_row_id (db_file_name, feed_url);
+
 		if (row_id_now > 0) {
 			std::string row_id = std::to_string (row_id_now);
 
-			ns_write::update_feed_config (db_file_name, row_id, feed_name, feed_url, retrieve_limit_hrs, retention_days);
+			ns_read::rss_feed old_feed;
+
+			/*
+				Compare the existing database snapshot of the feed to the proposed changes.
+				Only update the database if there is a change.
+			*/
+			ns_read::get_feed_by_row_id (db_file_name, row_id, old_feed);
+
+			if (old_feed.feed_name != feed_name ||
+			        old_feed.feed_url != feed_url ||
+			        old_feed.retrieve_limit_hrs != retrieve_limit_hrs ||
+			        old_feed.retention_days != retention_days) {
+				changed = (existing_row_id.empty() == true || existing_row_id == row_id);
+			}
+
+			/*
+				Block duplicate feed url.
+				Existing_Row_Id can be empty if the url doesn't exist in the database.
+				Otherwise, it should be the same url.
+			*/
+			if (changed) {
+				ns_write::update_feed_config (db_file_name, row_id, feed_name, feed_url, retrieve_limit_hrs, retention_days);
+			} else {
+				std::cout << "EXISTING rss data changed. Failed update due to failed duplicate url check\n";
+			}
 		} else {
-			ns_write::set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
+			/*
+				Block duplicate feed url
+			*/
+			if (existing_row_id.empty() == true) {
+				ns_write::set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
+
+				changed = true;
+				added = true;
+			} else {
+				std::cout << "NEW rss data. Failed insert due to failed duplicate url check\n";
+			}
 		}
 
-		std::string updated_row_id = ns_read::get_row_id (db_file_name, feed_url);
+		existing_row_id = ns_read::get_row_id (db_file_name, feed_url);
 
-		if (updated_row_id.empty() == false) {
+		if (changed && existing_row_id.empty() == false) {
+			feed_changes->emplace (ns_read::rss_feed_mod());
+
+			ns_read::rss_feed_mod* modification = &feed_changes->back();
+
+			modification->status = ns_read::rss_feed_mod_status::none;
+			modification->feed_name = feed_name;
+
+			if (changed) {
+				modification->status = ns_read::rss_feed_mod_status::change;
+			} else if (added) {
+				modification->status = ns_read::rss_feed_mod_status::insert;
+			}
+
 			populate_rss_tree_view (rss_tree_view);
 
 			select_rss_tree_row_by_rss_url (feed_url);
@@ -428,13 +493,36 @@ delete_configuration_click (GtkButton* button, gpointer user_data)
 	if (row_id_now > 0) {
 		std::string db_file_name = ns_app::get_db_file_name();
 
-		std::string rss_url = gtk_entry_get_text (GTK_ENTRY (feed_url_entry));
+		ns_read::rss_feed feed;
 
-		ns_write::delete_feed (db_file_name, rss_url);
+		/*
+			Need the feed info as stored in the database.
+		*/
+		std::string row_id = std::to_string (row_id_now);
 
-		populate_rss_tree_view (rss_tree_view);
+		ns_read::get_feed_by_row_id (db_file_name, row_id, feed);
 
-		reset_data_entry();
+		ns_write::delete_feed (db_file_name, feed.feed_url);
+
+		/*
+			Make sure it is deleted before invalidating the UI.
+		*/
+		std::string existing_row_id = ns_read::get_row_id (db_file_name, feed.feed_url);
+
+		if (existing_row_id.empty() == true) {
+			feed_changes->emplace (ns_read::rss_feed_mod());
+
+			ns_read::rss_feed_mod* modification = &feed_changes->back();
+
+			modification->status = ns_read::rss_feed_mod_status::none;
+			modification->feed_name = feed.feed_name;
+
+			modification->status = ns_read::rss_feed_mod_status::remove;
+
+			populate_rss_tree_view (rss_tree_view);
+
+			reset_data_entry();
+		}
 	}
 
 	return;
