@@ -15,10 +15,6 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include <chrono>
 #include <thread>
 
-#include <ctime>
-#include <iomanip>
-#include <sstream>
-
 #include "rss_ui/application.hpp"
 #include "rss_ui/app_win/app_win.hpp"
 #include "rss_ui/app_win/article_header.hpp"
@@ -97,6 +93,9 @@ feed_changes;
 /*
 	Session UI data.
 */
+static GtkWidget*
+headlines_view = NULL;
+
 static GtkWidget*
 header_bar = NULL;
 
@@ -259,7 +258,7 @@ gautier_rss_win_main::create (
 	/*
 		RSS Headlines Tab
 	*/
-	GtkWidget* headlines_view = gtk_notebook_new();
+	headlines_view = gtk_notebook_new();
 	{
 		/*
 			Tab page switch signal. Show news headlines for the chosen tab.
@@ -539,9 +538,25 @@ process_rss_modifications()
 	while (rss_mod_running) {
 		std::this_thread::sleep_for (std::chrono::seconds (1));
 
+		//Keep this part until the code is finished. It gives us a reliable indicator that the background thread is still in operation.
 		std::string datetime = gautier_rss_data_read::get_current_date_time_utc();
 
 		std::cout << datetime << "\n";
+
+		gint page_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
+
+		std::cout << "Tab count: " << page_count << "\n";
+
+		for (int tab_i = 0; tab_i < page_count; tab_i++) {
+			GtkWidget* tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
+
+			const gchar* tab_text = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
+
+			std::string tab_label = tab_text;
+
+			std::cout << "\t\tTab " << tab_i << ": " << tab_label << "\n";
+		}
+
 	}
 
 	return;
