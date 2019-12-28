@@ -20,9 +20,6 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 static void
 create_feed_from_sql_row (gautier_rss_database::sql_row_type& row, gautier_rss_data_read::rss_feed& feed);
 
-static std::string
-get_current_date_time_utc();
-
 void
 gautier_rss_data_read::get_feed (std::string db_file_name, std::string feed_name, rss_feed& feed)
 {
@@ -327,8 +324,8 @@ gautier_rss_data_read::is_feed_stale (std::string db_file_name, std::string feed
 	return is_feed_stale;
 }
 
-static std::string
-get_current_date_time_utc()
+std::string
+gautier_rss_data_read::get_current_date_time_utc()
 {
 	/*
 		Gets the current date and time.

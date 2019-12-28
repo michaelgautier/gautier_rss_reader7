@@ -539,16 +539,7 @@ process_rss_modifications()
 	while (rss_mod_running) {
 		std::this_thread::sleep_for (std::chrono::seconds (1));
 
-		std::string datetime;
-		{
-			std::time_t result = std::time (nullptr);
-
-			std::stringstream strout;
-
-			strout << std::put_time (std::gmtime (&result), "%F %T") << std::ends;
-
-			datetime = strout.str();
-		}
+		std::string datetime = gautier_rss_data_read::get_current_date_time_utc();
 
 		std::cout << datetime << "\n";
 	}
