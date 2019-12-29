@@ -607,6 +607,19 @@ update_tab (ns_data_read::rss_feed_mod& modification)
 					break;
 
 				case ns_data_read::rss_feed_mod_status::change: {
+						std::string row_id = std::to_string (row_id_now);
+
+						ns_data_read::rss_feed old_feed;
+
+						/*
+							Use database snapshot to determine what has changed.
+						*/
+						ns_data_read::get_feed_by_row_id (db_file_name, row_id, old_feed);
+
+						if (old_feed.feed_name != feed_name) {
+							gtk_notebook_set_tab_label_text (GTK_NOTEBOOK (headlines_view), tab, feed_name.data());
+							/*Only changing name -- other changes will be cached to another queue and processed as appropriate.*/
+						}
 					}
 					break;
 			}
