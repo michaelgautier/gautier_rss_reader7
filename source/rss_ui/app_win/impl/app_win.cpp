@@ -552,9 +552,9 @@ process_rss_modifications()
 		while (change_count > 0) {
 			ns_data_read::rss_feed_mod modification = feed_changes.front();
 
-			feed_changes.pop();
-
 			update_tab (modification);
+
+			change_count = feed_changes.size();
 		}
 	}
 
@@ -564,8 +564,16 @@ process_rss_modifications()
 static void
 update_tab (ns_data_read::rss_feed_mod& modification)
 {
-	std::string feed_name = modification.feed_name;
 	ns_data_read::rss_feed_mod_status status = modification.status;
+
+	if (status == ns_data_read::rss_feed_mod_status::none) {
+		return;
+	} else {
+		feed_changes.pop();
+	}
+
+	std::string feed_name = modification.feed_name;
+	int row_id_now = modification.row_id;
 
 	bool is_insert = status == ns_data_read::rss_feed_mod_status::insert;
 
@@ -575,8 +583,6 @@ update_tab (ns_data_read::rss_feed_mod& modification)
 		ns::add_headline_page (headlines_view, feed_name);
 	} else {
 		gint page_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
-
-		std::cout << "Tab count: " << page_count << "\n";
 
 		GtkWidget* tab = NULL;
 		std::string tab_label;
@@ -590,8 +596,6 @@ update_tab (ns_data_read::rss_feed_mod& modification)
 			tab_label = tab_text;
 
 			if (feed_name == tab_label) {
-				std::cout << "\t\tModifying Tab " << tab_i << ": " << tab_label << "\n";
-
 				tab_n = tab_i;
 				break;
 			} else {
@@ -609,15 +613,19 @@ update_tab (ns_data_read::rss_feed_mod& modification)
 				case ns_data_read::rss_feed_mod_status::change: {
 						std::string row_id = std::to_string (row_id_now);
 
-						ns_data_read::rss_feed old_feed;
+						ns_data_read::rss_feed updated_feed;
 
 						/*
 							Use database snapshot to determine what has changed.
 						*/
-						ns_data_read::get_feed_by_row_id (db_file_name, row_id, old_feed);
+						std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
 
-						if (old_feed.feed_name != feed_name) {
-							gtk_notebook_set_tab_label_text (GTK_NOTEBOOK (headlines_view), tab, feed_name.data());
+						ns_data_read::get_feed_by_row_id (db_file_name, row_id, updated_feed);
+
+						std::string updated_feed_name = updated_feed.feed_name;
+
+						if (updated_feed_name != feed_name) {
+							gtk_notebook_set_tab_label_text (GTK_NOTEBOOK (headlines_view), tab, updated_feed_name.data());
 							/*Only changing name -- other changes will be cached to another queue and processed as appropriate.*/
 						}
 					}
