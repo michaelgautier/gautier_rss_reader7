@@ -25,6 +25,7 @@ namespace gautier_rss_data_read {
 			std::string last_retrieved;
 			std::string retrieve_limit_hrs;
 			std::string retention_days;
+			int article_count;
 	};
 }
 #endif
