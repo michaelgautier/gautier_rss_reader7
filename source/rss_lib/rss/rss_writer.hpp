@@ -115,6 +115,19 @@ namespace gautier_rss_data_write {
 	update_rss_feeds (std::string db_file_name);
 
 	/*
+		RSS FEED Retrieve Date
+
+		Controls how often a feed is updated.
+
+		*** Extremely important ***
+		Intended to prevent accessing a feed's website too often.
+
+		Sets the last_retrieved date.
+	*/
+	void
+	update_feed_retrieved (std::string db_file_name, std::string feed_url);
+
+	/*
 		RSS XML file to SQLite Db
 
 		Used during the development of RSS data transfer processing.

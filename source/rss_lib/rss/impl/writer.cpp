@@ -274,7 +274,6 @@ gautier_rss_data_write::set_feed_headline (std::string db_file_name,
 	return;
 }
 
-
 /*
 	Higher level routines
 
@@ -309,6 +308,44 @@ gautier_rss_data_write::update_rss_feeds (std::string db_file_name)
 
 		update_rss_db_from_network (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 	}
+
+	return;
+}
+
+/*
+	RSS FEED Retrieve Date
+
+	Controls how often a feed is updated.
+
+	*** Extremely important ***
+	Intended to prevent accessing a feed's website too often.
+
+	Sets the last_retrieved date.
+*/
+void
+gautier_rss_data_write::update_feed_retrieved (std::string db_file_name, std::string feed_url)
+{
+	namespace ns_db = gautier_rss_database;
+
+	std::string sql_text =
+	    "UPDATE feeds SET\
+		last_retrieved = @last_retrieved \
+		WHERE feed_url = @feed_url";
+
+	ns_db::sql_parameter_list_type params = {
+		gautier_rss_data_read::get_current_date_time_utc(),
+		feed_url
+	};
+
+	sqlite3* db = NULL;
+
+	ns_db::open_db (db_file_name, &db);
+
+	ns_db::sql_rowset_type rows;
+
+	ns_db::process_sql (&db, sql_text, params, rows);
+
+	ns_db::close_db (&db);
 
 	return;
 }
@@ -384,6 +421,8 @@ gautier_rss_data_write::update_rss_xml_from_network (std::string db_file_name,
 
 		ns_data::download_rss_feed (feed_url, feed_data);
 
+		update_feed_retrieved (db_file_name, feed_url);
+
 		ns_parse::save_feed_data_to_file (feed_name, ".xml", feed_data);
 	}
 
@@ -422,6 +461,8 @@ gautier_rss_data_write::update_rss_xml_db_from_network (std::string db_file_name
 		std::string feed_data;
 
 		ns_data::download_rss_feed (feed_url, feed_data);
+
+		update_feed_retrieved (db_file_name, feed_url);
 
 		ns_parse::save_feed_data_to_file (feed_name, ".xml", feed_data);
 
@@ -466,6 +507,8 @@ gautier_rss_data_write::update_rss_db_from_network (std::string db_file_name,
 		std::string feed_data;
 
 		ns_data::download_rss_feed (feed_url, feed_data);
+
+		update_feed_retrieved (db_file_name, feed_url);
 
 		std::vector<ns_data::rss_article> feed_lines;
 
