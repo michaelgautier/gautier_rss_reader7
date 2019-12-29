@@ -522,7 +522,7 @@ delete_configuration_click (GtkButton* button, gpointer user_data)
 
 			modification->status = ns_read::rss_feed_mod_status::none;
 			modification->feed_name = feed.feed_name;
-			modification->row_id = std::stoi (existing_row_id);
+			modification->row_id = -1;
 
 			modification->status = ns_read::rss_feed_mod_status::remove;
 
@@ -664,7 +664,7 @@ populate_rss_tree_view (GtkWidget* rss_tree_view)
 
 	for (ns_read::rss_feed feed : feed_info) {
 		gchar* feed_name = feed.feed_name.data();
-		gchar* article_count = std::string ("0").data();
+		gchar* article_count = std::to_string (feed.article_count).data();
 		gchar* last_retrieved = feed.last_retrieved.data();
 		gchar* retrieve_limit_hrs = feed.retrieve_limit_hrs.data();
 		gchar* feed_url = feed.feed_url.data();
