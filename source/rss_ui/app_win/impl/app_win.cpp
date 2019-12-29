@@ -22,6 +22,7 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include "rss_ui/app_win/headlines_frame.hpp"
 
 #include "rss_lib/rss/rss_reader.hpp"
+#include "rss_lib/rss/rss_writer.hpp"
 #include "rss_lib/rss/rss_feed_mod.hpp"
 
 #include "rss_ui/rss_manage/rss_manage.hpp"
@@ -29,6 +30,7 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include <webkit2/webkit2.h>
 
 namespace ns_data_read = gautier_rss_data_read;
+namespace ns_data_write = gautier_rss_data_write;
 
 /*
 	RSS Concurrent Modification
@@ -41,6 +43,12 @@ std::thread thread_rss_mod;
 
 static void
 process_rss_modifications();
+
+static
+std::thread thread_rss_update;
+
+static void
+process_feeds();
 
 static std::queue<ns_data_read::rss_feed_mod>
 feed_changes;
@@ -312,8 +320,12 @@ gautier_rss_win_main::create (
 	/*
 		RSS Modifications
 	*/
-
 	thread_rss_mod = std::thread (process_rss_modifications);
+
+	/*
+		RSS Updates
+	*/
+	thread_rss_update = std::thread (process_feeds);
 
 	return;
 }
@@ -532,6 +544,7 @@ window_destroy (GtkWidget* window, gpointer user_data)
 	rss_mod_running = false;
 
 	thread_rss_mod.join();
+	thread_rss_update.join();
 
 	return;
 }
@@ -545,7 +558,7 @@ process_rss_modifications()
 		//Keep this part until the code is finished. It gives us a reliable indicator that the background thread is still in operation.
 		std::string datetime = ns_data_read::get_current_date_time_utc();
 
-		std::cout << datetime << "\n";
+		std::cout << "RSS configuration update: \t" << datetime << "\n";
 
 		int change_count = feed_changes.size();
 
@@ -606,7 +619,7 @@ update_tab (ns_data_read::rss_feed_mod& modification)
 		if (tab_n > 0 && tab != NULL && tab_label.empty() == false && tab_label == feed_name) {
 			switch (status) {
 				case ns_data_read::rss_feed_mod_status::remove: {
-						gtk_notebook_remove_page (GTK_NOTEBOOK (headlines_view), tab_n);
+						gtk_widget_destroy (tab);
 					}
 					break;
 
@@ -631,6 +644,138 @@ update_tab (ns_data_read::rss_feed_mod& modification)
 					}
 					break;
 			}
+		}
+	}
+
+	return;
+}
+
+static void
+process_feeds()
+{
+	while (rss_mod_running) {
+		std::this_thread::sleep_for (std::chrono::seconds (4));
+
+		//Keep this part until the code is finished. It gives us a reliable indicator that the background thread is still in operation.
+		std::string datetime = ns_data_read::get_current_date_time_utc();
+
+		std::cout << "Feed download check: \t" << datetime << "\n";
+
+		std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
+
+		std::vector<ns_data_read::rss_feed> rss_feeds_old;
+		std::vector<ns_data_read::rss_feed> rss_feeds_new;
+		std::vector<ns_data_read::rss_feed> rss_feeds_out;
+
+		ns_data_read::get_feed_names (db_file_name, rss_feeds_old);
+
+		/*Automatically downloads feeds according to time limit for each feed.*/
+		ns_data_write::update_rss_feeds (db_file_name);
+
+		ns_data_read::get_feed_names (db_file_name, rss_feeds_new);
+
+		for (ns_data_read::rss_feed feed_new : rss_feeds_new) {
+			std::string feed_name = feed_new.feed_name;
+			std::string last_retrieved = feed_new.last_retrieved;
+			int article_count = feed_new.article_count;
+
+			for (ns_data_read::rss_feed feed_old : rss_feeds_old) {
+				std::string snapshot_feed_name = feed_old.feed_name;
+				std::string snapshot_last_retrieved = feed_old.last_retrieved;
+				int snapshot_article_count = feed_old.article_count;
+
+				bool match_found_name = feed_name == snapshot_feed_name;
+				bool match_not_found_last_retrieved = last_retrieved != snapshot_last_retrieved;
+				bool increased_article_count = article_count < snapshot_article_count;
+
+				if (match_found_name && match_not_found_last_retrieved && increased_article_count) {
+					rss_feeds_out.push_back (feed_new);
+
+					std::cout << "Feed data downloaded: " << feed_name << " with " << article_count << " articles\n";
+				}
+			}
+		}
+
+
+		/*
+			Feeds with new data.
+		*/
+		for (ns_data_read::rss_feed feed : rss_feeds_out) {
+			std::string feed_name = feed.feed_name;
+			std::string last_retrieved = feed.last_retrieved;
+			int article_count = feed.article_count;
+
+			/*
+				Tab Contents (in this case a scroll window containing a list box)
+
+				Tab > Scroll Window > List Box > individual labels (headlines)
+			*/
+			GtkWidget* tab = NULL;
+			{
+				std::string tab_label;
+				int tab_n = -1;
+
+				gint page_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
+
+				for (int tab_i = 0; tab_i < page_count; tab_i++) {
+					tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
+
+					const gchar* tab_text = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
+
+					tab_label = tab_text;
+
+					if (feed_name == tab_label) {
+						tab_n = tab_i;
+						break;
+					} else {
+						tab = NULL;
+					}
+				}
+			}
+
+			/*
+				Get the list box
+			*/
+			GtkWidget* list_box = NULL;
+			{
+				GtkScrolledWindow* scroll_win = GTK_SCROLLED_WINDOW (tab);
+
+				GtkBin* bin = GTK_BIN (scroll_win);
+
+				list_box = gtk_bin_get_child (bin);
+
+			}
+			/*
+				Populate list box.
+			*/
+			std::vector < std::string > headlines;
+
+			int headlines_count = 0;
+
+			/*
+				RSS headlines.
+			*/
+			gautier_rss_data_read::get_feed_headlines (db_file_name, feed_name, headlines);
+
+			headlines_count = headlines.size();
+
+			int article_i = article_count - headlines_count;
+
+			for (int i = article_i; i < article_count; i++) {
+				//Each line should be displayed in the order stored.
+				std::string headline_text = headlines.at (i);
+
+				GtkWidget* headline_label = gtk_label_new (headline_text.data());
+
+				gtk_label_set_selectable (GTK_LABEL (headline_label), false);
+				gtk_label_set_single_line_mode (GTK_LABEL (headline_label), true);
+				gtk_label_set_line_wrap (GTK_LABEL (headline_label), false);
+				gtk_widget_set_halign (headline_label, GTK_ALIGN_START);
+
+				gtk_list_box_insert (GTK_LIST_BOX (list_box), headline_label, i);
+			}
+
+			gtk_widget_show_all (tab);
 		}
 	}
 
