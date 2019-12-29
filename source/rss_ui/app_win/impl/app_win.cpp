@@ -28,6 +28,8 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 #include <webkit2/webkit2.h>
 
+namespace ns_data_read = gautier_rss_data_read;
+
 /*
 	RSS Concurrent Modification
 */
@@ -40,6 +42,11 @@ std::thread thread_rss_mod;
 static void
 process_rss_modifications();
 
+static std::queue<ns_data_read::rss_feed_mod>
+feed_changes;
+
+static void
+update_tab (ns_data_read::rss_feed_mod& modification);
 /*
 	Signal response functions.
 */
@@ -84,11 +91,8 @@ rss_operation_enum
 /*
 	Session data.
 */
-static gautier_rss_data_read::rss_article
+static ns_data_read::rss_article
 _feed_data;
-
-static std::queue<gautier_rss_data_read::rss_feed_mod>
-feed_changes;
 
 /*
 	Session UI data.
@@ -388,7 +392,7 @@ headline_view_switch_page (GtkNotebook* headlines_view,
 	/*
 		Clear feed data.
 	*/
-	gautier_rss_data_read::clear_feed_data_all (_feed_data);
+	ns_data_read::clear_feed_data_all (_feed_data);
 
 	gautier_rss_win_main_headlines_frame::switch_page (_feed_data, headlines_view, content,
 	        &connect_headline_list_box_select_row);
@@ -420,7 +424,7 @@ headline_view_select_row (GtkListBox*    list_box,
 	/*
 		Clear feed headline/article data.
 	*/
-	gautier_rss_data_read::clear_feed_data_keep_name (_feed_data);
+	ns_data_read::clear_feed_data_keep_name (_feed_data);
 
 	gautier_rss_win_main_headlines_frame::select_headline (_feed_data, headline_row);
 
@@ -435,7 +439,7 @@ headline_view_select_row (GtkListBox*    list_box,
 	{
 		GtkTextBuffer* text_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (article_summary));
 
-		bool indicates_html = gautier_rss_data_read::indicates_html (_feed_data.article_summary);
+		bool indicates_html = ns_data_read::indicates_html (_feed_data.article_summary);
 
 		if (_feed_data.article_summary.empty() == false && indicates_html == false) {
 			std::string article_summary = _feed_data.article_summary;
@@ -539,24 +543,74 @@ process_rss_modifications()
 		std::this_thread::sleep_for (std::chrono::seconds (1));
 
 		//Keep this part until the code is finished. It gives us a reliable indicator that the background thread is still in operation.
-		std::string datetime = gautier_rss_data_read::get_current_date_time_utc();
+		std::string datetime = ns_data_read::get_current_date_time_utc();
 
 		std::cout << datetime << "\n";
 
+		int change_count = feed_changes.size();
+
+		while (change_count > 0) {
+			ns_data_read::rss_feed_mod modification = feed_changes.front();
+
+			feed_changes.pop();
+
+			update_tab (modification);
+		}
+	}
+
+	return;
+}
+
+static void
+update_tab (ns_data_read::rss_feed_mod& modification)
+{
+	std::string feed_name = modification.feed_name;
+	ns_data_read::rss_feed_mod_status status = modification.status;
+
+	bool is_insert = status == ns_data_read::rss_feed_mod_status::insert;
+
+	if (is_insert) {
+		namespace ns = gautier_rss_win_main_headlines_frame;
+
+		ns::add_headline_page (headlines_view, feed_name);
+	} else {
 		gint page_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
 
 		std::cout << "Tab count: " << page_count << "\n";
 
+		GtkWidget* tab = NULL;
+		std::string tab_label;
+		int tab_n = -1;
+
 		for (int tab_i = 0; tab_i < page_count; tab_i++) {
-			GtkWidget* tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
+			tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
 
 			const gchar* tab_text = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
 
-			std::string tab_label = tab_text;
+			tab_label = tab_text;
 
-			std::cout << "\t\tTab " << tab_i << ": " << tab_label << "\n";
+			if (feed_name == tab_label) {
+				std::cout << "\t\tModifying Tab " << tab_i << ": " << tab_label << "\n";
+
+				tab_n = tab_i;
+				break;
+			} else {
+				tab = NULL;
+			}
 		}
 
+		if (tab_n > 0 && tab != NULL && tab_label.empty() == false && tab_label == feed_name) {
+			switch (status) {
+				case ns_data_read::rss_feed_mod_status::remove: {
+						gtk_notebook_remove_page (GTK_NOTEBOOK (headlines_view), tab_n);
+					}
+					break;
+
+				case ns_data_read::rss_feed_mod_status::change: {
+					}
+					break;
+			}
+		}
 	}
 
 	return;
