@@ -471,6 +471,7 @@ update_configuration_click (GtkButton* button, gpointer user_data)
 
 			modification->status = ns_read::rss_feed_mod_status::none;
 			modification->feed_name = feed_name;
+			modification->row_id = std::stoi (existing_row_id);
 
 			if (changed) {
 				modification->status = ns_read::rss_feed_mod_status::change;
@@ -516,6 +517,7 @@ delete_configuration_click (GtkButton* button, gpointer user_data)
 
 			modification->status = ns_read::rss_feed_mod_status::none;
 			modification->feed_name = feed.feed_name;
+			modification->row_id = std::stoi (existing_row_id);
 
 			modification->status = ns_read::rss_feed_mod_status::remove;
 
