@@ -36,6 +36,9 @@ namespace gautier_rss_data_read {
 	get_feed_article_summary (std::string db_file_name, std::string feed_name, std::string headline,
 	                          rss_article& article);
 
+	int
+	get_feed_headline_count (std::string db_file_name, std::string feed_name);
+
 	std::string
 	get_row_id (std::string db_file_name, std::string feed_url);
 

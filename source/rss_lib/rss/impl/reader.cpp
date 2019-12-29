@@ -30,7 +30,13 @@ gautier_rss_data_read::get_feed (std::string db_file_name, std::string feed_name
 
 	ns_db::sql_rowset_type rows;
 	std::string sql_text =
-	    "SELECT feed_name, feed_url, last_retrieved, retrieve_limit_hrs, retention_days FROM feeds WHERE feed_name = @feed_name;";
+	    "SELECT f.feed_name, f.feed_url, \
+		f.last_retrieved, f.retrieve_limit_hrs, f.retention_days, \
+		COUNT(*) AS article_count \
+		FROM feeds AS f \
+		LEFT OUTER JOIN feeds_articles AS fa ON f.feed_name = fa.feed_name \
+		WHERE f.feed_name = @feed_name \
+		GROUP BY f.feed_name, f.feed_url, f.last_retrieved, f.retrieve_limit_hrs, f.retention_days;";
 
 	ns_db::sql_parameter_list_type params = {
 		feed_name
@@ -61,7 +67,13 @@ gautier_rss_data_read::get_feed_by_row_id (std::string db_file_name, std::string
 
 	ns_db::sql_rowset_type rows;
 	std::string sql_text =
-	    "SELECT feed_name, feed_url, last_retrieved, retrieve_limit_hrs, retention_days FROM feeds WHERE rowid = @row_id;";
+	    "SELECT f.feed_name, f.feed_url, \
+		f.last_retrieved, f.retrieve_limit_hrs, f.retention_days, \
+		COUNT(*) AS article_count \
+		FROM feeds AS f \
+		LEFT OUTER JOIN feeds_articles AS fa ON f.feed_name = fa.feed_name \
+		WHERE f.rowid = @row_id \
+		GROUP BY f.feed_name, f.feed_url, f.last_retrieved, f.retrieve_limit_hrs, f.retention_days;";
 
 	ns_db::sql_parameter_list_type params = {
 		row_id
@@ -92,7 +104,12 @@ gautier_rss_data_read::get_feed_names (std::string db_file_name, std::vector <rs
 
 	ns_db::sql_rowset_type rows;
 	std::string sql_text =
-	    "SELECT feed_name, feed_url, last_retrieved, retrieve_limit_hrs, retention_days FROM feeds;";
+	    "SELECT f.feed_name, f.feed_url, \
+		f.last_retrieved, f.retrieve_limit_hrs, f.retention_days, \
+		COUNT(*) AS article_count \
+		FROM feeds AS f \
+		LEFT OUTER JOIN feeds_articles AS fa ON f.feed_name = fa.feed_name \
+		GROUP BY f.feed_name, f.feed_url, f.last_retrieved, f.retrieve_limit_hrs, f.retention_days;";
 
 	ns_db::sql_parameter_list_type params;
 
@@ -125,6 +142,8 @@ create_feed_from_sql_row (gautier_rss_database::sql_row_type& row, gautier_rss_d
 			feed.retrieve_limit_hrs = field.second;
 		} else if (field.first == "retention_days") {
 			feed.retention_days = field.second;
+		} else if (field.first == "article_count") {
+			feed.article_count = std::stoi (field.second);
 		}
 	}
 
@@ -141,7 +160,8 @@ gautier_rss_data_read::get_feed_headlines (std::string db_file_name, std::string
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;
-	std::string sql_text = "SELECT headline_text FROM feeds_articles WHERE feed_name = @feed_name";
+	std::string sql_text =
+	    "SELECT headline_text FROM feeds_articles WHERE feed_name = @feed_name ORDER BY rowid DESC;";
 
 	ns_db::sql_parameter_list_type params = {
 		feed_name
@@ -205,6 +225,38 @@ gautier_rss_data_read::get_feed_article_summary (std::string db_file_name, std::
 	ns_db::close_db (&db);
 
 	return;
+}
+
+int
+gautier_rss_data_read::get_feed_headline_count (std::string db_file_name, std::string feed_name)
+{
+	int size = 0;
+
+	namespace ns_db = gautier_rss_database;
+
+	sqlite3* db = NULL;
+	ns_db::open_db (db_file_name, &db);
+
+	ns_db::sql_rowset_type rows;
+	std::string sql_text = "SELECT count(*) as article_count FROM feeds_articles WHERE feed_name = @feed_name";
+
+	ns_db::sql_parameter_list_type params = {
+		feed_name
+	};
+
+	ns_db::process_sql (&db, sql_text, params, rows);
+
+	for (ns_db::sql_row_type row : rows) {
+		for (ns_db::sql_row_type::value_type field : row) {
+			if (field.first == "article_count") {
+				size = std::stoi (field.second);
+			}
+		}
+	}
+
+	ns_db::close_db (&db);
+
+	return size;
 }
 
 std::string
@@ -294,7 +346,7 @@ gautier_rss_data_read::get_time_difference_in_seconds (std::string date1, std::s
 bool
 gautier_rss_data_read::is_feed_stale (std::string db_file_name, std::string feed_name)
 {
-	bool is_feed_stale = false;
+	bool is_feed_stale = true;
 
 	rss_feed feed;
 
@@ -318,7 +370,7 @@ gautier_rss_data_read::is_feed_stale (std::string db_file_name, std::string feed
 		std::cout << "Elapsed minutes " << minutes_elapsed << "\n";
 		std::cout << "Elapsed seconds " << seconds_elapsed << "\n";
 
-		is_feed_stale = (hours_elapsed >= retrieve_limit_hrs);
+		is_feed_stale = (hours_elapsed <= retrieve_limit_hrs);
 	}
 
 	return is_feed_stale;
