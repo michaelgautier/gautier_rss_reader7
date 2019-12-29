@@ -391,6 +391,8 @@ update_configuration_click (GtkButton* button, gpointer user_data)
 	std::string feed_name = gtk_entry_get_text (GTK_ENTRY (feed_name_entry));
 	std::string feed_url = gtk_entry_get_text (GTK_ENTRY (feed_url_entry));
 
+	std::string old_feed_name = feed_name;
+
 	int retrieve_limit = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (feed_refresh_interval));
 
 	std::string retrieve_limit_hrs = std::to_string (retrieve_limit);
@@ -436,6 +438,8 @@ update_configuration_click (GtkButton* button, gpointer user_data)
 			        old_feed.retrieve_limit_hrs != retrieve_limit_hrs ||
 			        old_feed.retention_days != retention_days) {
 				changed = (existing_row_id.empty() == true || existing_row_id == row_id);
+
+				old_feed_name = old_feed.feed_name;
 			}
 
 			/*
@@ -474,6 +478,7 @@ update_configuration_click (GtkButton* button, gpointer user_data)
 			modification->row_id = std::stoi (existing_row_id);
 
 			if (changed) {
+				modification->feed_name = old_feed_name;
 				modification->status = ns_read::rss_feed_mod_status::change;
 			} else if (added) {
 				modification->status = ns_read::rss_feed_mod_status::insert;
