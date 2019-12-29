@@ -654,7 +654,7 @@ static void
 process_feeds()
 {
 	while (rss_mod_running) {
-		std::this_thread::sleep_for (std::chrono::seconds (4));
+		std::this_thread::sleep_for (std::chrono::seconds (3));
 
 		//Keep this part until the code is finished. It gives us a reliable indicator that the background thread is still in operation.
 		std::string datetime = ns_data_read::get_current_date_time_utc();
@@ -665,12 +665,24 @@ process_feeds()
 
 		std::vector<ns_data_read::rss_feed> rss_feeds_old;
 		std::vector<ns_data_read::rss_feed> rss_feeds_new;
-		std::vector<ns_data_read::rss_feed> rss_feeds_out;
+		std::vector<std::pair<ns_data_read::rss_feed, ns_data_read::rss_feed>> rss_feeds_out;
 
 		ns_data_read::get_feed_names (db_file_name, rss_feeds_old);
 
 		/*Automatically downloads feeds according to time limit for each feed.*/
 		ns_data_write::update_rss_feeds (db_file_name);
+
+		/*
+			Download simulation.
+
+			Uncomment the following to simulate network latency.
+			If the program thread is paused here, that allows time to inject data into the database to simulate new data download.
+				1)	INSERT INTO feeds_articles
+				2)	UPDATE feeds set last_retrieved = earlier date where feed_name corresponds to #1
+			Remember to comment the following lines before git check-in. Forgetting this however has not major negative impact.
+		*/
+		//std::cout << "Download simulation (8 seconds)\n";
+		//std::this_thread::sleep_for (std::chrono::seconds (8));
 
 		ns_data_read::get_feed_names (db_file_name, rss_feeds_new);
 
@@ -686,24 +698,27 @@ process_feeds()
 
 				bool match_found_name = feed_name == snapshot_feed_name;
 				bool match_not_found_last_retrieved = last_retrieved != snapshot_last_retrieved;
-				bool increased_article_count = article_count < snapshot_article_count;
+				bool increased_article_count = article_count > snapshot_article_count;
+
+				//std::cout << feed_name << " \t" << "match_found_name() && match_not_found_last_retrieved && increased_article_count" << "\n";
 
 				if (match_found_name && match_not_found_last_retrieved && increased_article_count) {
-					rss_feeds_out.push_back (feed_new);
+					rss_feeds_out.push_back (std::make_pair (feed_old, feed_new));
 
 					std::cout << "Feed data downloaded: " << feed_name << " with " << article_count << " articles\n";
 				}
 			}
 		}
 
-
 		/*
 			Feeds with new data.
 		*/
-		for (ns_data_read::rss_feed feed : rss_feeds_out) {
-			std::string feed_name = feed.feed_name;
-			std::string last_retrieved = feed.last_retrieved;
-			int article_count = feed.article_count;
+		for (std::pair<ns_data_read::rss_feed, ns_data_read::rss_feed> feed_pair : rss_feeds_out) {
+			ns_data_read::rss_feed feed_old = feed_pair.first;
+			ns_data_read::rss_feed feed_new = feed_pair.second;
+
+			std::string feed_name = feed_new.feed_name;
+			int article_count = feed_old.article_count;
 
 			/*
 				Tab Contents (in this case a scroll window containing a list box)
@@ -740,10 +755,9 @@ process_feeds()
 			{
 				GtkScrolledWindow* scroll_win = GTK_SCROLLED_WINDOW (tab);
 
-				GtkBin* bin = GTK_BIN (scroll_win);
+				GtkWidget* viewport = gtk_bin_get_child (GTK_BIN (scroll_win));
 
-				list_box = gtk_bin_get_child (bin);
-
+				list_box = gtk_bin_get_child (GTK_BIN (viewport));
 			}
 			/*
 				Populate list box.
@@ -759,9 +773,7 @@ process_feeds()
 
 			headlines_count = headlines.size();
 
-			int article_i = article_count - headlines_count;
-
-			for (int i = article_i; i < article_count; i++) {
+			for (int i = article_count; i < headlines_count; i++) {
 				//Each line should be displayed in the order stored.
 				std::string headline_text = headlines.at (i);
 
@@ -770,12 +782,32 @@ process_feeds()
 				gtk_label_set_selectable (GTK_LABEL (headline_label), false);
 				gtk_label_set_single_line_mode (GTK_LABEL (headline_label), true);
 				gtk_label_set_line_wrap (GTK_LABEL (headline_label), false);
+
 				gtk_widget_set_halign (headline_label, GTK_ALIGN_START);
 
 				gtk_list_box_insert (GTK_LIST_BOX (list_box), headline_label, i);
-			}
 
-			gtk_widget_show_all (tab);
+				gtk_widget_show (headline_label);
+
+				/*
+					Deals with a cache timing issue in GTK.
+
+					Arrived at this solution when I interleaved std::cout statements between each line in the loop.
+					I speculate this slows down this code chain long enough for GTK to complete CSS cache lookup.
+
+					If the loop runs at the normal speed of the CPU, the following error is generates:
+
+						Gtk:ERROR:gtkcssnode.c:319:lookup_in_global_parent_cache: assertion failed: (node->cache == NULL)
+						Bail out! Gtk:ERROR:gtkcssnode.c:319:lookup_in_global_parent_cache: assertion failed: (node->cache == NULL)
+
+					The error is unrecoverable from a UI display standpoint. Need a *durable* mitigation.
+
+					On a positive note, a useful side-effect is new lines are obvious when they appear in the list box.
+
+					Ultimately, the goal is to append to the list box minimizing impact to end-user selection.
+				*/
+				std::this_thread::sleep_for (std::chrono::milliseconds (88));
+			}
 		}
 	}
 
