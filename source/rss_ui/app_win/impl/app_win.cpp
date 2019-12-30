@@ -55,6 +55,12 @@ feed_changes;
 
 static void
 update_tab (ns_data_read::rss_feed_mod& modification);
+
+static
+void
+download_feed (std::string& db_file_name,
+               std::vector<std::pair<ns_data_read::rss_feed, ns_data_read::rss_feed>>& rss_feeds_out);
+
 /*
 	Signal response functions.
 */
@@ -667,52 +673,9 @@ process_feeds()
 
 		std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
 
-		std::vector<ns_data_read::rss_feed> rss_feeds_old;
-		std::vector<ns_data_read::rss_feed> rss_feeds_new;
 		std::vector<std::pair<ns_data_read::rss_feed, ns_data_read::rss_feed>> rss_feeds_out;
 
-		ns_data_read::get_feed_names (db_file_name, rss_feeds_old);
-
-		/*Automatically downloads feeds according to time limit for each feed.*/
-		ns_data_write::update_rss_feeds (db_file_name);
-
-		/*
-			Download simulation.
-
-			Uncomment the following to simulate network latency.
-			If the program thread is paused here, that allows time to inject data into the database to simulate new data download.
-				1)	INSERT INTO feeds_articles
-				2)	UPDATE feeds set last_retrieved = earlier date where feed_name corresponds to #1
-			Remember to comment the following lines before git check-in. Forgetting this however has not major negative impact.
-		*/
-		//std::cout << "Download simulation (8 seconds)\n";
-		//std::this_thread::sleep_for (std::chrono::seconds (8));
-
-		ns_data_read::get_feed_names (db_file_name, rss_feeds_new);
-
-		for (ns_data_read::rss_feed feed_new : rss_feeds_new) {
-			std::string feed_name = feed_new.feed_name;
-			std::string last_retrieved = feed_new.last_retrieved;
-			int article_count = feed_new.article_count;
-
-			for (ns_data_read::rss_feed feed_old : rss_feeds_old) {
-				std::string snapshot_feed_name = feed_old.feed_name;
-				std::string snapshot_last_retrieved = feed_old.last_retrieved;
-				int snapshot_article_count = feed_old.article_count;
-
-				bool match_found_name = feed_name == snapshot_feed_name;
-				bool match_not_found_last_retrieved = last_retrieved != snapshot_last_retrieved;
-				bool increased_article_count = article_count > snapshot_article_count;
-
-				//std::cout << feed_name << " \t" << "match_found_name() && match_not_found_last_retrieved && increased_article_count" << "\n";
-
-				if (match_found_name && match_not_found_last_retrieved && increased_article_count) {
-					rss_feeds_out.push_back (std::make_pair (feed_old, feed_new));
-
-					std::cout << "Feed data downloaded: " << feed_name << " with " << article_count << " articles\n";
-				}
-			}
-		}
+		download_feed (db_file_name, rss_feeds_out);
 
 		/*
 			Feeds with new data.
@@ -819,3 +782,57 @@ process_feeds()
 	return;
 }
 
+static
+void
+download_feed (std::string& db_file_name,
+               std::vector<std::pair<ns_data_read::rss_feed, ns_data_read::rss_feed>>& rss_feeds_out)
+{
+	std::vector<ns_data_read::rss_feed> rss_feeds_old;
+	std::vector<ns_data_read::rss_feed> rss_feeds_new;
+
+
+	ns_data_read::get_feed_names (db_file_name, rss_feeds_old);
+
+	/*Automatically downloads feeds according to time limit for each feed.*/
+	ns_data_write::update_rss_feeds (db_file_name);
+
+	/*
+		Download simulation.
+
+		Uncomment the following to simulate network latency.
+		If the program thread is paused here, that allows time to inject data into the database to simulate new data download.
+			1)	INSERT INTO feeds_articles
+			2)	UPDATE feeds set last_retrieved = earlier date where feed_name corresponds to #1
+		Remember to comment the following lines before git check-in. Forgetting this however has not major negative impact.
+	*/
+	//std::cout << "Download simulation (8 seconds)\n";
+	//std::this_thread::sleep_for (std::chrono::seconds (8));
+
+	ns_data_read::get_feed_names (db_file_name, rss_feeds_new);
+
+	for (ns_data_read::rss_feed feed_new : rss_feeds_new) {
+		std::string feed_name = feed_new.feed_name;
+		std::string last_retrieved = feed_new.last_retrieved;
+		int article_count = feed_new.article_count;
+
+		for (ns_data_read::rss_feed feed_old : rss_feeds_old) {
+			std::string snapshot_feed_name = feed_old.feed_name;
+			std::string snapshot_last_retrieved = feed_old.last_retrieved;
+			int snapshot_article_count = feed_old.article_count;
+
+			bool match_found_name = feed_name == snapshot_feed_name;
+			bool match_not_found_last_retrieved = last_retrieved != snapshot_last_retrieved;
+			bool increased_article_count = article_count > snapshot_article_count;
+
+			//std::cout << feed_name << " \t" << "match_found_name() && match_not_found_last_retrieved && increased_article_count" << "\n";
+
+			if (match_found_name && match_not_found_last_retrieved && increased_article_count) {
+				rss_feeds_out.push_back (std::make_pair (feed_old, feed_new));
+
+				std::cout << "Feed data downloaded: " << feed_name << " with " << article_count << " articles\n";
+			}
+		}
+	}
+
+	return;
+}
