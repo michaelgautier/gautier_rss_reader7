@@ -10,16 +10,21 @@ You should have received a copy of the GNU Lesser General Public License along w
 Author: Michael Gautier <michaelgautier.wordpress.com>
 */
 
+#include <iostream>
+#include <thread>
+
 #include "rss_lib/db/db.hpp"
 
 #include "rss_lib/rss_download/feed_download.hpp"
 
 #include "rss_lib/rss_parse/feed_parse.hpp"
 
-#include "rss_lib/rss/rss_article.hpp"
-#include "rss_lib/rss/rss_feed.hpp"
 #include "rss_lib/rss/rss_reader.hpp"
 #include "rss_lib/rss/rss_writer.hpp"
+
+namespace ns_data_read = gautier_rss_data_read;
+namespace ns_db = gautier_rss_database;
+namespace ns_parse = gautier_rss_data_parse;
 
 /*
 	REQUIRED!
@@ -39,8 +44,6 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 void
 gautier_rss_data_write::initialize_db (std::string db_file_name)
 {
-	namespace ns_db = gautier_rss_database;
-
 	sqlite3* db = NULL;
 	ns_db::open_db (db_file_name, &db);
 
@@ -72,8 +75,6 @@ gautier_rss_data_write::set_feed_config (std::string db_file_name,
         std::string retrieve_limit_hrs,
         std::string retention_days)
 {
-	namespace ns_db = gautier_rss_database;
-
 	std::string sql_text =
 	    "INSERT INTO feeds (feed_name, feed_url, last_retrieved, retrieve_limit_hrs, retention_days)\
 		SELECT @feed_name, @feed_url, datetime(), @retrieve_limit_hrs, @retention_days\
@@ -113,18 +114,13 @@ gautier_rss_data_write::update_feed_config (std::string db_file_name,
         std::string retrieve_limit_hrs,
         std::string retention_days)
 {
+	ns_data_read::rss_feed feed;
 
-	namespace ns_read = gautier_rss_data_read;
-
-	ns_read::rss_feed feed;
-
-	ns_read::get_feed_by_row_id (db_file_name, row_id, feed);
+	ns_data_read::get_feed_by_row_id (db_file_name, row_id, feed);
 
 	if (feed.feed_name != feed_name) {
 		update_feed_config_related (db_file_name, feed.feed_name, feed_name);
 	}
-
-	namespace ns_db = gautier_rss_database;
 
 	std::string sql_text =
 	    "UPDATE feeds SET\
@@ -165,8 +161,6 @@ gautier_rss_data_write::update_feed_config_related (std::string db_file_name,
         std::string feed_name_old,
         std::string feed_name_new)
 {
-	namespace ns_db = gautier_rss_database;
-
 	std::string sql_text =
 	    "UPDATE feeds_articles SET\
 		feed_name = @feed_name_new\
@@ -213,8 +207,6 @@ void
 gautier_rss_data_write::delete_feed (std::string db_file_name,
                                      std::string feed_url)
 {
-	namespace ns_db = gautier_rss_database;
-
 	std::string sql_text =
 	    "DELETE FROM feeds\
 		WHERE feed_url = @feed_url";
@@ -244,8 +236,6 @@ void
 gautier_rss_data_write::set_feed_headline (std::string db_file_name,
         gautier_rss_data_read::rss_article& article)
 {
-	namespace ns_db = gautier_rss_database;
-
 	std::string sql_text =
 	    "INSERT INTO feeds_articles (feed_name, headline_text, article_summary, article_text, article_date, article_url)\
 		SELECT @feed_name, @headline_text, @article_summary, @article_text, @article_date, @feed_url\
@@ -292,21 +282,78 @@ gautier_rss_data_write::set_feed_headline (std::string db_file_name,
 void
 gautier_rss_data_write::update_rss_feeds (std::string db_file_name)
 {
-	namespace ns_parse = gautier_rss_data_parse;
+	std::vector<ns_data_read::rss_feed> rss_feeds;
 
-	namespace ns_data = gautier_rss_data_read;
+	ns_data_read::get_feed_names (db_file_name, rss_feeds);
 
-	std::vector<ns_data::rss_feed> rss_feeds;
-
-	ns_data::get_feed_names (db_file_name, rss_feeds);
-
-	for (ns_data::rss_feed feed : rss_feeds) {
+	for (ns_data_read::rss_feed feed : rss_feeds) {
 		std::string feed_name = feed.feed_name;
 		std::string feed_url = feed.feed_url;
 		std::string retrieve_limit_hrs = feed.retrieve_limit_hrs;
 		std::string retention_days = feed.retention_days;
 
 		update_rss_db_from_network (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
+	}
+
+	return;
+}
+
+/*
+	Primary RSS function, application-level.
+
+	Uses the get_feed_info update_rss_feeds functions to create a before and after snapshot.
+	The before and after snapshot is used to create a list containing only feeds that changed
+	since the last download. That way, the application only has to deal with modifications
+	instead of reprocessing all lines.
+
+	Pass 0 to pause_interval_in_seconds unless you want a pause before download occurs.
+*/
+void
+gautier_rss_data_write::download_feeds (std::string& db_file_name, int pause_interval_in_seconds,
+                                       std::vector<std::pair<ns_data_read::rss_feed, ns_data_read::rss_feed>>& changed_feeds)
+{
+	std::vector<ns_data_read::rss_feed> rss_feeds_old;
+	std::vector<ns_data_read::rss_feed> rss_feeds_new;
+
+
+	ns_data_read::get_feed_names (db_file_name, rss_feeds_old);
+
+	/*Automatically downloads feeds according to time limit for each feed.*/
+	update_rss_feeds (db_file_name);
+
+	/*
+		Pause before download.
+		-----------------------------------------------------------------
+		Details:	d37564a59e58a324e0e02d03d76b4166c4120ed4
+		Command:	git show d37564a59e58a324e0e02d03d76b4166c4120ed4
+	*/
+	if (pause_interval_in_seconds > 0 && pause_interval_in_seconds < 121) {
+		std::cout << "PAUSE BEFORE DOWNLOAD (" << pause_interval_in_seconds << " seconds)\n";
+		std::this_thread::sleep_for (std::chrono::seconds (pause_interval_in_seconds));
+	}
+
+	ns_data_read::get_feed_names (db_file_name, rss_feeds_new);
+
+	for (ns_data_read::rss_feed feed_new : rss_feeds_new) {
+		std::string feed_name = feed_new.feed_name;
+		std::string last_retrieved = feed_new.last_retrieved;
+		int article_count = feed_new.article_count;
+
+		for (ns_data_read::rss_feed feed_old : rss_feeds_old) {
+			std::string snapshot_feed_name = feed_old.feed_name;
+			std::string snapshot_last_retrieved = feed_old.last_retrieved;
+			int snapshot_article_count = feed_old.article_count;
+
+			bool match_found_name = feed_name == snapshot_feed_name;
+			bool match_not_found_last_retrieved = last_retrieved != snapshot_last_retrieved;
+			bool increased_article_count = article_count > snapshot_article_count;
+
+			if (match_found_name && match_not_found_last_retrieved && increased_article_count) {
+				changed_feeds.push_back (std::make_pair (feed_old, feed_new));
+
+				std::cout << "Feed data downloaded: " << feed_name << " with " << article_count << " articles\n";
+			}
+		}
 	}
 
 	return;
@@ -325,8 +372,6 @@ gautier_rss_data_write::update_rss_feeds (std::string db_file_name)
 void
 gautier_rss_data_write::update_feed_retrieved (std::string db_file_name, std::string feed_url)
 {
-	namespace ns_db = gautier_rss_database;
-
 	std::string sql_text =
 	    "UPDATE feeds SET\
 		last_retrieved = @last_retrieved \
@@ -368,21 +413,17 @@ gautier_rss_data_write::update_rss_db_from_rss_xml (std::string db_file_name,
         std::string retrieve_limit_hrs,
         std::string retention_days)
 {
-	namespace ns_parse = gautier_rss_data_parse;
-
-	namespace ns_data = gautier_rss_data_read;
-
 	set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
 	std::string feed_data;
 
 	ns_parse::get_feed_data_from_file (feed_name, ".xml", feed_data);
 
-	std::vector<ns_data::rss_article> feed_lines;
+	std::vector<ns_data_read::rss_article> feed_lines;
 
 	ns_parse::get_feed_lines (feed_data, feed_lines);
 
-	for (ns_data::rss_article article : feed_lines) {
+	for (ns_data_read::rss_article article : feed_lines) {
 		article.feed_name = feed_name;
 
 		set_feed_headline (db_file_name, article);
@@ -408,10 +449,6 @@ gautier_rss_data_write::update_rss_xml_from_network (std::string db_file_name,
         std::string retrieve_limit_hrs,
         std::string retention_days)
 {
-	namespace ns_parse = gautier_rss_data_parse;
-
-	namespace ns_data = gautier_rss_data_read;
-
 	set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
 	bool is_stale = gautier_rss_data_read::is_feed_stale (db_file_name, feed_name);
@@ -419,7 +456,7 @@ gautier_rss_data_write::update_rss_xml_from_network (std::string db_file_name,
 	if (is_stale == false) {
 		std::string feed_data;
 
-		ns_data::download_rss_feed (feed_url, feed_data);
+		ns_data_read::download_rss_feed (feed_url, feed_data);
 
 		update_feed_retrieved (db_file_name, feed_url);
 
@@ -449,10 +486,6 @@ gautier_rss_data_write::update_rss_xml_db_from_network (std::string db_file_name
         std::string retrieve_limit_hrs,
         std::string retention_days)
 {
-	namespace ns_parse = gautier_rss_data_parse;
-
-	namespace ns_data = gautier_rss_data_read;
-
 	set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
 	bool is_stale = gautier_rss_data_read::is_feed_stale (db_file_name, feed_name);
@@ -460,17 +493,17 @@ gautier_rss_data_write::update_rss_xml_db_from_network (std::string db_file_name
 	if (is_stale == false) {
 		std::string feed_data;
 
-		ns_data::download_rss_feed (feed_url, feed_data);
+		ns_data_read::download_rss_feed (feed_url, feed_data);
 
 		update_feed_retrieved (db_file_name, feed_url);
 
 		ns_parse::save_feed_data_to_file (feed_name, ".xml", feed_data);
 
-		std::vector<ns_data::rss_article> feed_lines;
+		std::vector<ns_data_read::rss_article> feed_lines;
 
 		ns_parse::get_feed_lines (feed_data, feed_lines);
 
-		for (ns_data::rss_article article : feed_lines) {
+		for (ns_data_read::rss_article article : feed_lines) {
 			article.feed_name = feed_name;
 
 			set_feed_headline (db_file_name, article);
@@ -495,10 +528,6 @@ gautier_rss_data_write::update_rss_db_from_network (std::string db_file_name,
         std::string retrieve_limit_hrs,
         std::string retention_days)
 {
-	namespace ns_parse = gautier_rss_data_parse;
-
-	namespace ns_data = gautier_rss_data_read;
-
 	set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
 	bool is_stale = gautier_rss_data_read::is_feed_stale (db_file_name, feed_name);
@@ -506,15 +535,15 @@ gautier_rss_data_write::update_rss_db_from_network (std::string db_file_name,
 	if (is_stale == false) {
 		std::string feed_data;
 
-		ns_data::download_rss_feed (feed_url, feed_data);
+		ns_data_read::download_rss_feed (feed_url, feed_data);
 
 		update_feed_retrieved (db_file_name, feed_url);
 
-		std::vector<ns_data::rss_article> feed_lines;
+		std::vector<ns_data_read::rss_article> feed_lines;
 
 		ns_parse::get_feed_lines (feed_data, feed_lines);
 
-		for (ns_data::rss_article article : feed_lines) {
+		for (ns_data_read::rss_article article : feed_lines) {
 			article.feed_name = feed_name;
 
 			set_feed_headline (db_file_name, article);

@@ -14,8 +14,10 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #define michael_gautier_rss_data_write_api_h
 
 #include <string>
+#include <vector>
 
 #include "rss_article.hpp"
+#include "rss_lib/rss/rss_feed.hpp"
 
 namespace gautier_rss_data_write {
 	/*
@@ -113,6 +115,20 @@ namespace gautier_rss_data_write {
 	*/
 	void
 	update_rss_feeds (std::string db_file_name);
+
+	/*
+		Primary RSS function, application-level.
+
+		Uses the get_feed_info update_rss_feeds functions to create a before and after snapshot.
+		The before and after snapshot is used to create a list containing only feeds that changed
+		since the last download. That way, the application only has to deal with modifications
+		instead of reprocessing all lines.
+
+		Pass 0 to pause_interval_in_seconds unless you want a pause before download occurs.
+	*/
+	void
+	download_feeds (std::string& db_file_name, int pause_interval_in_seconds,
+	                std::vector<std::pair<gautier_rss_data_read::rss_feed, gautier_rss_data_read::rss_feed>>& changed_feeds);
 
 	/*
 		RSS FEED Retrieve Date
