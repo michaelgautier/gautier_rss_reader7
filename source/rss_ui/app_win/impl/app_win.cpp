@@ -59,8 +59,9 @@ update_tab (ns_data_read::rss_feed_mod& modification);
 static
 void
 download_feed (std::string& db_file_name,
-               std::vector<std::pair<ns_data_read::rss_feed, ns_data_read::rss_feed>>& rss_feeds_out);
+               std::vector<std::pair<ns_data_read::rss_feed, ns_data_read::rss_feed>>& changed_feeds);
 
+/*Do not set to true unless testing.*/
 static
 bool pre_download_pause_enabled = false;
 
@@ -676,14 +677,27 @@ process_feeds()
 
 		std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
 
-		std::vector<std::pair<ns_data_read::rss_feed, ns_data_read::rss_feed>> rss_feeds_out;
+		int pause_interval_in_seconds = 0;
 
-		download_feed (db_file_name, rss_feeds_out);
+		if (pre_download_pause_enabled) {
+			/*
+				Pause before download.
+				-----------------------------------------------------------------
+				Details:	d37564a59e58a324e0e02d03d76b4166c4120ed4
+				Command:	git show d37564a59e58a324e0e02d03d76b4166c4120ed4
+			*/
+
+			pause_interval_in_seconds = 8;
+		}
+
+		std::vector<std::pair<ns_data_read::rss_feed, ns_data_read::rss_feed>> changed_feeds;
+
+		ns_data_write::download_feeds (db_file_name, pause_interval_in_seconds, changed_feeds);
 
 		/*
 			Feeds with new data.
 		*/
-		for (std::pair<ns_data_read::rss_feed, ns_data_read::rss_feed> feed_pair : rss_feeds_out) {
+		for (std::pair<ns_data_read::rss_feed, ns_data_read::rss_feed> feed_pair : changed_feeds) {
 			ns_data_read::rss_feed feed_old = feed_pair.first;
 			ns_data_read::rss_feed feed_new = feed_pair.second;
 
@@ -785,56 +799,3 @@ process_feeds()
 	return;
 }
 
-static
-void
-download_feed (std::string& db_file_name,
-               std::vector<std::pair<ns_data_read::rss_feed, ns_data_read::rss_feed>>& rss_feeds_out)
-{
-	std::vector<ns_data_read::rss_feed> rss_feeds_old;
-	std::vector<ns_data_read::rss_feed> rss_feeds_new;
-
-
-	ns_data_read::get_feed_names (db_file_name, rss_feeds_old);
-
-	/*Automatically downloads feeds according to time limit for each feed.*/
-	ns_data_write::update_rss_feeds (db_file_name);
-
-	/*
-		Pause before download.
-		-----------------------------------------------------------------
-		Details:	d37564a59e58a324e0e02d03d76b4166c4120ed4
-		Command:	git show d37564a59e58a324e0e02d03d76b4166c4120ed4
-	*/
-	if (pre_download_pause_enabled) {
-		std::cout << "PAUSE BEFORE DOWNLOAD (8 seconds)\n";
-		std::this_thread::sleep_for (std::chrono::seconds (8));
-	}
-
-	ns_data_read::get_feed_names (db_file_name, rss_feeds_new);
-
-	for (ns_data_read::rss_feed feed_new : rss_feeds_new) {
-		std::string feed_name = feed_new.feed_name;
-		std::string last_retrieved = feed_new.last_retrieved;
-		int article_count = feed_new.article_count;
-
-		for (ns_data_read::rss_feed feed_old : rss_feeds_old) {
-			std::string snapshot_feed_name = feed_old.feed_name;
-			std::string snapshot_last_retrieved = feed_old.last_retrieved;
-			int snapshot_article_count = feed_old.article_count;
-
-			bool match_found_name = feed_name == snapshot_feed_name;
-			bool match_not_found_last_retrieved = last_retrieved != snapshot_last_retrieved;
-			bool increased_article_count = article_count > snapshot_article_count;
-
-			//std::cout << feed_name << " \t" << "match_found_name() && match_not_found_last_retrieved && increased_article_count" << "\n";
-
-			if (match_found_name && match_not_found_last_retrieved && increased_article_count) {
-				rss_feeds_out.push_back (std::make_pair (feed_old, feed_new));
-
-				std::cout << "Feed data downloaded: " << feed_name << " with " << article_count << " articles\n";
-			}
-		}
-	}
-
-	return;
-}
