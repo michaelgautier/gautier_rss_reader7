@@ -61,6 +61,9 @@ void
 download_feed (std::string& db_file_name,
                std::vector<std::pair<ns_data_read::rss_feed, ns_data_read::rss_feed>>& rss_feeds_out);
 
+static
+bool pre_download_pause_enabled = false;
+
 /*
 	Signal response functions.
 */
@@ -797,16 +800,15 @@ download_feed (std::string& db_file_name,
 	ns_data_write::update_rss_feeds (db_file_name);
 
 	/*
-		Download simulation.
-
-		Uncomment the following to simulate network latency.
-		If the program thread is paused here, that allows time to inject data into the database to simulate new data download.
-			1)	INSERT INTO feeds_articles
-			2)	UPDATE feeds set last_retrieved = earlier date where feed_name corresponds to #1
-		Remember to comment the following lines before git check-in. Forgetting this however has not major negative impact.
+		Pause before download.
+		-----------------------------------------------------------------
+		Details:	d37564a59e58a324e0e02d03d76b4166c4120ed4
+		Command:	git show d37564a59e58a324e0e02d03d76b4166c4120ed4
 	*/
-	//std::cout << "Download simulation (8 seconds)\n";
-	//std::this_thread::sleep_for (std::chrono::seconds (8));
+	if (pre_download_pause_enabled) {
+		std::cout << "PAUSE BEFORE DOWNLOAD (8 seconds)\n";
+		std::this_thread::sleep_for (std::chrono::seconds (8));
+	}
 
 	ns_data_read::get_feed_names (db_file_name, rss_feeds_new);
 
