@@ -604,6 +604,10 @@ update_tab (ns_data_read::rss_feed_mod& modification)
 		for (int tab_i = 0; tab_i < page_count; tab_i++) {
 			tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
 
+			if (tab == NULL) {
+				continue;
+			}
+
 			const gchar* tab_text = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
 
 			tab_label = tab_text;
@@ -748,6 +752,10 @@ process_feeds()
 				}
 			}
 
+			if (tab == NULL) {
+				continue;
+			}
+
 			/*
 				Get the list box
 			*/
@@ -755,9 +763,17 @@ process_feeds()
 			{
 				GtkScrolledWindow* scroll_win = GTK_SCROLLED_WINDOW (tab);
 
-				GtkWidget* viewport = gtk_bin_get_child (GTK_BIN (scroll_win));
+				if (scroll_win) {
+					GtkWidget* viewport = gtk_bin_get_child (GTK_BIN (scroll_win));
 
-				list_box = gtk_bin_get_child (GTK_BIN (viewport));
+					if (viewport) {
+						list_box = gtk_bin_get_child (GTK_BIN (viewport));
+					}
+				}
+
+				if (list_box == NULL) {
+					continue;
+				}
 			}
 			/*
 				Populate list box.
