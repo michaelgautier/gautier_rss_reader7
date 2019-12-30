@@ -806,21 +806,10 @@ process_feeds()
 				gtk_widget_show (headline_label);
 
 				/*
-					Deals with a cache timing issue in GTK.
-
-					Arrived at this solution when I interleaved std::cout statements between each line in the loop.
-					I speculate this slows down this code chain long enough for GTK to complete CSS cache lookup.
-
-					If the loop runs at the normal speed of the CPU, the following error is generates:
-
-						Gtk:ERROR:gtkcssnode.c:319:lookup_in_global_parent_cache: assertion failed: (node->cache == NULL)
-						Bail out! Gtk:ERROR:gtkcssnode.c:319:lookup_in_global_parent_cache: assertion failed: (node->cache == NULL)
-
-					The error is unrecoverable from a UI display standpoint. Need a *durable* mitigation.
-
-					On a positive note, a useful side-effect is new lines are obvious when they appear in the list box.
-
-					Ultimately, the goal is to append to the list box minimizing impact to end-user selection.
+					Provides enough time for CSS lookup.
+					-----------------------------------------------------------------
+					Details:	98536fc8127867a090ea92888f2bf2afb3247b25
+					Command:	git show 98536fc8127867a090ea92888f2bf2afb3247b25
 				*/
 				std::this_thread::sleep_for (std::chrono::milliseconds (88));
 			}
