@@ -116,11 +116,7 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 		*/
 
 		if (list_box != NULL) {
-			int line_render_milliseconds = 8;
-
-			if (headline_index_start < 1) {
-				line_render_milliseconds = 4;
-			}
+			gtk_widget_hide (list_box);
 
 			for (int i = headline_index_start; i < headlines_count_new; i++) {
 				//Each line should be displayed in the order stored.
@@ -135,17 +131,9 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 				gtk_widget_set_halign (headline_label, GTK_ALIGN_START);
 
 				gtk_list_box_insert (GTK_LIST_BOX (list_box), headline_label, i);
-
-				gtk_widget_show (headline_label);
-
-				/*
-					Provides enough time for CSS lookup.
-					-----------------------------------------------------------------
-					Details:	98536fc8127867a090ea92888f2bf2afb3247b25
-					Command:	git show 98536fc8127867a090ea92888f2bf2afb3247b25
-				*/
-				std::this_thread::sleep_for (std::chrono::milliseconds (line_render_milliseconds));
 			}
+
+			gtk_widget_show_all (list_box);
 		}
 	}
 
