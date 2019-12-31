@@ -15,6 +15,7 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 #include <stdio.h>
 #include <iostream>
+#include <thread>
 
 static int
 headlines_section_width = 0;
@@ -36,97 +37,117 @@ gautier_rss_win_main_headlines_frame::initialize_headline_view (GtkWidget* headl
 }
 
 void
-gautier_rss_win_main_headlines_frame::add_headline_page (GtkWidget* headlines_view, std::string& feed_name)
+gautier_rss_win_main_headlines_frame::add_headline_page (GtkWidget* headlines_view, std::string& feed_name,
+        void (*connect_headline_list_box_select_row) (GtkWidget*))
 {
-	GtkWidget* contents = gtk_list_box_new();
-
 	GtkWidget* scroll_win = gtk_scrolled_window_new (NULL, NULL);
 
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll_win), GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
 
+	GtkWidget* list_box = gtk_list_box_new();
+	gtk_widget_set_size_request (list_box, headlines_section_width, -1);
+
+	gtk_list_box_set_selection_mode (GTK_LIST_BOX (list_box), GTK_SELECTION_BROWSE);
+
+	gtk_container_add (GTK_CONTAINER (scroll_win), list_box);
+
+	connect_headline_list_box_select_row (list_box);
+
 	gtk_notebook_append_page (GTK_NOTEBOOK (headlines_view), scroll_win, gtk_label_new (feed_name.data()));
+
+	gtk_widget_show_all (scroll_win);
 
 	return;
 }
 
 void
-gautier_rss_win_main_headlines_frame::switch_page (gautier_rss_data_read::rss_article& rss_data,
-        GtkNotebook* headlines_view, GtkWidget* content,
-        void (*connect_headline_list_box_select_row) (GtkWidget*))
+gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view, std::string feed_name,
+        int headline_index_start, std::vector<std::string>& headlines)
 {
-	GtkScrolledWindow* scroll_win = GTK_SCROLLED_WINDOW (content);
 	/*
-		Remove existing list box.
+		Tab Contents (in this case a scroll window containing a list box)
 
-		Easier/faster to replace the list box entirely than
-		determine which new lines should be appended.
+		Tab > Scroll Window > List Box > individual labels (headlines)
 	*/
-	{
-		GtkBin* bin = GTK_BIN (scroll_win);
+	int headlines_count_new = headlines.size();
 
-		if (bin) {
-			GtkWidget* wid = gtk_bin_get_child (bin);
+	if (headlines_count_new > -1) {
+		GtkWidget* tab = NULL;
 
-			if (wid) {
-				gtk_widget_destroy (wid);
+		std::string tab_label;
+		int tab_n = -1;
+
+		gint page_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
+
+		for (int tab_i = 0; tab_i < page_count; tab_i++) {
+			tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
+
+			const gchar* tab_text = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
+
+			tab_label = tab_text;
+
+			if (feed_name == tab_label) {
+				tab_n = tab_i;
+				break;
+			} else {
+				tab = NULL;
+			}
+		}
+
+		/*
+			Get the list box
+		*/
+		GtkWidget* list_box = NULL;
+
+		if (tab != NULL) {
+			GtkScrolledWindow* scroll_win = GTK_SCROLLED_WINDOW (tab);
+
+			if (scroll_win) {
+				GtkWidget* viewport = gtk_bin_get_child (GTK_BIN (scroll_win));
+
+				if (viewport) {
+					list_box = gtk_bin_get_child (GTK_BIN (viewport));
+				}
+			}
+		}
+
+		/*
+			Populate list box.
+		*/
+
+		if (list_box != NULL) {
+			int line_render_milliseconds = 8;
+
+			if (headline_index_start < 1) {
+				line_render_milliseconds = 4;
+			}
+
+			for (int i = headline_index_start; i < headlines_count_new; i++) {
+				//Each line should be displayed in the order stored.
+				std::string headline_text = headlines.at (i);
+
+				GtkWidget* headline_label = gtk_label_new (headline_text.data());
+
+				gtk_label_set_selectable (GTK_LABEL (headline_label), false);
+				gtk_label_set_single_line_mode (GTK_LABEL (headline_label), true);
+				gtk_label_set_line_wrap (GTK_LABEL (headline_label), false);
+
+				gtk_widget_set_halign (headline_label, GTK_ALIGN_START);
+
+				gtk_list_box_insert (GTK_LIST_BOX (list_box), headline_label, i);
+
+				gtk_widget_show (headline_label);
+
+				/*
+					Provides enough time for CSS lookup.
+					-----------------------------------------------------------------
+					Details:	98536fc8127867a090ea92888f2bf2afb3247b25
+					Command:	git show 98536fc8127867a090ea92888f2bf2afb3247b25
+				*/
+				std::this_thread::sleep_for (std::chrono::milliseconds (line_render_milliseconds));
 			}
 		}
 	}
-	/*
-		Populate list box.
-	*/
-	{
-		std::vector < std::string > headlines;
-
-		int headlines_count = 0;
-		/*
-			Get headlines.
-		*/
-		{
-			/*
-				RSS feed name.
-			*/
-			std::string feed_name = gtk_notebook_get_tab_label_text (headlines_view, content);
-			rss_data.feed_name = feed_name;
-
-			/*
-				RSS headlines.
-			*/
-			std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
-
-			gautier_rss_data_read::get_feed_headlines (db_file_name, feed_name, headlines);
-
-			headlines_count = headlines.size();
-		}
-
-		/*
-			Build list box lines.
-		*/
-		GtkWidget* list_box = gtk_list_box_new();
-		gtk_widget_set_size_request (list_box, headlines_section_width, -1);
-
-		for (int i = 0; i < headlines_count; i++) {
-			//Each line should be displayed in the order stored.
-			std::string headline_text = headlines.at (i);
-
-			GtkWidget* headline_label = gtk_label_new (headline_text.data());
-
-			gtk_label_set_selectable (GTK_LABEL (headline_label), false);
-			gtk_label_set_single_line_mode (GTK_LABEL (headline_label), true);
-			gtk_label_set_line_wrap (GTK_LABEL (headline_label), false);
-			gtk_widget_set_halign (headline_label, GTK_ALIGN_START);
-
-			gtk_list_box_insert (GTK_LIST_BOX (list_box), headline_label, i);
-		}
-
-		gtk_list_box_set_selection_mode (GTK_LIST_BOX (list_box), GTK_SELECTION_BROWSE);
-
-		gtk_container_add (GTK_CONTAINER (scroll_win), list_box);
-
-		connect_headline_list_box_select_row (list_box);
-	}
-
-	gtk_widget_show_all (content);
 
 	return;
 }

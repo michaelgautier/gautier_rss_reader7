@@ -301,7 +301,22 @@ gautier_rss_win_main::create (
 		rss_ns::get_feed_names (db_file_name, feed_names);
 
 		for (rss_ns::rss_feed feed : feed_names) {
-			ns::add_headline_page (headlines_view, feed.feed_name);
+			std::string feed_name = feed.feed_name;
+
+			ns::add_headline_page (headlines_view, feed_name, connect_headline_list_box_select_row);
+
+			/*
+				RSS headlines.
+			*/
+			std::vector < std::string > headlines;
+
+			gautier_rss_data_read::get_feed_headlines (db_file_name, feed_name, headlines);
+
+			if (headlines.size() > 0) {
+				int headline_index_start = 0;
+
+				ns::show_headlines (headlines_view, feed_name, headline_index_start, headlines);
+			}
 		}
 	}
 	/*
@@ -416,10 +431,9 @@ headline_view_switch_page (GtkNotebook* headlines_view,
 	*/
 	ns_data_read::clear_feed_data_all (_feed_data);
 
-	gautier_rss_win_main_headlines_frame::switch_page (_feed_data, headlines_view, content,
-	        &connect_headline_list_box_select_row);
-
 	std::string feed_name = gtk_notebook_get_tab_label_text (headlines_view, content);
+	_feed_data.feed_name = feed_name;
+
 	gtk_header_bar_set_title (GTK_HEADER_BAR (header_bar), feed_name.data());
 
 	return;
@@ -603,7 +617,7 @@ update_tab (ns_data_read::rss_feed_mod& modification)
 	if (is_insert) {
 		namespace ns = gautier_rss_win_main_headlines_frame;
 
-		ns::add_headline_page (headlines_view, feed_name);
+		ns::add_headline_page (headlines_view, feed_name, connect_headline_list_box_select_row);
 	} else {
 		gint page_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
 
@@ -705,93 +719,17 @@ process_feeds()
 			int article_count = feed_old.article_count;
 
 			/*
-				Tab Contents (in this case a scroll window containing a list box)
-
-				Tab > Scroll Window > List Box > individual labels (headlines)
-			*/
-			GtkWidget* tab = NULL;
-			{
-				std::string tab_label;
-				int tab_n = -1;
-
-				gint page_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
-
-				for (int tab_i = 0; tab_i < page_count; tab_i++) {
-					tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
-
-					const gchar* tab_text = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
-
-					tab_label = tab_text;
-
-					if (feed_name == tab_label) {
-						tab_n = tab_i;
-						break;
-					} else {
-						tab = NULL;
-					}
-				}
-			}
-
-			if (tab == NULL) {
-				continue;
-			}
-
-			/*
-				Get the list box
-			*/
-			GtkWidget* list_box = NULL;
-			{
-				GtkScrolledWindow* scroll_win = GTK_SCROLLED_WINDOW (tab);
-
-				if (scroll_win) {
-					GtkWidget* viewport = gtk_bin_get_child (GTK_BIN (scroll_win));
-
-					if (viewport) {
-						list_box = gtk_bin_get_child (GTK_BIN (viewport));
-					}
-				}
-
-				if (list_box == NULL) {
-					continue;
-				}
-			}
-			/*
-				Populate list box.
+				RSS headlines.
 			*/
 			std::vector < std::string > headlines;
 
-			int headlines_count = 0;
-
-			/*
-				RSS headlines.
-			*/
 			gautier_rss_data_read::get_feed_headlines (db_file_name, feed_name, headlines);
 
-			headlines_count = headlines.size();
+			if (headlines.size() > article_count) {
+				int headline_index_start = article_count;
 
-			for (int i = article_count; i < headlines_count; i++) {
-				//Each line should be displayed in the order stored.
-				std::string headline_text = headlines.at (i);
-
-				GtkWidget* headline_label = gtk_label_new (headline_text.data());
-
-				gtk_label_set_selectable (GTK_LABEL (headline_label), false);
-				gtk_label_set_single_line_mode (GTK_LABEL (headline_label), true);
-				gtk_label_set_line_wrap (GTK_LABEL (headline_label), false);
-
-				gtk_widget_set_halign (headline_label, GTK_ALIGN_START);
-
-				gtk_list_box_insert (GTK_LIST_BOX (list_box), headline_label, i);
-
-				gtk_widget_show (headline_label);
-
-				/*
-					Provides enough time for CSS lookup.
-					-----------------------------------------------------------------
-					Details:	98536fc8127867a090ea92888f2bf2afb3247b25
-					Command:	git show 98536fc8127867a090ea92888f2bf2afb3247b25
-				*/
-				std::this_thread::sleep_for (std::chrono::milliseconds (88));
+				gautier_rss_win_main_headlines_frame::show_headlines (headlines_view, feed_name, headline_index_start,
+				        headlines);
 			}
 		}
 	}
