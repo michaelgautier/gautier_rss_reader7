@@ -358,19 +358,21 @@ gautier_rss_data_read::is_feed_stale (std::string db_file_name, std::string feed
 		int seconds_elapsed = get_time_difference_in_seconds ("", feed.last_retrieved);
 
 		int retrieve_limit_hrs = std::stoi (feed.retrieve_limit_hrs);
+		int retrieve_limit_min = retrieve_limit_hrs * 60;
+		int retrieve_limit_sec = retrieve_limit_min * 60;
 
 		int minutes_elapsed = seconds_elapsed / 60;
 		int hours_elapsed = minutes_elapsed / 60;
 
-		std::cout << "Feed " << feed.feed_name << "(" << feed.feed_url << ")" << "\n";
-		std::cout << "Retrieve Limit (hrs) " << retrieve_limit_hrs << "\n";
-		std::cout << "Current date/time " << current_date_time_utc << "\n";
-		std::cout << "Last retrieved " << feed.last_retrieved << "\n";
-		std::cout << "Elapsed hours " << hours_elapsed << "\n";
-		std::cout << "Elapsed minutes " << minutes_elapsed << "\n";
-		std::cout << "Elapsed seconds " << seconds_elapsed << "\n";
+		std::cout << "Feed " << feed.feed_name << " (" << feed.feed_url << ")" << "\n";
+		std::cout << "\tCurrent date/time:\t" << current_date_time_utc << "\n";
+		std::cout << "\tLast retrieved:\t\t" << feed.last_retrieved << "\n";
+		std::cout << "\tRetrieve Limits: \t(in hrs) " << retrieve_limit_hrs << " \t(in minutes) " << retrieve_limit_min
+		          << " \t(in seconds) " << retrieve_limit_sec << "\n";
+		std::cout << "\tElapsed time: \t\t(in hrs) " << hours_elapsed << "\t(in minutes) " << minutes_elapsed <<
+		          "\t\t(in seconds) " << seconds_elapsed << "\n";
 
-		is_feed_stale = (hours_elapsed <= retrieve_limit_hrs);
+		is_feed_stale = (seconds_elapsed <= retrieve_limit_sec);
 	}
 
 	return is_feed_stale;
