@@ -310,7 +310,7 @@ gautier_rss_data_write::update_rss_feeds (std::string db_file_name)
 */
 void
 gautier_rss_data_write::download_feeds (std::string& db_file_name, int pause_interval_in_seconds,
-                                       std::vector<std::pair<ns_data_read::rss_feed, ns_data_read::rss_feed>>& changed_feeds)
+                                        std::vector<std::pair<ns_data_read::rss_feed, ns_data_read::rss_feed>>& changed_feeds)
 {
 	std::vector<ns_data_read::rss_feed> rss_feeds_old;
 	std::vector<ns_data_read::rss_feed> rss_feeds_new;
