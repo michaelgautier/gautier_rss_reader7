@@ -45,6 +45,9 @@ namespace gautier_rss_data_read {
 	std::string
 	get_current_date_time_utc();
 
+	std::string
+	get_current_date_time_local();
+
 	//See SQLite documentation: SQL As Understood By SQLite - Date And Time Functions
 	int
 	get_time_difference_in_seconds (std::string date1, std::string date2);

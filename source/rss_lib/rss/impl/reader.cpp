@@ -365,8 +365,8 @@ gautier_rss_data_read::is_feed_stale (std::string db_file_name, std::string feed
 		int hours_elapsed = minutes_elapsed / 60;
 
 		std::cout << "Feed " << feed.feed_name << " (" << feed.feed_url << ")" << "\n";
-		std::cout << "\tCurrent date/time:\t" << current_date_time_utc << "\n";
-		std::cout << "\tLast retrieved:\t\t" << feed.last_retrieved << "\n";
+		std::cout << "\tCurrent date/time (UTC):\t" << current_date_time_utc << "\n";
+		std::cout << "\tLast retrieved (UTC):\t\t" << feed.last_retrieved << "\n";
 		std::cout << "\tRetrieve Limits: \t(in hrs) " << retrieve_limit_hrs << " \t(in minutes) " << retrieve_limit_min
 		          << " \t(in seconds) " << retrieve_limit_sec << "\n";
 		std::cout << "\tElapsed time: \t\t(in hrs) " << hours_elapsed << "\t(in minutes) " << minutes_elapsed <<
@@ -393,6 +393,28 @@ gautier_rss_data_read::get_current_date_time_utc()
 		std::stringstream strout;
 
 		strout << std::put_time (std::gmtime (&result), "%F %T") << std::ends;
+
+		datetime = strout.str();
+	}
+
+	return datetime;
+}
+
+std::string
+gautier_rss_data_read::get_current_date_time_local()
+{
+	/*
+		Gets the current date and time.
+		Provides the date/time in a format understood by many
+		systems such as SQLite as the local time.
+	*/
+	std::string datetime;
+	{
+		std::time_t result = std::time (nullptr);
+
+		std::stringstream strout;
+
+		strout << std::put_time (std::localtime (&result), "%F %T") << std::ends;
 
 		datetime = strout.str();
 	}
