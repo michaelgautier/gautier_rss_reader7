@@ -5,3 +5,57 @@
 .inner_container {
 	padding: 4px;
 }
+
+.article_frame {
+	background-color: #ffffff;
+	
+	font-weight: normal;
+	font-size: 10pt;
+}
+
+.header_bar {
+	background-color: #34120c;
+	color: #fea711;
+
+	font-weight: bold;
+	font-size: 14pt;
+}
+
+.article_summary {
+	background-color: #ffffff;
+	color: #5f3e1d;
+
+	padding-left: 32px;
+	padding-right: 4px;
+	padding-top: 14px;
+	padding-bottom: 28px;
+
+	font-weight: bold;
+	font-size: 12pt;
+}
+
+.article_date {
+	padding-right: 28px;
+	padding-top: 8px;
+	padding-bottom: 8px;
+
+	font-weight: normal;
+	font-size: 10pt;
+}
+
+.feed_status {
+	padding-top: 4px;
+	padding-left: 33px;
+	padding-right: 4px;
+	padding-bottom: 8px;
+
+	font-weight: normal;
+	font-size: 11pt;
+}
+
+.rss_main_button_container {
+	padding-top: 8px;
+	padding-left: 18px;
+	padding-right: 4px;
+	padding-bottom: 4px;
+}

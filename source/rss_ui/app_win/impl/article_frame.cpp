@@ -29,12 +29,12 @@ gautier_rss_win_main_article_frame::layout_article_frame (GtkWidget* article_fra
 	/*
 		Header Bar
 	*/
-	gtk_box_pack_start (GTK_BOX (article_frame), header_bar, box_child_is_expanded, box_child_is_fills, 4);
+	gtk_box_pack_start (GTK_BOX (article_frame), header_bar, box_child_is_expanded, box_child_is_fills, 0);
 
 	/*
 		Article Summary
 	*/
-	gtk_box_pack_start (GTK_BOX (article_frame), article_summary, box_child_is_expanded, box_child_is_fills, 4);
+	gtk_box_pack_start (GTK_BOX (article_frame), article_summary, box_child_is_expanded, box_child_is_fills, 0);
 
 	/*
 		Article Text
@@ -52,7 +52,7 @@ gautier_rss_win_main_article_frame::layout_article_frame (GtkWidget* article_fra
 
 	gtk_container_add (GTK_CONTAINER (scroll_win), article_text);
 
-	gtk_box_pack_start (GTK_BOX (article_frame), scroll_win, box_child_is_expanded, box_child_is_fills, 4);
+	gtk_box_pack_start (GTK_BOX (article_frame), scroll_win, box_child_is_expanded, box_child_is_fills, 0);
 
 	box_child_is_expanded = false;
 	box_child_is_fills = false;
@@ -60,18 +60,18 @@ gautier_rss_win_main_article_frame::layout_article_frame (GtkWidget* article_fra
 	/*
 		Article Date
 	*/
-	gtk_box_pack_start (GTK_BOX (article_frame), article_date, box_child_is_expanded, box_child_is_fills, 4);
+	gtk_box_pack_start (GTK_BOX (article_frame), article_date, box_child_is_expanded, box_child_is_fills, 0);
 
 	/*
 		Primary Function Buttons
 	*/
 	gtk_box_pack_start (GTK_BOX (article_frame), primary_function_buttons, box_child_is_expanded,
-	                    box_child_is_fills, 4);
+	                    box_child_is_fills, 0);
 
 	/*
 		Info Bar
 	*/
-	gtk_box_pack_start (GTK_BOX (article_frame), info_bar, box_child_is_expanded, box_child_is_fills, 4);
+	gtk_box_pack_start (GTK_BOX (article_frame), info_bar, box_child_is_expanded, box_child_is_fills, 0);
 
 	return;
 }

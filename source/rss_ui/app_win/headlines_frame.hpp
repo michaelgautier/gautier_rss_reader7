@@ -35,6 +35,9 @@ namespace gautier_rss_win_main_headlines_frame {
 	void
 	select_headline (gautier_rss_data_read::rss_article& rss_data, GtkListBoxRow* headline_row);
 
+	void
+	select_headline_row (GtkWidget* headlines_view, std::string feed_name, int headline_row_index);
+
 	int
 	get_default_headlines_view_content_width();
 }

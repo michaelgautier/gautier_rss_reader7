@@ -169,6 +169,64 @@ gautier_rss_win_main_headlines_frame::select_headline (gautier_rss_data_read::rs
 	return;
 }
 
+void
+gautier_rss_win_main_headlines_frame::select_headline_row (GtkWidget* headlines_view, std::string feed_name,
+        int headline_row_index)
+{
+	if (headline_row_index > -1) {
+		GtkWidget* tab = NULL;
+
+		std::string tab_label;
+		int tab_n = -1;
+
+		gint page_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
+
+		for (int tab_i = 0; tab_i < page_count; tab_i++) {
+			tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
+
+			const gchar* tab_text = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
+
+			tab_label = tab_text;
+
+			if (feed_name == tab_label) {
+				tab_n = tab_i;
+				break;
+			} else {
+				tab = NULL;
+			}
+		}
+
+		/*
+			Get the list box
+		*/
+		GtkWidget* list_box = NULL;
+
+		if (tab != NULL) {
+			GtkScrolledWindow* scroll_win = GTK_SCROLLED_WINDOW (tab);
+
+			if (scroll_win) {
+				GtkWidget* viewport = gtk_bin_get_child (GTK_BIN (scroll_win));
+
+				if (viewport) {
+					list_box = gtk_bin_get_child (GTK_BIN (viewport));
+				}
+			}
+		}
+
+		/*
+			Populate list box.
+		*/
+
+		if (list_box != NULL) {
+			GtkListBoxRow* headline_row = gtk_list_box_get_row_at_index (GTK_LIST_BOX (list_box), headline_row_index);
+
+			gtk_list_box_select_row (GTK_LIST_BOX (list_box), headline_row);
+		}
+	}
+
+	return;
+}
+
 int
 gautier_rss_win_main_headlines_frame::get_default_headlines_view_content_width()
 {

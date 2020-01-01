@@ -130,6 +130,21 @@ article_summary = NULL;
 static GtkWidget*
 article_details = NULL;
 
+static GtkWidget*
+info_bar = NULL;
+
+static GtkWidget*
+view_article_button = NULL;
+
+static GtkWidget*
+manage_feeds_button = NULL;
+
+static GtkWidget*
+refresh_feed_button = NULL;
+
+static int
+headline_row_index = -1;
+
 static int
 monitor_width = 0;
 
@@ -173,6 +188,9 @@ set_window_attributes (GtkWidget* window, std::string title, int width, int heig
 static void
 layout_rss_view (GtkWidget* layout_pane, GtkWidget* headlines_view, GtkWidget* article_frame);
 
+static void
+make_user_note (std::string note);
+
 void
 gautier_rss_win_main::create (
     GtkApplication* application, gpointer user_data)
@@ -193,6 +211,7 @@ gautier_rss_win_main::create (
 		Header Bar
 	*/
 	header_bar = gtk_header_bar_new();
+	gautier_rss_ui_app::set_css_class (header_bar, "header_bar");
 	{
 		namespace ns = gautier_rss_win_main_article_header;
 		ns::initialize_article_header_bar (header_bar);
@@ -202,6 +221,7 @@ gautier_rss_win_main::create (
 		Article Summary
 	*/
 	article_summary = gtk_text_view_new();
+	gautier_rss_ui_app::set_css_class (article_summary, "article_summary");
 	{
 		gtk_text_view_set_editable (GTK_TEXT_VIEW (article_summary), false);
 		gtk_text_view_set_cursor_visible (GTK_TEXT_VIEW (article_summary), false);
@@ -239,17 +259,21 @@ gautier_rss_win_main::create (
 		Article Date
 	*/
 	article_date = gtk_label_new (NULL);
+	gautier_rss_ui_app::set_css_class (article_date, "article_date");
+
+	gtk_widget_set_halign (article_date, GTK_ALIGN_END);
 
 	/*
 		Primary Functions
 	*/
 	GtkWidget* primary_function_buttons = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
+	gautier_rss_ui_app::set_css_class (primary_function_buttons, "rss_main_button_container");
 	gtk_button_box_set_layout (GTK_BUTTON_BOX (primary_function_buttons), GTK_BUTTONBOX_START);
 	{
 		/*
 			View Article
 		*/
-		GtkWidget* view_article_button = gtk_button_new_with_label ("View Article");
+		view_article_button = gtk_button_new_with_label ("View Article");
 		gautier_rss_ui_app::set_css_class (view_article_button, "button");
 
 		g_signal_connect (view_article_button, "clicked", G_CALLBACK (rss_operation_click), &rss_op_view_article);
@@ -257,7 +281,7 @@ gautier_rss_win_main::create (
 		/*
 			Manage Feeds
 		*/
-		GtkWidget* manage_feeds_button = gtk_button_new_with_label ("Manage Feeds");
+		manage_feeds_button = gtk_button_new_with_label ("Manage Feeds");
 		gautier_rss_ui_app::set_css_class (manage_feeds_button, "button");
 
 		g_signal_connect (manage_feeds_button, "clicked", G_CALLBACK (manage_feeds_click), NULL);
@@ -265,7 +289,7 @@ gautier_rss_win_main::create (
 		/*
 			Refesh Feed
 		*/
-		GtkWidget* refresh_feed_button = gtk_button_new_with_label ("Refresh Feed");
+		refresh_feed_button = gtk_button_new_with_label ("Refresh Feed");
 		gautier_rss_ui_app::set_css_class (refresh_feed_button, "button");
 
 		g_signal_connect (refresh_feed_button, "clicked", G_CALLBACK (refresh_feed_click), NULL);
@@ -278,7 +302,9 @@ gautier_rss_win_main::create (
 	/*
 		Info Bar
 	*/
-	GtkWidget* info_bar = gtk_label_new ("Status");
+	info_bar = gtk_label_new ("Status");
+	gautier_rss_ui_app::set_css_class (info_bar, "feed_status");
+	gtk_widget_set_halign (info_bar, GTK_ALIGN_START);
 
 	/*
 		RSS Headlines Tab
@@ -296,14 +322,13 @@ gautier_rss_win_main::create (
 		/*
 			Make a tab for each feed name.
 		*/
-		namespace rss_ns = gautier_rss_data_read;
-		std::vector<rss_ns::rss_feed> feed_names;
+		std::vector<ns_data_read::rss_feed> feed_names;
 
 		std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
 
-		rss_ns::get_feed_names (db_file_name, feed_names);
+		ns_data_read::get_feed_names (db_file_name, feed_names);
 
-		for (rss_ns::rss_feed feed : feed_names) {
+		for (ns_data_read::rss_feed feed : feed_names) {
 			std::string feed_name = feed.feed_name;
 
 			ns::add_headline_page (headlines_view, feed_name, connect_headline_list_box_select_row);
@@ -321,11 +346,22 @@ gautier_rss_win_main::create (
 				ns::show_headlines (headlines_view, feed_name, headline_index_start, headlines);
 			}
 		}
+
+		if (feed_names.size() > 0) {
+			ns_data_read::rss_feed feed = feed_names.front();
+
+			std::string feed_name = feed.feed_name;
+
+			namespace ns = gautier_rss_win_main_headlines_frame;
+
+			ns::select_headline_row (GTK_WIDGET (headlines_view), feed_name, 0);
+		}
 	}
 	/*
 		Article Frame
 	*/
-	GtkWidget* article_frame = gtk_box_new (GTK_ORIENTATION_VERTICAL, 4);
+	GtkWidget* article_frame = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	gautier_rss_ui_app::set_css_class (article_frame, "article_frame");
 	{
 		namespace ns = gautier_rss_win_main_article_frame;
 		ns::initialize_article_frame (article_frame);
@@ -439,6 +475,13 @@ headline_view_switch_page (GtkNotebook* headlines_view,
 
 	gtk_header_bar_set_title (GTK_HEADER_BAR (header_bar), feed_name.data());
 
+	std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
+
+	int headline_count = ns_data_read::get_feed_headline_count (db_file_name, feed_name);
+
+	make_user_note (std::to_string (headline_count) + " articles since " +
+	                ns_data_read::get_current_date_time_local());
+
 	return;
 }
 
@@ -460,6 +503,8 @@ headline_view_select_row (GtkListBox*    list_box,
                           GtkListBoxRow* headline_row,
                           gpointer       user_data)
 {
+	headline_row_index = gtk_list_box_row_get_index (headline_row);
+
 	/*
 		Clear feed headline/article data.
 	*/
@@ -470,7 +515,8 @@ headline_view_select_row (GtkListBox*    list_box,
 	/*
 		Article date.
 	*/
-	gtk_label_set_text (GTK_LABEL (article_date), _feed_data.article_date.data());
+	std::string date_status = "Published -- " + _feed_data.article_date;
+	gtk_label_set_text (GTK_LABEL (article_date), date_status.data());
 
 	/*
 		Article summary.
@@ -506,6 +552,9 @@ headline_view_select_row (GtkListBox*    list_box,
 		webkit_web_view_load_html (WEBKIT_WEB_VIEW (article_details), article_text.data(), NULL);
 	}
 
+	gtk_widget_set_tooltip_text (view_article_button, _feed_data.url.data());
+	gtk_widget_set_tooltip_text (GTK_WIDGET (headline_row), _feed_data.url.data());
+
 	return;
 }
 
@@ -539,7 +588,32 @@ void
 refresh_feed_click (GtkButton* button,
                     gpointer   user_data)
 {
-	//stub callback to implement later.
+	int previous_headline_row_index = headline_row_index;
+
+	namespace ns = gautier_rss_win_main_headlines_frame;
+
+	std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
+
+	std::string feed_name = _feed_data.feed_name;
+
+	std::vector < std::string > headlines;
+
+	gautier_rss_data_read::get_feed_headlines (db_file_name, feed_name, headlines);
+
+	if (headlines.size() > 0) {
+		int headline_index_start = 0;
+
+		ns::show_headlines (headlines_view, feed_name, headline_index_start, headlines);
+
+		if (previous_headline_row_index > -1) {
+			ns::select_headline_row (headlines_view, feed_name, previous_headline_row_index);
+		}
+	}
+
+	int headline_count = ns_data_read::get_feed_headline_count (db_file_name, feed_name);
+
+	make_user_note (std::to_string (headline_count) + " articles since " +
+	                ns_data_read::get_current_date_time_local());
 
 	return;
 }
@@ -560,7 +634,6 @@ window_size_allocate (GtkWidget* widget, GdkRectangle* allocation, gpointer user
 		window_width = allocation->width;
 		window_height = allocation->height;
 	}
-
 
 	return;
 }
@@ -590,6 +663,8 @@ process_rss_modifications()
 		int change_count = feed_changes.size();
 
 		while (change_count > 0) {
+			make_user_note (std::to_string (change_count) + " changes pending.");
+
 			ns_data_read::rss_feed_mod modification = feed_changes.front();
 
 			update_tab (modification);
@@ -651,6 +726,8 @@ update_tab (ns_data_read::rss_feed_mod& modification)
 			switch (status) {
 				case ns_data_read::rss_feed_mod_status::remove: {
 						gtk_widget_destroy (tab);
+
+						make_user_note (feed_name + " DELETED.");
 					}
 					break;
 
@@ -671,6 +748,8 @@ update_tab (ns_data_read::rss_feed_mod& modification)
 						if (updated_feed_name != feed_name) {
 							gtk_notebook_set_tab_label_text (GTK_NOTEBOOK (headlines_view), tab, updated_feed_name.data());
 							/*Only changing name -- other changes will be cached to another queue and processed as appropriate.*/
+							make_user_note (feed_name + " updated to " + updated_feed_name + ".");
+
 						}
 					}
 					break;
@@ -731,8 +810,14 @@ process_feeds()
 			if (headlines.size() > article_count) {
 				int headline_index_start = article_count;
 
+				int new_article_count = (headlines.size() - article_count);
+
+				make_user_note (std::to_string (new_article_count) + " headline additions pending.");
+
 				gautier_rss_win_main_headlines_frame::show_headlines (headlines_view, feed_name, headline_index_start,
 				        headlines);
+
+				make_user_note (feed_name + " has new articles.");
 			}
 		}
 	}
@@ -740,3 +825,10 @@ process_feeds()
 	return;
 }
 
+static void
+make_user_note (std::string note)
+{
+	gtk_label_set_text (GTK_LABEL (info_bar), note.data());
+
+	return;
+}
