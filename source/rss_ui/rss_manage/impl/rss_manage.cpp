@@ -188,18 +188,18 @@ gautier_rss_win_rss_manage::show_dialog (GtkApplication* app, GtkWindow* parent,
 	/*
 		Vertical layout for the window's contents.
 	*/
-	GtkWidget* window_layout = gtk_box_new (GTK_ORIENTATION_VERTICAL, 4);
+	GtkWidget* window_layout = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	gtk_container_add (GTK_CONTAINER (win), window_layout);
 
 	/*
 		Horizontal Layout 1: RSS entry fields.
 	*/
-	GtkWidget* feed_entry_layout_row1 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
+	GtkWidget* feed_entry_layout_row1 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 
 	/*
 		Horizontal Layout 2: Buttons.
 	*/
-	GtkWidget* feed_entry_layout_row2 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
+	GtkWidget* feed_entry_layout_row2 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 	gtk_widget_set_halign (feed_entry_layout_row2, GTK_ALIGN_END);
 
 	/*
@@ -213,8 +213,8 @@ gautier_rss_win_rss_manage::show_dialog (GtkApplication* app, GtkWindow* parent,
 	bool content_expands = false;
 	bool content_fills = false;
 
-	gtk_box_pack_start (GTK_BOX (window_layout), feed_entry_layout_row1, content_expands, content_fills, 4);
-	gtk_box_pack_start (GTK_BOX (window_layout), feed_entry_layout_row2, content_expands, content_fills, 4);
+	gtk_box_pack_start (GTK_BOX (window_layout), feed_entry_layout_row1, content_expands, content_fills, 0);
+	gtk_box_pack_start (GTK_BOX (window_layout), feed_entry_layout_row2, content_expands, content_fills, 0);
 
 	/*
 		RSS Configuration Table
@@ -239,7 +239,7 @@ gautier_rss_win_rss_manage::show_dialog (GtkApplication* app, GtkWindow* parent,
 	gtk_widget_set_hexpand (scroll_win, true);
 	gtk_widget_set_vexpand (scroll_win, true);
 
-	gtk_box_pack_start (GTK_BOX (window_layout), scroll_win, content_expands, content_fills, 4);
+	gtk_box_pack_start (GTK_BOX (window_layout), scroll_win, content_expands, content_fills, 0);
 
 	/*
 		Window Presentation
@@ -298,8 +298,10 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 		Feed name
 	*/
 	GtkWidget* feed_name_label = gtk_label_new ("Feed name");
+	gautier_rss_ui_app::set_css_class (feed_name_label, "input_container");
 
 	feed_name_entry = gtk_entry_new();
+	gautier_rss_ui_app::set_css_class (feed_name_entry, "input_container");
 	gtk_entry_set_max_length (GTK_ENTRY (feed_name_entry), 100);
 	gtk_widget_set_size_request (feed_name_entry, 240, 24);
 	g_signal_connect (feed_name_entry, "preedit-changed", G_CALLBACK (feed_name_preedit), feed_name_entry);
@@ -312,8 +314,10 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 		Feed url
 	*/
 	GtkWidget* feed_url_label = gtk_label_new ("Feed web address");
+	gautier_rss_ui_app::set_css_class (feed_url_label, "input_container");
 
 	feed_url_entry = gtk_entry_new();
+	gautier_rss_ui_app::set_css_class (feed_url_entry, "input_container");
 	gtk_entry_set_max_length (GTK_ENTRY (feed_url_entry), 512);
 	gtk_widget_set_size_request (feed_url_entry, 330, 24);
 	g_signal_connect (feed_url_entry, "preedit-changed", G_CALLBACK (feed_url_preedit), feed_url_entry);
@@ -326,16 +330,20 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 		Feed refresh interval
 	*/
 	GtkWidget* feed_refresh_interval_label = gtk_label_new ("Refresh interval");
+	gautier_rss_ui_app::set_css_class (feed_refresh_interval_label, "input_container");
 
 	feed_refresh_interval = gtk_spin_button_new_with_range (1, 4, 1);
+	gautier_rss_ui_app::set_css_class (feed_refresh_interval, "input_container");
 	gtk_widget_set_size_request (feed_refresh_interval, 80, 24);
 
 	/*
 		Feed retention period
 	*/
 	GtkWidget* feed_retention_option_label = gtk_label_new ("Keep feeds");
+	gautier_rss_ui_app::set_css_class (feed_retention_option_label, "input_container");
 
 	feed_retention_option = gtk_combo_box_text_new();
+	gautier_rss_ui_app::set_css_class (feed_retention_option, "input_container");
 	gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (feed_retention_option), "1", "Forever");
 	gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (feed_retention_option), "2", "7 days");
 	gtk_combo_box_text_append (GTK_COMBO_BOX_TEXT (feed_retention_option), "3", "1 day");
