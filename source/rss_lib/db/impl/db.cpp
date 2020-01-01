@@ -22,7 +22,7 @@ bool
 gautier_rss_database::open_db (std::string& db_file_name, sqlite3** db)
 {
 	bool success = false;
-	int options = (SQLITE_OPEN_PRIVATECACHE | SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE);
+	int options = (SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE);
 	int open_result = sqlite3_open_v2 (db_file_name.data(), db, options, NULL);
 
 	if (open_result == SQLITE_OK) {
