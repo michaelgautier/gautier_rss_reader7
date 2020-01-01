@@ -345,12 +345,16 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 		Insert/Update/Delete
 	*/
 	update_configuration_button = gtk_button_new_with_label ("Update");
+	gautier_rss_ui_app::set_css_class (update_configuration_button, "button");
+
 	/*Begin with the button disabled until a valid imput is made.*/
 	gtk_widget_set_sensitive (update_configuration_button, false);
 
 	g_signal_connect (update_configuration_button, "clicked", G_CALLBACK (update_configuration_click), NULL);
 
 	delete_configuration_button = gtk_button_new_with_label ("delete");
+	gautier_rss_ui_app::set_css_class (delete_configuration_button, "button");
+
 	gtk_widget_set_sensitive (delete_configuration_button, false);
 
 	g_signal_connect (delete_configuration_button, "clicked", G_CALLBACK (delete_configuration_click), NULL);
@@ -359,6 +363,8 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 		Reset
 	*/
 	reset_configuration_button = gtk_button_new_with_label ("Reset");
+	gautier_rss_ui_app::set_css_class (reset_configuration_button, "button");
+
 	gtk_widget_set_sensitive (reset_configuration_button, true);
 
 	g_signal_connect (reset_configuration_button, "clicked", G_CALLBACK (reset_configuration_click), NULL);

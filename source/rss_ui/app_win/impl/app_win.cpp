@@ -250,6 +250,7 @@ gautier_rss_win_main::create (
 			View Article
 		*/
 		GtkWidget* view_article_button = gtk_button_new_with_label ("View Article");
+		gautier_rss_ui_app::set_css_class (view_article_button, "button");
 
 		g_signal_connect (view_article_button, "clicked", G_CALLBACK (rss_operation_click), &rss_op_view_article);
 
@@ -257,6 +258,7 @@ gautier_rss_win_main::create (
 			Manage Feeds
 		*/
 		GtkWidget* manage_feeds_button = gtk_button_new_with_label ("Manage Feeds");
+		gautier_rss_ui_app::set_css_class (manage_feeds_button, "button");
 
 		g_signal_connect (manage_feeds_button, "clicked", G_CALLBACK (manage_feeds_click), NULL);
 
@@ -264,6 +266,7 @@ gautier_rss_win_main::create (
 			Refesh Feed
 		*/
 		GtkWidget* refresh_feed_button = gtk_button_new_with_label ("Refresh Feed");
+		gautier_rss_ui_app::set_css_class (refresh_feed_button, "button");
 
 		g_signal_connect (refresh_feed_button, "clicked", G_CALLBACK (refresh_feed_click), NULL);
 
