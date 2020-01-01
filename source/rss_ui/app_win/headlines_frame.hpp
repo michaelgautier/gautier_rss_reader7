@@ -25,7 +25,7 @@ namespace gautier_rss_win_main_headlines_frame {
 	initialize_headline_view (GtkWidget* headlines_view, int monitor_width, int monitor_height);
 
 	void
-	add_headline_page (GtkWidget* headlines_view, std::string& feed_name,
+	add_headline_page (GtkWidget* headlines_view, std::string& feed_name, int position,
 	                   void (*connect_headline_list_box_select_row) (GtkWidget*));
 
 	void

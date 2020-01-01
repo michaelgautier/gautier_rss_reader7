@@ -38,6 +38,7 @@ gautier_rss_win_main_headlines_frame::initialize_headline_view (GtkWidget* headl
 
 void
 gautier_rss_win_main_headlines_frame::add_headline_page (GtkWidget* headlines_view, std::string& feed_name,
+        int position,
         void (*connect_headline_list_box_select_row) (GtkWidget*))
 {
 	GtkWidget* scroll_win = gtk_scrolled_window_new (NULL, NULL);
@@ -53,7 +54,12 @@ gautier_rss_win_main_headlines_frame::add_headline_page (GtkWidget* headlines_vi
 
 	connect_headline_list_box_select_row (list_box);
 
-	gtk_notebook_append_page (GTK_NOTEBOOK (headlines_view), scroll_win, gtk_label_new (feed_name.data()));
+	if (position < 0) {
+		gtk_notebook_append_page (GTK_NOTEBOOK (headlines_view), scroll_win, gtk_label_new (feed_name.data()));
+	} else {
+		gtk_notebook_insert_page (GTK_NOTEBOOK (headlines_view), scroll_win, gtk_label_new (feed_name.data()),
+		                          position);
+	}
 
 	gtk_widget_show_all (scroll_win);
 
