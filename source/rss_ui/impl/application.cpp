@@ -71,6 +71,28 @@ gautier_rss_ui_app::activate (GtkApplication* application, gpointer user_data)
 }
 
 /*
+	CSS Style
+*/
+void
+gautier_rss_ui_app::set_css_class (GtkWidget* widget, std::string css_class_name)
+{
+	std::string css_style_file_name = gautier_rss_ui_app::get_style_file_name();
+
+	GtkCssProvider* css_provider = gtk_css_provider_new();
+
+	gtk_css_provider_load_from_path (css_provider, css_style_file_name.data(), NULL);
+
+	GtkStyleContext* style_context = gtk_widget_get_style_context (widget);
+
+	gtk_style_context_add_provider (style_context, GTK_STYLE_PROVIDER (css_provider),
+	                                GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
+	gtk_style_context_add_class (style_context, css_class_name.data());
+
+	return;
+}
+
+/*
 	Database
 
 	Primary file name.
@@ -90,5 +112,14 @@ std::string
 gautier_rss_ui_app::get_application_name()
 {
 	return "RSS Reader";
+}
+
+/*
+	CSS
+*/
+std::string
+gautier_rss_ui_app::get_style_file_name()
+{
+	return "app.css";
 }
 

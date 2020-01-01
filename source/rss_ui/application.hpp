@@ -24,11 +24,17 @@ namespace gautier_rss_ui_app {
 	extern "C" void
 	activate (GtkApplication* application, gpointer user_data);
 
+	void
+	set_css_class (GtkWidget* widget, std::string css_class_name);
+
 	std::string
 	get_db_file_name();
 
 	std::string
 	get_application_name();
+
+	std::string
+	get_style_file_name();
 }
 
 #endif
