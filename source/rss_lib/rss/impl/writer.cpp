@@ -77,7 +77,7 @@ gautier_rss_data_write::set_feed_config (std::string db_file_name,
 {
 	std::string sql_text =
 	    "INSERT INTO feeds (feed_name, feed_url, last_retrieved, retrieve_limit_hrs, retention_days)\
-		SELECT @feed_name, @feed_url, datetime(), @retrieve_limit_hrs, @retention_days\
+		SELECT @feed_name, @feed_url, '2000-01-01 01:01:01', @retrieve_limit_hrs, @retention_days\
 		WHERE 0 = (\
 			SELECT COUNT(*) FROM feeds WHERE feed_name = @feed_name\
 		)";
