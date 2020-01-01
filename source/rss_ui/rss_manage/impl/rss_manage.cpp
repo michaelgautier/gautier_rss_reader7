@@ -473,7 +473,6 @@ update_configuration_click (GtkButton* button, gpointer user_data)
 			if (existing_row_id.empty() == true) {
 				ns_write::set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
-				changed = true;
 				added = true;
 			} else {
 				std::cout << "NEW rss data. Failed insert due to failed duplicate url check\n";
@@ -482,7 +481,7 @@ update_configuration_click (GtkButton* button, gpointer user_data)
 
 		existing_row_id = ns_read::get_row_id (db_file_name, feed_url);
 
-		if (changed && existing_row_id.empty() == false) {
+		if ((changed || added) && existing_row_id.empty() == false) {
 			feed_changes->emplace (ns_read::rss_feed_mod());
 
 			ns_read::rss_feed_mod* modification = &feed_changes->back();
