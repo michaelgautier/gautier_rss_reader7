@@ -1,6 +1,7 @@
 project/xfer
 project/*.xml
 project/*.db
+project/*.*~
 data/
 build/bin/
 
