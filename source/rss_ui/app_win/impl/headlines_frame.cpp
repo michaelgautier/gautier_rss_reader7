@@ -20,6 +20,13 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 static int
 headlines_section_width = 0;
 
+static
+void (*connect_headline_list_box_select_row_cb) (GtkWidget*);
+
+static void
+create_list_box (GtkWidget* scroll_container, GtkWidget* list_box,
+                 void (*connect_headline_list_box_select_row) (GtkWidget*));
+
 void
 gautier_rss_win_main_headlines_frame::initialize_headline_view (GtkWidget* headlines_view, int monitor_width,
         int monitor_height)
@@ -41,18 +48,15 @@ gautier_rss_win_main_headlines_frame::add_headline_page (GtkWidget* headlines_vi
         int position,
         void (*connect_headline_list_box_select_row) (GtkWidget*))
 {
+	connect_headline_list_box_select_row_cb = connect_headline_list_box_select_row;
+
 	GtkWidget* scroll_win = gtk_scrolled_window_new (NULL, NULL);
 
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll_win), GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
 
 	GtkWidget* list_box = gtk_list_box_new();
-	gtk_widget_set_size_request (list_box, headlines_section_width, -1);
 
-	gtk_list_box_set_selection_mode (GTK_LIST_BOX (list_box), GTK_SELECTION_BROWSE);
-
-	gtk_container_add (GTK_CONTAINER (scroll_win), list_box);
-
-	connect_headline_list_box_select_row (list_box);
+	create_list_box (scroll_win, list_box, connect_headline_list_box_select_row);
 
 	if (position < 0) {
 		gtk_notebook_append_page (GTK_NOTEBOOK (headlines_view), scroll_win, gtk_label_new (feed_name.data()));
@@ -113,6 +117,14 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 
 				if (viewport) {
 					list_box = gtk_bin_get_child (GTK_BIN (viewport));
+				}
+
+				if (headline_index_start < 1) {
+					gtk_container_remove (GTK_CONTAINER (scroll_win), list_box);
+
+					list_box = gtk_list_box_new();
+
+					create_list_box (GTK_WIDGET (scroll_win), list_box, connect_headline_list_box_select_row_cb);
 				}
 			}
 		}
@@ -239,4 +251,19 @@ gautier_rss_win_main_headlines_frame::get_default_headlines_view_content_width()
 	return headlines_section_width;
 }
 
+static void
+create_list_box (GtkWidget* scroll_container, GtkWidget* list_box,
+                 void (*connect_headline_list_box_select_row) (GtkWidget*))
+{
+	gtk_widget_set_size_request (list_box, headlines_section_width, -1);
 
+	gtk_list_box_set_selection_mode (GTK_LIST_BOX (list_box), GTK_SELECTION_BROWSE);
+
+	gtk_container_add (GTK_CONTAINER (scroll_container), list_box);
+
+	if (connect_headline_list_box_select_row) {
+		connect_headline_list_box_select_row (list_box);
+	}
+
+	return;
+}

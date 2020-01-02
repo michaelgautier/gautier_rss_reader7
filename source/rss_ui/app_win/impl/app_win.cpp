@@ -28,6 +28,7 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include "rss_ui/rss_manage/rss_manage.hpp"
 
 #include <webkit2/webkit2.h>
+#include <signal.h>
 
 namespace ns_data_read = gautier_rss_data_read;
 namespace ns_data_write = gautier_rss_data_write;
@@ -57,6 +58,9 @@ static
 void
 download_feed (std::string& db_file_name,
                std::vector<std::pair<ns_data_read::rss_feed, ns_data_read::rss_feed>>& changed_feeds);
+
+static void
+sigsegv_terminate (int signal_code);
 
 /*Do not set to true unless testing.*/
 static
@@ -302,7 +306,7 @@ gautier_rss_win_main::create (
 
 		gtk_container_add (GTK_CONTAINER (primary_function_buttons), view_article_button);
 		gtk_container_add (GTK_CONTAINER (primary_function_buttons), manage_feeds_button);
-		//gtk_container_add (GTK_CONTAINER (primary_function_buttons), refresh_feed_button);
+		gtk_container_add (GTK_CONTAINER (primary_function_buttons), refresh_feed_button);
 	}
 
 	/*
@@ -390,6 +394,8 @@ gautier_rss_win_main::create (
 	/*
 		RSS Modifications
 	*/
+	sigset (SIGSEGV, sigsegv_terminate);
+
 	thread_rss_mod = std::thread (process_rss_modifications);
 
 	return;
@@ -471,6 +477,31 @@ headline_view_switch_page (GtkNotebook* headlines_view,
 	*/
 	ns_data_read::clear_feed_data_all (_feed_data);
 
+	/*
+		Clear content.
+	*/
+	std::string date_status = "";
+
+	gtk_label_set_text (GTK_LABEL (article_date), date_status.data());
+
+	{
+		GtkTextBuffer* text_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (article_summary));
+
+		std::string article_summary = "";
+		size_t article_summary_l = article_summary.size();
+
+		gtk_text_buffer_set_text (text_buffer, article_summary.data(), article_summary_l);
+
+		webkit_web_view_load_html (WEBKIT_WEB_VIEW (article_details), NULL, NULL);
+	}
+	{
+		std::string url = "no feed data";
+
+		gtk_widget_set_tooltip_text (view_article_button, url.data());
+	}
+	/*
+		Setup tab.
+	*/
 	std::string feed_name = gtk_notebook_get_tab_label_text (headlines_view, content);
 	_feed_data.feed_name = feed_name;
 
@@ -478,10 +509,12 @@ headline_view_switch_page (GtkNotebook* headlines_view,
 
 	std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
 
-	int headline_count = ns_data_read::get_feed_headline_count (db_file_name, feed_name);
+	int article_count = ns_data_read::get_feed_headline_count (db_file_name, feed_name);
 
-	make_user_note (std::to_string (headline_count) + " articles since " +
+	make_user_note (std::to_string (article_count) + " articles since " +
 	                ns_data_read::get_current_date_time_local());
+
+	refresh_feeds (feed_name, article_count);
 
 	return;
 }
@@ -589,9 +622,6 @@ void
 refresh_feed_click (GtkButton* button,
                     gpointer   user_data)
 {
-	/*Making this work requires retaining last row counts for each tab.
-	Trivial to implement but will involve more testing.
-	Hiding the button until ready to implemenet and test..*/
 	refresh_feeds (_feed_data.feed_name, 0);
 
 	return;
@@ -628,6 +658,14 @@ window_destroy (GtkWidget* window, gpointer user_data)
 }
 
 static void
+sigsegv_terminate (int signal_code)
+{
+	std::cout << "thread sigsegv: Signal " << signal_code << "\n";
+
+	return;
+}
+
+static void
 process_rss_modifications()
 {
 	while (shutting_down == false && rss_mod_running == true) {
@@ -647,7 +685,11 @@ process_rss_modifications()
 
 			ns_data_read::rss_feed_mod modification = feed_changes.front();
 
-			update_tab (modification);
+			ns_data_read::rss_feed_mod_status status = modification.status;
+
+			if (status != ns_data_read::rss_feed_mod_status::none) {
+				update_tab (modification);
+			}
 		} else {
 			process_feeds();
 		}
@@ -662,12 +704,6 @@ static void
 update_tab (ns_data_read::rss_feed_mod& modification)
 {
 	ns_data_read::rss_feed_mod_status status = modification.status;
-
-	if (status == ns_data_read::rss_feed_mod_status::none) {
-		return;
-	} else {
-		feed_changes.pop();
-	}
 
 	std::string feed_name = modification.feed_name;
 	int row_id_now = modification.row_id;
@@ -700,7 +736,7 @@ update_tab (ns_data_read::rss_feed_mod& modification)
 			}
 		}
 
-		if (tab_n > 0 && tab != NULL && tab_label.empty() == false && tab_label == feed_name) {
+		if (tab_n > -1 && tab != NULL && tab_label.empty() == false && tab_label == feed_name) {
 			switch (status) {
 				case ns_data_read::rss_feed_mod_status::remove: {
 						gtk_widget_hide (tab);
@@ -708,6 +744,8 @@ update_tab (ns_data_read::rss_feed_mod& modification)
 						make_user_note (feed_name + " DELETED.");
 
 						gtk_notebook_remove_page (GTK_NOTEBOOK (headlines_view), tab_n);
+
+						feed_changes.pop();
 					}
 					break;
 
@@ -731,6 +769,8 @@ update_tab (ns_data_read::rss_feed_mod& modification)
 							make_user_note (feed_name + " updated to " + updated_feed_name + ".");
 
 						}
+
+						feed_changes.pop();
 					}
 					break;
 			}
@@ -759,6 +799,8 @@ update_tab (ns_data_read::rss_feed_mod& modification)
 				break;
 			}
 		}
+
+		feed_changes.pop();
 	}
 
 	return;
