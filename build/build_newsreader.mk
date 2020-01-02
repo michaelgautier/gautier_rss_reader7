@@ -31,9 +31,9 @@ LDFLAGS ?=
 ### Variables: ###
 
 CPPDEPS = -MT$@ -MF`echo $@ | sed -e 's,\.o$$,.d,'` -MD -MP
-NEWSREADER_CXXFLAGS = -std=c++17 -Og -ggdb `pkg-config gtk+-3.0 --cflags` \
-	`pkg-config webkit2gtk-4.0 --cflags` `xml2-config --cflags` -I../source \
-	$(CPPFLAGS) $(CXXFLAGS)
+NEWSREADER_CXXFLAGS = -std=c++17 -O0 -g `pkg-config gtk+-3.0 --cflags` `pkg-config \
+	webkit2gtk-4.0 --cflags` `xml2-config --cflags` -I../source $(CPPFLAGS) \
+	$(CXXFLAGS)
 NEWSREADER_OBJECTS =  \
 	newsreader_application.o \
 	newsreader_app_win.o \
