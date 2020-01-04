@@ -35,3 +35,15 @@ The following video shows how the program works in the real-world. When the prog
 <a href="http://www.youtube.com/watch?feature=player_embedded&v=ylKjd1bKu7k
 " target="_blank"><img src="http://img.youtube.com/vi/ylKjd1bKu7k/0.jpg" 
 alt="RSS Reader by Gautier v7" width="240" height="180" border="10" /></a>
+
+#### Background Information
+The RSS reader discussed here is still under development. It is production level but I have other features and refinements underway. When I say production level, you can use it just as described in the video. I use it myself for day-to-day use. That is the only way to truly certify software.
+
+I talke more about the RSS reader at a general level on one of my blogs at <a target="_blank" href="https://gautiertalkstechnology.wordpress.com/2020/01/01/rss-version-7-video/">https://gautiertalkstechnology.wordpress.com/2020/01/01/rss-version-7-video/</a>. That link also shows the video above and puts on in proximity to other articles about the RSS reader program.
+
+The program will not be released for install until I build the relevant RPM and DEB packages for Linux. This program is not intended for Microsoft Windows though it could be compiled to run on Windows. Although I can port it to Windows, I decided a better use of time is to focus on Linux.
+
+Once the DEB and RPM packages are made and everything is fully tested as far as I can determine, this section of the page will change to reflect that status. Until then, the curious are invited to compile the program.
+
+#### Learn Software Development
+The RSS reader program is also a way to learn software development using C++, the language the program is written in. I published a <b><a target="_blank" href="https://gautiertalkstechnology.wordpress.com/2019/11/01/cpp-the-basic-way-ui-and-command-line-22-videos/">22 video series about software development in C++</a></b> that would provide the requisite knowledge to build and compile the program from scratch. If you follow the guide, you can create the program manually under Linux. The videos can provide a jumpstart to learning and using C++ to create UIs in Linux.
