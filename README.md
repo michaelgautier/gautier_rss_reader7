@@ -26,6 +26,8 @@ The problem is not so much in encoding data. The issue with RSS is <i>reading it
 
 A highly acclaimed RSS reader called TinyTinyRSS is a good concept but way out of reach for most people. What is needed is a simple to use, easy to install RSS reader that will remain free and clean to use. I tried super simple RSS readers that you run from the command-line to generate an HTML page you can read. I have zero issues with using the command-line but needed something more GUI oriented. I sought to produce an RSS reader that is more practical to use on a daily basis.
 
+<img src="https://gautiertalkstechnology.files.wordpress.com/2020/01/rss-reader-2020-01-01a.png?w=1024&h=563" />
+
 The goal I have with the RSS reader is to ensure that a simple RSS reader exist for Linux. I tried some RSS readers on Linux and some of them started out neat and simple but the ones I liked eventually grew into a social media gateway. That was more than I wanted. I think it is wise to have and use tools that allow you to access information in a straightforward way without any strings attached.
 
 #### Video Demo
