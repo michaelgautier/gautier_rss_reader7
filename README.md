@@ -4,7 +4,7 @@ RSS Reader by Gautier
 RSS Reader is a way to keep up with your favorite web sites in fast and efficient way. If you regularly visit 2 or more websites every day or every couple of days, RSS is a way to keep up with web sites. That way, you don't have to spend time navigating pages on web sites but have the latest information from the web site come to you.
 
 ### RSS = Really Simple Syndication
-RSS has been around in prior forms since 1995. Apple had researchers working on a early form of what would eventually become RSS. The official RSS format came out in in the year 2000. That means RSS has existed for decades. Wikipedia has <a target="_blank" href="">a moderately detailed article</a> describing what RSS is all about.
+RSS has been around in prior forms since 1995. Apple had researchers working on a early form of what would eventually become RSS. The official RSS format came out in the year 2000. That means RSS has existed for decades. Wikipedia has <a target="_blank" href="">a moderately detailed article</a> describing what RSS is all about.
 
 #### RSS Logo
 Many web sites use the RSS logo (usually at the bottom of their pages) to direct interested users to RSS feeds. On these pages, you can copy the RSS link and paste it into an <a target="_blank" href="https://en.wikipedia.org/wiki/News_aggregator">RSS reader</a> also commonly called a news aggregator.
