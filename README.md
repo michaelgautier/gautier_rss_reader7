@@ -43,7 +43,7 @@ I discuss the RSS reader at a general level on one of my blogs.
 
 <b>Blog link: </b><a target="_blank" href="https://gautiertalkstechnology.wordpress.com/2020/01/01/rss-version-7-video/">https://gautiertalkstechnology.wordpress.com/2020/01/01/rss-version-7-video/</a>
 
-That link also shows the video above and puts on <i>in proximity</i> to other articles about the RSS reader program. Numerous articles on that blog present details about the RSS reader. One of those articles triggers a WordPress shutdown on 1/2/2020 which is why this page now exist.
+That link also shows the video above and puts on <i>in proximity</i> to other articles about the RSS reader program. Numerous articles on that blog present details about the RSS reader. One of those articles triggered a WordPress shutdown on 1/2/2020 which is why this page now exist.
 
 #### Installing RSS Reader by Gautier
 The program is in a compile only state right now. It will compile under Fedora/CentOS/RedHat as well as Debian/Ubuntu and possibly other Linux distributions. I plan to build the relevant RPM and DEB packages for Linux but no MSI as this program is not intended for Microsoft Windows though it could be compiled to run on Windows. Although I can port it to Windows, I decided a better use of time is to focus on Linux.
