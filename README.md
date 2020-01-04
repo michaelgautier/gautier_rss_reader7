@@ -12,7 +12,7 @@ Many web sites use the RSS logo (usually at the bottom of their pages) to direct
 <img src="https://upload.wikimedia.org/wikipedia/en/4/43/Feed-icon.svg" />
 
 #### RSS Can Be Controversial
-RSS has not been without controversy. Aaron Swartz was a activist from MIT. At age 14, he was involved in the creation of RSS as well as markdown. This page uses markdown, a format Aaron helped create. His goal was to make information more accessible.
+RSS has not been without controversy. Aaron Swartz was an activist from MIT. At age 14, he was involved in the creation of RSS as well as markdown. This page uses markdown, a format Aaron helped create. His goal was to make information more accessible.
 
 <b>About: </b><a target="_blank" href="https://en.wikipedia.org/wiki/Aaron_Swartz">Aaron Swartz</a>
 
