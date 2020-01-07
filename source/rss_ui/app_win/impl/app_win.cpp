@@ -28,7 +28,6 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include "rss_ui/rss_manage/rss_manage.hpp"
 
 #include <webkit2/webkit2.h>
-#include <signal.h>
 
 namespace ns_data_read = gautier_rss_data_read;
 namespace ns_data_write = gautier_rss_data_write;
@@ -58,9 +57,6 @@ static
 void
 download_feed (std::string& db_file_name,
                std::vector<std::pair<ns_data_read::rss_feed, ns_data_read::rss_feed>>& changed_feeds);
-
-static void
-sigsegv_terminate (int signal_code);
 
 /*Do not set to true unless testing.*/
 static
@@ -394,8 +390,6 @@ gautier_rss_win_main::create (
 	/*
 		RSS Modifications
 	*/
-	sigset (SIGSEGV, sigsegv_terminate);
-
 	thread_rss_mod = std::thread (process_rss_modifications);
 
 	return;
@@ -653,14 +647,6 @@ window_destroy (GtkWidget* window, gpointer user_data)
 	shutting_down = true;
 
 	thread_rss_mod.join();
-
-	return;
-}
-
-static void
-sigsegv_terminate (int signal_code)
-{
-	std::cout << "thread sigsegv: Signal " << signal_code << "\n";
 
 	return;
 }
