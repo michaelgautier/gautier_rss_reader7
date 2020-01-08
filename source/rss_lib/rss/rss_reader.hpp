@@ -52,8 +52,8 @@ namespace gautier_rss_data_read {
 	int
 	get_time_difference_in_seconds (std::string date1, std::string date2);
 
-	//checks if the feed can be retrieved based on expiration date.
+	//Determine best time (in elapsed seconds) to refresh a feed.
 	bool
-	is_feed_stale (std::string db_file_name, std::string feed_name);
+	is_feed_still_fresh (std::string db_file_name, std::string feed_name);
 }
 #endif
