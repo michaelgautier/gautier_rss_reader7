@@ -52,9 +52,9 @@ RSS_IO_TEST_OBJECTS =  \
 	rss_io_test_rss_io_test.o \
 	rss_io_test_db.o \
 	rss_io_test_feed_download.o \
-	rss_io_test_reader.o \
 	rss_io_test_rss_article.o \
-	rss_io_test_writer.o \
+	rss_io_test_rss_reader.o \
+	rss_io_test_rss_writer.o \
 	rss_io_test_feed_parse.o
 
 ### Conditionally set variables: ###
@@ -98,13 +98,13 @@ rss_io_test_db.o: ./../source/rss_lib/db/impl/db.cpp
 rss_io_test_feed_download.o: ./../source/rss_lib/rss_download/impl/feed_download.cpp
 	$(CXX) -c -o $@ $(RSS_IO_TEST_CXXFLAGS) $(CPPDEPS) $<
 
-rss_io_test_reader.o: ./../source/rss_lib/rss/impl/reader.cpp
-	$(CXX) -c -o $@ $(RSS_IO_TEST_CXXFLAGS) $(CPPDEPS) $<
-
 rss_io_test_rss_article.o: ./../source/rss_lib/rss/impl/rss_article.cpp
 	$(CXX) -c -o $@ $(RSS_IO_TEST_CXXFLAGS) $(CPPDEPS) $<
 
-rss_io_test_writer.o: ./../source/rss_lib/rss/impl/writer.cpp
+rss_io_test_rss_reader.o: ./../source/rss_lib/rss/impl/rss_reader.cpp
+	$(CXX) -c -o $@ $(RSS_IO_TEST_CXXFLAGS) $(CPPDEPS) $<
+
+rss_io_test_rss_writer.o: ./../source/rss_lib/rss/impl/rss_writer.cpp
 	$(CXX) -c -o $@ $(RSS_IO_TEST_CXXFLAGS) $(CPPDEPS) $<
 
 rss_io_test_feed_parse.o: ./../source/rss_lib/rss_parse/impl/feed_parse.cpp

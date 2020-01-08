@@ -52,9 +52,9 @@ NEWSDOWNLD_OBJECTS =  \
 	newsdownld_newsdownld.o \
 	newsdownld_db.o \
 	newsdownld_feed_download.o \
-	newsdownld_reader.o \
 	newsdownld_rss_article.o \
-	newsdownld_writer.o \
+	newsdownld_rss_reader.o \
+	newsdownld_rss_writer.o \
 	newsdownld_feed_parse.o
 
 ### Conditionally set variables: ###
@@ -98,13 +98,13 @@ newsdownld_db.o: ./../source/rss_lib/db/impl/db.cpp
 newsdownld_feed_download.o: ./../source/rss_lib/rss_download/impl/feed_download.cpp
 	$(CXX) -c -o $@ $(NEWSDOWNLD_CXXFLAGS) $(CPPDEPS) $<
 
-newsdownld_reader.o: ./../source/rss_lib/rss/impl/reader.cpp
-	$(CXX) -c -o $@ $(NEWSDOWNLD_CXXFLAGS) $(CPPDEPS) $<
-
 newsdownld_rss_article.o: ./../source/rss_lib/rss/impl/rss_article.cpp
 	$(CXX) -c -o $@ $(NEWSDOWNLD_CXXFLAGS) $(CPPDEPS) $<
 
-newsdownld_writer.o: ./../source/rss_lib/rss/impl/writer.cpp
+newsdownld_rss_reader.o: ./../source/rss_lib/rss/impl/rss_reader.cpp
+	$(CXX) -c -o $@ $(NEWSDOWNLD_CXXFLAGS) $(CPPDEPS) $<
+
+newsdownld_rss_writer.o: ./../source/rss_lib/rss/impl/rss_writer.cpp
 	$(CXX) -c -o $@ $(NEWSDOWNLD_CXXFLAGS) $(CPPDEPS) $<
 
 newsdownld_feed_parse.o: ./../source/rss_lib/rss_parse/impl/feed_parse.cpp
