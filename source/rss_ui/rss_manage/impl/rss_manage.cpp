@@ -673,7 +673,7 @@ populate_rss_tree_view (GtkWidget* rss_tree_view)
 
 	std::string db_file_name = ns_app::get_db_file_name();
 
-	ns_read::get_feed_names (db_file_name, feed_info);
+	ns_read::get_feeds (db_file_name, feed_info);
 
 	for (ns_read::rss_feed feed : feed_info) {
 		gchar* feed_name = feed.feed_name.data();

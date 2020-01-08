@@ -95,7 +95,7 @@ gautier_rss_data_read::get_feed_by_row_id (std::string db_file_name, std::string
 }
 
 void
-gautier_rss_data_read::get_feed_names (std::string db_file_name, std::vector <rss_feed>& feed_names)
+gautier_rss_data_read::get_feeds (std::string db_file_name, std::vector <rss_feed>& feeds)
 {
 	namespace ns_db = gautier_rss_database;
 
@@ -120,7 +120,7 @@ gautier_rss_data_read::get_feed_names (std::string db_file_name, std::vector <rs
 
 		create_feed_from_sql_row (row, feed);
 
-		feed_names.emplace_back (feed);
+		feeds.emplace_back (feed);
 	}
 
 	ns_db::close_db (&db);

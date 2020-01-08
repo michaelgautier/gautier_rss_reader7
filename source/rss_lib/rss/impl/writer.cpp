@@ -284,7 +284,7 @@ gautier_rss_data_write::update_rss_feeds (std::string db_file_name)
 {
 	std::vector<ns_data_read::rss_feed> rss_feeds;
 
-	ns_data_read::get_feed_names (db_file_name, rss_feeds);
+	ns_data_read::get_feeds (db_file_name, rss_feeds);
 
 	for (ns_data_read::rss_feed feed : rss_feeds) {
 		std::string feed_name = feed.feed_name;
@@ -315,12 +315,12 @@ gautier_rss_data_write::download_feeds (std::string& db_file_name, int pause_int
 	std::vector<ns_data_read::rss_feed> rss_feeds_old;
 	std::vector<ns_data_read::rss_feed> rss_feeds_new;
 
-	ns_data_read::get_feed_names (db_file_name, rss_feeds_old);
+	ns_data_read::get_feeds (db_file_name, rss_feeds_old);
 
 	/*Automatically downloads feeds according to time limit for each feed.*/
 	update_rss_feeds (db_file_name);
 
-	ns_data_read::get_feed_names (db_file_name, rss_feeds_new);
+	ns_data_read::get_feeds (db_file_name, rss_feeds_new);
 
 	for (ns_data_read::rss_feed feed_new : rss_feeds_new) {
 		std::string feed_name = feed_new.feed_name;

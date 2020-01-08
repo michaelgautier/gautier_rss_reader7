@@ -27,7 +27,7 @@ namespace gautier_rss_data_read {
 	get_feed_by_row_id (std::string db_file_name, std::string row_id, rss_feed& feed);
 
 	void
-	get_feed_names (std::string db_file_name, std::vector < rss_feed >& feed_names);
+	get_feeds (std::string db_file_name, std::vector < rss_feed >& feeds);
 
 	void
 	get_feed_headlines (std::string db_file_name, std::string feed_name, std::vector < std::string >& headlines);
