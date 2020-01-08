@@ -12,12 +12,16 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 #include <iostream>
 
+#include "rss_lib/rss/rss_feed.hpp"
 #include "rss_lib/rss/rss_reader.hpp"
 #include "rss_lib/rss/rss_writer.hpp"
 #include "rss_lib/rss_parse/feed_parse.hpp"
 #include "rss_lib/rss_download/feed_download.hpp"
 
 #include "external/argtable/argtable3.h"
+
+static bool
+feed_expire_time_enabled = true;
 
 static void
 flatten_rss_xml_to_text (std::string feed_name);
@@ -217,7 +221,8 @@ main (int argc, char** argv)
 			std::string db_file_name = "rss_test.db";
 
 			gautier_rss_data_write::initialize_db (db_file_name);
-			bool is_feed_still_fresh = gautier_rss_data_read::is_feed_stale (db_file_name, feed_name);
+			bool is_feed_still_fresh = gautier_rss_data_read::is_feed_still_fresh (db_file_name, feed_name,
+			                           feed_expire_time_enabled);
 
 			if (is_feed_still_fresh == false) {
 				ns_read::download_rss_feed (feed_url, headlines);

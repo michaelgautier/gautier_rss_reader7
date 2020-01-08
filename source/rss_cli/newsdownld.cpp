@@ -14,6 +14,8 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 #include "rss_lib/rss/rss_writer.hpp"
 #include "rss_lib/rss/rss_reader.hpp"
+#include "rss_lib/rss/rss_feed.hpp"
+#include "rss_lib/rss/rss_util.hpp"
 
 #include "external/argtable/argtable3.h"
 
@@ -221,7 +223,7 @@ main (int argc, char** argv)
 
 	if (cli_check_time_limit->count > 0) {
 		if (feed_name.empty() == false) {
-			bool is_feed_still_fresh = ns_read::is_feed_stale (db_file_name, feed_name);
+			bool is_feed_still_fresh = ns_read::is_feed_still_fresh (db_file_name, feed_name, true);
 
 			std::cout << "is feed network retrieval permitted: " << is_feed_still_fresh << "\n";
 		} else {
@@ -354,7 +356,7 @@ main (int argc, char** argv)
 		std::string datetime1 = *cli_datetime1->sval;
 		std::string datetime2 = *cli_datetime2->sval;
 
-		int seconds = ns_read::get_time_difference_in_seconds (datetime1, datetime2);
+		int seconds = gautier_rss_util::get_time_difference_in_seconds (datetime1, datetime2);
 
 		std::cout << "elapsed seconds: " << seconds << "\n";
 	}
