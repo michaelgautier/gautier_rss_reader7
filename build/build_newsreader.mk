@@ -42,7 +42,9 @@ NEWSREADER_OBJECTS =  \
 	newsreader_headlines_frame.o \
 	newsreader_rss_manage.o \
 	newsreader_rss_article.o \
+	newsreader_rss_feed.o \
 	newsreader_rss_reader.o \
+	newsreader_rss_util.o \
 	newsreader_rss_writer.o \
 	newsreader_db.o \
 	newsreader_feed_download.o \
@@ -92,7 +94,13 @@ newsreader_rss_manage.o: ./../source/rss_ui/rss_manage/impl/rss_manage.cpp
 newsreader_rss_article.o: ./../source/rss_lib/rss/impl/rss_article.cpp
 	$(CXX) -c -o $@ $(NEWSREADER_CXXFLAGS) $(CPPDEPS) $<
 
+newsreader_rss_feed.o: ./../source/rss_lib/rss/impl/rss_feed.cpp
+	$(CXX) -c -o $@ $(NEWSREADER_CXXFLAGS) $(CPPDEPS) $<
+
 newsreader_rss_reader.o: ./../source/rss_lib/rss/impl/rss_reader.cpp
+	$(CXX) -c -o $@ $(NEWSREADER_CXXFLAGS) $(CPPDEPS) $<
+
+newsreader_rss_util.o: ./../source/rss_lib/rss/impl/rss_util.cpp
 	$(CXX) -c -o $@ $(NEWSREADER_CXXFLAGS) $(CPPDEPS) $<
 
 newsreader_rss_writer.o: ./../source/rss_lib/rss/impl/rss_writer.cpp

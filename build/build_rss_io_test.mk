@@ -53,7 +53,9 @@ RSS_IO_TEST_OBJECTS =  \
 	rss_io_test_db.o \
 	rss_io_test_feed_download.o \
 	rss_io_test_rss_article.o \
+	rss_io_test_rss_feed.o \
 	rss_io_test_rss_reader.o \
+	rss_io_test_rss_util.o \
 	rss_io_test_rss_writer.o \
 	rss_io_test_feed_parse.o
 
@@ -101,7 +103,13 @@ rss_io_test_feed_download.o: ./../source/rss_lib/rss_download/impl/feed_download
 rss_io_test_rss_article.o: ./../source/rss_lib/rss/impl/rss_article.cpp
 	$(CXX) -c -o $@ $(RSS_IO_TEST_CXXFLAGS) $(CPPDEPS) $<
 
+rss_io_test_rss_feed.o: ./../source/rss_lib/rss/impl/rss_feed.cpp
+	$(CXX) -c -o $@ $(RSS_IO_TEST_CXXFLAGS) $(CPPDEPS) $<
+
 rss_io_test_rss_reader.o: ./../source/rss_lib/rss/impl/rss_reader.cpp
+	$(CXX) -c -o $@ $(RSS_IO_TEST_CXXFLAGS) $(CPPDEPS) $<
+
+rss_io_test_rss_util.o: ./../source/rss_lib/rss/impl/rss_util.cpp
 	$(CXX) -c -o $@ $(RSS_IO_TEST_CXXFLAGS) $(CPPDEPS) $<
 
 rss_io_test_rss_writer.o: ./../source/rss_lib/rss/impl/rss_writer.cpp

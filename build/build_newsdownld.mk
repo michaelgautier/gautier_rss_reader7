@@ -53,7 +53,9 @@ NEWSDOWNLD_OBJECTS =  \
 	newsdownld_db.o \
 	newsdownld_feed_download.o \
 	newsdownld_rss_article.o \
+	newsdownld_rss_feed.o \
 	newsdownld_rss_reader.o \
+	newsdownld_rss_util.o \
 	newsdownld_rss_writer.o \
 	newsdownld_feed_parse.o
 
@@ -101,7 +103,13 @@ newsdownld_feed_download.o: ./../source/rss_lib/rss_download/impl/feed_download.
 newsdownld_rss_article.o: ./../source/rss_lib/rss/impl/rss_article.cpp
 	$(CXX) -c -o $@ $(NEWSDOWNLD_CXXFLAGS) $(CPPDEPS) $<
 
+newsdownld_rss_feed.o: ./../source/rss_lib/rss/impl/rss_feed.cpp
+	$(CXX) -c -o $@ $(NEWSDOWNLD_CXXFLAGS) $(CPPDEPS) $<
+
 newsdownld_rss_reader.o: ./../source/rss_lib/rss/impl/rss_reader.cpp
+	$(CXX) -c -o $@ $(NEWSDOWNLD_CXXFLAGS) $(CPPDEPS) $<
+
+newsdownld_rss_util.o: ./../source/rss_lib/rss/impl/rss_util.cpp
 	$(CXX) -c -o $@ $(NEWSDOWNLD_CXXFLAGS) $(CPPDEPS) $<
 
 newsdownld_rss_writer.o: ./../source/rss_lib/rss/impl/rss_writer.cpp

@@ -25,7 +25,9 @@
 		<sources>../source/rss_ui/rss_manage/impl/rss_manage.cpp</sources>
 		<!--Data/Network interface -->
 		<sources>../source/rss_lib/rss/impl/rss_article.cpp</sources>
+		<sources>../source/rss_lib/rss/impl/rss_feed.cpp</sources>
 		<sources>../source/rss_lib/rss/impl/rss_reader.cpp</sources>
+		<sources>../source/rss_lib/rss/impl/rss_util.cpp</sources>
 		<sources>../source/rss_lib/rss/impl/rss_writer.cpp</sources>
 		<sources>../source/rss_lib/db/impl/db.cpp</sources>
 		<sources>../source/rss_lib/rss_download/impl/feed_download.cpp</sources>
