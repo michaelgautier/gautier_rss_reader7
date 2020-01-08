@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Michael Gautier
+Copyright (C) 2020 Michael Gautier
 
 This source code is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.
 
@@ -11,9 +11,10 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 */
 
 #include <cstring>
+#include <cstdlib>
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <iostream>
+
 #include <curl/curl.h>
 
 #include "rss_lib/rss_download/feed_download.hpp"
@@ -41,16 +42,19 @@ WriteMemoryCallback (void* contents, size_t size, size_t nmemb, void* userp)
 
 	mem->memory = (char*)realloc (mem->memory, mem->size + realsize + 1);
 
-	if (mem->memory == NULL) {
-		/* out of memory! */
-		printf ("not enough memory (realloc returned NULL)\n");
+	/*May indicate out of memory.*/
+	bool is_bad_memory_allocation = (mem->memory == NULL);
 
-		return 0;
+	if (is_bad_memory_allocation) {
+		std::cout << __FILE__ << " in " << __func__ << " at line: " << __LINE__ << "\n";
+		std::cout << "Bad memory allocation. Possibly out of memory.\n";
+
+		realsize = 0;
+	} else {
+		memcpy (& (mem->memory[mem->size]), contents, realsize);
+		mem->size += realsize;
+		mem->memory[mem->size] = 0;
 	}
-
-	memcpy (& (mem->memory[mem->size]), contents, realsize);
-	mem->size += realsize;
-	mem->memory[mem->size] = 0;
 
 	return realsize;
 }
