@@ -24,6 +24,7 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include "rss_lib/rss/rss_reader.hpp"
 #include "rss_lib/rss/rss_writer.hpp"
 #include "rss_lib/rss/rss_feed_mod.hpp"
+#include "rss_lib/rss/rss_util.hpp"
 
 #include "rss_ui/rss_manage/rss_manage.hpp"
 
@@ -53,14 +54,19 @@ feed_changes;
 static void
 update_tab (ns_data_read::rss_feed_mod& modification);
 
-static
-void
-download_feed (std::string& db_file_name,
-               std::vector<std::pair<ns_data_read::rss_feed, ns_data_read::rss_feed>>& changed_feeds);
+static void
+add_new_headlines (ns_data_read::rss_feed& feed_old, ns_data_read::rss_feed& feed_new);
 
 /*Do not set to true unless testing.*/
 static
 bool pre_download_pause_enabled = false;
+
+static
+bool feed_expire_time_enabled = false;
+
+/*May evolve into a compile flag #define DIAG*/
+static
+bool diagnostics_enabled = false;
 
 /*
 	Signal response functions.
@@ -332,7 +338,7 @@ gautier_rss_win_main::create (
 
 		std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
 
-		ns_data_read::get_feed_names (db_file_name, feed_names);
+		ns_data_read::get_feeds (db_file_name, feed_names);
 
 		for (ns_data_read::rss_feed feed : feed_names) {
 			std::string feed_name = feed.feed_name;
@@ -486,7 +492,7 @@ headline_view_switch_page (GtkNotebook* headlines_view,
 
 		gtk_text_buffer_set_text (text_buffer, article_summary.data(), article_summary_l);
 
-		webkit_web_view_load_html (WEBKIT_WEB_VIEW (article_details), NULL, NULL);
+		webkit_web_view_load_plain_text (WEBKIT_WEB_VIEW (article_details), article_summary.data());
 	}
 	{
 		std::string url = "no feed data";
@@ -506,7 +512,7 @@ headline_view_switch_page (GtkNotebook* headlines_view,
 	int article_count = ns_data_read::get_feed_headline_count (db_file_name, feed_name);
 
 	make_user_note (std::to_string (article_count) + " articles since " +
-	                ns_data_read::get_current_date_time_local());
+	                gautier_rss_util::get_current_date_time_local());
 
 	refresh_feeds (feed_name, article_count);
 
@@ -575,9 +581,13 @@ headline_view_select_row (GtkListBox*    list_box,
 
 		if (article_text.empty()) {
 			article_text = _feed_data.article_summary;
-		}
 
-		webkit_web_view_load_html (WEBKIT_WEB_VIEW (article_details), article_text.data(), NULL);
+			if (article_text.empty()) {
+				webkit_web_view_load_plain_text (WEBKIT_WEB_VIEW (article_details), article_text.data());
+			}
+		} else {
+			webkit_web_view_load_html (WEBKIT_WEB_VIEW (article_details), article_text.data(), NULL);
+		}
 	}
 
 	gtk_widget_set_tooltip_text (view_article_button, _feed_data.url.data());
@@ -654,15 +664,17 @@ window_destroy (GtkWidget* window, gpointer user_data)
 static void
 process_rss_modifications()
 {
-	while (shutting_down == false && rss_mod_running == true) {
+	while (shutting_down == false && rss_mod_running) {
 		rss_mod_running = false;
 
 		std::this_thread::sleep_for (std::chrono::milliseconds (777));
 
-		//Keep this part until the code is finished. It gives us a reliable indicator that the background thread is still in operation.
-		std::string datetime = ns_data_read::get_current_date_time_utc();
+		if (diagnostics_enabled) {
+			//Keep this part until the code is finished. It gives us a reliable indicator that the background thread is still in operation.
+			std::string datetime = gautier_rss_util::get_current_date_time_utc();
 
-		std::cout << "RSS configuration update: \t" << datetime << "\n";
+			std::cout << "RSS configuration update: \t" << datetime << "\n";
+		}
 
 		int change_count = feed_changes.size();
 
@@ -761,7 +773,7 @@ update_tab (ns_data_read::rss_feed_mod& modification)
 					break;
 			}
 		}
-	} else if (is_insert == true) {
+	} else if (is_insert) {
 		namespace ns = gautier_rss_win_main_headlines_frame;
 
 		int page_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
@@ -796,58 +808,83 @@ static void
 process_feeds()
 {
 	//Keep this part until the code is finished. It gives us a reliable indicator that the background thread is still in operation.
-	std::string datetime = ns_data_read::get_current_date_time_utc();
+	std::string datetime = gautier_rss_util::get_current_date_time_utc();
 
 	std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
 
 	int pause_interval_in_seconds = 0;
 
 	if (pre_download_pause_enabled) {
-		/*
-			Pause before download.
-			-----------------------------------------------------------------
-			Details:	d37564a59e58a324e0e02d03d76b4166c4120ed4
-			Command:	git show d37564a59e58a324e0e02d03d76b4166c4120ed4
-		*/
-
-		pause_interval_in_seconds = 8;
+		pause_interval_in_seconds = 14;
 	}
-
-	std::vector<std::pair<ns_data_read::rss_feed, ns_data_read::rss_feed>> changed_feeds;
-
-	ns_data_write::download_feeds (db_file_name, pause_interval_in_seconds, changed_feeds);
 
 	/*
 		Feeds with new data.
 	*/
-	bool changed = false;
+	int change_count = 0;
 
-	for (std::pair<ns_data_read::rss_feed, ns_data_read::rss_feed> feed_pair : changed_feeds) {
-		ns_data_read::rss_feed feed_old = feed_pair.first;
-		ns_data_read::rss_feed feed_new = feed_pair.second;
+	std::vector <ns_data_read::rss_feed> feeds_old;
 
-		std::string feed_name = feed_new.feed_name;
-		int article_count = feed_old.article_count;
+	ns_data_read::get_feeds (db_file_name, feeds_old);
 
-		int headline_count = ns_data_read::get_feed_headline_count (db_file_name, feed_name);
+	for (ns_data_read::rss_feed feed_old : feeds_old) {
+		std::string feed_name = feed_old.feed_name;
+		std::string feed_url = feed_old.feed_url;
+		std::string retrieve_limit_hrs = feed_old.retrieve_limit_hrs;
+		std::string retention_days = feed_old.retention_days;
 
-		if (changed == false) {
-			changed = true;
-		}
+		bool is_feed_still_fresh = gautier_rss_data_read::is_feed_still_fresh (db_file_name, feed_name,
+		                           feed_expire_time_enabled);
 
-		if (headline_count > article_count) {
-			int new_article_count = (headline_count - article_count);
+		if (is_feed_still_fresh == false) {
+			if (pause_interval_in_seconds > 0 && pause_interval_in_seconds < 121) {
+				std::cout << "PAUSE BEFORE DOWNLOAD: " << feed_name << "(" << feed_url << ") \t" << pause_interval_in_seconds <<
+				          " seconds\n";
+				std::this_thread::sleep_for (std::chrono::seconds (pause_interval_in_seconds));
+			}
 
-			make_user_note (std::to_string (new_article_count) + " headline additions pending.");
+			ns_data_write::update_rss_db_from_network (db_file_name, feed_name, feed_url, retrieve_limit_hrs,
+			        retention_days);
 
-			refresh_feeds (feed_name, article_count);
+			ns_data_read::rss_feed feed_new;
 
-			make_user_note (feed_name + " has new articles.");
+			ns_data_read::get_feed (db_file_name, feed_name, feed_new);
+
+			bool new_updates = ns_data_read::check_feed_changed (feed_old, feed_new);
+
+			if (new_updates) {
+				add_new_headlines (feed_old, feed_new);
+
+				change_count++;
+			}
 		}
 	}
 
-	if (changed == true) {
+	if (change_count > 0) {
 		gtk_widget_show_all (GTK_WIDGET (win));
+	}
+
+	return;
+}
+
+static void
+add_new_headlines (ns_data_read::rss_feed& feed_old, ns_data_read::rss_feed& feed_new)
+{
+	std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
+
+	std::string feed_name = feed_new.feed_name;
+	int article_count = feed_old.article_count;
+
+	int headline_count = ns_data_read::get_feed_headline_count (db_file_name, feed_name);
+
+	if (headline_count > article_count) {
+		int new_article_count = (headline_count - article_count);
+
+		make_user_note (std::to_string (new_article_count) + " headline additions pending.");
+
+		refresh_feeds (feed_name, article_count);
+
+		make_user_note (feed_name + " has new articles.");
 	}
 
 	return;
@@ -877,7 +914,7 @@ refresh_feeds (std::string feed_name, int headline_index_start)
 	int headline_count = ns_data_read::get_feed_headline_count (db_file_name, feed_name);
 
 	make_user_note (std::to_string (headline_count) + " articles since " +
-	                ns_data_read::get_current_date_time_local());
+	                gautier_rss_util::get_current_date_time_local());
 
 	return;
 }
