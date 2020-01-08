@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Michael Gautier
+Copyright (C) 2020 Michael Gautier
 
 This source code is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.
 
@@ -10,10 +10,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 Author: Michael Gautier <michaelgautier.wordpress.com>
 */
 
-#ifndef michael_gautier_rss_data_read_source_h
-#define michael_gautier_rss_data_read_source_h
+#ifndef michael_gautier_rss_data_rss_feed_source_h
+#define michael_gautier_rss_data_rss_feed_source_h
 
-#include <vector>
 #include <string>
 
 namespace gautier_rss_data_read {
@@ -27,5 +26,13 @@ namespace gautier_rss_data_read {
 			std::string retention_days;
 			int article_count;
 	};
+
+	bool
+	check_feed_changed (rss_feed& feed_old, rss_feed& feed_new);
+
+	//Determine best time (in elapsed seconds) to refresh a feed.
+	bool
+	is_feed_still_fresh (std::string db_file_name, std::string feed_name, bool time_message_stdout);
+
 }
 #endif

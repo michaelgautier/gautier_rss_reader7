@@ -21,6 +21,7 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 #include "rss_lib/rss/rss_reader.hpp"
 #include "rss_lib/rss/rss_writer.hpp"
+#include "rss_lib/rss/rss_util.hpp"
 
 namespace ns_data_read = gautier_rss_data_read;
 namespace ns_db = gautier_rss_database;
@@ -377,7 +378,7 @@ gautier_rss_data_write::update_feed_retrieved (std::string db_file_name, std::st
 		WHERE feed_url = @feed_url";
 
 	ns_db::sql_parameter_list_type params = {
-		gautier_rss_data_read::get_current_date_time_utc(),
+		gautier_rss_util::get_current_date_time_utc(),
 		feed_url
 	};
 
@@ -450,7 +451,7 @@ gautier_rss_data_write::update_rss_xml_from_network (std::string db_file_name,
 {
 	set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
-	bool is_feed_still_fresh = gautier_rss_data_read::is_feed_stale (db_file_name, feed_name);
+	bool is_feed_still_fresh = gautier_rss_data_read::is_feed_still_fresh (db_file_name, feed_name, false);
 
 	if (is_feed_still_fresh == false) {
 		std::string feed_data;
@@ -487,7 +488,7 @@ gautier_rss_data_write::update_rss_xml_db_from_network (std::string db_file_name
 {
 	set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
-	bool is_feed_still_fresh = gautier_rss_data_read::is_feed_stale (db_file_name, feed_name);
+	bool is_feed_still_fresh = gautier_rss_data_read::is_feed_still_fresh (db_file_name, feed_name, false);
 
 	if (is_feed_still_fresh == false) {
 		std::string feed_data;
@@ -529,7 +530,7 @@ gautier_rss_data_write::update_rss_db_from_network (std::string db_file_name,
 {
 	set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
-	bool is_feed_still_fresh = gautier_rss_data_read::is_feed_stale (db_file_name, feed_name);
+	bool is_feed_still_fresh = gautier_rss_data_read::is_feed_still_fresh (db_file_name, feed_name, false);
 
 	if (is_feed_still_fresh == false) {
 		std::string feed_data;

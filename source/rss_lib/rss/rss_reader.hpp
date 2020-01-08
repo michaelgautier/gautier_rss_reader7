@@ -41,19 +41,5 @@ namespace gautier_rss_data_read {
 
 	std::string
 	get_row_id (std::string db_file_name, std::string feed_url);
-
-	std::string
-	get_current_date_time_utc();
-
-	std::string
-	get_current_date_time_local();
-
-	//See SQLite documentation: SQL As Understood By SQLite - Date And Time Functions
-	int
-	get_time_difference_in_seconds (std::string date1, std::string date2);
-
-	//Determine best time (in elapsed seconds) to refresh a feed.
-	bool
-	is_feed_still_fresh (std::string db_file_name, std::string feed_name);
 }
 #endif
