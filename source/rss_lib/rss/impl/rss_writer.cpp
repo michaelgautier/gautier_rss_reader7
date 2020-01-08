@@ -444,13 +444,15 @@ gautier_rss_data_write::update_rss_db_from_rss_xml (std::string db_file_name,
 	Often used during development of RSS to get RSS data samples
 	for inspection and analysis. Used to calibrate parsing functions.
 */
-void
+long
 gautier_rss_data_write::update_rss_xml_from_network (std::string db_file_name,
         std::string feed_name,
         std::string feed_url,
         std::string retrieve_limit_hrs,
         std::string retention_days)
 {
+	long response_code = 0;
+
 	set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
 	bool is_feed_still_fresh = gautier_rss_data_read::is_feed_still_fresh (db_file_name, feed_name, false);
@@ -458,7 +460,7 @@ gautier_rss_data_write::update_rss_xml_from_network (std::string db_file_name,
 	if (is_feed_still_fresh == false) {
 		std::string feed_data;
 
-		long response_code = ns_data_read::download_rss_feed (feed_url, feed_data);
+		response_code = ns_data_read::download_rss_feed (feed_url, feed_data);
 
 		bool response_good = ns_data_read::is_network_response_ok (response_code);
 
@@ -469,7 +471,7 @@ gautier_rss_data_write::update_rss_xml_from_network (std::string db_file_name,
 		ns_parse::save_feed_data_to_file (feed_name, ".xml", feed_data);
 	}
 
-	return;
+	return response_code;
 }
 
 /*
@@ -485,13 +487,15 @@ gautier_rss_data_write::update_rss_xml_from_network (std::string db_file_name,
 	XML parsing for example but can have another purpose in providing
 	an alternative source of offline/recovery information.
 */
-void
+long
 gautier_rss_data_write::update_rss_xml_db_from_network (std::string db_file_name,
         std::string feed_name,
         std::string feed_url,
         std::string retrieve_limit_hrs,
         std::string retention_days)
 {
+	long response_code = 0;
+
 	set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
 	bool is_feed_still_fresh = gautier_rss_data_read::is_feed_still_fresh (db_file_name, feed_name, false);
@@ -499,7 +503,7 @@ gautier_rss_data_write::update_rss_xml_db_from_network (std::string db_file_name
 	if (is_feed_still_fresh == false) {
 		std::string feed_data;
 
-		long response_code = ns_data_read::download_rss_feed (feed_url, feed_data);
+		response_code = ns_data_read::download_rss_feed (feed_url, feed_data);
 
 		bool response_good = ns_data_read::is_network_response_ok (response_code);
 
@@ -520,7 +524,7 @@ gautier_rss_data_write::update_rss_xml_db_from_network (std::string db_file_name
 		}
 	}
 
-	return;
+	return response_code;
 }
 
 /*
@@ -531,13 +535,15 @@ gautier_rss_data_write::update_rss_xml_db_from_network (std::string db_file_name
 	Retrieves the data for the feed.
 	Stores the feed data in the database.
 */
-void
+long
 gautier_rss_data_write::update_rss_db_from_network (std::string db_file_name,
         std::string feed_name,
         std::string feed_url,
         std::string retrieve_limit_hrs,
         std::string retention_days)
 {
+	long response_code = 0;
+
 	set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
 	bool is_feed_still_fresh = gautier_rss_data_read::is_feed_still_fresh (db_file_name, feed_name, false);
@@ -545,7 +551,7 @@ gautier_rss_data_write::update_rss_db_from_network (std::string db_file_name,
 	if (is_feed_still_fresh == false) {
 		std::string feed_data;
 
-		long response_code = ns_data_read::download_rss_feed (feed_url, feed_data);
+		response_code = ns_data_read::download_rss_feed (feed_url, feed_data);
 
 		bool response_good = ns_data_read::is_network_response_ok (response_code);
 
@@ -564,7 +570,7 @@ gautier_rss_data_write::update_rss_db_from_network (std::string db_file_name,
 		}
 	}
 
-	return;
+	return response_code;
 }
 
 void

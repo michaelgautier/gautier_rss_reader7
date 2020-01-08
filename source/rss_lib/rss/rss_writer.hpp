@@ -171,7 +171,7 @@ namespace gautier_rss_data_write {
 		Often used during development of RSS to get RSS data samples
 		for inspection and analysis. Used to calibrate parsing functions.
 	*/
-	void
+	long
 	update_rss_xml_from_network (std::string db_file_name,
 	                             std::string feed_name,
 	                             std::string feed_url,
@@ -191,7 +191,7 @@ namespace gautier_rss_data_write {
 		XML parsing for example but can have another purpose in providing
 		an alternative source of offline/recovery information.
 	*/
-	void
+	long
 	update_rss_xml_db_from_network (std::string db_file_name,
 	                                std::string feed_name,
 	                                std::string feed_url,
@@ -206,7 +206,7 @@ namespace gautier_rss_data_write {
 		Retrieves the data for the feed.
 		Stores the feed data in the database.
 	*/
-	void
+	long
 	update_rss_db_from_network (std::string db_file_name,
 	                            std::string feed_name,
 	                            std::string feed_url,
