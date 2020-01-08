@@ -221,9 +221,9 @@ main (int argc, char** argv)
 
 	if (cli_check_time_limit->count > 0) {
 		if (feed_name.empty() == false) {
-			bool is_stale = ns_read::is_feed_stale (db_file_name, feed_name);
+			bool is_feed_still_fresh = ns_read::is_feed_stale (db_file_name, feed_name);
 
-			std::cout << "is feed network retrieval permitted: " << is_stale << "\n";
+			std::cout << "is feed network retrieval permitted: " << is_feed_still_fresh << "\n";
 		} else {
 			std::cout << "feed name missing see --rss-feedname\n";
 			exit_code = 1;

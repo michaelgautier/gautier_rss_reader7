@@ -217,9 +217,9 @@ main (int argc, char** argv)
 			std::string db_file_name = "rss_test.db";
 
 			gautier_rss_data_write::initialize_db (db_file_name);
-			bool is_stale = gautier_rss_data_read::is_feed_stale (db_file_name, feed_name);
+			bool is_feed_still_fresh = gautier_rss_data_read::is_feed_stale (db_file_name, feed_name);
 
-			if (is_stale == false) {
+			if (is_feed_still_fresh == false) {
 				ns_read::download_rss_feed (feed_url, headlines);
 
 				if (headlines.empty() == false) {

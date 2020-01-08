@@ -315,22 +315,10 @@ gautier_rss_data_write::download_feeds (std::string& db_file_name, int pause_int
 	std::vector<ns_data_read::rss_feed> rss_feeds_old;
 	std::vector<ns_data_read::rss_feed> rss_feeds_new;
 
-
 	ns_data_read::get_feed_names (db_file_name, rss_feeds_old);
 
 	/*Automatically downloads feeds according to time limit for each feed.*/
 	update_rss_feeds (db_file_name);
-
-	/*
-		Pause before download.
-		-----------------------------------------------------------------
-		Details:	d37564a59e58a324e0e02d03d76b4166c4120ed4
-		Command:	git show d37564a59e58a324e0e02d03d76b4166c4120ed4
-	*/
-	if (pause_interval_in_seconds > 0 && pause_interval_in_seconds < 121) {
-		std::cout << "PAUSE BEFORE DOWNLOAD (" << pause_interval_in_seconds << " seconds)\n";
-		std::this_thread::sleep_for (std::chrono::seconds (pause_interval_in_seconds));
-	}
 
 	ns_data_read::get_feed_names (db_file_name, rss_feeds_new);
 
@@ -338,6 +326,17 @@ gautier_rss_data_write::download_feeds (std::string& db_file_name, int pause_int
 		std::string feed_name = feed_new.feed_name;
 		std::string last_retrieved = feed_new.last_retrieved;
 		int article_count = feed_new.article_count;
+
+		/*
+			Pause before download.
+			-----------------------------------------------------------------
+			Details:	d37564a59e58a324e0e02d03d76b4166c4120ed4
+			Command:	git show d37564a59e58a324e0e02d03d76b4166c4120ed4
+		*/
+		if (pause_interval_in_seconds > 0 && pause_interval_in_seconds < 121) {
+			std::cout << "PAUSE BEFORE DOWNLOAD (" << pause_interval_in_seconds << " seconds)\n";
+			std::this_thread::sleep_for (std::chrono::seconds (pause_interval_in_seconds));
+		}
 
 		for (ns_data_read::rss_feed feed_old : rss_feeds_old) {
 			std::string snapshot_feed_name = feed_old.feed_name;
@@ -451,9 +450,9 @@ gautier_rss_data_write::update_rss_xml_from_network (std::string db_file_name,
 {
 	set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
-	bool is_stale = gautier_rss_data_read::is_feed_stale (db_file_name, feed_name);
+	bool is_feed_still_fresh = gautier_rss_data_read::is_feed_stale (db_file_name, feed_name);
 
-	if (is_stale == false) {
+	if (is_feed_still_fresh == false) {
 		std::string feed_data;
 
 		ns_data_read::download_rss_feed (feed_url, feed_data);
@@ -488,9 +487,9 @@ gautier_rss_data_write::update_rss_xml_db_from_network (std::string db_file_name
 {
 	set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
-	bool is_stale = gautier_rss_data_read::is_feed_stale (db_file_name, feed_name);
+	bool is_feed_still_fresh = gautier_rss_data_read::is_feed_stale (db_file_name, feed_name);
 
-	if (is_stale == false) {
+	if (is_feed_still_fresh == false) {
 		std::string feed_data;
 
 		ns_data_read::download_rss_feed (feed_url, feed_data);
@@ -530,9 +529,9 @@ gautier_rss_data_write::update_rss_db_from_network (std::string db_file_name,
 {
 	set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
-	bool is_stale = gautier_rss_data_read::is_feed_stale (db_file_name, feed_name);
+	bool is_feed_still_fresh = gautier_rss_data_read::is_feed_stale (db_file_name, feed_name);
 
-	if (is_stale == false) {
+	if (is_feed_still_fresh == false) {
 		std::string feed_data;
 
 		ns_data_read::download_rss_feed (feed_url, feed_data);
