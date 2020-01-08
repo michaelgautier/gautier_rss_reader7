@@ -19,6 +19,23 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 #include "rss_lib/rss_download/feed_download.hpp"
 
+static const long
+http_version = CURL_HTTP_VERSION_2TLS;
+
+static const long
+http_response_min_good = 200;
+
+static const long
+http_response_max_good = 399;
+
+void
+gautier_rss_data_read::initialize_network()
+{
+	/*Startup*/
+	curl_global_init (CURL_GLOBAL_ALL);
+
+	return;
+}
 /*
 	99% of this code comes from cURL Documentation almost verbatim.
 
@@ -59,11 +76,10 @@ WriteMemoryCallback (void* contents, size_t size, size_t nmemb, void* userp)
 	return realsize;
 }
 
-void
+long
 gautier_rss_data_read::download_rss_feed (std::string feed_url, std::string& headlines)
 {
-	/*Startup*/
-	curl_global_init (CURL_GLOBAL_ALL);
+	long response_code = 0L;
 
 	/*HTTP Request*/
 	CURL* curl_client = curl_easy_init();
@@ -72,15 +88,17 @@ gautier_rss_data_read::download_rss_feed (std::string feed_url, std::string& hea
 		struct MemoryStruct chunk;
 		chunk.memory = (char*)malloc (1);
 		chunk.size = 0;
+
 		/*
-			CURL DOC: Grow chunk as needed via reallocation.
-
-			No data at this point.
-
-			Following controls: debug only - yes/no.
+			CURL setup.
 		*/
 		curl_easy_setopt (curl_client, CURLOPT_VERBOSE, 1L);
 		curl_easy_setopt (curl_client, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
+		curl_easy_setopt (curl_client, CURLOPT_DNS_CACHE_TIMEOUT, 8L);
+		curl_easy_setopt (curl_client, CURLOPT_NOPROGRESS, 1L);
+		curl_easy_setopt (curl_client, CURLOPT_MAXREDIRS, 4L);
+		curl_easy_setopt (curl_client, CURLOPT_HTTP_VERSION, http_version);
+		curl_easy_setopt (curl_client, CURLOPT_TCP_KEEPALIVE, 1L);
 
 		curl_easy_setopt (curl_client, CURLOPT_HTTPGET, 1L);
 		curl_easy_setopt (curl_client, CURLOPT_URL, feed_url.data());
@@ -109,7 +127,6 @@ gautier_rss_data_read::download_rss_feed (std::string feed_url, std::string& hea
 		*/
 		curl_easy_setopt (curl_client, CURLOPT_USERAGENT,
 		                  "Mozilla/5.0 (X11; Linux x86_64; rv:10.0) Gecko/20100101 Firefox/10.0");
-		curl_easy_setopt (curl_client, CURLOPT_TCP_KEEPALIVE, 1L);
 
 		/*
 			HTTP header.
@@ -124,7 +141,7 @@ gautier_rss_data_read::download_rss_feed (std::string feed_url, std::string& hea
 		/*
 			DOWNLOAD the web page in xml format.
 		*/
-		int curl_response = curl_easy_perform (curl_client);
+		CURLcode curl_response = curl_easy_perform (curl_client);
 
 		/*
 			Verify response back is usable.
@@ -133,6 +150,12 @@ gautier_rss_data_read::download_rss_feed (std::string feed_url, std::string& hea
 			std::string response_data (chunk.memory);
 
 			headlines = response_data;
+		}
+
+		curl_response = curl_easy_getinfo (curl_client, CURLINFO_RESPONSE_CODE, &response_code);
+
+		if (curl_response != CURLE_OK) {
+			response_code = -1;
 		}
 
 		/*
@@ -144,6 +167,22 @@ gautier_rss_data_read::download_rss_feed (std::string feed_url, std::string& hea
 		free (chunk.memory);
 	}
 
+	curl_client = NULL;
+
+	return response_code;
+}
+
+bool
+gautier_rss_data_read::is_network_response_ok (long response_code)
+{
+	bool good = (response_code >= http_response_min_good && response_code <= http_response_max_good);
+
+	return good;
+}
+
+void
+gautier_rss_data_read::de_initialize_network()
+{
 	/*
 		Clean up following startup
 	*/

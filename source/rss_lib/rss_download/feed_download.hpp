@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Michael Gautier
+Copyright (C) 2020 Michael Gautier
 
 This source code is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.
 
@@ -16,14 +16,21 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include <string>
 
 namespace gautier_rss_data_read {
-	/*
-		Merely a wrapper for curl.
+	void
+	initialize_network();
 
+	/*
 		Gathers html/xml content into a string variable.
 
 		The string data can then be parsed.
 	*/
-	void
+	long
 	download_rss_feed (std::string feed_url, std::string& headlines);
+
+	bool
+	is_network_response_ok (long response_code);
+
+	void
+	de_initialize_network();
 }
 #endif
