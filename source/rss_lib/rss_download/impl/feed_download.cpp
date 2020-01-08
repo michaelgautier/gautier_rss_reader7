@@ -80,6 +80,7 @@ gautier_rss_data_read::download_rss_feed (std::string feed_url, std::string& hea
 			Following controls: debug only - yes/no.
 		*/
 		curl_easy_setopt (curl_client, CURLOPT_VERBOSE, 1L);
+		curl_easy_setopt (curl_client, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
 
 		curl_easy_setopt (curl_client, CURLOPT_HTTPGET, 1L);
 		curl_easy_setopt (curl_client, CURLOPT_URL, feed_url.data());
