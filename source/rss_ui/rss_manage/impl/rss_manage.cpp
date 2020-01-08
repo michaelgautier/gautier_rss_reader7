@@ -360,7 +360,7 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 
 	g_signal_connect (update_configuration_button, "clicked", G_CALLBACK (update_configuration_click), NULL);
 
-	delete_configuration_button = gtk_button_new_with_label ("delete");
+	delete_configuration_button = gtk_button_new_with_label ("Delete");
 	gautier_rss_ui_app::set_css_class (delete_configuration_button, "button");
 
 	gtk_widget_set_sensitive (delete_configuration_button, false);
