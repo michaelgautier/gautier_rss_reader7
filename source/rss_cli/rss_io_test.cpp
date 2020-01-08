@@ -241,6 +241,8 @@ main (int argc, char** argv)
 			} else {
 				std::cout << "Too early to download from remote third-party.\n";
 			}
+
+			gautier_rss_data_write::de_initialize_db (db_file_name);
 		} else {
 			std::cout << "get-rss: Missing either feed name [rss-feedname] or feed url [rss-url]\n";
 			return cleanup_argtable (argtable, exit_code);

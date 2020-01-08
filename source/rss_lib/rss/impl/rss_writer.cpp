@@ -45,6 +45,8 @@ namespace ns_parse = gautier_rss_data_parse;
 void
 gautier_rss_data_write::initialize_db (std::string db_file_name)
 {
+	ns_data_read::initialize_network();
+
 	sqlite3* db = NULL;
 	ns_db::open_db (db_file_name, &db);
 
@@ -456,9 +458,13 @@ gautier_rss_data_write::update_rss_xml_from_network (std::string db_file_name,
 	if (is_feed_still_fresh == false) {
 		std::string feed_data;
 
-		ns_data_read::download_rss_feed (feed_url, feed_data);
+		long response_code = ns_data_read::download_rss_feed (feed_url, feed_data);
 
-		update_feed_retrieved (db_file_name, feed_url);
+		bool response_good = ns_data_read::is_network_response_ok (response_code);
+
+		if (response_good) {
+			update_feed_retrieved (db_file_name, feed_url);
+		}
 
 		ns_parse::save_feed_data_to_file (feed_name, ".xml", feed_data);
 	}
@@ -493,9 +499,13 @@ gautier_rss_data_write::update_rss_xml_db_from_network (std::string db_file_name
 	if (is_feed_still_fresh == false) {
 		std::string feed_data;
 
-		ns_data_read::download_rss_feed (feed_url, feed_data);
+		long response_code = ns_data_read::download_rss_feed (feed_url, feed_data);
 
-		update_feed_retrieved (db_file_name, feed_url);
+		bool response_good = ns_data_read::is_network_response_ok (response_code);
+
+		if (response_good) {
+			update_feed_retrieved (db_file_name, feed_url);
+		}
 
 		ns_parse::save_feed_data_to_file (feed_name, ".xml", feed_data);
 
@@ -535,9 +545,13 @@ gautier_rss_data_write::update_rss_db_from_network (std::string db_file_name,
 	if (is_feed_still_fresh == false) {
 		std::string feed_data;
 
-		ns_data_read::download_rss_feed (feed_url, feed_data);
+		long response_code = ns_data_read::download_rss_feed (feed_url, feed_data);
 
-		update_feed_retrieved (db_file_name, feed_url);
+		bool response_good = ns_data_read::is_network_response_ok (response_code);
+
+		if (response_good) {
+			update_feed_retrieved (db_file_name, feed_url);
+		}
 
 		std::vector<ns_data_read::rss_article> feed_lines;
 
@@ -549,6 +563,14 @@ gautier_rss_data_write::update_rss_db_from_network (std::string db_file_name,
 			set_feed_headline (db_file_name, article);
 		}
 	}
+
+	return;
+}
+
+void
+gautier_rss_data_write::de_initialize_db (std::string db_file_name)
+{
+	ns_data_read::de_initialize_network();
 
 	return;
 }

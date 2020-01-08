@@ -212,5 +212,8 @@ namespace gautier_rss_data_write {
 	                            std::string feed_url,
 	                            std::string retrieve_limit_hrs,
 	                            std::string retention_days);
+
+	void
+	de_initialize_db (std::string db_file_name);
 }
 #endif

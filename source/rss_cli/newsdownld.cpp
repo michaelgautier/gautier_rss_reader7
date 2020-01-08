@@ -384,6 +384,10 @@ main (int argc, char** argv)
 		return cleanup_argtable (argtable, exit_code);
 	}
 
+	if (db_file_name.empty() == false) {
+		ns_write::de_initialize_db (db_file_name);
+	}
+
 	exit_code = 0;
 
 	return cleanup_argtable (argtable, exit_code);

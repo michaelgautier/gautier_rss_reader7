@@ -46,13 +46,24 @@ gautier_rss_ui_app::create()
 
 		Run the user interface.
 	*/
-	GtkApplication* application = gtk_application_new ("michael.gautier.rss", G_APPLICATION_FLAGS_NONE);
+	GtkApplication* application = gtk_application_new ("michael.gautier.rss.v7", G_APPLICATION_FLAGS_NONE);
 
 	g_signal_connect (application, "activate", G_CALLBACK (gautier_rss_ui_app::activate), NULL);
 
 	status = g_application_run (G_APPLICATION (application), 0, NULL);
 
-	g_object_unref (application);
+	/*
+		Clean-up.
+	*/
+	{
+		g_object_unref (application);
+
+		std::string db_file_name = get_db_file_name();
+		{
+			namespace ns_write = gautier_rss_data_write;
+			ns_write::de_initialize_db (db_file_name);
+		}
+	}
 
 	return status;
 }
