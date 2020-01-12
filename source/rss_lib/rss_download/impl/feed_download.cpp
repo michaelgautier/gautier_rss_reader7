@@ -97,6 +97,7 @@ gautier_rss_data_read::download_rss_feed (std::string feed_url, std::string& hea
 
 		/*Connection durations*/
 		curl_easy_setopt (curl_client, CURLOPT_DNS_CACHE_TIMEOUT, 120L);//2 minutes to cache DNS
+		curl_easy_setopt (curl_client, CURLOPT_CONNECTTIMEOUT, 54L);//54 seconds max wait time for a connection
 		curl_easy_setopt (curl_client, CURLOPT_TCP_KEEPALIVE, 1L);//1 = true; enable Keep Alive
 
 		/*Protocol configuration*/
