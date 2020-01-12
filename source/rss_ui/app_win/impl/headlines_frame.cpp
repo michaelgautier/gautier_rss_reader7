@@ -118,14 +118,6 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 				if (viewport) {
 					list_box = gtk_bin_get_child (GTK_BIN (viewport));
 				}
-
-				if (headline_index_start < 1) {
-					gtk_container_remove (GTK_CONTAINER (scroll_win), list_box);
-
-					list_box = gtk_list_box_new();
-
-					create_list_box (GTK_WIDGET (scroll_win), list_box, connect_headline_list_box_select_row_cb);
-				}
 			}
 		}
 
@@ -134,8 +126,6 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 		*/
 
 		if (list_box != NULL) {
-			gtk_widget_hide (list_box);
-
 			for (int i = headline_index_start; i < headlines_count_new; i++) {
 				//Each line should be displayed in the order stored.
 				std::string headline_text = headlines.at (i);
