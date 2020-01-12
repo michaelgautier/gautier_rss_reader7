@@ -92,16 +92,22 @@ gautier_rss_data_read::download_rss_feed (std::string feed_url, std::string& hea
 		/*
 			CURL setup.
 		*/
-		curl_easy_setopt (curl_client, CURLOPT_VERBOSE, 1L);
-		curl_easy_setopt (curl_client, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);
-		curl_easy_setopt (curl_client, CURLOPT_DNS_CACHE_TIMEOUT, 8L);
-		curl_easy_setopt (curl_client, CURLOPT_NOPROGRESS, 1L);
-		curl_easy_setopt (curl_client, CURLOPT_MAXREDIRS, 4L);
-		curl_easy_setopt (curl_client, CURLOPT_HTTP_VERSION, http_version);
-		curl_easy_setopt (curl_client, CURLOPT_TCP_KEEPALIVE, 1L);
+		curl_easy_setopt (curl_client, CURLOPT_VERBOSE, 1L);//1 = true; show everything
+		curl_easy_setopt (curl_client, CURLOPT_NOPROGRESS, 1L);//1 = true; except don't show progress text
 
-		curl_easy_setopt (curl_client, CURLOPT_HTTPGET, 1L);
-		curl_easy_setopt (curl_client, CURLOPT_URL, feed_url.data());
+		/*Connection durations*/
+		curl_easy_setopt (curl_client, CURLOPT_DNS_CACHE_TIMEOUT, 120L);//2 minutes to cache DNS
+		curl_easy_setopt (curl_client, CURLOPT_TCP_KEEPALIVE, 1L);//1 = true; enable Keep Alive
+
+		/*Protocol configuration*/
+		curl_easy_setopt (curl_client, CURLOPT_HTTP_VERSION, http_version);//Request HTTP2 connections with TLS
+		curl_easy_setopt (curl_client, CURLOPT_IPRESOLVE, CURL_IPRESOLVE_V4);//Prefer IPv4
+		curl_easy_setopt (curl_client, CURLOPT_HTTPGET, 1L);//1 = true; prefer GET requests
+
+		/*URL and response handling*/
+		curl_easy_setopt (curl_client, CURLOPT_MAXREDIRS,
+		                  4L);//Up to 4 redirects; even 1 redirect hints at possibly wrong url
+		curl_easy_setopt (curl_client, CURLOPT_URL, feed_url.data());//Connect to this URL
 
 		/*
 			CURL DOC: Send all data to this function.
