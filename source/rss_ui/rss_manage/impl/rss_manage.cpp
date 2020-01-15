@@ -352,7 +352,7 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 	/*
 		Insert/Update/Delete
 	*/
-	update_configuration_button = gtk_button_new_with_label ("Update");
+	update_configuration_button = gtk_button_new_with_label ("Save");
 	gautier_rss_ui_app::set_css_class (update_configuration_button, "button");
 
 	/*Begin with the button disabled until a valid imput is made.*/
@@ -573,6 +573,8 @@ reset_data_entry()
 
 	gtk_widget_grab_focus (feed_name_entry);
 
+	gtk_button_set_label (GTK_BUTTON (update_configuration_button), "Save");
+
 	return;
 }
 
@@ -757,6 +759,8 @@ rss_tree_view_selected (GtkTreeSelection* tree_selection, gpointer user_data)
 	row_id_now = 0;
 
 	if (row_selected) {
+		gtk_button_set_label (GTK_BUTTON (update_configuration_button), "Update");
+
 		gchar* feed_name;
 		gchar* feed_url;
 		gchar* retrieve_limit_hrs;
