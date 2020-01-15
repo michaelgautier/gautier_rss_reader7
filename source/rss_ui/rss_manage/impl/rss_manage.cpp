@@ -82,9 +82,9 @@ populate_rss_tree_view (GtkWidget* rss_tree_view);
 static void
 select_rss_tree_row_by_rss_url (std::string rss_url);
 
-GtkWidget* rss_tree_view;
-GtkListStore* list_store;
-GtkTreeSelection* rss_tree_selection_manager;
+static GtkWidget* rss_tree_view;
+static GtkListStore* list_store;
+static GtkTreeSelection* rss_tree_selection_manager;
 
 /*
 	Update Button
@@ -98,7 +98,7 @@ update_configuration_click (GtkButton* button, gpointer user_data);
 /*
 	Delete Button
 */
-GtkWidget* delete_configuration_button;
+static GtkWidget* delete_configuration_button;
 
 extern "C"
 void
@@ -107,7 +107,7 @@ delete_configuration_click (GtkButton* button, gpointer user_data);
 /*
 	Reset Button
 */
-GtkWidget* reset_configuration_button;
+static GtkWidget* reset_configuration_button;
 
 extern "C"
 void
@@ -119,8 +119,8 @@ reset_data_entry();
 /*
 	Feed name/url
 */
-GtkWidget* feed_name_entry;
-GtkWidget* feed_url_entry;
+static GtkWidget* feed_name_entry;
+static GtkWidget* feed_url_entry;
 
 /*
 	Feed Name Entry - Callbacks
@@ -165,8 +165,8 @@ check_feed_keys (GtkEntryBuffer* feed_name_buffer, GtkEntryBuffer* feed_url_buff
 /*
 	RSS configuration options.
 */
-GtkWidget* feed_refresh_interval;
-GtkWidget* feed_retention_option;
+static GtkWidget* feed_refresh_interval;
+static GtkWidget* feed_retention_option;
 
 void
 gautier_rss_win_rss_manage::set_modification_queue (std::queue<gautier_rss_data_read::rss_feed_mod>* updates)
@@ -376,7 +376,6 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 	gtk_widget_set_sensitive (reset_configuration_button, true);
 
 	g_signal_connect (reset_configuration_button, "clicked", G_CALLBACK (reset_configuration_click), NULL);
-
 
 	/*
 		Layout and arrange
