@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Michael Gautier
+Copyright (C) 2020 Michael Gautier
 
 This source code is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.
 
@@ -13,19 +13,40 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include "rss_ui/application.hpp"
 #include "rss_ui/app_win/headlines_frame.hpp"
 
-#include <stdio.h>
-#include <iostream>
-#include <thread>
-
 static int
 headlines_section_width = 0;
 
-static
-void (*connect_headline_list_box_select_row_cb) (GtkWidget*);
+/*
+	Headline Model
+*/
+static int
+col_pos_feed_name = 0;
+
+static int
+col_pos_headline_text = 1;
+
+static int
+col_pos_article_summary = 2;
+
+static int
+col_pos_article_text = 3;
+
+static int
+col_pos_article_date = 4;
+
+static int
+col_pos_article_url = 5;
+
+static int
+col_pos_stop = -1;
 
 static void
-create_list_box (GtkWidget* scroll_container, GtkWidget* list_box,
-                 void (*connect_headline_list_box_select_row) (GtkWidget*));
+initialize_headlines_list_view (GtkWidget* scroll_container, GtkWidget* headlines_list_view,
+                                void (*headline_view_select_row) (GtkTreeSelection*, gpointer));
+
+static void
+get_row_data (GtkTreeSelection* tree_selection, std::string& feed_name, std::string& headline_text,
+              std::string& article_summary, std::string& article_text, std::string& article_date, std::string& article_url);
 
 void
 gautier_rss_win_main_headlines_frame::initialize_headline_view (GtkWidget* headlines_view, int monitor_width,
@@ -46,17 +67,15 @@ gautier_rss_win_main_headlines_frame::initialize_headline_view (GtkWidget* headl
 void
 gautier_rss_win_main_headlines_frame::add_headline_page (GtkWidget* headlines_view, std::string& feed_name,
         int position,
-        void (*connect_headline_list_box_select_row) (GtkWidget*))
+        void (*headline_view_select_row) (GtkTreeSelection*, gpointer))
 {
-	connect_headline_list_box_select_row_cb = connect_headline_list_box_select_row;
-
 	GtkWidget* scroll_win = gtk_scrolled_window_new (NULL, NULL);
 
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll_win), GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
 
-	GtkWidget* list_box = gtk_list_box_new();
+	GtkWidget* headlines_list_view = gtk_tree_view_new();
 
-	create_list_box (scroll_win, list_box, connect_headline_list_box_select_row);
+	initialize_headlines_list_view (scroll_win, headlines_list_view, headline_view_select_row);
 
 	if (position < 0) {
 		gtk_notebook_append_page (GTK_NOTEBOOK (headlines_view), scroll_win, gtk_label_new (feed_name.data()));
@@ -82,66 +101,74 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 	int headlines_count_new = headlines.size();
 
 	if (headlines_count_new > -1) {
-		GtkWidget* tab = NULL;
-
-		std::string tab_label;
-		int tab_n = -1;
-
-		gint page_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
-
-		for (int tab_i = 0; tab_i < page_count; tab_i++) {
-			tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
-
-			const gchar* tab_text = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
-
-			tab_label = tab_text;
-
-			if (feed_name == tab_label) {
-				tab_n = tab_i;
-				break;
-			} else {
-				tab = NULL;
-			}
-		}
+		GtkWidget* headlines_list_view = NULL;
 
 		/*
-			Get the list box
+			Tab (contents)
 		*/
-		GtkWidget* list_box = NULL;
+		{
+			GtkWidget* tab = NULL;
 
-		if (tab != NULL) {
-			GtkScrolledWindow* scroll_win = GTK_SCROLLED_WINDOW (tab);
+			int tab_i = get_tab_contents_container_by_feed_name (GTK_NOTEBOOK (headlines_view), feed_name, &tab);
 
-			if (scroll_win) {
-				GtkWidget* viewport = gtk_bin_get_child (GTK_BIN (scroll_win));
+			/*
+				Headlines List Widget
+			*/
+			if (tab_i > -1 && tab) {
+				GtkScrolledWindow* scroll_win = GTK_SCROLLED_WINDOW (tab);
 
-				if (viewport) {
-					list_box = gtk_bin_get_child (GTK_BIN (viewport));
-				}
+				gautier_rss_ui_app::get_scroll_content_as_list_view (scroll_win, &headlines_list_view);
 			}
 		}
 
 		/*
 			Populate list box.
 		*/
+		if (headlines_list_view != NULL) {
+			GtkTreeModel* list_model = gtk_tree_view_get_model (GTK_TREE_VIEW (headlines_list_view));
+			GtkListStore* list_store = GTK_LIST_STORE (list_model);
 
-		if (list_box != NULL) {
-			for (int i = headline_index_start; i < headlines_count_new; i++) {
-				//Each line should be displayed in the order stored.
-				std::string headline_text = headlines.at (i);
-
-				GtkWidget* headline_label = gtk_label_new (headline_text.data());
-
-				gtk_label_set_selectable (GTK_LABEL (headline_label), false);
-				gtk_label_set_single_line_mode (GTK_LABEL (headline_label), true);
-				gtk_label_set_line_wrap (GTK_LABEL (headline_label), false);
-
-				gtk_widget_set_halign (headline_label, GTK_ALIGN_START);
-
-				gtk_list_box_insert (GTK_LIST_BOX (list_box), headline_label, i);
+			if (headline_index_start == 0) {
+				gtk_list_store_clear (list_store);
 			}
 
-			gtk_widget_show_all (list_box);
+			std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
+
+			gautier_rss_data_read::rss_article rss_data;
+
+			GtkTreeIter iter;
+
+			for (int i = headline_index_start; i < headlines_count_new; i++) {
+				std::string headline_text = headlines.at (i);
+
+				gautier_rss_data_read::get_feed_article_summary (db_file_name, feed_name,
+				        headline_text,
+				        rss_data);
+
+				gchar* feed_name_data = feed_name.data();
+				gchar* headline_text_data = headline_text.data();
+				gchar* article_summary_data = rss_data.article_summary.data();
+				gchar* article_text_data = rss_data.article_text.data();
+				gchar* article_date_data = rss_data.article_date.data();
+				gchar* article_url_data = rss_data.url.data();
+
+				/*
+					Adds a new row in the Tree Model.
+				*/
+				gtk_list_store_append (list_store, &iter);
+
+				/*
+					Links specific data to column positions in the row.
+				*/
+				gtk_list_store_set (list_store, &iter,
+				                    col_pos_feed_name, feed_name_data,
+				                    col_pos_headline_text, headline_text_data,
+				                    col_pos_article_summary, article_summary_data,
+				                    col_pos_article_text, article_text_data,
+				                    col_pos_article_date, article_date_data,
+				                    col_pos_article_url, article_url_data,
+				                    col_pos_stop);
+			}
 		}
 	}
 
@@ -150,28 +177,23 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 
 void
 gautier_rss_win_main_headlines_frame::select_headline (gautier_rss_data_read::rss_article& rss_data,
-        GtkListBoxRow* headline_row)
+        GtkTreeSelection* headline_row)
 {
-	GtkWidget* headline_label = NULL;
-	{
-		GtkBin* bin = GTK_BIN (headline_row);
+	if (headline_row) {
+		std::string feed_name;
+		std::string headline_text;
+		std::string article_summary;
+		std::string article_text;
+		std::string article_date;
+		std::string article_url;
 
-		if (bin) {
-			headline_label = gtk_bin_get_child (bin);
-		}
-	}
-
-	if (headline_label) {
-		const gchar*
-		headline_text = gtk_label_get_text (GTK_LABEL (headline_label));
+		get_row_data (headline_row, feed_name, headline_text, article_summary, article_text, article_date, article_url);
 
 		rss_data.headline = headline_text;
-
-		std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
-
-		gautier_rss_data_read::get_feed_article_summary (db_file_name, rss_data.feed_name,
-		        rss_data.headline,
-		        rss_data);
+		rss_data.article_summary = article_summary;
+		rss_data.article_text = article_text;
+		rss_data.article_date = article_date;
+		rss_data.url = article_url;
 	}
 
 	return;
@@ -182,53 +204,41 @@ gautier_rss_win_main_headlines_frame::select_headline_row (GtkWidget* headlines_
         int headline_row_index)
 {
 	if (headline_row_index > -1) {
-		GtkWidget* tab = NULL;
+		GtkWidget* headlines_list_view = NULL;
 
-		std::string tab_label;
-		int tab_n = -1;
+		/*
+			Tab (contents)
+		*/
+		{
+			GtkWidget* tab = NULL;
 
-		gint page_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
+			int tab_i = get_tab_contents_container_by_feed_name (GTK_NOTEBOOK (headlines_view), feed_name, &tab);
 
-		for (int tab_i = 0; tab_i < page_count; tab_i++) {
-			tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
+			/*
+				Headlines List Widget
+			*/
+			if (tab_i > -1 && tab) {
+				GtkScrolledWindow* scroll_win = GTK_SCROLLED_WINDOW (tab);
 
-			const gchar* tab_text = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
-
-			tab_label = tab_text;
-
-			if (feed_name == tab_label) {
-				tab_n = tab_i;
-				break;
-			} else {
-				tab = NULL;
+				gautier_rss_ui_app::get_scroll_content_as_list_view (scroll_win, &headlines_list_view);
 			}
 		}
 
 		/*
-			Get the list box
+			Select row.
 		*/
-		GtkWidget* list_box = NULL;
+		if (headlines_list_view != NULL) {
+			bool data_entry_in_cell_is_enabled = false;
 
-		if (tab != NULL) {
-			GtkScrolledWindow* scroll_win = GTK_SCROLLED_WINDOW (tab);
+			GtkTreeViewColumn* headline_column = gtk_tree_view_get_column (GTK_TREE_VIEW (headlines_list_view),
+			                                     col_pos_headline_text);
 
-			if (scroll_win) {
-				GtkWidget* viewport = gtk_bin_get_child (GTK_BIN (scroll_win));
+			std::string row_path_query = std::to_string (headline_row_index);
 
-				if (viewport) {
-					list_box = gtk_bin_get_child (GTK_BIN (viewport));
-				}
-			}
-		}
+			GtkTreePath* row_path = gtk_tree_path_new_from_string (row_path_query.data());
 
-		/*
-			Populate list box.
-		*/
-
-		if (list_box != NULL) {
-			GtkListBoxRow* headline_row = gtk_list_box_get_row_at_index (GTK_LIST_BOX (list_box), headline_row_index);
-
-			gtk_list_box_select_row (GTK_LIST_BOX (list_box), headline_row);
+			gtk_tree_view_set_cursor (GTK_TREE_VIEW (headlines_list_view), row_path, headline_column,
+			                          data_entry_in_cell_is_enabled);
 		}
 	}
 
@@ -242,18 +252,104 @@ gautier_rss_win_main_headlines_frame::get_default_headlines_view_content_width()
 }
 
 static void
-create_list_box (GtkWidget* scroll_container, GtkWidget* list_box,
-                 void (*connect_headline_list_box_select_row) (GtkWidget*))
+initialize_headlines_list_view (GtkWidget* scroll_container, GtkWidget* headlines_list_view,
+                                void (*headline_view_select_row) (GtkTreeSelection*, gpointer))
 {
-	gtk_widget_set_size_request (list_box, headlines_section_width, -1);
+	gtk_widget_set_size_request (headlines_list_view, headlines_section_width, -1);
 
-	gtk_list_box_set_selection_mode (GTK_LIST_BOX (list_box), GTK_SELECTION_BROWSE);
+	/*
+		Column: Feed Name
+	*/
+	GtkCellRenderer* column_renderer_headline_text = gtk_cell_renderer_text_new();
+	GtkTreeViewColumn* column_headline_text = gtk_tree_view_column_new_with_attributes ("Headlines",
+	        column_renderer_headline_text, "text", col_pos_headline_text, NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (headlines_list_view), column_headline_text);
 
-	gtk_container_add (GTK_CONTAINER (scroll_container), list_box);
+	/*
+		Tree Model to describe the columns
+	*/
+	GtkListStore* list_store = gtk_list_store_new (6 /*6 columns*/,
+	                           G_TYPE_STRING,/*feed name*/
+	                           G_TYPE_STRING,/*headline*/
+	                           G_TYPE_STRING,/*article summary*/
+	                           G_TYPE_STRING,/*article text*/
+	                           G_TYPE_STRING,/*article date*/
+	                           G_TYPE_STRING /*article url*/);
 
-	if (connect_headline_list_box_select_row) {
-		connect_headline_list_box_select_row (list_box);
+	gtk_tree_view_set_model (GTK_TREE_VIEW (headlines_list_view), GTK_TREE_MODEL (list_store));
+
+	gtk_container_add (GTK_CONTAINER (scroll_container), headlines_list_view);
+
+	if (headline_view_select_row) {
+		GtkTreeSelection* rss_headline_selection_manager = gtk_tree_view_get_selection (GTK_TREE_VIEW (
+		            headlines_list_view));
+		gtk_tree_selection_set_mode (rss_headline_selection_manager, GTK_SELECTION_SINGLE);
+
+		g_signal_connect (rss_headline_selection_manager, "changed", G_CALLBACK (headline_view_select_row), NULL);
 	}
 
 	return;
+}
+
+static void
+get_row_data (GtkTreeSelection* tree_selection, std::string& feed_name, std::string& headline_text,
+              std::string& article_summary, std::string& article_text, std::string& article_date, std::string& article_url)
+{
+	/*
+		GTK documentation says this will not work if the selection mode is GTK_SELECTION_MULTIPLE.
+	*/
+	GtkTreeModel* tree_model;
+	GtkTreeIter tree_iterator;
+
+	bool row_selected = gtk_tree_selection_get_selected (tree_selection, &tree_model, &tree_iterator);
+
+	if (row_selected) {
+		gchar* feed_name_data;
+		gchar* headline_text_data;
+		gchar* article_summary_data;
+		gchar* article_text_data;
+		gchar* article_date_data;
+		gchar* article_url_data;
+
+		gtk_tree_model_get (tree_model, &tree_iterator, col_pos_feed_name, &feed_name_data, -1);
+		gtk_tree_model_get (tree_model, &tree_iterator, col_pos_headline_text, &headline_text_data, -1);
+		gtk_tree_model_get (tree_model, &tree_iterator, col_pos_article_summary, &article_summary_data, -1);
+		gtk_tree_model_get (tree_model, &tree_iterator, col_pos_article_text, &article_text_data, -1);
+		gtk_tree_model_get (tree_model, &tree_iterator, col_pos_article_date, &article_date_data, -1);
+		gtk_tree_model_get (tree_model, &tree_iterator, col_pos_article_url, &article_url_data, -1);
+
+		feed_name = feed_name_data;
+		headline_text = headline_text_data;
+		article_summary = article_summary_data;
+		article_text = article_text_data;
+		article_date = article_date_data;
+		article_url = article_url_data;
+	}
+
+	return;
+}
+
+int
+gautier_rss_win_main_headlines_frame::get_tab_contents_container_by_feed_name (GtkNotebook* headlines_view,
+        std::string& feed_name,
+        GtkWidget** notebook_tab)
+{
+	int tab_n = -1;
+
+	int page_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
+
+	for (int tab_i = 0; tab_i < page_count; tab_i++) {
+		GtkWidget* tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
+
+		std::string tab_label = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
+
+		if (feed_name == tab_label) {
+			tab_n = tab_i;
+
+			*notebook_tab = tab;
+			break;
+		}
+	}
+
+	return tab_n;
 }

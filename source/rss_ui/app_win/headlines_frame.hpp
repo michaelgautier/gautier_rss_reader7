@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Michael Gautier
+Copyright (C) 2020 Michael Gautier
 
 This source code is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.
 
@@ -26,19 +26,23 @@ namespace gautier_rss_win_main_headlines_frame {
 
 	void
 	add_headline_page (GtkWidget* headlines_view, std::string& feed_name, int position,
-	                   void (*connect_headline_list_box_select_row) (GtkWidget*));
+	                   void (*headline_view_select_row) (GtkTreeSelection*, gpointer));
 
 	void
 	show_headlines (GtkWidget* headlines_view, std::string feed_name, int headline_index_start,
 	                std::vector<std::string>& headlines);
 
 	void
-	select_headline (gautier_rss_data_read::rss_article& rss_data, GtkListBoxRow* headline_row);
+	select_headline (gautier_rss_data_read::rss_article& rss_data, GtkTreeSelection* headline_row);
 
 	void
 	select_headline_row (GtkWidget* headlines_view, std::string feed_name, int headline_row_index);
 
 	int
 	get_default_headlines_view_content_width();
+
+	int
+	get_tab_contents_container_by_feed_name (GtkNotebook* headlines_view, std::string& feed_name,
+	        GtkWidget** notebook_tab);
 }
 #endif
