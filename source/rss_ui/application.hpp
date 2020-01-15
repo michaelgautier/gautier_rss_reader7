@@ -30,6 +30,9 @@ namespace gautier_rss_ui_app {
 	std::string
 	get_gtk_class_type_name (GtkWidget* widget);
 
+	void
+	get_scroll_content_as_list_view (GtkScrolledWindow* scroll_win, GtkWidget** list_view);
+
 	std::string
 	get_db_file_name();
 

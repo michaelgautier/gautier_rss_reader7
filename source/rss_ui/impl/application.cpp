@@ -116,6 +116,33 @@ gautier_rss_ui_app::get_gtk_class_type_name (GtkWidget* widget)
 
 	return widget_type_name;
 }
+
+void
+gautier_rss_ui_app::get_scroll_content_as_list_view (GtkScrolledWindow* scroll_win, GtkWidget** list_view)
+{
+	if (scroll_win) {
+		GtkWidget* viewport = gtk_bin_get_child (GTK_BIN (scroll_win));
+
+		std::string gtk_widget_type_name = get_gtk_class_type_name (viewport);
+
+		if (viewport) {
+			if (gtk_widget_type_name == "GtkTextView" ||
+			        gtk_widget_type_name == "GtkTreeView" ||
+			        gtk_widget_type_name == "GtkIconView") {
+				*list_view = viewport;
+			} else {
+				GtkWidget* bin_list_view = gtk_bin_get_child (GTK_BIN (viewport));
+
+				if (bin_list_view) {
+					*list_view = bin_list_view;
+				}
+			}
+		}
+	}
+
+	return;
+}
+
 /*
 	Database
 
