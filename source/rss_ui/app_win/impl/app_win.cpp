@@ -1,5 +1,5 @@
 /*
-Copyright (C) 2019 Michael Gautier
+Copyright (C) 2020 Michael Gautier
 
 This source code is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.
 
@@ -83,13 +83,7 @@ headline_view_switch_page (GtkNotebook* headlines_view,
 
 extern "C"
 void
-headline_view_select_row (GtkListBox*    box,
-                          GtkListBoxRow* row,
-                          gpointer       user_data);
-
-extern "C"
-void
-connect_headline_list_box_select_row (GtkWidget* list_box);
+headline_view_select_row (GtkTreeSelection* tree_selection, gpointer user_data);
 
 extern "C"
 void
@@ -504,27 +498,15 @@ headline_view_switch_page (GtkNotebook* headlines_view,
 	Choose a new headline.
 */
 void
-connect_headline_list_box_select_row (GtkWidget* list_box)
+headline_view_select_row (GtkTreeSelection* tree_selection, gpointer user_data)
 {
-	g_signal_connect (list_box, "row-selected", G_CALLBACK (headline_view_select_row), NULL);
-
-	return;
-}
-
-void
-headline_view_select_row (GtkListBox*    list_box,
-                          GtkListBoxRow* headline_row,
-                          gpointer       user_data)
-{
-	if (list_box && headline_row) {
-		headline_row_index = gtk_list_box_row_get_index (headline_row);
-
+	if (tree_selection) {
 		/*
 			Clear feed headline/article data.
 		*/
 		ns_data_read::clear_feed_data_keep_name (_feed_data);
 
-		gautier_rss_win_main_headlines_frame::select_headline (_feed_data, headline_row);
+		gautier_rss_win_main_headlines_frame::select_headline (_feed_data, tree_selection);
 
 		/*
 			Article date.
@@ -571,7 +553,6 @@ headline_view_select_row (GtkListBox*    list_box,
 		}
 
 		gtk_widget_set_tooltip_text (view_article_button, _feed_data.url.data());
-		gtk_widget_set_tooltip_text (GTK_WIDGET (headline_row), _feed_data.url.data());
 	}
 
 	return;
@@ -674,7 +655,7 @@ populate_rss_tabs()
 	for (ns_data_read::rss_feed feed : feed_names) {
 		std::string feed_name = feed.feed_name;
 
-		ns::add_headline_page (headlines_view, feed_name, -1, connect_headline_list_box_select_row);
+		ns::add_headline_page (headlines_view, feed_name, -1, headline_view_select_row);
 
 		/*
 			RSS headlines.
@@ -763,40 +744,21 @@ update_tab (ns_data_read::rss_feed_mod& modification)
 
 	bool is_insert = status == ns_data_read::rss_feed_mod_status::insert;
 
+	namespace ns = gautier_rss_win_main_headlines_frame;
+
 	if (is_insert == false) {
-		int tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
-
 		GtkWidget* tab = NULL;
-		std::string tab_label;
-		int tab_n = -1;
 
-		for (int tab_i = 0; tab_i < tab_count; tab_i++) {
-			tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
+		int tab_i = ns::get_tab_contents_container_by_feed_name (GTK_NOTEBOOK (headlines_view), feed_name, &tab);
 
-			if (tab == NULL) {
-				continue;
-			}
-
-			const gchar* tab_text = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
-
-			tab_label = tab_text;
-
-			if (feed_name == tab_label) {
-				tab_n = tab_i;
-				break;
-			} else {
-				tab = NULL;
-			}
-		}
-
-		if (tab_n > -1 && tab != NULL && tab_label.empty() == false && tab_label == feed_name) {
+		if (tab_i > -1 && tab) {
 			switch (status) {
 				case ns_data_read::rss_feed_mod_status::remove: {
 						gtk_widget_hide (tab);
 
 						make_user_note (feed_name + " DELETED.");
 
-						gtk_notebook_remove_page (GTK_NOTEBOOK (headlines_view), tab_n);
+						gtk_notebook_remove_page (GTK_NOTEBOOK (headlines_view), tab_i);
 
 						feed_changes.pop();
 					}
@@ -829,11 +791,9 @@ update_tab (ns_data_read::rss_feed_mod& modification)
 			}
 		}
 	} else if (is_insert) {
-		namespace ns = gautier_rss_win_main_headlines_frame;
-
 		int tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
 
-		ns::add_headline_page (headlines_view, feed_name, tab_count + 1, connect_headline_list_box_select_row);
+		ns::add_headline_page (headlines_view, feed_name, tab_count + 1, headline_view_select_row);
 
 		tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
 
