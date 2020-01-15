@@ -1,0 +1,5333 @@
+{
+   SUPP_000001
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   obj:/usr/lib64/libdbus-1.so.3.19.11
+   fun:_dbus_read
+   obj:/usr/lib64/libdbus-1.so.3.19.11
+   obj:/usr/lib64/libdbus-1.so.3.19.11
+   obj:/usr/lib64/libdbus-1.so.3.19.11
+   obj:/usr/lib64/libdbus-1.so.3.19.11
+   obj:/usr/lib64/libdbus-1.so.3.19.11
+   obj:/usr/lib64/libdbus-1.so.3.19.11
+   fun:dbus_connection_send_with_reply_and_block
+   fun:dbus_bus_register
+   fun:atspi_get_a11y_bus
+   fun:atk_bridge_adaptor_init
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_closure_invoke
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+}
+{
+   SUPP_000002
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   obj:/usr/lib64/libdbus-1.so.3.19.11
+   obj:/usr/lib64/libdbus-1.so.3.19.11
+   obj:/usr/lib64/libdbus-1.so.3.19.11
+   obj:/usr/lib64/libdbus-1.so.3.19.11
+   obj:/usr/lib64/libdbus-1.so.3.19.11
+   obj:/usr/lib64/libdbus-1.so.3.19.11
+   obj:/usr/lib64/libdbus-1.so.3.19.11
+   fun:dbus_connection_send_with_reply_and_block
+   fun:dbus_bus_register
+   fun:atspi_get_a11y_bus
+   fun:atk_bridge_adaptor_init
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_closure_invoke
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+}
+{
+   SUPP_000003
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/lib64/libpixman-1.so.0.38.4
+   obj:/usr/lib64/libpixman-1.so.0.38.4
+   obj:/usr/lib64/libpixman-1.so.0.38.4
+   obj:/usr/lib64/libpixman-1.so.0.38.4
+   fun:call_init.part.0
+   fun:_dl_init
+   obj:/usr/lib64/ld-2.30.so
+}
+{
+   SUPP_000004
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/lib64/libpixman-1.so.0.38.4
+   obj:/usr/lib64/libpixman-1.so.0.38.4
+   obj:/usr/lib64/libpixman-1.so.0.38.4
+   obj:/usr/lib64/libpixman-1.so.0.38.4
+   fun:call_init.part.0
+   fun:_dl_init
+   obj:/usr/lib64/ld-2.30.so
+}
+{
+   SUPP_000005
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/lib64/libpixman-1.so.0.38.4
+   obj:/usr/lib64/libpixman-1.so.0.38.4
+   obj:/usr/lib64/libpixman-1.so.0.38.4
+   obj:/usr/lib64/libpixman-1.so.0.38.4
+   obj:/usr/lib64/libpixman-1.so.0.38.4
+   fun:call_init.part.0
+   fun:_dl_init
+   obj:/usr/lib64/ld-2.30.so
+}
+{
+   SUPP_000006
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/lib64/libpixman-1.so.0.38.4
+   obj:/usr/lib64/libpixman-1.so.0.38.4
+   obj:/usr/lib64/libpixman-1.so.0.38.4
+   obj:/usr/lib64/libpixman-1.so.0.38.4
+   obj:/usr/lib64/libpixman-1.so.0.38.4
+   fun:call_init.part.0
+   fun:_dl_init
+   obj:/usr/lib64/ld-2.30.so
+}
+{
+   SUPP_000007
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/lib64/libpixman-1.so.0.38.4
+   obj:/usr/lib64/libpixman-1.so.0.38.4
+   obj:/usr/lib64/libpixman-1.so.0.38.4
+   obj:/usr/lib64/libpixman-1.so.0.38.4
+   fun:call_init.part.0
+   fun:_dl_init
+   obj:/usr/lib64/ld-2.30.so
+}
+{
+   SUPP_000008
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/lib64/libpixman-1.so.0.38.4
+   obj:/usr/lib64/libpixman-1.so.0.38.4
+   obj:/usr/lib64/libpixman-1.so.0.38.4
+   obj:/usr/lib64/libpixman-1.so.0.38.4
+   fun:call_init.part.0
+   fun:_dl_init
+   obj:/usr/lib64/ld-2.30.so
+}
+{
+   SUPP_000009
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_scaled_font_create
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_glyph_string_extents_range
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_widget_get_preferred_width
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000011
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:_XEnq
+   obj:/usr/lib64/libX11.so.6.3.0
+   fun:_XReply
+   fun:XQueryExtension
+   fun:XInitExtension
+   fun:XFixesFindDisplay
+   fun:XFixesQueryExtension
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   fun:gdk_display_manager_open_display
+   fun:gtk_init_check
+   fun:gtk_init
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   fun:g_application_register
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+}
+{
+   SUPP_0000012
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   fun:g_type_create_instance
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000013
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   fun:g_type_create_instance
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000014
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   fun:rsvg_rust_handle_close
+   obj:/usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+   fun:gdk_pixbuf_loader_close
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+   fun:gdk_pixbuf_new_from_stream_at_scale
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000015
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   fun:xmlParseStartTag
+   obj:/usr/lib64/libxml2.so.2.9.10
+   fun:xmlParseElement
+   fun:xmlParseDocument
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   fun:rsvg_rust_handle_close
+   obj:/usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+   fun:gdk_pixbuf_loader_close
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+}
+{
+   SUPP_0000016
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_scaled_font_create
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_show_glyphs
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_renderer_draw_glyph_item
+   fun:pango_renderer_draw_layout_line
+   fun:pango_renderer_draw_layout
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:gtk_render_layout
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000017
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:_XlcCreateLocaleDataBase
+   obj:/usr/lib64/libX11.so.6.3.0
+   obj:/usr/lib64/libX11.so.6.3.0
+   fun:_XlcCreateLC
+   fun:_XlcUtf8Loader
+   fun:_XOpenLC
+   fun:_XrmInitParseInfo
+   obj:/usr/lib64/libX11.so.6.3.0
+   fun:XrmGetStringDatabase
+   obj:/usr/lib64/libX11.so.6.3.0
+   fun:XGetDefault
+   fun:_XcursorGetDisplayInfo
+   fun:XcursorGetTheme
+   fun:gdk_x11_display_set_cursor_theme
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000018
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:realloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   fun:FcFontRenderPrepare
+   fun:FcFontMatch
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:pango_itemize_with_base_dir
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000019
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:realloc
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   fun:hb_ot_layout_table_find_feature_variations
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   fun:hb_shape_plan_create_cached2
+   fun:hb_shape_full
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:pango_shape_with_flags
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000020
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+}
+{
+   SUPP_0000021
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:realloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   fun:FcFontRenderPrepare
+   fun:FcFontMatch
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   fun:pango_context_get_metrics
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_widget_get_preferred_width
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000022
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:realloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   fun:FcFontRenderPrepare
+   fun:FcFontMatch
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:pango_itemize_with_base_dir
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:gtk_text_layout_get_line_display
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_text_layout_validate_yrange
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000023
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_scaled_font_glyph_extents
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_glyph_string_extents_range
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_cell_renderer_get_preferred_width
+   fun:gtk_cell_area_request_renderer
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_tree_view_column_cell_get_size
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000024
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:_XEnq
+   obj:/usr/lib64/libX11.so.6.3.0
+   fun:_XReply
+   fun:XInternAtom
+   fun:gdk_x11_atom_to_xatom_for_display
+   fun:gdk_x11_window_set_utf8_property
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_closure_invoke
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   fun:gtk_widget_realize
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_closure_invoke
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+}
+{
+   SUPP_0000025
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:g_malloc
+   fun:g_strdup
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:gtk_tree_model_get_valist
+   fun:gtk_tree_model_get
+   fun:_ZL12get_row_dataP17_GtkTreeSelectionRNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES7_S7_S7_S7_S7_
+   fun:_ZN36gautier_rss_win_main_headlines_frame15select_headlineERN21gautier_rss_data_read11rss_articleEP17_GtkTreeSelection
+   fun:headline_view_select_row
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+}
+{
+   SUPP_0000026
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   obj:/usr/lib64/libfreetype.so.6.17.0
+   obj:/usr/lib64/libfreetype.so.6.17.0
+   obj:/usr/lib64/libfreetype.so.6.17.0
+   obj:/usr/lib64/libfreetype.so.6.17.0
+   obj:/usr/lib64/libfreetype.so.6.17.0
+   obj:/usr/lib64/libfreetype.so.6.17.0
+   obj:/usr/lib64/libfreetype.so.6.17.0
+   fun:FT_Load_Glyph
+   obj:/usr/lib64/libfreetype.so.6.17.0
+   fun:FT_Load_Glyph
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_scaled_font_glyph_extents
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_glyph_string_extents_range
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+}
+{
+   SUPP_0000027
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+}
+{
+   SUPP_0000028
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+}
+{
+   SUPP_0000029
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:realloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   fun:FcFontRenderPrepare
+   fun:FcFontMatch
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   fun:hb_shape_plan_execute
+   fun:hb_shape_full
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:pango_shape_with_flags
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+}
+{
+   SUPP_0000030
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:_dl_new_object
+   fun:_dl_map_object_from_fd
+   fun:_dl_map_object
+   fun:openaux
+   fun:_dl_catch_exception
+   fun:_dl_map_object_deps
+   fun:dl_open_worker
+   fun:_dl_catch_exception
+   fun:_dl_open
+   fun:dlopen_doit
+   fun:_dl_catch_exception
+   fun:_dl_catch_error
+   fun:_dlerror_run
+   fun:dlopen@@GLIBC_2.2.5
+   fun:g_module_open
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+}
+{
+   SUPP_0000031
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   fun:g_type_create_instance
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000032
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:xcb_connect_to_fd
+   fun:xcb_connect_to_display_with_auth_info
+   fun:_XConnectXCB
+   fun:XOpenDisplay
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   fun:gdk_display_manager_open_display
+   fun:gtk_init_check
+   fun:gtk_init
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   fun:g_application_register
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_application_run
+   fun:_ZN18gautier_rss_ui_app6createEv
+   fun:main
+}
+{
+   SUPP_0000033
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:g_malloc0
+   fun:g_rand_new_with_seed_array
+   fun:g_rand_new
+   fun:g_random_int
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_text_layout_set_buffer
+   fun:gtk_text_view_set_buffer
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   fun:_ZN20gautier_rss_win_main6createEP15_GtkApplicationPv
+   fun:activate
+}
+{
+   SUPP_0000034
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_fill
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_container_propagate_draw
+}
+{
+   SUPP_0000035
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:realloc
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   fun:hb_ot_layout_table_find_feature_variations
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   fun:hb_shape_plan_create_cached2
+   fun:hb_shape_full
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:pango_shape_with_flags
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000036
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_key_file_get_string_list
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_app_info_get_default_for_type
+   fun:g_app_info_get_default_for_uri_scheme
+   fun:g_app_info_launch_default_for_uri_async
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_show_uri_on_window
+   fun:rss_operation_click
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+}
+{
+   SUPP_0000037
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_app_info_get_default_for_type
+   fun:g_app_info_get_default_for_uri_scheme
+   fun:g_app_info_launch_default_for_uri_async
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_show_uri_on_window
+   fun:rss_operation_click
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+}
+{
+   SUPP_0000038
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   fun:rsvg_rust_handle_close
+   obj:/usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+   fun:gdk_pixbuf_loader_close
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+   fun:gdk_pixbuf_new_from_stream_at_scale
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000039
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   fun:rsvg_rust_handle_close
+   obj:/usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+   fun:gdk_pixbuf_loader_close
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+   fun:gdk_pixbuf_new_from_stream_at_scale
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000040
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   fun:rsvg_rust_handle_close
+   obj:/usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+   fun:gdk_pixbuf_loader_close
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+   fun:gdk_pixbuf_new_from_stream_at_scale
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000041
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   fun:rsvg_rust_handle_close
+   obj:/usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+   fun:gdk_pixbuf_loader_close
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+   fun:gdk_pixbuf_new_from_stream_at_scale
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000042
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   fun:rsvg_rust_handle_close
+   obj:/usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+   fun:gdk_pixbuf_loader_close
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+   fun:gdk_pixbuf_new_from_stream_at_scale
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000043
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   fun:rsvg_rust_handle_close
+   obj:/usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+   fun:gdk_pixbuf_loader_close
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+   fun:gdk_pixbuf_new_from_stream_at_scale
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000044
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   fun:rsvg_rust_handle_close
+   obj:/usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+   fun:gdk_pixbuf_loader_close
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+   fun:gdk_pixbuf_new_from_stream_at_scale
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000045
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   fun:rsvg_rust_handle_close
+   obj:/usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+   fun:gdk_pixbuf_loader_close
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+   fun:gdk_pixbuf_new_from_stream_at_scale
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000046
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:_XlcAddCT
+   fun:_XlcInitCTInfo
+   obj:/usr/lib64/libX11.so.6.3.0
+   obj:/usr/lib64/libX11.so.6.3.0
+   fun:_XlcCreateLC
+   fun:_XlcUtf8Loader
+   fun:_XOpenLC
+   fun:_XrmInitParseInfo
+   obj:/usr/lib64/libX11.so.6.3.0
+   fun:XrmGetStringDatabase
+   obj:/usr/lib64/libX11.so.6.3.0
+   fun:XGetDefault
+   fun:_XcursorGetDisplayInfo
+   fun:XcursorGetTheme
+   fun:gdk_x11_display_set_cursor_theme
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000047
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_xlib_surface_create
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   fun:gdk_window_begin_draw_frame
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_main_do_event
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+}
+{
+   SUPP_0000048
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:g_malloc0
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_type_create_instance
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit_by_name
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   fun:gdk_display_manager_open_display
+}
+{
+   SUPP_0000049
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_strdup
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_app_info_get_default_for_type
+   fun:g_app_info_get_default_for_uri_scheme
+   fun:g_app_info_launch_default_for_uri_async
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_show_uri_on_window
+   fun:rss_operation_click
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000050
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   fun:FcConfigSubstituteWithPat
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:pango_itemize_with_base_dir
+}
+{
+   SUPP_0000051
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   fun:FcDirCacheLoad
+   fun:FcDirCacheRead
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   fun:FcConfigBuildFonts
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   fun:FcConfigSubstituteWithPat
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:pango_itemize_with_base_dir
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+}
+{
+   SUPP_0000052
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:XRenderQueryFormats
+   fun:XRenderQueryVersion
+   fun:_XcursorGetDisplayInfo
+   fun:XcursorGetTheme
+   fun:gdk_x11_display_set_cursor_theme
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit_by_name
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   fun:gdk_display_manager_open_display
+}
+{
+   SUPP_0000053
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_list_prepend
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000054
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfreetype.so.6.17.0
+   obj:/usr/lib64/libfreetype.so.6.17.0
+   obj:/usr/lib64/libfreetype.so.6.17.0
+   fun:FT_New_Face
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_scaled_font_create
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_glyph_string_extents_range
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000055
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+}
+{
+   SUPP_0000055
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+}
+{
+   SUPP_0000056
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   fun:hb_buffer_add_utf8
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:pango_shape_with_flags
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_cell_renderer_get_preferred_width
+   fun:gtk_cell_area_request_renderer
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_tree_view_column_cell_get_size
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000057
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   fun:hb_buffer_add_utf8
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:pango_shape_with_flags
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_cell_renderer_get_preferred_width
+   fun:gtk_cell_area_request_renderer
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_tree_view_column_cell_get_size
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000058
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   fun:g_type_create_instance
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000059
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_app_info_get_default_for_type
+   fun:g_app_info_get_default_for_uri_scheme
+   fun:g_app_info_launch_default_for_uri_async
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_show_uri_on_window
+   fun:rss_operation_click
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000060
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:memalign
+   fun:posix_memalign
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   fun:rsvg_rust_handle_close
+   obj:/usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+   fun:gdk_pixbuf_loader_close
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+   fun:gdk_pixbuf_new_from_stream_at_scale
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000061
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:memalign
+   fun:posix_memalign
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   fun:rsvg_rust_handle_close
+   obj:/usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+   fun:gdk_pixbuf_loader_close
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+   fun:gdk_pixbuf_new_from_stream_at_scale
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000062
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_show_glyphs
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_renderer_draw_glyph_item
+   fun:pango_renderer_draw_layout_line
+   fun:pango_renderer_draw_layout
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:gtk_render_layout
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000063
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_show_glyphs
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_renderer_draw_glyph_item
+   fun:pango_renderer_draw_layout_line
+   fun:pango_renderer_draw_layout
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:gtk_render_layout
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_cell_renderer_render
+}
+{
+   SUPP_0000064
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_show_glyphs
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_renderer_draw_glyph_item
+   fun:pango_cairo_show_glyph_item
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:pango_renderer_draw_glyph_item
+   fun:pango_renderer_draw_layout_line
+   fun:gtk_text_layout_draw
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000065
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+}
+{
+   SUPP_0000067
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+}
+{
+   SUPP_0000068
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   fun:g_signal_newv
+   fun:g_signal_new_valist
+   fun:g_signal_new
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+   fun:g_type_class_ref
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   fun:gdk_pixbuf_new_from_stream_at_scale
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000069
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   fun:FcConfigSubstituteWithPat
+}
+{
+   SUPP_0000070
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:FcFontSetAdd
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   fun:FcConfigBuildFonts
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   fun:FcConfigSubstituteWithPat
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:pango_itemize_with_base_dir
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000071
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   fun:g_ptr_array_add
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+}
+{
+   SUPP_0000072
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   fun:FcStrSetAdd
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   fun:FcConfigSubstituteWithPat
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+}
+{
+   SUPP_0000073
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   fun:g_type_create_instance
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_style_context_get_property
+   fun:gtk_style_context_get_valist
+   fun:gtk_style_context_get
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000074
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   fun:g_type_create_instance
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_style_context_get_property
+   fun:gtk_style_context_get_valist
+   fun:gtk_style_context_get
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000075
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   fun:g_type_create_instance
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_style_context_get_property
+   fun:gtk_style_context_get_valist
+   fun:gtk_style_context_get
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000076
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   fun:g_type_create_instance
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_style_context_get_property
+   fun:gtk_style_context_get_valist
+   fun:gtk_style_context_get
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000077
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   fun:g_type_create_instance
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_closure_invoke
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+}
+{
+   SUPP_0000078
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:_XlcCreateDefaultCharSet
+   fun:_XlcAddCT
+   fun:_XlcInitCTInfo
+   obj:/usr/lib64/libX11.so.6.3.0
+   obj:/usr/lib64/libX11.so.6.3.0
+   fun:_XlcCreateLC
+   fun:_XlcUtf8Loader
+   fun:_XOpenLC
+   fun:_XrmInitParseInfo
+   obj:/usr/lib64/libX11.so.6.3.0
+   fun:XrmGetStringDatabase
+   obj:/usr/lib64/libX11.so.6.3.0
+   fun:XGetDefault
+   fun:_XcursorGetDisplayInfo
+   fun:XcursorGetTheme
+   fun:gdk_x11_display_set_cursor_theme
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000079
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/lib64/libX11.so.6.3.0
+   obj:/usr/lib64/libX11.so.6.3.0
+   fun:_XlcCreateLocaleDataBase
+   obj:/usr/lib64/libX11.so.6.3.0
+   obj:/usr/lib64/libX11.so.6.3.0
+   fun:_XlcCreateLC
+   fun:_XlcUtf8Loader
+   fun:_XOpenLC
+   fun:_XrmInitParseInfo
+   obj:/usr/lib64/libX11.so.6.3.0
+   fun:XrmGetStringDatabase
+   obj:/usr/lib64/libX11.so.6.3.0
+   fun:XGetDefault
+   fun:_XcursorGetDisplayInfo
+   fun:XcursorGetTheme
+   fun:gdk_x11_display_set_cursor_theme
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000080
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_strdup
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_app_info_get_default_for_type
+   fun:g_app_info_get_default_for_uri_scheme
+   fun:g_app_info_launch_default_for_uri_async
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_show_uri_on_window
+   fun:rss_operation_click
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000081
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+}
+{
+   SUPP_0000082
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+}
+{
+   SUPP_0000083
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+}
+{
+   SUPP_0000084
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_app_info_get_default_for_type
+   fun:g_app_info_get_default_for_uri_scheme
+   fun:g_app_info_launch_default_for_uri_async
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_show_uri_on_window
+   fun:rss_operation_click
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_0000085
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+}
+{
+   SUPP_0000086
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+}
+{
+   SUPP_0000087
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+}
+{
+   SUPP_0000088
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit_by_name
+}
+{
+   SUPP_0000089
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_show_glyphs
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_renderer_draw_glyph_item
+   fun:pango_renderer_draw_layout_line
+   fun:pango_renderer_draw_layout
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:gtk_render_layout
+}
+{
+   SUPP_0000090
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+}
+{
+   SUPP_0000091
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   fun:g_quark_from_string
+   fun:g_signal_newv
+   fun:g_signal_new_valist
+   fun:g_signal_new
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_type_class_ref
+   fun:g_type_class_ref
+   fun:g_object_new_valist
+   fun:g_object_new
+   fun:_ZN18gautier_rss_ui_app6createEv
+   fun:main
+}
+{
+   SUPP_0000092
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   fun:g_intern_string
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+}
+{
+   SUPP_0000093
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   fun:g_quark_from_string
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_type_register_static
+   fun:atk_streamable_content_get_type
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_text_view_accessible_get_type
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_type_class_ref
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   fun:_ZN20gautier_rss_win_main6createEP15_GtkApplicationPv
+   fun:activate
+   fun:g_closure_invoke
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+}
+{
+   SUPP_0000094
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   fun:g_main_context_dispatch
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   fun:g_main_loop_run
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   fun:start_thread
+   fun:clone
+}
+{
+   SUPP_0000095
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:_XrmInternalStringToQuark
+   fun:XrmInitialize
+   obj:/usr/lib64/libX11.so.6.3.0
+   fun:XGetDefault
+   fun:_XcursorGetDisplayInfo
+   fun:XcursorGetTheme
+   fun:gdk_x11_display_set_cursor_theme
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit_by_name
+}
+{
+   SUPP_0000096
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:_XkbReadGetMapReply
+   obj:/usr/lib64/libX11.so.6.3.0
+   fun:XkbGetUpdatedMap
+   fun:XkbGetMap
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   fun:_ZN20gautier_rss_win_main6createEP15_GtkApplicationPv
+   fun:activate
+   fun:g_closure_invoke
+}
+{
+   SUPP_0000097
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:_XkbReadGetMapReply
+   obj:/usr/lib64/libX11.so.6.3.0
+   fun:XkbGetUpdatedMap
+   fun:XkbGetMap
+   obj:/usr/lib64/libX11.so.6.3.0
+   fun:XkbKeysymToModifiers
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   fun:_ZN20gautier_rss_win_main6createEP15_GtkApplicationPv
+}
+{
+   SUPP_0000098
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   fun:g_param_spec_pool_insert
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   obj:/usr/lib64/libwebkit2gtk-4.0.so.37.39.3
+   fun:g_type_class_ref
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   fun:webkit_settings_new
+   fun:_ZN20gautier_rss_win_main6createEP15_GtkApplicationPv
+   fun:activate
+   fun:g_closure_invoke
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+}
+{
+   SUPP_0000099
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_type_register_static
+   fun:g_type_register_static_simple
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_subprocess_launcher_get_type
+   fun:g_subprocess_launcher_new
+   obj:/usr/lib64/libwebkit2gtk-4.0.so.37.39.3
+   obj:/usr/lib64/libwebkit2gtk-4.0.so.37.39.3
+   obj:/usr/lib64/libwebkit2gtk-4.0.so.37.39.3
+   obj:/usr/lib64/libwebkit2gtk-4.0.so.37.39.3
+   obj:/usr/lib64/libwebkit2gtk-4.0.so.37.39.3
+   obj:/usr/lib64/libwebkit2gtk-4.0.so.37.39.3
+}
+{
+   SUPP_00000100
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_app_info_get_default_for_type
+   fun:g_app_info_get_default_for_uri_scheme
+   fun:g_app_info_launch_default_for_uri_async
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_show_uri_on_window
+   fun:rss_operation_click
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+}
+{
+   SUPP_00000101
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_binding_entry_add_signal
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_type_class_ref
+   fun:g_type_class_ref
+   fun:g_object_new_valist
+   fun:g_object_new
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000102
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   fun:g_signal_handler_disconnect
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_object_unref
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_object_unref
+   fun:gtk_widget_unparent
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_closure_invoke
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000103
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_show_glyphs
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_renderer_draw_glyph_item
+   fun:pango_renderer_draw_layout_line
+   fun:pango_renderer_draw_layout
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:gtk_render_layout
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000104
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   fun:FcConfigSubstituteWithPat
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:pango_itemize_with_base_dir
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+}
+{
+   SUPP_00000105
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   fun:FcConfigSubstituteWithPat
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:pango_itemize_with_base_dir
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+}
+{
+   SUPP_00000106
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   fun:FcConfigSubstituteWithPat
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:pango_itemize_with_base_dir
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+}
+{
+   SUPP_00000107
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   fun:FcConfigSubstituteWithPat
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:pango_itemize_with_base_dir
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+}
+{
+   SUPP_00000108
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   fun:g_type_create_instance
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_object_new_valist
+   fun:g_object_new
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_object_new_valist
+   fun:g_object_new
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   fun:gdk_display_manager_open_display
+   fun:gtk_init_check
+   fun:gtk_init
+}
+{
+   SUPP_00000109
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   fun:rsvg_rust_handle_close
+   obj:/usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+   fun:gdk_pixbuf_loader_close
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+   fun:gdk_pixbuf_new_from_stream_at_scale
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000110
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:g_malloc
+   fun:g_strdup
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:gtk_tree_model_get_valist
+   fun:gtk_tree_model_get
+   fun:_ZL12get_row_dataP17_GtkTreeSelectionRNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES7_S7_S7_S7_S7_
+   fun:_ZN36gautier_rss_win_main_headlines_frame15select_headlineERN21gautier_rss_data_read11rss_articleEP17_GtkTreeSelection
+   fun:headline_view_select_row
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_tree_view_set_cursor_on_cell
+   fun:_ZN36gautier_rss_win_main_headlines_frame19select_headline_rowEP10_GtkWidgetNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEi
+   fun:_ZL17populate_rss_tabsv
+   fun:_ZN20gautier_rss_win_main6createEP15_GtkApplicationPv
+   fun:activate
+}
+{
+   SUPP_00000111
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_app_info_get_default_for_type
+   fun:g_app_info_get_default_for_uri_scheme
+   fun:g_app_info_launch_default_for_uri_async
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_show_uri_on_window
+   fun:rss_operation_click
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+}
+{
+   SUPP_00000112
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_strdup
+   fun:g_canonicalize_filename
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000113
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:realloc
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   fun:hb_ot_layout_table_find_feature_variations
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   fun:hb_shape_plan_create_cached2
+   fun:hb_shape_full
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:pango_shape_with_flags
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000114
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   fun:FcStrSetAdd
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   fun:FcConfigSubstituteWithPat
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+}
+{
+   SUPP_00000115
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+}
+{
+   SUPP_00000116
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+}
+{
+   SUPP_00000117
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:XOpenDisplay
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   fun:gdk_display_manager_open_display
+   fun:gtk_init_check
+   fun:gtk_init
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   fun:g_application_register
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_application_run
+   fun:_ZN18gautier_rss_ui_app6createEv
+   fun:main
+}
+{
+   SUPP_00000118
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:realloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   fun:hb_shape_plan_execute
+   fun:hb_shape_full
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:pango_shape_with_flags
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+}
+{
+   SUPP_00000119
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_strndup
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   fun:g_key_file_get_string_list
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_app_info_get_default_for_type
+   fun:g_app_info_get_default_for_uri_scheme
+   fun:g_app_info_launch_default_for_uri_async
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_show_uri_on_window
+   fun:rss_operation_click
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000120
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   fun:g_ptr_array_add
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+}
+{
+   SUPP_00000121
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_strdup
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_app_info_get_default_for_type
+   fun:g_app_info_get_default_for_uri_scheme
+   fun:g_app_info_launch_default_for_uri_async
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_show_uri_on_window
+   fun:rss_operation_click
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000122
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   fun:rsvg_rust_handle_close
+   obj:/usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+   fun:gdk_pixbuf_loader_close
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+   fun:gdk_pixbuf_new_from_stream_at_scale
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000123
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   fun:rsvg_rust_handle_close
+   obj:/usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+   fun:gdk_pixbuf_loader_close
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+   fun:gdk_pixbuf_new_from_stream_at_scale
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000124
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   fun:rsvg_rust_handle_close
+   obj:/usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+   fun:gdk_pixbuf_loader_close
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+   fun:gdk_pixbuf_new_from_stream_at_scale
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000125
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   fun:rsvg_rust_handle_close
+   obj:/usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+   fun:gdk_pixbuf_loader_close
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+   fun:gdk_pixbuf_new_from_stream_at_scale
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000126
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   fun:rsvg_rust_handle_close
+   obj:/usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+   fun:gdk_pixbuf_loader_close
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+   fun:gdk_pixbuf_new_from_stream_at_scale
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000127
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   fun:rsvg_rust_handle_close
+   obj:/usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+   fun:gdk_pixbuf_loader_close
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+   fun:gdk_pixbuf_new_from_stream_at_scale
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000128
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   fun:rsvg_rust_handle_close
+   obj:/usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+   fun:gdk_pixbuf_loader_close
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+   fun:gdk_pixbuf_new_from_stream_at_scale
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000129
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   fun:rsvg_rust_handle_close
+   obj:/usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+   fun:gdk_pixbuf_loader_close
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+   fun:gdk_pixbuf_new_from_stream_at_scale
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000130
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   fun:FcConfigSubstituteWithPat
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+}
+{
+   SUPP_00000131
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:XOpenDisplay
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   fun:gdk_display_manager_open_display
+   fun:gtk_init_check
+   fun:gtk_init
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   fun:g_application_register
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_application_run
+   fun:_ZN18gautier_rss_ui_app6createEv
+   fun:main
+}
+{
+   SUPP_00000132
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_app_info_get_default_for_type
+   fun:g_app_info_get_default_for_uri_scheme
+   fun:g_app_info_launch_default_for_uri_async
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_show_uri_on_window
+   fun:rss_operation_click
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000133
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   fun:g_type_create_instance
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+}
+{
+   SUPP_00000134
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   fun:g_array_append_vals
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_bindings_activate_event
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_window_propagate_key_event
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000135
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:g_malloc
+   fun:g_strdup
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:gtk_tree_model_get_valist
+   fun:gtk_tree_model_get
+   fun:_ZL12get_row_dataP17_GtkTreeSelectionRNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES7_S7_S7_S7_S7_
+   fun:_ZN36gautier_rss_win_main_headlines_frame15select_headlineERN21gautier_rss_data_read11rss_articleEP17_GtkTreeSelection
+   fun:headline_view_select_row
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_closure_invoke
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+}
+{
+   SUPP_00000136
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+}
+{
+   SUPP_00000137
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+}
+{
+   SUPP_00000138
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_strconcat
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_app_info_get_default_for_type
+   fun:g_app_info_get_default_for_uri_scheme
+   fun:g_app_info_launch_default_for_uri_async
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_show_uri_on_window
+   fun:rss_operation_click
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+}
+{
+   SUPP_00000139
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:g_malloc
+   fun:g_strdup
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:gtk_tree_model_get_valist
+   fun:gtk_tree_model_get
+   fun:_ZL12get_row_dataP17_GtkTreeSelectionRNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEES7_S7_S7_S7_S7_
+   fun:_ZN36gautier_rss_win_main_headlines_frame15select_headlineERN21gautier_rss_data_read11rss_articleEP17_GtkTreeSelection
+   fun:headline_view_select_row
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit_by_name
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_closure_invoke
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   fun:gtk_list_store_remove
+}
+{
+   SUPP_00000140
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:g_malloc0
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_glyph_string_extents_range
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_widget_get_preferred_width
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000141
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:g_malloc0
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_glyph_string_extents_range
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_widget_get_preferred_height_and_baseline_for_width
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000142
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:g_malloc0
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_glyph_string_extents_range
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   fun:pango_context_get_metrics
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000143
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:g_malloc0
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_glyph_string_extents_range
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:gtk_text_layout_get_line_display
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_text_layout_validate_yrange
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_widget_size_allocate_with_baseline
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000144
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_scaled_font_glyph_extents
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_glyph_string_extents_range
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_widget_get_preferred_height_and_baseline_for_width
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000145
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_scaled_font_glyph_extents
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_glyph_string_extents_range
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000146
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_scaled_font_glyph_extents
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_glyph_string_extents_range
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   fun:pango_context_get_metrics
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000147
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_scaled_font_glyph_extents
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_glyph_string_extents_range
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:gtk_text_layout_get_line_display
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_text_layout_validate_yrange
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_widget_size_allocate_with_baseline
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000148
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_scaled_font_glyph_extents
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_glyph_string_extents_range
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:gtk_text_layout_get_line_display
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_text_layout_validate_yrange
+}
+{
+   SUPP_00000149
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_scaled_font_glyph_extents
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_glyph_string_extents_range
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_cell_renderer_get_preferred_width
+   fun:gtk_cell_area_request_renderer
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_tree_view_column_cell_get_size
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000150
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_scaled_font_glyph_extents
+   fun:cairo_scaled_font_text_extents
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   fun:hb_shape_plan_execute
+   fun:hb_shape_full
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:pango_shape_with_flags
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:pango_layout_get_unknown_glyphs_count
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000151
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_scaled_font_glyph_extents
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_glyph_string_extents_range
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_widget_get_preferred_width
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000152
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_scaled_font_glyph_extents
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_glyph_string_extents_range
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_widget_get_preferred_width
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000153
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+}
+{
+   SUPP_00000154
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_strdup
+   fun:g_canonicalize_filename
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000155
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slist_prepend
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_bindings_activate_event
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_window_propagate_key_event
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+}
+{
+   SUPP_00000156
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:realloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   fun:FcFontRenderPrepare
+   fun:FcFontMatch
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:pango_itemize_with_base_dir
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000157
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:realloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:pango_itemize_with_base_dir
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_widget_get_preferred_width
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000158
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:realloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:pango_itemize_with_base_dir
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_widget_get_preferred_height_and_baseline_for_width
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000159
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:realloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   fun:pango_context_get_metrics
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_widget_get_preferred_width
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000160
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:realloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:pango_itemize_with_base_dir
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:gtk_text_layout_get_line_display
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_text_layout_validate_yrange
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_widget_size_allocate_with_baseline
+}
+{
+   SUPP_00000161
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   fun:g_type_create_instance
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   fun:gdk_display_manager_open_display
+   fun:gtk_init_check
+   fun:gtk_init
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+}
+{
+   SUPP_00000162
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_strdup
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000163
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:realloc
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   fun:hb_ot_layout_table_find_feature_variations
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   fun:hb_shape_plan_create_cached2
+   fun:hb_shape_full
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:pango_shape_with_flags
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000164
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   fun:g_string_insert_len
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   fun:g_build_filename
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000165
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_strdup
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_list_store_set_valist
+   fun:gtk_list_store_set
+   fun:_ZN36gautier_rss_win_main_headlines_frame14show_headlinesEP10_GtkWidgetNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiRSt6vectorIS7_SaIS7_EE
+   fun:_ZL13refresh_feedsNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEi
+   fun:refresh_feed_click
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+}
+{
+   SUPP_00000166
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:g_malloc0
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   fun:g_slice_alloc
+   fun:g_hash_table_new_full
+   fun:g_main_context_new
+   fun:_ZN3WTF7RunLoopC1Ev
+   fun:_ZN3WTF7RunLoop7currentEv
+   obj:/usr/lib64/libjavascriptcoregtk-4.0.so.18.14.7
+   fun:_ZN3WTF6Thread10entryPointEPNS0_16NewThreadContextE
+   obj:/usr/lib64/libjavascriptcoregtk-4.0.so.18.14.7
+   fun:start_thread
+   fun:clone
+}
+{
+   SUPP_00000167
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libX11.so.6.3.0
+   fun:_XrmInternalStringToQuark
+   fun:XrmInitialize
+   obj:/usr/lib64/libX11.so.6.3.0
+   fun:XGetDefault
+   fun:_XcursorGetDisplayInfo
+   fun:XcursorGetTheme
+   fun:gdk_x11_display_set_cursor_theme
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+}
+{
+   SUPP_00000168
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libX11.so.6.3.0
+   fun:_XrmInternalStringToQuark
+   fun:_XlcGetLocaleDataBase
+   obj:/usr/lib64/libX11.so.6.3.0
+   obj:/usr/lib64/libX11.so.6.3.0
+   fun:_XlcCreateLC
+   fun:_XlcUtf8Loader
+   fun:_XOpenLC
+   fun:_XrmInitParseInfo
+   obj:/usr/lib64/libX11.so.6.3.0
+   fun:XrmGetStringDatabase
+   obj:/usr/lib64/libX11.so.6.3.0
+   fun:XGetDefault
+   fun:_XcursorGetDisplayInfo
+   fun:XcursorGetTheme
+   fun:gdk_x11_display_set_cursor_theme
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000169
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   fun:FcConfigSubstituteWithPat
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+}
+{
+   SUPP_00000170
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+}
+{
+   SUPP_00000171
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+}
+{
+   SUPP_00000172
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+}
+{
+   SUPP_00000173
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   fun:FcConfigSubstituteWithPat
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+}
+{
+   SUPP_00000174
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   fun:FcConfigSubstituteWithPat
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+}
+{
+   SUPP_00000175
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   fun:g_value_register_transform_func
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   fun:gdk_rectangle_get_type
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   fun:g_type_class_ref
+   fun:g_type_class_ref
+   fun:g_object_new_valist
+   fun:g_object_new
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   fun:gdk_display_manager_open_display
+   fun:gtk_init_check
+   fun:gtk_init
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+}
+{
+   SUPP_00000176
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   fun:g_param_spec_pool_insert
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   obj:/usr/lib64/libwebkit2gtk-4.0.so.37.39.3
+   fun:g_type_class_ref
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   fun:webkit_settings_new
+   fun:_ZN20gautier_rss_win_main6createEP15_GtkApplicationPv
+   fun:activate
+   fun:g_closure_invoke
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+}
+{
+   SUPP_00000178
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_type_register_static
+   fun:g_type_register_static_simple
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_subprocess_launcher_get_type
+   fun:g_subprocess_launcher_new
+   obj:/usr/lib64/libwebkit2gtk-4.0.so.37.39.3
+   obj:/usr/lib64/libwebkit2gtk-4.0.so.37.39.3
+   obj:/usr/lib64/libwebkit2gtk-4.0.so.37.39.3
+   obj:/usr/lib64/libwebkit2gtk-4.0.so.37.39.3
+   obj:/usr/lib64/libwebkit2gtk-4.0.so.37.39.3
+   obj:/usr/lib64/libwebkit2gtk-4.0.so.37.39.3
+}
+{
+   SUPP_00000179
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_type_register_static
+   fun:g_type_register_static_simple
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_subprocess_launcher_get_type
+   fun:g_subprocess_launcher_new
+   obj:/usr/lib64/libwebkit2gtk-4.0.so.37.39.3
+   obj:/usr/lib64/libwebkit2gtk-4.0.so.37.39.3
+   obj:/usr/lib64/libwebkit2gtk-4.0.so.37.39.3
+   obj:/usr/lib64/libwebkit2gtk-4.0.so.37.39.3
+   obj:/usr/lib64/libwebkit2gtk-4.0.so.37.39.3
+   obj:/usr/lib64/libwebkit2gtk-4.0.so.37.39.3
+}
+{
+   SUPP_00000180
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_app_info_get_default_for_type
+   fun:g_app_info_get_default_for_uri_scheme
+   fun:g_app_info_launch_default_for_uri_async
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_show_uri_on_window
+   fun:rss_operation_click
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+}
+{
+   SUPP_00000181
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_app_info_get_default_for_type
+   fun:g_app_info_get_default_for_uri_scheme
+   fun:g_app_info_launch_default_for_uri_async
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_show_uri_on_window
+   fun:rss_operation_click
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+}
+{
+   SUPP_00000182
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_binding_entry_add_signal
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_type_class_ref
+   fun:g_type_class_ref
+   fun:g_object_new_valist
+   fun:g_object_new
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000183
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_binding_entry_add_signal
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_type_class_ref
+   fun:g_type_class_ref
+   fun:g_object_new_valist
+   fun:g_object_new
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000184
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:g_malloc0
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000185
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_key_file_get_string_list
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_app_info_get_default_for_type
+   fun:g_app_info_get_default_for_uri_scheme
+   fun:g_app_info_launch_default_for_uri_async
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_show_uri_on_window
+   fun:rss_operation_click
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+}
+{
+   SUPP_00000186
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit_by_name
+}
+{
+   SUPP_00000187
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_list_prepend
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_hash_table_foreach
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_bindings_activate_event
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_window_propagate_key_event
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+}
+{
+   SUPP_00000188
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+}
+{
+   SUPP_00000189
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+}
+{
+   SUPP_00000190
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:strdup
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+}
+{
+   SUPP_00000191
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+}
+{
+   SUPP_00000192
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+}
+{
+   SUPP_00000193
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_strdup
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_app_info_get_default_for_type
+   fun:g_app_info_get_default_for_uri_scheme
+   fun:g_app_info_launch_default_for_uri_async
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_show_uri_on_window
+   fun:rss_operation_click
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+}
+{
+   SUPP_00000194
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:g_malloc0
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_glyph_string_extents_range
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_widget_get_preferred_height_and_baseline_for_width
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000195
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_scaled_font_glyph_extents
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_glyph_string_extents_range
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_widget_get_preferred_width
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000196
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_show_glyphs
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_renderer_draw_glyph_item
+   fun:pango_cairo_show_glyph_item
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:pango_renderer_draw_glyph_item
+   fun:pango_renderer_draw_layout_line
+   fun:gtk_text_layout_draw
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000197
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_hash_table_foreach
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_bindings_activate_event
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_window_propagate_key_event
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+}
+{
+   SUPP_00000198
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_list_prepend
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000199
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:realloc
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   fun:hb_ot_layout_table_find_feature_variations
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   fun:hb_shape_plan_create_cached2
+   fun:hb_shape_full
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:pango_shape_with_flags
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000200
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+}
+{
+   SUPP_00000201
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_show_glyphs
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_renderer_draw_glyph_item
+   fun:pango_renderer_draw_layout_line
+   fun:pango_renderer_draw_layout
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:gtk_render_layout
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000202
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   fun:rsvg_rust_handle_close
+   obj:/usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+   fun:gdk_pixbuf_loader_close
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+   fun:gdk_pixbuf_new_from_stream_at_scale
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000203
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   fun:rsvg_rust_handle_close
+   obj:/usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+   fun:gdk_pixbuf_loader_close
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+   fun:gdk_pixbuf_new_from_stream_at_scale
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000204
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:realloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangoft2-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   fun:pango_itemize_with_base_dir
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_widget_get_preferred_height_and_baseline_for_width
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000205
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfreetype.so.6.17.0
+   obj:/usr/lib64/libfreetype.so.6.17.0
+   obj:/usr/lib64/libfreetype.so.6.17.0
+   fun:FT_Load_Glyph
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_scaled_font_glyph_extents
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_glyph_string_extents_range
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000206
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   obj:/usr/lib64/libexpat.so.1.6.10
+   fun:XML_ParseBuffer
+   obj:/usr/lib64/libfontconfig.so.1.12.0
+}
+{
+   SUPP_00000207
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:XOpenDisplay
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   fun:gdk_display_manager_open_display
+   fun:gtk_init_check
+   fun:gtk_init
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   fun:g_application_register
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_application_run
+   fun:_ZN18gautier_rss_ui_app6createEv
+   fun:main
+}
+{
+   SUPP_00000208
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   fun:g_signal_newv
+   fun:g_signal_new_valist
+   fun:g_signal_new
+   obj:/usr/lib64/libwebkit2gtk-4.0.so.37.39.3
+   fun:g_type_class_ref
+   fun:g_object_new_valist
+   fun:g_object_new
+   fun:webkit_web_view_new_with_context
+   fun:_ZN20gautier_rss_win_main6createEP15_GtkApplicationPv
+   fun:activate
+   fun:g_closure_invoke
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_application_run
+}
+{
+   SUPP_00000209
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   fun:g_intern_static_string
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_type_class_ref
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   fun:_ZN36gautier_rss_win_main_headlines_frame17add_headline_pageEP10_GtkWidgetRNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiPFvP17_GtkTreeSelectionPvE
+   fun:_ZL17populate_rss_tabsv
+   fun:_ZN20gautier_rss_win_main6createEP15_GtkApplicationPv
+   fun:activate
+   fun:g_closure_invoke
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+}
+{
+   SUPP_00000210
+   Memcheck:Leak
+   match-leak-kinds: definite
+   fun:malloc
+   fun:g_malloc
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   fun:call_init.part.0
+   fun:_dl_init
+   obj:/usr/lib64/ld-2.30.so
+}
+{
+   SUPP_00000211
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   fun:hb_ot_metrics_get_position
+   fun:pango_fc_font_create_base_metrics_for_context
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_widget_get_preferred_width
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000212
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   obj:/usr/lib64/libharfbuzz.so.0.20600.1
+   fun:hb_ot_metrics_get_position
+   fun:pango_fc_font_create_base_metrics_for_context
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_widget_get_preferred_height_and_baseline_for_width
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000213
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_scaled_font_glyph_extents
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_glyph_string_extents_range
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_widget_get_preferred_height_and_baseline_for_width
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000214
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_show_glyphs
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_renderer_draw_glyph_item
+   fun:pango_renderer_draw_layout_line
+   fun:pango_renderer_draw_layout
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:gtk_render_layout
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_cell_renderer_render
+}
+{
+   SUPP_00000215
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_strndup
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   fun:g_key_file_get_string_list
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_app_info_get_default_for_type
+   fun:g_app_info_get_default_for_uri_scheme
+   fun:g_app_info_launch_default_for_uri_async
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_show_uri_on_window
+   fun:rss_operation_click
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000216
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:xcb_connect_to_fd
+   fun:xcb_connect_to_display_with_auth_info
+   fun:_XConnectXCB
+   fun:XOpenDisplay
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   fun:gdk_display_manager_open_display
+   fun:gtk_init_check
+   fun:gtk_init
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   fun:g_application_register
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_application_run
+   fun:_ZN18gautier_rss_ui_app6createEv
+   fun:main
+}
+{
+   SUPP_00000217
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+}
+{
+   SUPP_00000218
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+}
+{
+   SUPP_00000219
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   fun:rsvg_rust_handle_close
+   obj:/usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+   fun:gdk_pixbuf_loader_close
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+   fun:gdk_pixbuf_new_from_stream_at_scale
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000220
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   obj:/usr/lib64/librsvg-2.so.2.46.0
+   fun:rsvg_rust_handle_close
+   obj:/usr/lib64/gdk-pixbuf-2.0/2.10.0/loaders/libpixbufloader-svg.so
+   fun:gdk_pixbuf_loader_close
+   obj:/usr/lib64/libgdk_pixbuf-2.0.so.0.4000.0
+   fun:gdk_pixbuf_new_from_stream_at_scale
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000221
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:g_malloc0
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_object_new_valist
+   fun:g_object_new
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   fun:gdk_display_manager_open_display
+   fun:gtk_init_check
+   fun:gtk_init
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+}
+{
+   SUPP_00000222
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_show_glyphs
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_renderer_draw_glyph_item
+   fun:pango_renderer_draw_layout_line
+   fun:pango_renderer_draw_layout
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:gtk_render_layout
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000223
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   fun:g_intern_static_string
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_type_class_ref
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   fun:_ZN36gautier_rss_win_main_headlines_frame17add_headline_pageEP10_GtkWidgetRNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiPFvP17_GtkTreeSelectionPvE
+   fun:_ZL17populate_rss_tabsv
+   fun:_ZN20gautier_rss_win_main6createEP15_GtkApplicationPv
+   fun:activate
+   fun:g_closure_invoke
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+}
+{
+   SUPP_00000224
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   fun:g_intern_static_string
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_type_class_ref
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   fun:_ZN36gautier_rss_win_main_headlines_frame17add_headline_pageEP10_GtkWidgetRNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiPFvP17_GtkTreeSelectionPvE
+   fun:_ZL17populate_rss_tabsv
+   fun:_ZN20gautier_rss_win_main6createEP15_GtkApplicationPv
+   fun:activate
+   fun:g_closure_invoke
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+}
+{
+   SUPP_00000225
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_intern_static_string
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_object_new_with_properties
+   fun:g_object_new
+   fun:gtk_tree_view_column_new_with_attributes
+   fun:_ZL30initialize_headlines_list_viewP10_GtkWidgetS0_PFvP17_GtkTreeSelectionPvE
+   fun:_ZN36gautier_rss_win_main_headlines_frame17add_headline_pageEP10_GtkWidgetRNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiPFvP17_GtkTreeSelectionPvE
+   fun:_ZL17populate_rss_tabsv
+   fun:_ZN20gautier_rss_win_main6createEP15_GtkApplicationPv
+   fun:activate
+   fun:g_closure_invoke
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+}
+{
+   SUPP_00000226
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   fun:g_string_insert_len
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   fun:g_build_filename
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000227
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfreetype.so.6.17.0
+   obj:/usr/lib64/libfreetype.so.6.17.0
+   fun:FT_Load_Glyph
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_scaled_font_glyph_extents
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_glyph_string_extents_range
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000228
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   obj:/usr/lib64/libfreetype.so.6.17.0
+   obj:/usr/lib64/libfreetype.so.6.17.0
+   fun:FT_Load_Glyph
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   obj:/usr/lib64/libcairo.so.2.11600.0
+   fun:cairo_scaled_font_glyph_extents
+   obj:/usr/lib64/libpangocairo-1.0.so.0.4400.7
+   fun:pango_glyph_string_extents_range
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libpango-1.0.so.0.4400.7
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000229
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:calloc
+   fun:g_malloc0
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+}
+{
+   SUPP_00000230
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_list_store_set_valist
+   fun:gtk_list_store_set
+   fun:_ZN36gautier_rss_win_main_headlines_frame14show_headlinesEP10_GtkWidgetNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiRSt6vectorIS7_SaIS7_EE
+   fun:_ZL17populate_rss_tabsv
+   fun:_ZN20gautier_rss_win_main6createEP15_GtkApplicationPv
+   fun:activate
+   fun:g_closure_invoke
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_application_run
+}
+{
+   SUPP_00000231
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:_XEnq
+   obj:/usr/lib64/libX11.so.6.3.0
+   fun:_XEventsQueued
+   fun:XPending
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+   fun:g_main_context_prepare
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   fun:g_main_context_iteration
+   fun:g_application_run
+   fun:_ZN18gautier_rss_ui_app6createEv
+   fun:main
+}
+{
+   SUPP_00000232
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit_by_name
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+}
+{
+   SUPP_00000233
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit_by_name
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+}
+{
+   SUPP_00000234
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   fun:g_sequence_insert_before
+   fun:gtk_list_store_insert
+   fun:_ZN36gautier_rss_win_main_headlines_frame14show_headlinesEP10_GtkWidgetNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiRSt6vectorIS7_SaIS7_EE
+   fun:_ZL17populate_rss_tabsv
+   fun:_ZN20gautier_rss_win_main6createEP15_GtkApplicationPv
+   fun:activate
+   fun:g_closure_invoke
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_application_run
+   fun:_ZN18gautier_rss_ui_app6createEv
+   fun:main
+}
+{
+   SUPP_00000235
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libglib-2.0.so.0.6200.4
+   fun:g_array_append_vals
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit_by_name
+}
+{
+   SUPP_00000236
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_slice_alloc
+   fun:g_slice_alloc0
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_list_store_set_valist
+   fun:gtk_list_store_set
+   fun:_ZN36gautier_rss_win_main_headlines_frame14show_headlinesEP10_GtkWidgetNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiRSt6vectorIS7_SaIS7_EE
+   fun:_ZL17populate_rss_tabsv
+   fun:_ZN20gautier_rss_win_main6createEP15_GtkApplicationPv
+   fun:activate
+   fun:g_closure_invoke
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_application_run
+}
+{
+   SUPP_00000237
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:realloc
+   fun:g_realloc
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_css_provider_load_from_file
+   fun:gtk_css_provider_load_from_path
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:g_cclosure_marshal_VOID__OBJECTv
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit_by_name
+   obj:/usr/lib64/libgdk-3.so.0.2404.9
+}
+{
+   SUPP_00000238
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:g_malloc
+   fun:g_strdup
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   obj:/usr/lib64/libgtk-3.so.0.2404.9
+   fun:gtk_list_store_set_valist
+   fun:gtk_list_store_set
+   fun:_ZN36gautier_rss_win_main_headlines_frame14show_headlinesEP10_GtkWidgetNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEiRSt6vectorIS7_SaIS7_EE
+   fun:_ZL17populate_rss_tabsv
+   fun:_ZN20gautier_rss_win_main6createEP15_GtkApplicationPv
+   fun:activate
+   fun:g_closure_invoke
+   obj:/usr/lib64/libgobject-2.0.so.0.6200.4
+   fun:g_signal_emit_valist
+   fun:g_signal_emit
+   obj:/usr/lib64/libgio-2.0.so.0.6200.4
+   fun:g_application_run
+}
+
+
