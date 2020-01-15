@@ -31,9 +31,59 @@ LDFLAGS ?=
 ### Variables: ###
 
 CPPDEPS = -MT$@ -MF`echo $@ | sed -e 's,\.o$$,.d,'` -MD -MP
-NEWSREADER_CXXFLAGS = -std=c++17 -O0 -g `pkg-config gtk+-3.0 --cflags` `pkg-config \
-	webkit2gtk-4.0 --cflags` `xml2-config --cflags` -I../source $(CPPFLAGS) \
-	$(CXXFLAGS)
+NEWSREADER_CXXFLAGS = -std=c++17 -O3 -flto `pkg-config gtk+-3.0 --cflags` \
+	`pkg-config webkit2gtk-4.0 --cflags` `xml2-config --cflags` -pedantic-errors \
+	-w -Waddress -Waddress-of-packed-member -Waggregate-return -Waligned-new \
+	-Wall -Walloca -Walloc-zero -Warray-bounds -Wbool-compare -Wbool-operation \
+	-Wcast-align -Wcast-function-type -Wcast-qual -Wcatch-value \
+	-Wchar-subscripts -Wclass-memaccess -Wclobbered -Wcomment \
+	-Wconditionally-supported -Wconversion -Wconversion-null \
+	-Wcoverage-mismatch -Wctor-dtor-privacy -Wdangling-else -Wdate-time \
+	-Wdelete-incomplete -Wdelete-non-virtual-dtor -Wdeprecated-copy \
+	-Wdeprecated-copy-dtor -Wdisabled-optimization -Wdouble-promotion \
+	-Wduplicated-branches -Wduplicated-cond -Weffc++ -Wempty-body -Wenum-compare \
+	-Wexpansion-to-defined -Wextra -Wfatal-errors -Wfloat-conversion \
+	-Wfloat-equal -Wformat -Wformat-nonliteral -Wformat-security \
+	-Wformat-signedness -Wformat-y2k -Wframe-address -Whsa -Wif-not-aligned \
+	-Wignored-attributes -Wignored-qualifiers -Wimplicit-fallthrough \
+	-Winit-self -Winline -Wint-in-bool-context -Winvalid-memory-model \
+	-Winvalid-pch -Wliteral-suffix -Wlogical-not-parentheses -Wlogical-op \
+	-Wlong-long -Wmain -Wmaybe-uninitialized -Wmemset-elt-size \
+	-Wmemset-transposed-args -Wmisleading-indentation -Wmissing-attributes \
+	-Wmissing-braces -Wmissing-field-initializers -Wmissing-format-attribute \
+	-Wmissing-include-dirs -Wmissing-noreturn -Wmissing-profile \
+	-Wmultiple-inheritance -Wmultistatement-macros -Wnamespaces -Wnarrowing \
+	-Wno-aggressive-loop-optimizations -Wno-attributes -Wno-attribute-warning \
+	-Wno-builtin-declaration-mismatch -Wno-builtin-macro-redefined \
+	-Wno-class-conversion -Wno-cpp -Wno-deprecated -Wno-deprecated-declarations \
+	-Wno-div-by-zero -Wno-endif-labels -Wnoexcept -Wno-format-contains-nul \
+	-Wno-format-extra-args -Wno-free-nonheap-object -Wno-init-list-lifetime \
+	-Wno-int-to-pointer-cast -Wno-invalid-offsetof -Wno-multichar -Wnonnull \
+	-Wnonnull-compare -Wno-non-template-friend -Wnon-virtual-dtor -Wno-overflow \
+	-Wno-pedantic-ms-format -Wno-pmf-conversions -Wno-pragmas \
+	-Wno-prio-ctor-dtor -Wno-return-local-addr -Wno-scalar-storage-order \
+	-Wno-terminate -Wno-unused-result -Wnull-dereference -Wodr -Wold-style-cast \
+	-Wopenmp-simd -Woverlength-strings -Woverloaded-virtual -Wpacked \
+	-Wpacked-bitfield-compat -Wpacked-not-aligned -Wpadded -Wparentheses \
+	-Wpedantic -Wpessimizing-move -Wplacement-new -Wpointer-arith \
+	-Wpointer-compare -Wredundant-decls -Wredundant-move -Wregister -Wreorder \
+	-Wrestrict -Wreturn-type -Wsequence-point -Wshadow -Wshift-count-negative \
+	-Wshift-count-overflow -Wshift-negative-value -Wshift-overflow \
+	-Wsign-compare -Wsign-conversion -Wsign-promo -Wsizeof-array-argument \
+	-Wsizeof-pointer-div -Wsizeof-pointer-memaccess -Wstack-protector \
+	-Wstrict-aliasing -Wstrict-null-sentinel -Wstrict-overflow \
+	-Wstringop-truncation -Wsubobject-linkage -Wsuggest-final-methods \
+	-Wsuggest-final-types -Wsuggest-override -Wswitch -Wswitch-bool \
+	-Wswitch-default -Wswitch-enum -Wswitch-unreachable -Wsync-nand \
+	-Wsystem-headers -Wtautological-compare -Wtemplates -Wtrampolines \
+	-Wtrigraphs -Wtype-limits -Wundef -Wuninitialized -Wunknown-pragmas -Wunused \
+	-Wunused-but-set-parameter -Wunused-but-set-variable \
+	-Wunused-const-variable -Wunused-function -Wunused-label \
+	-Wunused-local-typedefs -Wunused-macros -Wunused-parameter -Wunused-value \
+	-Wunused-variable -Wuseless-cast -Wvariadic-macros \
+	-Wvector-operation-performance -Wvirtual-inheritance -Wvla \
+	-Wvolatile-register-var -Wwrite-strings -Wzero-as-null-pointer-constant \
+	-I../source $(CPPFLAGS) $(CXXFLAGS)
 NEWSREADER_OBJECTS =  \
 	newsreader_application.o \
 	newsreader_app_win.o \
