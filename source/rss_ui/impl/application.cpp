@@ -104,6 +104,19 @@ gautier_rss_ui_app::set_css_class (GtkWidget* widget, std::string css_class_name
 }
 
 /*
+	GTK Type
+*/
+std::string
+gautier_rss_ui_app::get_gtk_class_type_name (GtkWidget* widget)
+{
+	GtkWidgetClass* widget_class = GTK_WIDGET_GET_CLASS (widget);
+	GType class_type = G_OBJECT_CLASS_TYPE (widget_class);
+
+	std::string widget_type_name = g_type_name (class_type);
+
+	return widget_type_name;
+}
+/*
 	Database
 
 	Primary file name.

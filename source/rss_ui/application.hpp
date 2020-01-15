@@ -28,6 +28,9 @@ namespace gautier_rss_ui_app {
 	set_css_class (GtkWidget* widget, std::string css_class_name);
 
 	std::string
+	get_gtk_class_type_name (GtkWidget* widget);
+
+	std::string
 	get_db_file_name();
 
 	std::string
