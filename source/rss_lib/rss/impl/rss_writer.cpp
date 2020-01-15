@@ -82,7 +82,7 @@ gautier_rss_data_write::set_feed_config (std::string db_file_name,
 	    "INSERT INTO feeds (feed_name, feed_url, last_retrieved, retrieve_limit_hrs, retention_days)\
 		SELECT @feed_name, @feed_url, '2000-01-01 01:01:01', @retrieve_limit_hrs, @retention_days\
 		WHERE 0 = (\
-			SELECT COUNT(*) FROM feeds WHERE feed_name = @feed_name\
+			SELECT COUNT(*) FROM feeds WHERE upper(feed_name) = upper(@feed_name)\
 		)";
 
 	ns_db::sql_parameter_list_type params = {
@@ -167,7 +167,7 @@ gautier_rss_data_write::update_feed_config_related (std::string db_file_name,
 	std::string sql_text =
 	    "UPDATE feeds_articles SET\
 		feed_name = @feed_name_new\
-		WHERE feed_name = @feed_name_old";
+		WHERE upper(feed_name) = upper(@feed_name_old)";
 
 	ns_db::sql_parameter_list_type params = {
 		feed_name_new,
@@ -212,7 +212,7 @@ gautier_rss_data_write::delete_feed (std::string db_file_name,
 {
 	std::string sql_text =
 	    "DELETE FROM feeds\
-		WHERE feed_url = @feed_url";
+		WHERE upper(feed_url) = upper(@feed_url)";
 
 	ns_db::sql_parameter_list_type params = {
 		feed_url
@@ -243,7 +243,7 @@ gautier_rss_data_write::set_feed_headline (std::string db_file_name,
 	    "INSERT INTO feeds_articles (feed_name, headline_text, article_summary, article_text, article_date, article_url)\
 		SELECT @feed_name, @headline_text, @article_summary, @article_text, @article_date, @feed_url\
 		WHERE 0 = (\
-			SELECT COUNT(*) FROM feeds_articles WHERE feed_name = @feed_name AND headline_text = @headline_text\
+			SELECT COUNT(*) FROM feeds_articles WHERE upper(feed_name) = upper(@feed_name) AND upper(headline_text) = upper(@headline_text)\
 		)";
 
 	ns_db::sql_parameter_list_type params = {
@@ -377,7 +377,7 @@ gautier_rss_data_write::update_feed_retrieved (std::string db_file_name, std::st
 	std::string sql_text =
 	    "UPDATE feeds SET\
 		last_retrieved = @last_retrieved \
-		WHERE feed_url = @feed_url";
+		WHERE upper(feed_url) = upper(@feed_url)";
 
 	ns_db::sql_parameter_list_type params = {
 		gautier_rss_util::get_current_date_time_utc(),
