@@ -1,0 +1,129 @@
+Script to transfer files back and forth during software development on the command-line.
+
+I've written scripts that push and pull files.
+
+        send_code_to_vm.sh                Transmits build scripts, source code to a computer over SSH protocol
+
+        get_dev_env_output.sh             Retrieves binary executables from a computer over the SSH protocol
+
+        exchange_code_and_exe.sh          Runs send_code_to_vm.sh then get_dev_env_output.sh
+
+Consider the following developer workstation tree for editing.
+
+DEVELOPER'S LOCAL WORKSTATION TREE
+
+.
+├── build
+│   └── bin
+├── data
+│   ├── feeds_list
+│   ├── originals
+│   └── save
+├── project
+│   ├── bakefiles
+│   ├── buildscripts
+│   ├── valgrind_checks
+│   └── xfer
+└── source
+    ├── external
+    │   └── argtable
+    ├── rss_cli
+    ├── rss_lib
+    │   ├── db
+    │   │   └── impl
+    │   ├── rss
+    │   │   └── impl
+    │   ├── rss_download
+    │   │   └── impl
+    │   └── rss_parse
+    │       └── impl
+    ├── rss_ui
+    │   ├── app_win
+    │   │   └── impl
+    │   ├── impl
+    │   └── rss_manage
+    │       └── impl
+    └── style
+
+SERVER BUILD TREE
+.
+├── build
+│   └── bin
+└── source
+    ├── external
+    │   └── argtable
+    ├── rss_cli
+    ├── rss_lib
+    │   ├── db
+    │   │   └── impl
+    │   ├── rss
+    │   │   └── impl
+    │   ├── rss_download
+    │   │   └── impl
+    │   └── rss_parse
+    │       └── impl
+    ├── rss_ui
+    │   ├── app_win
+    │   │   └── impl
+    │   ├── impl
+    │   └── rss_manage
+    │       └── impl
+    └── style
+
+SCRIPT - send_code_to_vm.sh
+
+The send_code_to_vm.sh script creates and maintains the SERVER BUILD TREE.
+
+SCRIPT - get_dev_env_output.sh
+
+The get_dev_env_output.sh script grabs whatever is in bin/ on the SERVER BUILD TREE and copies it to bin/ on the DEVELOPER'S LOCAL WORKSTATION TREE.
+
+SCRIPT - exchange_code_and_exe.sh
+
+The exchange_code_and_exe.sh script assumes you are going to use both of the previous scripts. You run this one script and source code/executables are exchanged in one step.
+
+xfer/
+├── exchange_code_and_exe.sh
+├── get_dev_env_output.sh
+└── send_code_to_vm.sh
+
+At the time of this commit, none of these scripts are tracked in git. They have unique ip addresses that would have to be edited. The .gitignore file takes care of keeping them out of git for now until I abstract out machine specific details. Until then, the code for these scripts are as follows:
+
+
+cat xfer/send_code_to_vm.sh 
+---------------------------------------------------------------
+#!/bin/bash
+
+rsync --verbose --human-readable --times --executability --preallocate --update --delay-updates --include buildscripts/*.mk buildscripts/*.sh . your_username@192.some.thing.some.thing:~/code/newsreader7/build/
+
+rsync --verbose --human-readable --times --executability --preallocate --update --recursive --delay-updates --exclude '*~' ../source your_username@192.some.thing.some.thing:~/code/newsreader7/
+
+
+cat xfer/get_dev_env_output.sh 
+---------------------------------------------------------------
+#!/bin/bash
+
+rsync --verbose --human-readable --times --executability --preallocate --update --recursive --delay-updates --exclude '*argtable*' your_username@192.some.thing.some.thing:~/code/newsreader7/build/bin/ ../build/bin/
+
+rsync --verbose --human-readable --times --executability --preallocate --update --recursive --delay-updates --exclude '*~' your_username@192.some.thing.some.thing:~/code/newsreader7/source/style/ .
+
+
+cat xfer/exchange_code_and_exe.sh 
+---------------------------------------------------------------
+#!/bin/bash
+
+../project/xfer/send_code_to_vm.sh
+../project/xfer/get_dev_env_output.sh
+
+ls -gGh ../build/bin/
+
+
+USERNAMES AND IP ADDRESSES
+
+The scripts work best if you have an SSH key on your machine mapped to a username in a virtual machine. If you recreate the scripts, your_username would be the username on the server. The part that says 192.some.thing.some.thing can either be an ip address to the virtual machine or a host name.
+
+
+Actual examples of this process is laid out in my video series at https://gautiertalkstechnology.wordpress.com/2019/11/01/cpp-the-basic-way-ui-and-command-line-22-videos/
+
+See videos 3 - 10 in that series to see how the process works in practice.
+
