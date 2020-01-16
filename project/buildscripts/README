@@ -1,0 +1,75 @@
+The files ending in .mk are makefiles. 
+
+Each .mk file automates the use of the make program to translate C and C++ source code into a binary program executable or binary library file.
+
+The .mk files expect the build and source tree to be setup a certain way.
+
+├── build
+│   ├── bin
+│   ├── build_newsdownld.sh
+│   ├── build_newsreader.mk
+│   ├── build_newsreader.sh
+│   ├── build_rss_io_test.mk
+│   └── build_rss_io_test.sh
+└── source
+    ├── external
+    │   └── argtable
+    ├── rss_cli
+    ├── rss_lib
+    │   ├── db
+    │   │   └── impl
+    │   ├── rss
+    │   │   └── impl
+    │   ├── rss_download
+    │   │   └── impl
+    │   └── rss_parse
+    │       └── impl
+    ├── rss_ui
+    │   ├── app_win
+    │   │   └── impl
+    │   ├── impl
+    │   └── rss_manage
+    │       └── impl
+    └── style
+
+While in the build directory, running ./build_newsdownld.sh will create the newsdownld executable into the bin/ directory. The best way to achieve this is to copy the contents of the current directory to a different directory tree that corresponds to the above layout. This project achieves this by running a script that pushes these files to another instance of Linux hosted in a virtual machine.
+
+The process is laid out in my video series at https://gautiertalkstechnology.wordpress.com/2019/11/01/cpp-the-basic-way-ui-and-command-line-22-videos/
+
+See videos 3 - 10 in that series to see how the process works.
+
+The scripts are located in the directory buildscripts/. They are copied to a build/ directory ideally in a separate build tree not under source control. That way binary files such as executables, object files, temporaries, and otherwise non-tracked files are not inadvertently brought into the source control system.
+
+Generate the .mk files by running the script create_make.sh from the project/ directory as follows: ./create_make.sh
+
+create_make.sh is the file denoted with the * and uses files in the bakefiles directory to produce make files in the buildscripts directory.
+
+├── app.css
+├── bakefiles
+│   ├── prog_newsdownld.bkl
+│   ├── prog_newsreader.bkl
+│   └── prog_rss_io_test.bkl
+├── * buildscripts
+│   ├── build_newsdownld.mk
+│   ├── build_newsdownld.sh
+│   ├── build_newsreader.mk
+│   ├── build_newsreader.sh
+│   ├── build_rss_io_test.mk
+│   └── build_rss_io_test.sh
+├── * create_make.sh
+├── format_code.sh
+├── rss.db
+├── run_newsdownld.sh
+├── run_newsreader.sh
+├── run_rss_io_test.sh
+├── update_rss_db_use_offline_xml.sh
+├── valgrind_checks
+│   ├── newsreader_leakcheck_full.sh
+│   └── newsreader_leakcheck_full.suppr
+└── xfer
+    ├── exchange_code_and_exe.sh
+    ├── get_dev_env_output.sh
+    └── send_code_to_vm.sh
+
+build_*.sh files are convenience files to translate a multi-part make statement into a single statement. You can create newsdownld executable for example by running ./build_newsdownld.sh within the build tree. If you need to alter the compiler used (g++ or clang++, gcc or clang) or amend or expand on CPPFLAGS, CFLAGS, you can run the equivalent statements defined in the relevant build_*.sh file.
+

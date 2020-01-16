@@ -1,0 +1,41 @@
+Bakefile is used to generate makefiles. The bakefile is the standard build script generator for this project since Sept. 2019.
+
+Each bakefile is referenced from a single script under the project/ directory.
+
+Each file is referenced from the parent directory.
+
+On the command-line, if you are in the same directory as the bakefiles themselves you are in the wrong directory.
+
+In the example directory tree below, this file is in the directory noted with an *.
+
+Go up one level (e.g.  cd ..)
+
+Then run the script create_make.sh as follows: ./create_make.sh
+
+├── app.css
+├── * bakefiles
+│   ├── prog_newsdownld.bkl
+│   ├── prog_newsreader.bkl
+│   └── prog_rss_io_test.bkl
+├── buildscripts
+│   ├── build_newsdownld.mk
+│   ├── build_newsdownld.sh
+│   ├── build_newsreader.mk
+│   ├── build_newsreader.sh
+│   ├── build_rss_io_test.mk
+│   └── build_rss_io_test.sh
+├── create_make.sh
+├── format_code.sh
+├── rss.db
+├── run_newsdownld.sh
+├── run_newsreader.sh
+├── run_rss_io_test.sh
+├── update_rss_db_use_offline_xml.sh
+├── valgrind_checks
+│   ├── newsreader_leakcheck_full.sh
+│   └── newsreader_leakcheck_full.suppr
+└── xfer
+    ├── exchange_code_and_exe.sh
+    ├── get_dev_env_output.sh
+    └── send_code_to_vm.sh
+

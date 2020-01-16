@@ -1,0 +1,9 @@
+These scripts provide convenient one-line methods to execute programs.
+
+On the command-line, if you are in the same directory as the scripts themselves then you are in the wrong directory.
+
+Go up one level (e.g.  cd ..)
+
+You should then be directly under the projects directory. This would allo you to run any of these scripts by refering to ./app_run/
+
+For example, to run the newsreader UI, you would execute: ./app_run/newsreader.sh

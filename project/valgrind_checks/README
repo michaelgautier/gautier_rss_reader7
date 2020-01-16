@@ -1,0 +1,1 @@
+Valgrind is a tool I use to run diagnostics on the run time behavior of programs. The scripts in this directory define parameters provided to valgrind for certain tools such as memcheck, callgrind, drd and others.
