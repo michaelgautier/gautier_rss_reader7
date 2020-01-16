@@ -1,7 +1,8 @@
+build/bin/
+data/
+project/*.*~
+project/*.css
+project/*.db
 project/xfer
 project/*.xml
-project/*.db
-project/*.*~
-data/
-build/bin/
 
