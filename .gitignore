@@ -3,6 +3,6 @@ data/
 project/*.*~
 project/*.css
 project/*.db
-project/xfer
+project/xfer/*.sh
 project/*.xml
 
