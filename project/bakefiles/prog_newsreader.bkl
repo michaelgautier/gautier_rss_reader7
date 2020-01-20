@@ -9,6 +9,7 @@
 
 	<!-- Primary Program, RSS User Interface using GTK -->
 	<exe id="newsreader">
+                <install-to>$(BINDIR)</install-to>
 		<!--Succesful build depends on existence of bin/ sub directory -->
 		<depends>bin</depends>
 
