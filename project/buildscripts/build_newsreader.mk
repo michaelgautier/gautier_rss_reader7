@@ -10,6 +10,15 @@
 # These are configurable options:
 # -------------------------------------------------------------------------
 
+# 'install' program location 
+INSTALL ?= install
+
+# Location where the package is installed by 'make install' 
+prefix ?= /usr/local
+
+# Destination root (/ is used if empty) 
+DESTDIR ?= 
+
 # C++ compiler 
 CXX = g++
 
@@ -108,9 +117,9 @@ NEWSREADER_OBJECTS =  \
 
 all: bin/newsreader
 
-install: 
+install: install_newsreader
 
-uninstall: 
+uninstall: uninstall_newsreader
 
 clean: 
 	rm -f ./*.o
@@ -122,6 +131,13 @@ bin:
 
 bin/newsreader: $(NEWSREADER_OBJECTS) bin
 	$(CXX) -o $@ $(NEWSREADER_OBJECTS)  -std=c++17 -no-pie -lpthread `pkg-config gtk+-3.0 --libs` `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `pkg-config webkit2gtk-4.0 --libs` `xml2-config --libs` $(LDFLAGS)
+
+install_newsreader: bin/newsreader
+	$(INSTALL) -d $(DESTDIR)$(prefix)/bin
+	install -c bin/newsreader $(DESTDIR)$(prefix)/bin
+
+uninstall_newsreader: 
+	rm -f $(DESTDIR)$(prefix)/bin/newsreader
 
 newsreader_application.o: ./../source/rss_ui/impl/application.cpp
 	$(CXX) -c -o $@ $(NEWSREADER_CXXFLAGS) $(CPPDEPS) $<
@@ -165,7 +181,7 @@ newsreader_feed_download.o: ./../source/rss_lib/rss_download/impl/feed_download.
 newsreader_feed_parse.o: ./../source/rss_lib/rss_parse/impl/feed_parse.cpp
 	$(CXX) -c -o $@ $(NEWSREADER_CXXFLAGS) $(CPPDEPS) $<
 
-.PHONY: all install uninstall clean
+.PHONY: all install uninstall clean install_newsreader uninstall_newsreader
 
 
 # Dependencies tracking:
