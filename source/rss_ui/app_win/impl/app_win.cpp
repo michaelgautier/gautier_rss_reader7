@@ -363,7 +363,7 @@ gautier_rss_win_main::create (
 	/*
 		Allow time for theme sub-system cache to finish setup.
 	*/
-	std::this_thread::sleep_for (std::chrono::milliseconds (1800));
+	std::this_thread::sleep_for (std::chrono::milliseconds (207));
 
 	rss_mod_running = true;
 
@@ -722,7 +722,10 @@ process_rss_modifications()
 			ns_data_read::rss_feed_mod_status status = modification.status;
 
 			if (status != ns_data_read::rss_feed_mod_status::none) {
+				gdk_threads_enter();
 				update_tab (modification);
+				gdk_flush();
+				gdk_threads_leave();
 			}
 		} else {
 			process_feeds();
@@ -782,7 +785,6 @@ update_tab (ns_data_read::rss_feed_mod& modification)
 							gtk_notebook_set_tab_label_text (GTK_NOTEBOOK (headlines_view), tab, updated_feed_name.data());
 							/*Only changing name -- other changes will be cached to another queue and processed as appropriate.*/
 							make_user_note (feed_name + " updated to " + updated_feed_name + ".");
-
 						}
 
 						feed_changes.pop();
@@ -868,7 +870,10 @@ process_feeds()
 			bool new_updates = ns_data_read::check_feed_changed (feed_old, feed_new);
 
 			if (new_updates) {
+				gdk_threads_enter();
 				add_new_headlines (feed_old, feed_new);
+				gdk_flush();
+				gdk_threads_leave();
 
 				change_count++;
 			}
