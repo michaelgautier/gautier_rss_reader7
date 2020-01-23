@@ -40,5 +40,5 @@ cp %{_builddir}/%{name}-%{version}/source/style/app.css %{buildroot}/usr/local/b
 /usr/local/bin/app.css
 
 %changelog
-* Thu Jan 23 2020 Michael Gautier
+* Thu Jan 23 2020 Michael Gautier <michaelgautier.wordpress.com> - 7.0.7-1
 - Clean RPM
