@@ -1,5 +1,7 @@
 build/bin/
 build/rpmbuild/
+build/RPMS/
+build/SRPMS/
 data/
 project/*.*~
 project/*.css
