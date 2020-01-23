@@ -22,6 +22,8 @@ The program respects those conditions by default.
 This is version 7 of a previously privately used binary.
 Version 7 is the first Gautier RSS program packaged for installation.
 
+%global _hardened_build 1
+
 %prep
 %setup -c
 
