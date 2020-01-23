@@ -16,7 +16,7 @@ cd ../build/rpmbuild/
 
 tar -czf newsreader.tar.gz *
 
-mv newsreader.tar.gz ~/rpmbuild/SOURCES/newsreader-7.0.7.1.fc31.tar.gz
+mv newsreader.tar.gz ~/rpmbuild/SOURCES/v7.0.7.tar.gz
 
 rpmbuild -bs ~/rpmbuild/SPECS/newsreader.spec
 rpmbuild --rebuild --nodebuginfo ~/rpmbuild/SRPMS/newsreader-7.0.7-1.fc31.src.rpm

@@ -4,10 +4,10 @@ Release:        1%{?dist}
 Summary:        Ultra simple desktop feed reader
 
 License:        LGPLv2+
-URL:            newsreader-7.0.7.1.fc31.tar.gz
-Source0:        https://michaelgautier.github.io/gautier_rss_reader7/release/%{name}-%{version}.%{release}.tar.gz
+URL:            https://michaelgautier.github.io/gautier_rss_reader7/
+Source0:        https://github.com/michaelgautier/gautier_rss_reader7/archive/v%{version}.tar.gz
 
-BuildRequires:  gcc g++ make gtk3-devel libcurl-devel libxml2-devel sqlite-devel webkit2gtk3-devel
+BuildRequires:  gcc-c++ make pkgconfig(gthread-2.0) pkgconfig(gtk+-3.0) pkgconfig(sqlite3) pkgconfig(libcurl) pkgconfig(webkit2gtk-4.0) pkgconfig(libxml-2.0)
 Requires:       gtk3 libcurl libxml2 sqlite webkit2gtk3
 
 %description
@@ -35,5 +35,5 @@ cp %{_builddir}/%{name}-%{version}/source/style/app.css %{buildroot}/usr/local/b
 /usr/local/bin/app.css
 
 %changelog
-* Mon Jan 20 2020 Michael Gautier
+* Thu Jan 23 2020 Michael Gautier
 - Clean RPM
