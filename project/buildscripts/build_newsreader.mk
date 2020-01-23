@@ -133,7 +133,7 @@ bin:
 	@mkdir -p bin
 
 bin/newsreader: $(NEWSREADER_OBJECTS) bin
-	$(CXX) -o $@ $(NEWSREADER_OBJECTS)  -std=c++17 -flinker-output=pie -flto -lpthread `pkg-config gtk+-3.0 --libs` `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `pkg-config webkit2gtk-4.0 --libs` `pkg-config libxml-2.0 --libs` `pkg-config gthread-2.0 --libs` $(LDFLAGS)
+	$(CXX) -o $@ $(NEWSREADER_OBJECTS)  -std=c++17 -flinker-output=pie -flto `pkg-config gtk+-3.0 --libs` `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `pkg-config webkit2gtk-4.0 --libs` `pkg-config libxml-2.0 --libs` `pkg-config gthread-2.0 --libs` $(LDFLAGS)
 
 install_newsreader: bin/newsreader
 	$(INSTALL) -d $(DESTDIR)$(prefix)/bin
