@@ -40,11 +40,11 @@ LDFLAGS ?=
 ### Variables: ###
 
 CPPDEPS = -MT$@ -MF`echo $@ | sed -e 's,\.o$$,.d,'` -MD -MP
-NEWSREADER_CXXFLAGS = -std=c++17 -D_FORTIFY_SOURCE=2 -O2 -fcf-protection=full \
-	-fexceptions -fno-common -fnon-call-exceptions -fsplit-stack \
-	-fstack-clash-protection -fstack-protector-all -ftrapv -fvisibility=hidden \
-	`pkg-config gtk+-3.0 --cflags` `pkg-config webkit2gtk-4.0 --cflags` \
-	`xml2-config --cflags` -pedantic-errors -w -Waddress \
+NEWSREADER_CXXFLAGS = -std=c++17 -D_FORTIFY_SOURCE=2 -DNDEBUG -O2 \
+	-fcf-protection=full -fexceptions -fno-common -fnon-call-exceptions \
+	-fsplit-stack -fstack-clash-protection -fstack-protector-all -ftrapv \
+	-fvisibility=hidden `pkg-config gtk+-3.0 --cflags` `pkg-config webkit2gtk-4.0 \
+	--cflags` `xml2-config --cflags` -pedantic-errors -w -Waddress \
 	-Waddress-of-packed-member -Waggregate-return -Waligned-new -Wall -Walloca \
 	-Walloc-zero -Warray-bounds -Wbool-compare -Wbool-operation -Wcast-align \
 	-Wcast-function-type -Wcast-qual -Wcatch-value -Wchar-subscripts \

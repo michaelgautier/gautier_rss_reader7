@@ -42,6 +42,13 @@
 			Developing Applictions in RHEL 8 (2019-11-15)  -->
 		<cppflags>-D_FORTIFY_SOURCE=2</cppflags>
 
+		<!-- Libc assertions
+			Disallow assertions in production use.
+			GTK and Pango use assertions useful during development
+			that are extremely useful.
+			Comment out this line to enable the assertions. -->
+		<cppflags>-DNDEBUG</cppflags>
+
 		<!-- Compile time optimization, security, correctness -->
 
 		<cppflags>-O2</cppflags>
