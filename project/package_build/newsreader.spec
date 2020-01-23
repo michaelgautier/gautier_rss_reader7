@@ -11,11 +11,16 @@ BuildRequires:  gcc-c++ make pkgconfig(gthread-2.0) pkgconfig(gtk+-3.0) pkgconfi
 Requires:       gtk3 libcurl libxml2 sqlite webkit2gtk3
 
 %description
-The newsreader program shows listings from feeds in the RSS/Atom formats. A screen exist to add, remove, or change feed names and urls. 
+The newsreader program shows listings from feeds in the RSS/Atom formats. 
+A screen exist to add, remove, or change feed names and urls. 
 
 The program does this in a simple, clean way through a native code UI.
 
-NOTE: Feed providers prefer their site is accessed no earlier than once per hour. The program respects those conditions by default. This is version 7 of a previously privately used binary. Version 7 is the first in the Gautier RSS series to be released in native executable form.
+NOTE: 
+Feed providers prefer their site is accessed no earlier than once per hour.
+The program respects those conditions by default.
+This is version 7 of a previously privately used binary.
+Version 7 is the first Gautier RSS program packaged for installation.
 
 %prep
 %setup -c
