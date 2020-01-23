@@ -36,14 +36,33 @@
 
 		<!--Additional compiler flags -->
 		<cppflags>-std=c++17</cppflags>
-		<cppflags>-O3</cppflags>
-		<cppflags>-flto</cppflags>
+
+		<!-- Defines -->
+		<!-- Suggested in the Red Hat publication:
+			Developing Applictions in RHEL 8 (2019-11-15)  -->
+		<cppflags>-D_FORTIFY_SOURCE=2</cppflags>
+
+		<!-- Compile time optimization, security, correctness -->
+
+		<cppflags>-O2</cppflags>
+
+		<cppflags>-fcf-protection=full</cppflags>
+		<cppflags>-fexceptions</cppflags>
+		<cppflags>-fno-common</cppflags>
+		<cppflags>-fnon-call-exceptions</cppflags>
+		<cppflags>-fsplit-stack</cppflags>
+		<cppflags>-fstack-clash-protection</cppflags>
+		<cppflags>-fstack-protector-all</cppflags>
+		<cppflags>-ftrapv</cppflags>
+		<cppflags>-fvisibility=hidden</cppflags>
+
+		<!-- Linked resources -->
 
 		<cppflags>`pkg-config gtk+-3.0 --cflags`</cppflags>
 		<cppflags>`pkg-config webkit2gtk-4.0 --cflags`</cppflags>
 		<cppflags>`xml2-config --cflags`</cppflags>
 
-		<!--Warnings -->
+		<!--Warnings. Check for correctness -->
 
 		<cppflags>-pedantic-errors</cppflags>
 		<cppflags>-w</cppflags>
@@ -236,7 +255,15 @@
 
 		<!--Additional linker flags -->
 		<ldflags>-std=c++17</ldflags>
-		<ldflags>-no-pie</ldflags>
+
+		<!-- Need -no-pie for Ubuntu.
+		     Prefer -flinker-output=pie when possible -->
+		<ldflags>-flinker-output=pie</ldflags>
+
+		<!-- Link time optimization, security, correctness -->
+		<ldflags>-flto</ldflags>
+
+		<!-- Linked resources -->
 		<ldflags>-lpthread</ldflags>
 		<ldflags>`pkg-config gtk+-3.0 --libs`</ldflags>
 		<ldflags>`pkg-config sqlite3 --libs`</ldflags>

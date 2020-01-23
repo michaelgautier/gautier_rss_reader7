@@ -40,26 +40,29 @@ LDFLAGS ?=
 ### Variables: ###
 
 CPPDEPS = -MT$@ -MF`echo $@ | sed -e 's,\.o$$,.d,'` -MD -MP
-NEWSREADER_CXXFLAGS = -std=c++17 -O3 -flto `pkg-config gtk+-3.0 --cflags` \
-	`pkg-config webkit2gtk-4.0 --cflags` `xml2-config --cflags` -pedantic-errors \
-	-w -Waddress -Waddress-of-packed-member -Waggregate-return -Waligned-new \
-	-Wall -Walloca -Walloc-zero -Warray-bounds -Wbool-compare -Wbool-operation \
-	-Wcast-align -Wcast-function-type -Wcast-qual -Wcatch-value \
-	-Wchar-subscripts -Wclass-memaccess -Wclobbered -Wcomment \
-	-Wconditionally-supported -Wconversion -Wconversion-null \
-	-Wcoverage-mismatch -Wctor-dtor-privacy -Wdangling-else -Wdate-time \
-	-Wdelete-incomplete -Wdelete-non-virtual-dtor -Wdeprecated-copy \
-	-Wdeprecated-copy-dtor -Wdisabled-optimization -Wdouble-promotion \
-	-Wduplicated-branches -Wduplicated-cond -Weffc++ -Wempty-body -Wenum-compare \
-	-Wexpansion-to-defined -Wextra -Wfatal-errors -Wfloat-conversion \
-	-Wfloat-equal -Wformat -Wformat-nonliteral -Wformat-security \
-	-Wformat-signedness -Wformat-y2k -Wframe-address -Whsa -Wif-not-aligned \
-	-Wignored-attributes -Wignored-qualifiers -Wimplicit-fallthrough \
-	-Winit-self -Winline -Wint-in-bool-context -Winvalid-memory-model \
-	-Winvalid-pch -Wliteral-suffix -Wlogical-not-parentheses -Wlogical-op \
-	-Wlong-long -Wmain -Wmaybe-uninitialized -Wmemset-elt-size \
-	-Wmemset-transposed-args -Wmisleading-indentation -Wmissing-attributes \
-	-Wmissing-braces -Wmissing-field-initializers -Wmissing-format-attribute \
+NEWSREADER_CXXFLAGS = -std=c++17 -D_FORTIFY_SOURCE=2 -O2 -fcf-protection=full \
+	-fexceptions -fno-common -fnon-call-exceptions -fsplit-stack \
+	-fstack-clash-protection -fstack-protector-all -ftrapv -fvisibility=hidden \
+	`pkg-config gtk+-3.0 --cflags` `pkg-config webkit2gtk-4.0 --cflags` \
+	`xml2-config --cflags` -pedantic-errors -w -Waddress \
+	-Waddress-of-packed-member -Waggregate-return -Waligned-new -Wall -Walloca \
+	-Walloc-zero -Warray-bounds -Wbool-compare -Wbool-operation -Wcast-align \
+	-Wcast-function-type -Wcast-qual -Wcatch-value -Wchar-subscripts \
+	-Wclass-memaccess -Wclobbered -Wcomment -Wconditionally-supported \
+	-Wconversion -Wconversion-null -Wcoverage-mismatch -Wctor-dtor-privacy \
+	-Wdangling-else -Wdate-time -Wdelete-incomplete -Wdelete-non-virtual-dtor \
+	-Wdeprecated-copy -Wdeprecated-copy-dtor -Wdisabled-optimization \
+	-Wdouble-promotion -Wduplicated-branches -Wduplicated-cond -Weffc++ \
+	-Wempty-body -Wenum-compare -Wexpansion-to-defined -Wextra -Wfatal-errors \
+	-Wfloat-conversion -Wfloat-equal -Wformat -Wformat-nonliteral \
+	-Wformat-security -Wformat-signedness -Wformat-y2k -Wframe-address -Whsa \
+	-Wif-not-aligned -Wignored-attributes -Wignored-qualifiers \
+	-Wimplicit-fallthrough -Winit-self -Winline -Wint-in-bool-context \
+	-Winvalid-memory-model -Winvalid-pch -Wliteral-suffix \
+	-Wlogical-not-parentheses -Wlogical-op -Wlong-long -Wmain \
+	-Wmaybe-uninitialized -Wmemset-elt-size -Wmemset-transposed-args \
+	-Wmisleading-indentation -Wmissing-attributes -Wmissing-braces \
+	-Wmissing-field-initializers -Wmissing-format-attribute \
 	-Wmissing-include-dirs -Wmissing-noreturn -Wmissing-profile \
 	-Wmultiple-inheritance -Wmultistatement-macros -Wnamespaces -Wnarrowing \
 	-Wno-aggressive-loop-optimizations -Wno-attributes -Wno-attribute-warning \
@@ -130,7 +133,7 @@ bin:
 	@mkdir -p bin
 
 bin/newsreader: $(NEWSREADER_OBJECTS) bin
-	$(CXX) -o $@ $(NEWSREADER_OBJECTS)  -std=c++17 -no-pie -lpthread `pkg-config gtk+-3.0 --libs` `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `pkg-config webkit2gtk-4.0 --libs` `xml2-config --libs` $(LDFLAGS)
+	$(CXX) -o $@ $(NEWSREADER_OBJECTS)  -std=c++17 -flinker-output=pie -flto -lpthread `pkg-config gtk+-3.0 --libs` `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `pkg-config webkit2gtk-4.0 --libs` `xml2-config --libs` $(LDFLAGS)
 
 install_newsreader: bin/newsreader
 	$(INSTALL) -d $(DESTDIR)$(prefix)/bin
