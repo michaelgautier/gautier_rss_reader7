@@ -9,7 +9,7 @@ URL:            https://michaelgautier.github.io/gautier_rss_reader7/
 Source0:        https://github.com/michaelgautier/gautier_rss_reader7/archive/v%{version}.tar.gz
 
 BuildRequires:  gcc-c++ make pkgconfig(gthread-2.0) pkgconfig(gtk+-3.0) pkgconfig(sqlite3) pkgconfig(libcurl) pkgconfig(webkit2gtk-4.0) pkgconfig(libxml-2.0)
-Requires:       gtk3 libcurl libxml2 sqlite webkit2gtk3
+Requires:       gtk3 sqlite webkit2gtk3
 
 %description
 The newsreader program shows listings from feeds in the RSS/Atom formats. 
