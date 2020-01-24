@@ -1,3 +1,25 @@
+/*
+
+	Jan. 24, 2020	12:45PM
+
+	Michael Gautier
+
+	This header and the accompanying argtable3.c is not GPL or LGPL licensed.
+
+	It is included in this repository for explanatory purposes in the 
+	video series: C++ the Basic Way by Michael Gautier
+
+	It is included in this repository for the purposes of building the 
+	command-line executables: newsdownld and rss_io_test. As such, argtable 
+	is used internally to verify the rss API but is not intended for 
+	redistribution as part of the newsreader program.
+
+	In the future, argtable will be removed and replaced with an API that 
+	operates under an OSI license with the same functions as argtable. That 
+	may include adopting shopts.
+
+*/
+
 /*******************************************************************************
  * argtable3: Declares the main interfaces of the library
  *
