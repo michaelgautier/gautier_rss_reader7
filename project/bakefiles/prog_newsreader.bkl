@@ -34,12 +34,40 @@
 		<sources>../source/rss_lib/rss_download/impl/feed_download.cpp</sources>
 		<sources>../source/rss_lib/rss_parse/impl/feed_parse.cpp</sources>
 
-		<!--Additional compiler flags -->
+		<!--Common compiler/linker flags -->
+		<!--Include file directories -->
+		<include>../source</include>
+
 		<cppflags>-std=c++17</cppflags>
+		<ldflags>-std=c++17</ldflags>
+
+		<cppflags>-pipe</cppflags>
+		<ldflags>-pipe</ldflags>
+		<cppflags>-O2</cppflags>
+		<ldflags>-flto</ldflags>
+
+		<!-- Need -no-pie for Ubuntu.
+		     Prefer -flinker-output=pie when possible -->
+		<ldflags>-flinker-output=pie</ldflags>
+
+		<!-- Linked resources -->
+
+		<cppflags>`pkg-config gtk+-3.0 --cflags`</cppflags>
+		<cppflags>`pkg-config webkit2gtk-4.0 --cflags`</cppflags>
+		<cppflags>`pkg-config libxml-2.0 --cflags`</cppflags>
+		<cppflags>`pkg-config gthread-2.0 --cflags`</cppflags>
+
+		<ldflags>`pkg-config gtk+-3.0 --libs`</ldflags>
+		<ldflags>`pkg-config sqlite3 --libs`</ldflags>
+		<ldflags>`pkg-config libcurl --libs`</ldflags>
+		<ldflags>`pkg-config webkit2gtk-4.0 --libs`</ldflags>
+		<ldflags>`pkg-config libxml-2.0 --libs`</ldflags>
+		<ldflags>`pkg-config gthread-2.0 --libs`</ldflags>
 
 		<!-- Defines -->
 		<!-- Suggested in the Red Hat publication:
 			Developing Applictions in RHEL 8 (2019-11-15)  -->
+
 		<cppflags>-D_FORTIFY_SOURCE=2</cppflags>
 
 		<!-- Libc assertions
@@ -47,12 +75,12 @@
 			GTK and Pango use assertions useful during development
 			that are extremely useful.
 			Comment out this line to enable the assertions. -->
+
 		<cppflags>-DNDEBUG</cppflags>
 
 		<!-- Compile time optimization, security, correctness -->
 
-		<cppflags>-O2</cppflags>
-
+		<cppflags>-fasynchronous-unwind-tables</cppflags>
 		<cppflags>-fcf-protection=full</cppflags>
 		<cppflags>-fexceptions</cppflags>
 		<cppflags>-fno-common</cppflags>
@@ -62,13 +90,6 @@
 		<cppflags>-fstack-protector-all</cppflags>
 		<cppflags>-ftrapv</cppflags>
 		<cppflags>-fvisibility=hidden</cppflags>
-
-		<!-- Linked resources -->
-
-		<cppflags>`pkg-config gtk+-3.0 --cflags`</cppflags>
-		<cppflags>`pkg-config webkit2gtk-4.0 --cflags`</cppflags>
-		<cppflags>`pkg-config libxml-2.0 --cflags`</cppflags>
-		<cppflags>`pkg-config gthread-2.0 --cflags`</cppflags>
 
 		<!--Warnings. Check for correctness -->
 
@@ -260,26 +281,5 @@
 		<cppflags>-Wvolatile-register-var</cppflags>
 		<cppflags>-Wwrite-strings</cppflags>
 		<cppflags>-Wzero-as-null-pointer-constant</cppflags>
-
-		<!--Additional linker flags -->
-		<ldflags>-std=c++17</ldflags>
-
-		<!-- Need -no-pie for Ubuntu.
-		     Prefer -flinker-output=pie when possible -->
-		<ldflags>-flinker-output=pie</ldflags>
-
-		<!-- Link time optimization, security, correctness -->
-		<ldflags>-flto</ldflags>
-
-		<!-- Linked resources -->
-		<ldflags>`pkg-config gtk+-3.0 --libs`</ldflags>
-		<ldflags>`pkg-config sqlite3 --libs`</ldflags>
-		<ldflags>`pkg-config libcurl --libs`</ldflags>
-		<ldflags>`pkg-config webkit2gtk-4.0 --libs`</ldflags>
-		<ldflags>`pkg-config libxml-2.0 --libs`</ldflags>
-		<ldflags>`pkg-config gthread-2.0 --libs`</ldflags>
-
-		<!--Include file directories -->
-		<include>../source</include>
 	</exe>
 </makefile>

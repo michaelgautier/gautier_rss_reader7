@@ -40,14 +40,15 @@ LDFLAGS ?=
 ### Variables: ###
 
 CPPDEPS = -MT$@ -MF`echo $@ | sed -e 's,\.o$$,.d,'` -MD -MP
-NEWSREADER_CXXFLAGS = -std=c++17 -D_FORTIFY_SOURCE=2 -DNDEBUG -O2 \
-	-fcf-protection=full -fexceptions -fno-common -fnon-call-exceptions \
-	-fsplit-stack -fstack-clash-protection -fstack-protector-all -ftrapv \
-	-fvisibility=hidden `pkg-config gtk+-3.0 --cflags` `pkg-config webkit2gtk-4.0 \
-	--cflags` `pkg-config libxml-2.0 --cflags` `pkg-config gthread-2.0 --cflags` \
-	-pedantic-errors -w -Waddress -Waddress-of-packed-member -Waggregate-return \
-	-Waligned-new -Wall -Walloca -Walloc-zero -Warray-bounds -Wbool-compare \
-	-Wbool-operation -Wcast-align -Wcast-function-type -Wcast-qual -Wcatch-value \
+NEWSREADER_CXXFLAGS = -I../source -std=c++17 -pipe -O2 `pkg-config gtk+-3.0 \
+	--cflags` `pkg-config webkit2gtk-4.0 --cflags` `pkg-config libxml-2.0 \
+	--cflags` `pkg-config gthread-2.0 --cflags` -D_FORTIFY_SOURCE=2 -DNDEBUG \
+	-fasynchronous-unwind-tables -fcf-protection=full -fexceptions -fno-common \
+	-fnon-call-exceptions -fsplit-stack -fstack-clash-protection \
+	-fstack-protector-all -ftrapv -fvisibility=hidden -pedantic-errors -w \
+	-Waddress -Waddress-of-packed-member -Waggregate-return -Waligned-new -Wall \
+	-Walloca -Walloc-zero -Warray-bounds -Wbool-compare -Wbool-operation \
+	-Wcast-align -Wcast-function-type -Wcast-qual -Wcatch-value \
 	-Wchar-subscripts -Wclass-memaccess -Wclobbered -Wcomment \
 	-Wconditionally-supported -Wconversion -Wconversion-null \
 	-Wcoverage-mismatch -Wctor-dtor-privacy -Wdangling-else -Wdate-time \
@@ -95,7 +96,7 @@ NEWSREADER_CXXFLAGS = -std=c++17 -D_FORTIFY_SOURCE=2 -DNDEBUG -O2 \
 	-Wunused-variable -Wuseless-cast -Wvariadic-macros \
 	-Wvector-operation-performance -Wvirtual-inheritance -Wvla \
 	-Wvolatile-register-var -Wwrite-strings -Wzero-as-null-pointer-constant \
-	-I../source $(CPPFLAGS) $(CXXFLAGS)
+	$(CPPFLAGS) $(CXXFLAGS)
 NEWSREADER_OBJECTS =  \
 	newsreader_application.o \
 	newsreader_app_win.o \
@@ -133,7 +134,7 @@ bin:
 	@mkdir -p bin
 
 bin/newsreader: $(NEWSREADER_OBJECTS) bin
-	$(CXX) -o $@ $(NEWSREADER_OBJECTS)  -std=c++17 -flinker-output=pie -flto `pkg-config gtk+-3.0 --libs` `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `pkg-config webkit2gtk-4.0 --libs` `pkg-config libxml-2.0 --libs` `pkg-config gthread-2.0 --libs` $(LDFLAGS)
+	$(CXX) -o $@ $(NEWSREADER_OBJECTS)  -std=c++17 -pipe -flto -flinker-output=pie `pkg-config gtk+-3.0 --libs` `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `pkg-config webkit2gtk-4.0 --libs` `pkg-config libxml-2.0 --libs` `pkg-config gthread-2.0 --libs` $(LDFLAGS)
 
 install_newsreader: bin/newsreader
 	$(INSTALL) -d $(DESTDIR)$(prefix)/bin
