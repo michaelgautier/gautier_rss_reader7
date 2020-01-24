@@ -1,4 +1,5 @@
 #!/bin/bash
+#All files included in the source RPM build are to be single licensed under LGPLv2+
 
 rpmdev-wipetree
 
@@ -7,8 +8,12 @@ cp --remove-destination package_build/newsreader.spec ~/rpmbuild/SPECS/newsreade
 rm -rf ../build/rpmbuild/
 
 mkdir -p ../build/rpmbuild/build/
+mkdir -p ../build/rpmbuild/source/
 
-rsync --human-readable --times --executability --preallocate --update --recursive --delay-updates ../source ../build/rpmbuild
+rsync --human-readable --times --executability --preallocate --update --delay-updates --recursive ../source/rss_ui ../build/rpmbuild/source/
+rsync --human-readable --times --executability --preallocate --update --delay-updates --recursive ../source/rss_lib ../build/rpmbuild/source/
+rsync --human-readable --times --executability --preallocate --update --delay-updates --recursive ../source/style ../build/rpmbuild/source/
+
 rsync --human-readable --times --executability --preallocate --update --delay-updates ./buildscripts/build_newsreader.mk ../build/rpmbuild/build/makefile
 rsync --human-readable --times --executability --preallocate --update --delay-updates ../LICENSE ../build/rpmbuild/LICENSE
 

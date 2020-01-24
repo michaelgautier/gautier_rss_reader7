@@ -3,6 +3,7 @@ Version:        7.0.7
 Release:        1%{?dist}
 Summary:        Ultra simple desktop feed reader
 
+#All files included in the source RPM build are to be single licensed under LGPLv2+
 License:        LGPLv2+
 URL:            https://michaelgautier.github.io/gautier_rss_reader7/
 Source0:        https://github.com/michaelgautier/gautier_rss_reader7/archive/v%{version}.tar.gz
@@ -12,7 +13,7 @@ Requires:       gtk3 libcurl libxml2 sqlite webkit2gtk3
 
 %description
 The newsreader program shows listings from feeds in the RSS/Atom formats. 
-A screen exist to add, remove, or change feed names and urls. 
+A screen exist to add, remove, or change a feed's name and URL. 
 
 The program does this in a simple, clean way through a native code UI.
 
@@ -25,7 +26,7 @@ Version 7 is the first Gautier RSS program packaged for installation.
 %global _hardened_build 1
 
 %prep
-%setup -c
+%setup -cq
 
 %build
 cd %{_builddir}/%{name}-%{version}/build/
@@ -42,5 +43,5 @@ cp %{_builddir}/%{name}-%{version}/source/style/app.css %{buildroot}/usr/local/b
 /usr/local/bin/app.css
 
 %changelog
-* Thu Jan 23 2020 Michael Gautier <michaelgautier.wordpress.com> - 7.0.7-1
+* Fri Jan 24 2020 Michael Gautier <michaelgautier.wordpress.com> - 7.0.7-1
 - Clean RPM
