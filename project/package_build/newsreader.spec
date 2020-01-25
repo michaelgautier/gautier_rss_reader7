@@ -1,5 +1,5 @@
 Name:           newsreader
-Version:        7.0.7
+Version:        7.0.8
 Release:        1%{?dist}
 Summary:        Ultra simple desktop feed reader
 
@@ -87,5 +87,5 @@ rm -rf %{buildroot}
 %{_mandir}/man7/%{name}.7*
 
 %changelog
-* Sat Jan 25 2020 Michael Gautier <michaelgautier.wordpress.com> - 7.0.7-1
+* Sat Jan 25 2020 Michael Gautier <michaelgautier.wordpress.com> - 7.0.8-1
 - Clean RPM
