@@ -3,6 +3,7 @@ build/rpmbuild/
 build/RPMS/
 build/SRPMS/
 data/
+doc/newsreader.7.gz
 project/*.*~
 project/*.css
 project/*.db
