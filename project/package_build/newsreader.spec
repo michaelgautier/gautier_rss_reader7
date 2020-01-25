@@ -34,13 +34,17 @@ make %{?_smp_mflags}
 
 %install
 cd %{_builddir}/%{name}-%{version}/build/
-%make_install
-cp %{_builddir}/%{name}-%{version}/source/style/app.css %{buildroot}/usr/local/bin/app.css
+%{make_install}
+
+mkdir -p %{buildroot}/usr/bin/
+cp --remove-destination --preserve %{buildroot}/usr/local/bin/newsreader %{buildroot}/usr/bin/newsreader
+cp --remove-destination --preserve %{_builddir}/%{name}-%{version}/source/style/app.css %{buildroot}/usr/bin/app.css
+rm %{buildroot}/usr/local/bin/newsreader
 
 %files
 %license LICENSE
-/usr/local/bin/%{name}
-/usr/local/bin/app.css
+%{_bindir}/%{name}
+%{_bindir}/app.css
 
 %changelog
 * Fri Jan 24 2020 Michael Gautier <michaelgautier.wordpress.com> - 7.0.7-1
