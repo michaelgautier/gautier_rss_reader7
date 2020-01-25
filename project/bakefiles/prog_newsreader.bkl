@@ -7,6 +7,19 @@
 		<dir>bin</dir>
 	</mkdir>
 
+	<data-files>
+		<srcdir>../source/style</srcdir>
+		<files>app.css</files>
+		<install-to>$(DATADIR)/newsreader/</install-to>
+	</data-files>
+
+	<data-files>
+		<srcdir>../doc</srcdir>
+		<files>newsreader.7</files>
+		<files>newsreader.7.gz</files>
+		<install-to>$(DATADIR)/man/man7/</install-to>
+	</data-files>
+
 	<!-- Primary Program, RSS User Interface using GTK -->
 	<exe id="newsreader">
                 <install-to>$(BINDIR)</install-to>
