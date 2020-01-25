@@ -58,6 +58,7 @@ cd %{_builddir}/%{name}-%{version}/build/
 
 #Migrate from staged build in */usr/local/bin to /usr/bin
 cp --remove-destination --preserve %{buildroot}/usr/local/bin/%{name} %{buildroot}%{_bindir}/%{name}
+strip --strip-all %{buildroot}%{_bindir}/%{name}
 
 #Set dependencies under */usr/share/
 cp --remove-destination --preserve %{buildroot}/usr/local/share/%{name}/app.css %{buildroot}%{_datadir}/%{name}/app.css
