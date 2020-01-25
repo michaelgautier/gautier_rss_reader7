@@ -25,51 +25,43 @@ Version 7 is the first Gautier RSS program packaged for installation.
 
 %global _hardened_build 1
 
+#Extract archive
 %prep
 %setup -cq
 
+#Compile / Link
 %build
 cd %{_builddir}/%{name}-%{version}/build/
+
 make %{?_smp_mflags} 
 
+#Configure
 %install
-rm -rf $RPM_BUILD_ROOT
+#The file relocations below (/usr/local/bin to /usr/bin) are due to policy requirements in rpmlint
+#https://unix.stackexchange.com/questions/125120/why-is-dir-or-file-in-usr-local-an-error-rather-than-a-warning?rq=1
+#I decided to keep the default policies in place an override their indications in the spec file.
+rm -rf %{buildroot}
+mkdir -p %{buildroot}%{_bindir}
 cd %{_builddir}/%{name}-%{version}/build/
-
-#RPM macro %{make_install} will place the final result in ~/rpmbuild/BUILDROOT/%{name}-%{version}-%{release}.%{_arch}
-#Again %{buildroot} usually equals ~/rpmbuild/BUILDROOT/%{name}-%{version}-%{release}.%{_arch}
-
-#That is great for keeping the package from actually installing on your system if you are just packaging.
-#Also great if you are creating the package and need to rebuild the package several times before it is finalized.
-#See https://unix.stackexchange.com/questions/180666/rpm-install-section
-
-#The problem is that the package will go to %{buildroot}/usr/local/bin
-#/usr/local/bin should be /usr/bin and will cause issues.
-#RPM macro %{make_install} sets the value of DESTDIR correctly
-#However, the value supplied to /usr/bin/install is $DESTDIR/usr/local/bin instead of $DESTDIR/usr/bin
-#That will cause a conflict if the value of %{_bindir} does not match the value expected by rpmlint which is /usr/bin.
 
 %{make_install}
 
-#%{make_install} on Fedora 31 server expands out to:
-#	/usr/bin/make install DESTDIR=/home/yourname/rpmbuild/BUILDROOT/newsreader-7.0.7-1.fc31.x86_64 'INSTALL=/usr/bin/install -p' PREFIX=/usr
-#	/usr/bin/install -p -d /home/yourname/rpmbuild/BUILDROOT/newsreader-7.0.7-1.fc31.x86_64/usr/local/bin
-#	install -c bin/newsreader /home/yourname/rpmbuild/BUILDROOT/newsreader-7.0.7-1.fc31.x86_64/usr/local/bin
+cp --remove-destination --preserve %{buildroot}/usr/local/bin/newsreader %{buildroot}%{_bindir}/newsreader
+cp --remove-destination --preserve %{_builddir}/%{name}-%{version}/source/style/app.css %{buildroot}%{_bindir}/app.css
 
-#since the default value of %{make_install} does not match the default expectation of rpmlint (%_bindir), this might be a bug that will require a permanent workaround.
-
-mkdir -p %{buildroot}/usr/bin/
-cp --remove-destination --preserve %{buildroot}/usr/local/bin/newsreader %{buildroot}/usr/bin/newsreader
-cp --remove-destination --preserve %{_builddir}/%{name}-%{version}/source/style/app.css %{buildroot}/usr/bin/app.css
 rm %{buildroot}/usr/local/bin/newsreader
 
+#Remove build
+%clean
+rm -rf %{buildroot}
+
+#Enumerate files
 %files
 %license LICENSE
 %{_bindir}/%{name}
 %{_bindir}/app.css
 
-#final spec file needs to resemble the example at:
-#	https://linuxconfig.org/how-to-create-an-rpm-package
+#For later...
 
 #/usr/bin/newsreader
 #/usr/share/applications/newsreader.desktop
