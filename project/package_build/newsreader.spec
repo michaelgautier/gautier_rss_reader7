@@ -46,6 +46,20 @@ rm %{buildroot}/usr/local/bin/newsreader
 %{_bindir}/%{name}
 %{_bindir}/app.css
 
+#final spec file needs to resemble the example at:
+#	https://linuxconfig.org/how-to-create-an-rpm-package
+
+#/usr/bin/newsreader
+#/usr/share/applications/newsreader.desktop
+#/usr/share/doc/newsreader/ChangeLog
+#/usr/share/doc/newsreader/README.md
+#/usr/share/newsreader/styles/app.css
+#/usr/share/newsreader/images/newsreader.png
+#/usr/share/newsreader/images/newsreader.svg
+#/usr/share/icons/hicolor/48x48/apps/newsreader.png
+#/usr/share/icons/hicolor/scalable/apps/newsreader.svg
+#/usr/share/man/man1/newsreader.1.gz
+
 %changelog
 * Fri Jan 24 2020 Michael Gautier <michaelgautier.wordpress.com> - 7.0.7-1
 - Clean RPM
