@@ -14,6 +14,12 @@
 	</data-files>
 
 	<data-files>
+		<srcdir>../desktop</srcdir>
+		<files>newsreader.desktop</files>
+		<install-to>$(DATADIR)/applications/</install-to>
+	</data-files>
+
+	<data-files>
 		<srcdir>../doc</srcdir>
 		<files>newsreader.7</files>
 		<files>newsreader.7.gz</files>

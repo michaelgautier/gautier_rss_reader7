@@ -124,11 +124,14 @@ all: bin/newsreader
 install: install_newsreader
 	$(INSTALL) -d $(DESTDIR)$(prefix)/share/newsreader/
 	(cd ../source/style ; $(INSTALL) -m 644  app.css $(DESTDIR)$(prefix)/share/newsreader/)
+	$(INSTALL) -d $(DESTDIR)$(prefix)/share/applications/
+	(cd ../desktop ; $(INSTALL) -m 644  newsreader.desktop $(DESTDIR)$(prefix)/share/applications/)
 	$(INSTALL) -d $(DESTDIR)$(prefix)/share/man/man7/
 	(cd ../doc ; $(INSTALL) -m 644  newsreader.7 newsreader.7.gz $(DESTDIR)$(prefix)/share/man/man7/)
 
 uninstall: uninstall_newsreader
 	(cd $(DESTDIR)$(prefix)/share/newsreader/ ; rm -f app.css)
+	(cd $(DESTDIR)$(prefix)/share/applications/ ; rm -f newsreader.desktop)
 	(cd $(DESTDIR)$(prefix)/share/man/man7/ ; rm -f newsreader.7 newsreader.7.gz)
 
 clean: 

@@ -47,7 +47,8 @@ make %{?_smp_mflags}
 rm -rf %{buildroot}
 
 mkdir -p %{buildroot}%{_bindir}
-mkdir -p %{buildroot}%{_datadir}/%{name}
+mkdir -p %{buildroot}%{_datadir}/%{name}/
+mkdir -p %{buildroot}%{_datadir}/applications/
 mkdir -p %{buildroot}%{_mandir}/man7/
 
 cd %{_builddir}/%{name}-%{version}/build/
@@ -62,10 +63,15 @@ strip --strip-all %{buildroot}%{_bindir}/%{name}
 
 #Set dependencies under */usr/share/
 cp --remove-destination --preserve %{buildroot}/usr/local/share/%{name}/app.css %{buildroot}%{_datadir}/%{name}/app.css
+cp --remove-destination --preserve %{buildroot}/usr/local/share/applications/%{name}.desktop %{buildroot}%{_datadir}/applications/%{name}.desktop
 cp --remove-destination --preserve %{buildroot}/usr/local/share/man/man7/%{name}.7* %{buildroot}%{_mandir}/man7/
+
+desktop-file-install --dir=%{buildroot}%{_datadir}/applications/ %{buildroot}%{_datadir}/applications/%{name}.desktop
+desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 
 rm %{buildroot}/usr/local/bin/%{name}
 rm %{buildroot}/usr/local/share/%{name}/app.css
+rm %{buildroot}/usr/local/share/applications/%{name}.desktop
 rm %{buildroot}/usr/local/share/man/man7/%{name}.7*
 
 #Remove build
@@ -77,6 +83,7 @@ rm -rf %{buildroot}
 %license LICENSE
 %{_bindir}/%{name}
 %{_datadir}/%{name}/app.css
+%{_datadir}/applications/%{name}.desktop
 %{_mandir}/man7/%{name}.7*
 
 %changelog

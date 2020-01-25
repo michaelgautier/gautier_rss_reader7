@@ -30,6 +30,7 @@ rsync --human-readable --times --executability --preallocate --update --delay-up
 rsync --human-readable --times --executability --preallocate --update --delay-updates --recursive ../source/rss_lib ../build/rpmbuild/source/
 rsync --human-readable --times --executability --preallocate --update --delay-updates --recursive ../source/style ../build/rpmbuild/source/
 rsync --human-readable --times --executability --preallocate --update --delay-updates --recursive ../doc ../build/rpmbuild/
+rsync --human-readable --times --executability --preallocate --update --delay-updates --recursive ../desktop ../build/rpmbuild/
 
 #Source Archive - Part 2b
 ## **	Transform newsreader makefile to the default file name expected by the make program.
