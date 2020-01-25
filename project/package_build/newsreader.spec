@@ -33,7 +33,21 @@ cd %{_builddir}/%{name}-%{version}/build/
 make %{?_smp_mflags} 
 
 %install
+rm -rf $RPM_BUILD_ROOT
 cd %{_builddir}/%{name}-%{version}/build/
+
+#RPM macro %{make_install} will place the final result in ~/rpmbuild/BUILDROOT/%{name}-%{version}-%{release}.%{_arch}
+#Again %{buildroot} usually equals ~/rpmbuild/BUILDROOT/%{name}-%{version}-%{release}.%{_arch}
+
+#That is great for keeping the package from actually installing on your system if you are just packaging.
+#Also great if you are creating the package and need to rebuild the package several times before it is finalized.
+#See https://unix.stackexchange.com/questions/180666/rpm-install-section
+
+#The problem is that the package will go to %{buildroot}/usr/local/bin
+#/usr/local/bin should be /usr/bin and will cause issues.
+#RPM macro %{make_install} sets the value of DESTDIR correctly
+#However, the value supplied to /usr/bin/install is $DESTDIR/usr/local/bin instead of $DESTDIR/usr/bin
+#That will cause a conflict if the value of %{_bindir} does not match the value expected by rpmlint which is /usr/bin.
 %{make_install}
 
 mkdir -p %{buildroot}/usr/bin/
