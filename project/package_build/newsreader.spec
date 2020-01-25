@@ -48,7 +48,15 @@ cd %{_builddir}/%{name}-%{version}/build/
 #RPM macro %{make_install} sets the value of DESTDIR correctly
 #However, the value supplied to /usr/bin/install is $DESTDIR/usr/local/bin instead of $DESTDIR/usr/bin
 #That will cause a conflict if the value of %{_bindir} does not match the value expected by rpmlint which is /usr/bin.
+
 %{make_install}
+
+#%{make_install} on Fedora 31 server expands out to:
+#	/usr/bin/make install DESTDIR=/home/yourname/rpmbuild/BUILDROOT/newsreader-7.0.7-1.fc31.x86_64 'INSTALL=/usr/bin/install -p' PREFIX=/usr
+#	/usr/bin/install -p -d /home/yourname/rpmbuild/BUILDROOT/newsreader-7.0.7-1.fc31.x86_64/usr/local/bin
+#	install -c bin/newsreader /home/yourname/rpmbuild/BUILDROOT/newsreader-7.0.7-1.fc31.x86_64/usr/local/bin
+
+#since the default value of %{make_install} does not match the default expectation of rpmlint (%_bindir), this might be a bug that will require a permanent workaround.
 
 mkdir -p %{buildroot}/usr/bin/
 cp --remove-destination --preserve %{buildroot}/usr/local/bin/newsreader %{buildroot}/usr/bin/newsreader
