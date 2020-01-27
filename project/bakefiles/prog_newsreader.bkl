@@ -20,6 +20,12 @@
 	</data-files>
 
 	<data-files>
+		<srcdir>../desktop</srcdir>
+		<files>newsreader.appdata.xml</files>
+		<install-to>$(DATADIR)/metainfo/</install-to>
+	</data-files>
+
+	<data-files>
 		<srcdir>../doc</srcdir>
 		<files>newsreader.7</files>
 		<files>newsreader.7.gz</files>

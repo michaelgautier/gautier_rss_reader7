@@ -9,6 +9,7 @@ URL:            https://michaelgautier.github.io/gautier_rss_reader7/
 Source0:        https://github.com/michaelgautier/gautier_rss_reader7/archive/v%{version}.tar.gz
 
 BuildRequires:  gcc-c++ make pkgconfig(gthread-2.0) pkgconfig(gtk+-3.0) pkgconfig(sqlite3) pkgconfig(libcurl) pkgconfig(webkit2gtk-4.0) pkgconfig(libxml-2.0)
+BuildRequires:  libappstream-glib
 Requires:       gtk3 sqlite webkit2gtk3
 
 %description
@@ -49,6 +50,7 @@ rm -rf %{buildroot}
 mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_datadir}/%{name}/
 mkdir -p %{buildroot}%{_datadir}/applications/
+mkdir -p %{buildroot}%{_metainfodir}
 mkdir -p %{buildroot}%{_mandir}/man7/
 
 cd %{_builddir}/%{name}-%{version}/build/
@@ -64,14 +66,17 @@ strip --strip-all %{buildroot}%{_bindir}/%{name}
 #Set dependencies under */usr/share/
 cp --remove-destination --preserve %{buildroot}/usr/local/share/%{name}/app.css %{buildroot}%{_datadir}/%{name}/app.css
 cp --remove-destination --preserve %{buildroot}/usr/local/share/applications/%{name}.desktop %{buildroot}%{_datadir}/applications/%{name}.desktop
+cp --remove-destination --preserve %{buildroot}/usr/local/share/metainfo/%{name}.appdata.xml %{buildroot}%{_metainfodir}/%{name}.appdata.xml
 cp --remove-destination --preserve %{buildroot}/usr/local/share/man/man7/%{name}.7* %{buildroot}%{_mandir}/man7/
 
 desktop-file-install --dir=%{buildroot}%{_datadir}/applications/ %{buildroot}%{_datadir}/applications/%{name}.desktop
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
+appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/%{name}.appdata.xml
 
 rm %{buildroot}/usr/local/bin/%{name}
 rm %{buildroot}/usr/local/share/%{name}/app.css
 rm %{buildroot}/usr/local/share/applications/%{name}.desktop
+rm %{buildroot}/usr/local/share/metainfo/%{name}.appdata.xml
 rm %{buildroot}/usr/local/share/man/man7/%{name}.7*
 
 #Remove build
@@ -84,6 +89,7 @@ rm -rf %{buildroot}
 %{_bindir}/%{name}
 %{_datadir}/%{name}/app.css
 %{_datadir}/applications/%{name}.desktop
+%{_metainfodir}/%{name}.appdata.xml
 %{_mandir}/man7/%{name}.7*
 
 %changelog
