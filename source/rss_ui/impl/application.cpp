@@ -15,18 +15,106 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 #include "rss_lib/rss/rss_writer.hpp"
 
+#include <iostream>
+#include <cerrno>
+#include <cstdlib>
+#include <cstring>
+
+/*
+	GNU C Library extensions
+
+	- Revise into platform specific modules if OS platform port needed.
+*/
+#include <sys/types.h>
+
+/*
+	- Using GNU C file system I/O to create directories to hold user data.
+	- Opted for that over C++ filesystem (introduced in C++ 17).
+	- Waiting until C++ filesystem has 0 defect reports for approx. 5 years.
+*/
+#include <sys/stat.h>
+#include <dirent.h>
+
+/*
+	- Get the home directory for the currently logged in user.
+	- Necessary since GNU C does not translate ~/ or expand it out.
+*/
+#include <grp.h>
+#include <pwd.h>
+
+/*
+	- End all directory paths in this program with / to make concatenation trivial.
+	- Referencing root_user_data_directory fails under the following conditions:
+		* ./local/share does not exist
+		* If ~/ is used as the root of the tree. Does not expand to /home/<you>.
+	- user_home_directory is modified by calls to create_user_root_directory.
+*/
+static
+std::string
+user_home_directory = "";
+
+static
+const std::string
+root_user_data_directory = ".local/share/newsreader/";
+
+static
+int
+create_user_root_directory();
+
+static
+int
+create_user_data_directory();
+
+static
+int
+create_directory (std::string directory_path);
+
+/*
+	Program start-up.
+*/
 int
 main (int argc, char** argv)
 {
-	if (! g_thread_supported()) {
-		g_thread_init (NULL);
+	namespace ns_ui_app = gautier_rss_ui_app;
+
+	int status = 0;
+
+	/*
+		Initialize User's directory to hold data files.
+	*/
+	{
+		status = create_user_root_directory();
+
+		if (status == 0) {
+			status = create_user_data_directory();
+		}
 	}
 
-	gdk_threads_init();
+	/*
+		Initialize database to hold RSS feed data.
+	*/
+	if (status == 0) {
+		std::string db_file_name = ns_ui_app::get_db_file_name();
 
-	gtk_init (NULL, NULL);
+		gautier_rss_data_write::initialize_db (db_file_name);
+	}
 
-	int status = gautier_rss_ui_app::create();
+	/*
+		Initialize UI
+	*/
+	if (status == 0) {
+		bool gthreads_initialized = g_thread_supported();
+
+		if (gthreads_initialized == false) {
+			g_thread_init (NULL);
+		}
+
+		gdk_threads_init();
+
+		gtk_init (NULL, NULL);
+
+		status = ns_ui_app::create();
+	}
 
 	return status;
 }
@@ -35,19 +123,6 @@ int
 gautier_rss_ui_app::create()
 {
 	int status = 0;
-
-	/*
-		Database
-
-		Create file to hold RSS feed data.
-	*/
-	{
-		std::string db_file_name = get_db_file_name();
-		{
-			namespace ns_write = gautier_rss_data_write;
-			ns_write::initialize_db (db_file_name);
-		}
-	}
 
 	/*
 		GUI
@@ -159,7 +234,7 @@ gautier_rss_ui_app::get_scroll_content_as_list_view (GtkScrolledWindow* scroll_w
 std::string
 gautier_rss_ui_app::get_db_file_name()
 {
-	return "rss.db";
+	return get_user_directory_name() + "rss.db";
 }
 
 /*
@@ -180,5 +255,101 @@ std::string
 gautier_rss_ui_app::get_style_file_name()
 {
 	return "app.css";
+}
+
+/*
+	The functions here serve the following purposes:
+
+		1.)	Avoid cluttering up the user's home directory.
+		2.)	Establish per-user files.
+		3.)	Operate the same as other GNOME software in storing per-user data.
+		4.)	Observe the File Hierarchy Standards and separate global setup
+			from per-user data.
+
+		Item #4 was the catalyst for these changes. See the previous work on RPM setup.
+*/
+
+/*
+	User's directory to keep files
+
+	Program name as seen in title bar.
+*/
+std::string
+gautier_rss_ui_app::get_user_directory_name()
+{
+	return user_home_directory + root_user_data_directory + "data/";
+}
+
+static
+int
+create_directory (std::string directory_path)
+{
+	std::string directory_name = directory_path;
+
+	int directory_status = mkdir (directory_name.data(), S_IRWXU | S_IRWXG | S_IRWXO);
+
+	if (directory_status != 0) {
+		/*
+			Ignore errors (in 'this' context) where the directory already exist.
+			Our objective is to have a directory with the given path. If it exists, that is good.
+			Checking the error return code is in this case faster and simpler than 20 lines of directory scan code.
+		*/
+		const int c_error_no = errno;
+
+		if (c_error_no == EEXIST) { //Directory exists when we tried to create it.
+			directory_status = 0;
+		} else { //All other errors are critical and must abort the program.
+			/*
+				Most common errors:
+					Permissions
+					Directory cannot be the same name as the executable when both would exist in the same working directory.
+			*/
+			std::cout << "Cannot create directory: " << directory_name << ". Error: " << strerror (
+			              errno) << ", errno: " << errno << "\n";
+		}
+	}
+
+	return directory_status;
+}
+
+static
+int
+create_user_root_directory()
+{
+	int status  = -1;
+
+	uid_t user_id = getuid();
+	struct passwd* user_info = getpwuid (user_id);
+
+	if (!user_info) {
+		status = -1;
+		std::cout << "Could not determine user directory\n";
+
+		exit (EXIT_FAILURE);
+	} else {
+		status = 0;
+
+		user_home_directory = user_info->pw_dir;
+		user_home_directory = user_home_directory + "/";
+	}
+
+	if (status == 0) {
+		std::string directory_name = user_home_directory + root_user_data_directory;
+
+		status = create_directory (directory_name);
+	}
+
+	return status;
+}
+
+static
+int
+create_user_data_directory()
+{
+	std::string directory_name = gautier_rss_ui_app::get_user_directory_name();
+
+	int directory_status = create_directory (directory_name);
+
+	return directory_status;
 }
 

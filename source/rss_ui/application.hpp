@@ -40,6 +40,9 @@ namespace gautier_rss_ui_app {
 	get_application_name();
 
 	std::string
+	get_user_directory_name();
+
+	std::string
 	get_style_file_name();
 }
 
