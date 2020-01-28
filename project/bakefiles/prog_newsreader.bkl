@@ -69,7 +69,10 @@
 		<cppflags>-pipe</cppflags>
 		<ldflags>-pipe</ldflags>
 		<cppflags>-O2</cppflags>
+		<ldflags>-O2</ldflags>
 		<ldflags>-flto</ldflags>
+		<cppflags>-ggdb</cppflags>
+		<ldflags>-ggdb</ldflags>
 
 		<!-- Need -no-pie for Ubuntu.
 		     Prefer -flinker-output=pie when possible -->

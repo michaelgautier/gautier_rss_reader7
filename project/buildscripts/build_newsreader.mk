@@ -40,7 +40,7 @@ LDFLAGS ?=
 ### Variables: ###
 
 CPPDEPS = -MT$@ -MF`echo $@ | sed -e 's,\.o$$,.d,'` -MD -MP
-NEWSREADER_CXXFLAGS = -I../source -std=c++17 -pipe -O2 `pkg-config gtk+-3.0 \
+NEWSREADER_CXXFLAGS = -I../source -std=c++17 -pipe -O2 -ggdb `pkg-config gtk+-3.0 \
 	--cflags` `pkg-config webkit2gtk-4.0 --cflags` `pkg-config libxml-2.0 \
 	--cflags` `pkg-config gthread-2.0 --cflags` -D_FORTIFY_SOURCE=2 -DNDEBUG \
 	-fasynchronous-unwind-tables -fcf-protection=full -fexceptions -fno-common \
@@ -146,7 +146,7 @@ bin:
 	@mkdir -p bin
 
 bin/newsreader: $(NEWSREADER_OBJECTS) bin
-	$(CXX) -o $@ $(NEWSREADER_OBJECTS)  -std=c++17 -pipe -flto -flinker-output=pie `pkg-config gtk+-3.0 --libs` `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `pkg-config webkit2gtk-4.0 --libs` `pkg-config libxml-2.0 --libs` `pkg-config gthread-2.0 --libs` $(LDFLAGS)
+	$(CXX) -o $@ $(NEWSREADER_OBJECTS)  -std=c++17 -pipe -O2 -flto -ggdb -flinker-output=pie `pkg-config gtk+-3.0 --libs` `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `pkg-config webkit2gtk-4.0 --libs` `pkg-config libxml-2.0 --libs` `pkg-config gthread-2.0 --libs` $(LDFLAGS)
 
 install_newsreader: bin/newsreader
 	$(INSTALL) -d $(DESTDIR)$(prefix)/bin
