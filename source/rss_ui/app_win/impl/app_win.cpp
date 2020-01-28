@@ -74,6 +74,8 @@ bool diagnostics_enabled = false;
 /*
 	Signal response functions.
 */
+gulong headline_view_switch_page_signal_id = -1;
+
 extern "C"
 void
 headline_view_switch_page (GtkNotebook* headlines_view,
@@ -180,6 +182,10 @@ bool shutting_down = false;
 extern "C"
 void
 window_size_allocate (GtkWidget* widget, GdkRectangle* allocation, gpointer user_data);
+
+extern "C"
+void
+window_destroy (GtkWidget* window, gpointer user_data);
 
 extern "C"
 void
@@ -578,8 +584,23 @@ void
 manage_feeds_click (GtkButton* button,
                     gpointer   user_data)
 {
+	/**
+	 * g_signal_handlers_disconnect_by_func:
+	 * @instance: The instance to remove handlers from.
+	 * @func: The C closure callback of the handlers (useless for non-C closures).
+	 * @data: The closure data of the handlers' closures.
+	 *
+	 * Disconnects all handlers on an instance that match @func and @data.
+	 *
+	 * Returns: The number of handlers that matched.
+	 */
+	g_signal_handler_disconnect (headlines_view, headline_view_switch_page_signal_id);
+
 	gautier_rss_win_rss_manage::set_modification_queue (&feed_changes);
 	gautier_rss_win_rss_manage::show_dialog (NULL, win, window_width, window_height);
+
+	headline_view_switch_page_signal_id = g_signal_connect (headlines_view, "switch-page",
+	                                      G_CALLBACK (headline_view_switch_page), NULL);
 
 	return;
 }
@@ -674,7 +695,8 @@ populate_rss_tabs()
 	/*
 		Tab page switch signal. Show news headlines for the chosen tab.
 	*/
-	g_signal_connect (headlines_view, "switch-page", G_CALLBACK (headline_view_switch_page), NULL);
+	headline_view_switch_page_signal_id = g_signal_connect (headlines_view, "switch-page",
+	                                      G_CALLBACK (headline_view_switch_page), NULL);
 
 	int tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
 
