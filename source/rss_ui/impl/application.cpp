@@ -15,6 +15,8 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 #include "rss_lib/rss/rss_writer.hpp"
 
+#include <gio/gio.h>
+
 #include <iostream>
 #include <cerrno>
 #include <cstdlib>
