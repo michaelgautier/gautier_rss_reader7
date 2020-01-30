@@ -64,7 +64,6 @@ cp --remove-destination --preserve %{buildroot}/usr/local/bin/%{name} %{buildroo
 strip --strip-all %{buildroot}%{_bindir}/%{name}
 
 #Set dependencies under */usr/share/
-cp --remove-destination --preserve %{buildroot}/usr/local/share/%{name}/app.css %{buildroot}%{_datadir}/%{name}/app.css
 cp --remove-destination --preserve %{buildroot}/usr/local/share/applications/%{name}.desktop %{buildroot}%{_datadir}/applications/%{name}.desktop
 cp --remove-destination --preserve %{buildroot}/usr/local/share/metainfo/%{name}.appdata.xml %{buildroot}%{_metainfodir}/%{name}.appdata.xml
 cp --remove-destination --preserve %{buildroot}/usr/local/share/man/man7/%{name}.7* %{buildroot}%{_mandir}/man7/
@@ -74,7 +73,6 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/%{name}.appdata.xml
 
 rm %{buildroot}/usr/local/bin/%{name}
-rm %{buildroot}/usr/local/share/%{name}/app.css
 rm %{buildroot}/usr/local/share/applications/%{name}.desktop
 rm %{buildroot}/usr/local/share/metainfo/%{name}.appdata.xml
 rm %{buildroot}/usr/local/share/man/man7/%{name}.7*
@@ -87,7 +85,6 @@ rm -rf %{buildroot}
 %files
 %license LICENSE
 %{_bindir}/%{name}
-%{_datadir}/%{name}/app.css
 %{_datadir}/applications/%{name}.desktop
 %{_metainfodir}/%{name}.appdata.xml
 %{_mandir}/man7/%{name}.7*
