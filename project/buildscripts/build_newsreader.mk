@@ -19,8 +19,20 @@ prefix ?= /usr/local
 # Destination root (/ is used if empty) 
 DESTDIR ?= 
 
+#  
+AR ?= ar
+
+#  
+RANLIB ?= ranlib
+
+# C compiler 
+CC = gcc
+
 # C++ compiler 
 CXX = g++
+
+# Standard flags for CC 
+CFLAGS ?= 
 
 # Standard flags for C++ 
 CXXFLAGS ?= 
@@ -40,6 +52,13 @@ LDFLAGS ?=
 ### Variables: ###
 
 CPPDEPS = -MT$@ -MF`echo $@ | sed -e 's,\.o$$,.d,'` -MD -MP
+GRESOURCES_CFLAGS = -I../source -c -std=c17 -pipe -O2 -ggdb \
+	-fasynchronous-unwind-tables -fcf-protection=full -fno-common \
+	-fnon-call-exceptions -fsplit-stack -fstack-clash-protection \
+	-fstack-protector-all -ftrapv `pkg-config gtk+-3.0 --cflags` \
+	-D_FORTIFY_SOURCE=2 $(CPPFLAGS) $(CFLAGS)
+GRESOURCES_OBJECTS =  \
+	gresources_app_resources.o
 NEWSREADER_CXXFLAGS = -I../source -std=c++17 -pipe -O2 -ggdb `pkg-config gtk+-3.0 \
 	--cflags` `pkg-config webkit2gtk-4.0 --cflags` `pkg-config libxml-2.0 \
 	--cflags` `pkg-config gthread-2.0 --cflags` -D_FORTIFY_SOURCE=2 -DNDEBUG \
@@ -119,11 +138,9 @@ NEWSREADER_OBJECTS =  \
 
 ### Targets: ###
 
-all: bin/newsreader
+all: bin/libgresources.a bin/newsreader
 
 install: install_newsreader
-	$(INSTALL) -d $(DESTDIR)$(prefix)/share/newsreader/
-	(cd ../source/style ; $(INSTALL) -m 644  app.css $(DESTDIR)$(prefix)/share/newsreader/)
 	$(INSTALL) -d $(DESTDIR)$(prefix)/share/applications/
 	(cd ../desktop ; $(INSTALL) -m 644  newsreader.desktop $(DESTDIR)$(prefix)/share/applications/)
 	$(INSTALL) -d $(DESTDIR)$(prefix)/share/metainfo/
@@ -132,7 +149,6 @@ install: install_newsreader
 	(cd ../doc ; $(INSTALL) -m 644  newsreader.7 newsreader.7.gz $(DESTDIR)$(prefix)/share/man/man7/)
 
 uninstall: uninstall_newsreader
-	(cd $(DESTDIR)$(prefix)/share/newsreader/ ; rm -f app.css)
 	(cd $(DESTDIR)$(prefix)/share/applications/ ; rm -f newsreader.desktop)
 	(cd $(DESTDIR)$(prefix)/share/metainfo/ ; rm -f newsreader.appdata.xml)
 	(cd $(DESTDIR)$(prefix)/share/man/man7/ ; rm -f newsreader.7 newsreader.7.gz)
@@ -140,13 +156,19 @@ uninstall: uninstall_newsreader
 clean: 
 	rm -f ./*.o
 	rm -f ./*.d
+	rm -f bin/libgresources.a
 	rm -f bin/newsreader
 
 bin: 
 	@mkdir -p bin
 
-bin/newsreader: $(NEWSREADER_OBJECTS) bin
-	$(CXX) -o $@ $(NEWSREADER_OBJECTS)  -std=c++17 -pipe -O2 -flto -ggdb -flinker-output=pie `pkg-config gtk+-3.0 --libs` `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `pkg-config webkit2gtk-4.0 --libs` `pkg-config libxml-2.0 --libs` `pkg-config gthread-2.0 --libs` $(LDFLAGS)
+bin/libgresources.a: $(GRESOURCES_OBJECTS) bin ../source/rss_ui/app_style.css ../source/rss_ui/app_resources.xml
+	rm -f $@
+	$(AR) rcu $@ $(GRESOURCES_OBJECTS)
+	$(RANLIB) $@
+
+bin/newsreader: $(NEWSREADER_OBJECTS) bin bin/libgresources.a
+	$(CXX) -o $@ $(NEWSREADER_OBJECTS)  gresources_app_resources.o -std=c++17 -pipe -O2 -flto -ggdb -flinker-output=pie `pkg-config gtk+-3.0 --libs` `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `pkg-config webkit2gtk-4.0 --libs` `pkg-config libxml-2.0 --libs` `pkg-config gthread-2.0 --libs` $(LDFLAGS)
 
 install_newsreader: bin/newsreader
 	$(INSTALL) -d $(DESTDIR)$(prefix)/bin
@@ -154,6 +176,9 @@ install_newsreader: bin/newsreader
 
 uninstall_newsreader: 
 	rm -f $(DESTDIR)$(prefix)/bin/newsreader
+
+gresources_app_resources.o: ./../source/rss_ui/app_resources.c
+	$(CC) -c -o $@ $(GRESOURCES_CFLAGS) $(CPPDEPS) $<
 
 newsreader_application.o: ./../source/rss_ui/impl/application.cpp
 	$(CXX) -c -o $@ $(NEWSREADER_CXXFLAGS) $(CPPDEPS) $<

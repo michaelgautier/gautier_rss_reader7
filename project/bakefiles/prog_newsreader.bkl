@@ -7,11 +7,52 @@
 		<dir>bin</dir>
 	</mkdir>
 
-	<data-files>
-		<srcdir>../source/style</srcdir>
-		<files>app.css</files>
-		<install-to>$(DATADIR)/newsreader/</install-to>
-	</data-files>
+	<lib id="gresources">
+		<!--Succesful build depends on existence of bin/ sub directory -->
+		<depends>bin</depends>
+
+		<!--Final program compiler output goes here -->
+		<dirname>bin</dirname>
+
+		<depends-on-file>../source/rss_ui/app_style.css</depends-on-file>
+		<depends-on-file>../source/rss_ui/app_resources.xml</depends-on-file>
+
+		<!--Dependent headers -->
+		<headers>../source/rss_lib/app_resources.h</headers>
+
+		<!--Source code used to create the object file -->
+		<!-- Resource Bundles -->
+		<sources>../source/rss_ui/app_resources.c</sources>
+
+		<!--Common compiler/linker flags -->
+		<!--Include file directories -->
+		<include>../source</include>
+
+		<cflags>-c</cflags>
+		<cflags>-std=c17</cflags>
+		<cflags>-pipe</cflags>
+		<cflags>-O2</cflags>
+		<cflags>-ggdb</cflags>
+
+		<cflags>-fasynchronous-unwind-tables</cflags>
+		<cflags>-fcf-protection=full</cflags>
+		<cflags>-fno-common</cflags>
+		<cflags>-fnon-call-exceptions</cflags>
+		<cflags>-fsplit-stack</cflags>
+		<cflags>-fstack-clash-protection</cflags>
+		<cflags>-fstack-protector-all</cflags>
+		<cflags>-ftrapv</cflags>
+
+		<!-- Linked resources -->
+
+		<cflags>`pkg-config gtk+-3.0 --cflags`</cflags>
+
+		<!-- Defines -->
+		<!-- Suggested in the Red Hat publication:
+			Developing Applictions in RHEL 8 (2019-11-15)  -->
+
+		<cflags>-D_FORTIFY_SOURCE=2</cflags>
+	</lib>
 
 	<data-files>
 		<srcdir>../desktop</srcdir>
@@ -37,9 +78,27 @@
                 <install-to>$(BINDIR)</install-to>
 		<!--Succesful build depends on existence of bin/ sub directory -->
 		<depends>bin</depends>
+		<depends>gresources</depends>
 
 		<!--Final program compiler output goes here -->
 		<dirname>bin</dirname>
+
+		<!--Dependent headers -->
+		<headers>../source/rss_lib/db/db.hpp</headers>
+		<headers>../source/rss_lib/rss_download/feed_download.hpp</headers>
+		<headers>../source/rss_lib/rss_parse/feed_parse.hpp</headers>
+		<headers>../source/rss_lib/rss/rss_article.hpp</headers>
+		<headers>../source/rss_lib/rss/rss_feed.hpp</headers>
+		<headers>../source/rss_lib/rss/rss_reader.hpp</headers>
+		<headers>../source/rss_lib/rss/rss_util.hpp</headers>
+		<headers>../source/rss_lib/rss/rss_writer.hpp</headers>
+		<headers>../source/rss_ui/application.hpp</headers>
+		<headers>../source/rss_ui/app_resources.h</headers>
+		<headers>../source/rss_ui/app_win/app_win.hpp</headers>
+		<headers>../source/rss_ui/app_win/article_frame.hpp</headers>
+		<headers>../source/rss_ui/app_win/article_header.hpp</headers>
+		<headers>../source/rss_ui/app_win/headlines_frame.hpp</headers>
+		<headers>../source/rss_ui/rss_manage/rss_manage.hpp</headers>
 
 		<!--Source code used to create the final program -->
 		<!--User interface -->
@@ -49,6 +108,7 @@
 		<sources>../source/rss_ui/app_win/impl/article_header.cpp</sources>
 		<sources>../source/rss_ui/app_win/impl/headlines_frame.cpp</sources>
 		<sources>../source/rss_ui/rss_manage/impl/rss_manage.cpp</sources>
+
 		<!--Data/Network interface -->
 		<sources>../source/rss_lib/rss/impl/rss_article.cpp</sources>
 		<sources>../source/rss_lib/rss/impl/rss_feed.cpp</sources>
@@ -58,6 +118,8 @@
 		<sources>../source/rss_lib/db/impl/db.cpp</sources>
 		<sources>../source/rss_lib/rss_download/impl/feed_download.cpp</sources>
 		<sources>../source/rss_lib/rss_parse/impl/feed_parse.cpp</sources>
+
+		<ldflags>gresources_app_resources.o</ldflags>
 
 		<!--Common compiler/linker flags -->
 		<!--Include file directories -->

@@ -28,7 +28,7 @@ mkdir -p ../build/rpmbuild/source/
 ## **	This is the precise source tree needed to build the program.
 rsync --human-readable --times --executability --preallocate --update --delay-updates --recursive ../source/rss_ui ../build/rpmbuild/source/
 rsync --human-readable --times --executability --preallocate --update --delay-updates --recursive ../source/rss_lib ../build/rpmbuild/source/
-rsync --human-readable --times --executability --preallocate --update --delay-updates --recursive ../source/style ../build/rpmbuild/source/
+
 rsync --human-readable --times --executability --preallocate --update --delay-updates --recursive ../doc ../build/rpmbuild/
 rsync --human-readable --times --executability --preallocate --update --delay-updates --recursive ../desktop ../build/rpmbuild/
 
