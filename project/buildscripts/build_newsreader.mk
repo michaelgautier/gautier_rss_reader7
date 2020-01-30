@@ -162,7 +162,7 @@ clean:
 bin: 
 	@mkdir -p bin
 
-bin/libgresources.a: $(GRESOURCES_OBJECTS) bin ../source/rss_ui/app_style.css ../source/rss_ui/app_resources.xml
+bin/libgresources.a: $(GRESOURCES_OBJECTS) bin ../source/rss_ui/app_style.css ../source/rss_ui/app_icon.png ../source/rss_ui/app_resources.xml
 	rm -f $@
 	$(AR) rcu $@ $(GRESOURCES_OBJECTS)
 	$(RANLIB) $@

@@ -15,6 +15,7 @@
 		<dirname>bin</dirname>
 
 		<depends-on-file>../source/rss_ui/app_style.css</depends-on-file>
+		<depends-on-file>../source/rss_ui/app_icon.png</depends-on-file>
 		<depends-on-file>../source/rss_ui/app_resources.xml</depends-on-file>
 
 		<!--Dependent headers -->
