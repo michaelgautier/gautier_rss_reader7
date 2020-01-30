@@ -23,6 +23,9 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include <cstdlib>
 #include <cstring>
 
+static
+std::string app_name = "michael.gautier.rss.v7";
+
 /*
 	GNU C Library extensions
 
@@ -71,6 +74,10 @@ create_user_data_directory();
 static
 int
 create_directory (std::string directory_path);
+
+static
+void
+load_application_icon();
 
 /*
 	Program start-up.
@@ -132,9 +139,11 @@ gautier_rss_ui_app::create()
 
 		Run the user interface.
 	*/
-	GtkApplication* application = gtk_application_new ("michael.gautier.rss.v7", G_APPLICATION_FLAGS_NONE);
+	GtkApplication* application = gtk_application_new (app_name.data(), G_APPLICATION_FLAGS_NONE);
 
 	g_signal_connect (application, "activate", G_CALLBACK (gautier_rss_ui_app::activate), NULL);
+
+	load_application_icon();
 
 	status = g_application_run (G_APPLICATION (application), 0, NULL);
 
@@ -173,7 +182,7 @@ gautier_rss_ui_app::activate (GtkApplication* application, gpointer user_data)
 void
 gautier_rss_ui_app::set_css_class (GtkWidget* widget, std::string css_class_name)
 {
-	std::string css_style_resource_path = "newsreader/app_style.css";
+	std::string css_style_resource_path = "/newsreader/app_style.css";
 
 	GtkCssProvider* css_provider = gtk_css_provider_new();
 
@@ -347,3 +356,15 @@ create_user_data_directory()
 	return directory_status;
 }
 
+static
+void
+load_application_icon()
+{
+	std::string app_icon_resource_path = "/newsreader/app_icon.png";
+
+	GdkPixbuf* application_icon_pixbuf = gdk_pixbuf_new_from_resource (app_icon_resource_path.data(), NULL);
+
+	gtk_window_set_default_icon (application_icon_pixbuf);
+
+	return;
+}

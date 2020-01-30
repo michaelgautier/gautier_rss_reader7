@@ -2,6 +2,6 @@
 <gresources>
   <gresource prefix="newsreader">
     <file>app_style.css</file>
-    <file>app_icon.png</file>
+    <file preprocess="to-pixdata">app_icon.png</file>
   </gresource>
 </gresources>
