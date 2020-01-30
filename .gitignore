@@ -1,4 +1,5 @@
 build/bin/
+build/bindeb/
 build/rpmbuild/
 build/RPMS/
 build/SRPMS/
