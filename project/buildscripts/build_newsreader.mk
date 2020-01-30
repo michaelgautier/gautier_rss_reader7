@@ -141,6 +141,10 @@ NEWSREADER_OBJECTS =  \
 all: bin/libgresources.a bin/newsreader
 
 install: install_newsreader
+	$(INSTALL) -d $(DESTDIR)$(prefix)/share/icons/hicolor/48x48/apps/
+	(cd ../source/rss_ui ; $(INSTALL) -m 644  app_icon.png $(DESTDIR)$(prefix)/share/icons/hicolor/48x48/apps/)
+	$(INSTALL) -d $(DESTDIR)$(prefix)/share/pixmaps/
+	(cd ../source/rss_ui ; $(INSTALL) -m 644  app_icon.xpm $(DESTDIR)$(prefix)/share/pixmaps/)
 	$(INSTALL) -d $(DESTDIR)$(prefix)/share/applications/
 	(cd ../desktop ; $(INSTALL) -m 644  newsreader.desktop $(DESTDIR)$(prefix)/share/applications/)
 	$(INSTALL) -d $(DESTDIR)$(prefix)/share/metainfo/
@@ -149,6 +153,8 @@ install: install_newsreader
 	(cd ../doc ; $(INSTALL) -m 644  newsreader.7 newsreader.7.gz $(DESTDIR)$(prefix)/share/man/man7/)
 
 uninstall: uninstall_newsreader
+	(cd $(DESTDIR)$(prefix)/share/icons/hicolor/48x48/apps/ ; rm -f app_icon.png)
+	(cd $(DESTDIR)$(prefix)/share/pixmaps/ ; rm -f app_icon.xpm)
 	(cd $(DESTDIR)$(prefix)/share/applications/ ; rm -f newsreader.desktop)
 	(cd $(DESTDIR)$(prefix)/share/metainfo/ ; rm -f newsreader.appdata.xml)
 	(cd $(DESTDIR)$(prefix)/share/man/man7/ ; rm -f newsreader.7 newsreader.7.gz)

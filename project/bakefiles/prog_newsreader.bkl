@@ -56,6 +56,18 @@
 	</lib>
 
 	<data-files>
+		<srcdir>../source/rss_ui</srcdir>
+		<files>app_icon.png</files>
+		<install-to>$(DATADIR)/icons/hicolor/48x48/apps/</install-to>
+	</data-files>
+
+	<data-files>
+		<srcdir>../source/rss_ui</srcdir>
+		<files>app_icon.xpm</files>
+		<install-to>$(DATADIR)/pixmaps/</install-to>
+	</data-files>
+
+	<data-files>
 		<srcdir>../desktop</srcdir>
 		<files>newsreader.desktop</files>
 		<install-to>$(DATADIR)/applications/</install-to>

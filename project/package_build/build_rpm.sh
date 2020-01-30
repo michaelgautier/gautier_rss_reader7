@@ -70,15 +70,3 @@ rpmbuild --rebuild --nodebuginfo ~/rpmbuild/SRPMS/newsreader-7.0.8-1.fc31.src.rp
 ## **	Delete preliminary setup files
 rm -rf ../build/rpmbuild/
 
-#For later...
-
-#/usr/bin/%{name}
-#/usr/share/applications/%{name}.desktop
-#/usr/share/doc/%{name}/ChangeLog
-#/usr/share/doc/%{name}/README.md
-#/usr/share/%{name}/styles/app.css
-#/usr/share/%{name}/images/%{name}.png
-#/usr/share/%{name}/images/%{name}.svg
-#/usr/share/icons/hicolor/48x48/apps/%{name}.png
-#/usr/share/icons/hicolor/scalable/apps/%{name}.svg
-#/usr/share/man/man1/%{name}.7.gz

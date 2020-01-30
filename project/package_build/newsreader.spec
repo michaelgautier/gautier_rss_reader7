@@ -48,10 +48,12 @@ make %{?_smp_mflags}
 rm -rf %{buildroot}
 
 mkdir -p %{buildroot}%{_bindir}
-mkdir -p %{buildroot}%{_datadir}/%{name}/
 mkdir -p %{buildroot}%{_datadir}/applications/
-mkdir -p %{buildroot}%{_metainfodir}
+mkdir -p %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/
+mkdir -p %{buildroot}%{_datadir}/%{name}/
+mkdir -p %{buildroot}%{_datadir}/pixmaps/
 mkdir -p %{buildroot}%{_mandir}/man7/
+mkdir -p %{buildroot}%{_metainfodir}
 
 cd %{_builddir}/%{name}-%{version}/build/
 
@@ -65,8 +67,10 @@ strip --strip-all %{buildroot}%{_bindir}/%{name}
 
 #Set dependencies under */usr/share/
 cp --remove-destination --preserve %{buildroot}/usr/local/share/applications/%{name}.desktop %{buildroot}%{_datadir}/applications/%{name}.desktop
-cp --remove-destination --preserve %{buildroot}/usr/local/share/metainfo/%{name}.appdata.xml %{buildroot}%{_metainfodir}/%{name}.appdata.xml
+cp --remove-destination --preserve %{buildroot}/usr/local/share/icons/hicolor/48x48/apps/app_icon.png %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/michael.gautier.rss.v7.png
 cp --remove-destination --preserve %{buildroot}/usr/local/share/man/man7/%{name}.7* %{buildroot}%{_mandir}/man7/
+cp --remove-destination --preserve %{buildroot}/usr/local/share/metainfo/%{name}.appdata.xml %{buildroot}%{_metainfodir}/%{name}.appdata.xml
+cp --remove-destination --preserve %{buildroot}/usr/local/share/pixmaps/app_icon.xpm %{buildroot}%{_datadir}/pixmaps/michael.gautier.rss.v7.xpm
 
 desktop-file-install --dir=%{buildroot}%{_datadir}/applications/ %{buildroot}%{_datadir}/applications/%{name}.desktop
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
@@ -74,6 +78,8 @@ appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/%{name}.appdat
 
 rm %{buildroot}/usr/local/bin/%{name}
 rm %{buildroot}/usr/local/share/applications/%{name}.desktop
+rm %{buildroot}/usr/local/share/icons/hicolor/48x48/apps/app_icon.png
+rm %{buildroot}/usr/local/share/pixmaps/app_icon.xpm
 rm %{buildroot}/usr/local/share/metainfo/%{name}.appdata.xml
 rm %{buildroot}/usr/local/share/man/man7/%{name}.7*
 
@@ -86,9 +92,11 @@ rm -rf %{buildroot}
 %license LICENSE
 %{_bindir}/%{name}
 %{_datadir}/applications/%{name}.desktop
-%{_metainfodir}/%{name}.appdata.xml
+%{_datadir}/icons/hicolor/48x48/apps/michael.gautier.rss.v7.png
+%{_datadir}/pixmaps/michael.gautier.rss.v7.xpm
 %{_mandir}/man7/%{name}.7*
+%{_metainfodir}/%{name}.appdata.xml
 
 %changelog
-* Sat Jan 25 2020 Michael Gautier <michaelgautier.wordpress.com> - 7.0.8-1
+* Thu Jan 30 2020 Michael Gautier <michaelgautier.wordpress.com> - 7.0.8-1
 - Clean RPM
