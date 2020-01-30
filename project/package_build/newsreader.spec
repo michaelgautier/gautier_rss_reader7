@@ -1,5 +1,5 @@
 Name:           newsreader
-Version:        7.0.8
+Version:        7.1.0
 Release:        1%{?dist}
 Summary:        Ultra simple desktop feed reader
 
@@ -98,5 +98,5 @@ rm -rf %{buildroot}
 %{_metainfodir}/%{name}.appdata.xml
 
 %changelog
-* Thu Jan 30 2020 Michael Gautier <michaelgautier.wordpress.com> - 7.0.8-1
-- Clean RPM
+* Thu Jan 30 2020 Michael Gautier <michaelgautier.wordpress.com> - 7.1.0-1
+- Clean RPM (unreleased). Tested on Fedora. Contains, icons, styles, and logic.
