@@ -1,10 +1,20 @@
 Source: newsreader
 Maintainer: michaelgautier <michaelgautier.wordpress.com>
-Section: misc
+Section: contrib/net
 Priority: optional
-Standards-Version: 3.9.2
-Package: newsreader
-Architecture: amd64
-Build-Depends: g++, make, libgtk-3-dev, libwebkit2gtk-4.0-dev, libsqlite3-dev, libcurl4-gnutls-dev, libxml2-dev, libappstream-dev, debhelper
-Depends: libgtk-3, libwebkit2gtk-4.0, libsqlite3, libcurl4-gnutls, libxml2
-Description: Shows Internet feeds in a clean and obvious way.
+Standards-Version: 4.5.0
+Homepage: https://michaelgautier.github.io/gautier_rss_reader7/
+Vcs-Browser: https://github.com/michaelgautier/gautier_rss_reader7/
+Vcs-Git: https://github.com/michaelgautier/gautier_rss_reader7.git
+Build-Depends: g++ (>= 9.0), make (>= 4.0), libgtk-3-dev (>= 3.0), libwebkit2gtk-4.0-dev (>= 3.0), libsqlite3-dev (>= 3.0), libcurl4-gnutls-dev (>= 7.0), libxml2-dev (>= 2.0), libappstream-dev (>= 0.1), debhelper
+Description: Shows Internet feeds in a clean and obvious way. Comes with a screen that helps
+ you add new feeds or purge those you no longer need. 
+ The program uses a native code UI that runs smooth with no bloat.
+ NOTE:
+ - Feed providers prefer their site is accessed no earlier than once per hour.
+ - The program respects those conditions by default.
+ - This version 7 has no public predecessors with an installation package.
+ - Previous versions existed on the Internet in source code form.
+ - Earlier versions exist that were not packaged for installation.
+ - Version 7 is the first Gautier RSS program packaged for installation.
+
