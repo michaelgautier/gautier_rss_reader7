@@ -8,5 +8,6 @@ project/*.*~
 project/*.css
 project/*.db
 project/xfer/*.sh
+project/xfer_deb/*.sh
 project/*.xml
 
