@@ -1,5 +1,5 @@
-newsreader (7.1.0-1) xenial; urgency=low
+newsreader (7.1.0-1) UNRELEASED; urgency=low
 
   * Initial release.
 
- -- Michael Gautier <michaelgautier.wordpress.com>  Thu, 30 Jan 2020 06:00:56 -0600
+ -- Michael Gautier <michaelgautier@michaelgautier.github.io>  Fri, 31 Jan 2020 12:01:01 -0600
