@@ -47,41 +47,19 @@ make %{?_smp_mflags}
 #I decided to keep the default policies in place an override their indications in the spec file.
 rm -rf %{buildroot}
 
-mkdir -p %{buildroot}%{_bindir}
-mkdir -p %{buildroot}%{_datadir}/applications/
-mkdir -p %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/
-mkdir -p %{buildroot}%{_datadir}/%{name}/
-mkdir -p %{buildroot}%{_datadir}/pixmaps/
-mkdir -p %{buildroot}%{_mandir}/man7/
-mkdir -p %{buildroot}%{_metainfodir}
-
 cd %{_builddir}/%{name}-%{version}/build/
 
-#Default output to */usr/local/bin
 #See https://refspecs.linuxfoundation.org/FHS_3.0/fhs/ch04s09.html
 %{make_install}
 
-#Migrate from staged build in */usr/local/bin to /usr/bin
-cp --remove-destination --preserve %{buildroot}/usr/local/bin/%{name} %{buildroot}%{_bindir}/%{name}
 strip --strip-all %{buildroot}%{_bindir}/%{name}
 
-#Set dependencies under */usr/share/
-cp --remove-destination --preserve %{buildroot}/usr/local/share/applications/%{name}.desktop %{buildroot}%{_datadir}/applications/%{name}.desktop
-cp --remove-destination --preserve %{buildroot}/usr/local/share/icons/hicolor/48x48/apps/app_icon.png %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/michael.gautier.rss.v7.png
-cp --remove-destination --preserve %{buildroot}/usr/local/share/man/man7/%{name}.7* %{buildroot}%{_mandir}/man7/
-cp --remove-destination --preserve %{buildroot}/usr/local/share/metainfo/%{name}.appdata.xml %{buildroot}%{_metainfodir}/%{name}.appdata.xml
-cp --remove-destination --preserve %{buildroot}/usr/local/share/pixmaps/app_icon.xpm %{buildroot}%{_datadir}/pixmaps/michael.gautier.rss.v7.xpm
+mv %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/app_icon.png %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/michael.gautier.rss.v7.png
+mv %{buildroot}%{_datadir}/pixmaps/app_icon.xpm %{buildroot}%{_datadir}/pixmaps/michael.gautier.rss.v7.xpm
 
 desktop-file-install --dir=%{buildroot}%{_datadir}/applications/ %{buildroot}%{_datadir}/applications/%{name}.desktop
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/%{name}.appdata.xml
-
-rm %{buildroot}/usr/local/bin/%{name}
-rm %{buildroot}/usr/local/share/applications/%{name}.desktop
-rm %{buildroot}/usr/local/share/icons/hicolor/48x48/apps/app_icon.png
-rm %{buildroot}/usr/local/share/pixmaps/app_icon.xpm
-rm %{buildroot}/usr/local/share/metainfo/%{name}.appdata.xml
-rm %{buildroot}/usr/local/share/man/man7/%{name}.7*
 
 #Remove build
 %clean
@@ -98,5 +76,5 @@ rm -rf %{buildroot}
 %{_metainfodir}/%{name}.appdata.xml
 
 %changelog
-* Thu Jan 30 2020 Michael Gautier <michaelgautier.wordpress.com> - 7.1.0-1
+* Fri Jan 31 2020 Michael Gautier <michaelgautier.wordpress.com> - 7.1.0-1
 - Clean RPM (unreleased). Tested on Fedora. Contains, icons, styles, and logic.
