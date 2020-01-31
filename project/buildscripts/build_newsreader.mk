@@ -13,9 +13,6 @@
 # 'install' program location 
 INSTALL ?= install
 
-# Location where the package is installed by 'make install' 
-prefix ?= /usr/local
-
 # Destination root (/ is used if empty) 
 DESTDIR ?= 
 
@@ -52,6 +49,7 @@ LDFLAGS ?=
 ### Variables: ###
 
 CPPDEPS = -MT$@ -MF`echo $@ | sed -e 's,\.o$$,.d,'` -MD -MP
+PREFIX = /usr
 GRESOURCES_CFLAGS = -I../source -c -std=c17 -pipe -O2 -ggdb \
 	-fasynchronous-unwind-tables -fcf-protection=full -fno-common \
 	-fnon-call-exceptions -fsplit-stack -fstack-clash-protection \
@@ -141,23 +139,23 @@ NEWSREADER_OBJECTS =  \
 all: bin/libgresources.a bin/newsreader
 
 install: install_newsreader
-	$(INSTALL) -d $(DESTDIR)$(prefix)/share/icons/hicolor/48x48/apps/
-	(cd ../source/rss_ui ; $(INSTALL) -m 644  app_icon.png $(DESTDIR)$(prefix)/share/icons/hicolor/48x48/apps/)
-	$(INSTALL) -d $(DESTDIR)$(prefix)/share/pixmaps/
-	(cd ../source/rss_ui ; $(INSTALL) -m 644  app_icon.xpm $(DESTDIR)$(prefix)/share/pixmaps/)
-	$(INSTALL) -d $(DESTDIR)$(prefix)/share/applications/
-	(cd ../desktop ; $(INSTALL) -m 644  newsreader.desktop $(DESTDIR)$(prefix)/share/applications/)
-	$(INSTALL) -d $(DESTDIR)$(prefix)/share/metainfo/
-	(cd ../desktop ; $(INSTALL) -m 644  newsreader.appdata.xml $(DESTDIR)$(prefix)/share/metainfo/)
-	$(INSTALL) -d $(DESTDIR)$(prefix)/share/man/man7/
-	(cd ../doc ; $(INSTALL) -m 644  newsreader.7 newsreader.7.gz $(DESTDIR)$(prefix)/share/man/man7/)
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/icons/hicolor/48x48/apps/
+	(cd ../source/rss_ui ; $(INSTALL) -m 644  app_icon.png $(DESTDIR)$(PREFIX)/share/icons/hicolor/48x48/apps/)
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/pixmaps/
+	(cd ../source/rss_ui ; $(INSTALL) -m 644  app_icon.xpm $(DESTDIR)$(PREFIX)/share/pixmaps/)
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/applications/
+	(cd ../desktop ; $(INSTALL) -m 644  newsreader.desktop $(DESTDIR)$(PREFIX)/share/applications/)
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/metainfo/
+	(cd ../desktop ; $(INSTALL) -m 644  newsreader.appdata.xml $(DESTDIR)$(PREFIX)/share/metainfo/)
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/man/man7/
+	(cd ../doc ; $(INSTALL) -m 644  newsreader.7 newsreader.7.gz $(DESTDIR)$(PREFIX)/share/man/man7/)
 
 uninstall: uninstall_newsreader
-	(cd $(DESTDIR)$(prefix)/share/icons/hicolor/48x48/apps/ ; rm -f app_icon.png)
-	(cd $(DESTDIR)$(prefix)/share/pixmaps/ ; rm -f app_icon.xpm)
-	(cd $(DESTDIR)$(prefix)/share/applications/ ; rm -f newsreader.desktop)
-	(cd $(DESTDIR)$(prefix)/share/metainfo/ ; rm -f newsreader.appdata.xml)
-	(cd $(DESTDIR)$(prefix)/share/man/man7/ ; rm -f newsreader.7 newsreader.7.gz)
+	(cd $(DESTDIR)$(PREFIX)/share/icons/hicolor/48x48/apps/ ; rm -f app_icon.png)
+	(cd $(DESTDIR)$(PREFIX)/share/pixmaps/ ; rm -f app_icon.xpm)
+	(cd $(DESTDIR)$(PREFIX)/share/applications/ ; rm -f newsreader.desktop)
+	(cd $(DESTDIR)$(PREFIX)/share/metainfo/ ; rm -f newsreader.appdata.xml)
+	(cd $(DESTDIR)$(PREFIX)/share/man/man7/ ; rm -f newsreader.7 newsreader.7.gz)
 
 clean: 
 	rm -f ./*.o
@@ -177,11 +175,11 @@ bin/newsreader: $(NEWSREADER_OBJECTS) bin bin/libgresources.a
 	$(CXX) -o $@ $(NEWSREADER_OBJECTS)  gresources_app_resources.o -std=c++17 -pipe -O2 -flto -ggdb -flinker-output=pie `pkg-config gtk+-3.0 --libs` `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `pkg-config webkit2gtk-4.0 --libs` `pkg-config libxml-2.0 --libs` `pkg-config gthread-2.0 --libs` $(LDFLAGS)
 
 install_newsreader: bin/newsreader
-	$(INSTALL) -d $(DESTDIR)$(prefix)/bin
-	install -c bin/newsreader $(DESTDIR)$(prefix)/bin
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/bin
+	install -c bin/newsreader $(DESTDIR)$(PREFIX)/bin
 
 uninstall_newsreader: 
-	rm -f $(DESTDIR)$(prefix)/bin/newsreader
+	rm -f $(DESTDIR)$(PREFIX)/bin/newsreader
 
 gresources_app_resources.o: ./../source/rss_ui/app_resources.c
 	$(CC) -c -o $@ $(GRESOURCES_CFLAGS) $(CPPDEPS) $<

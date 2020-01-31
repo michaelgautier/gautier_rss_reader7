@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <makefile>
+	<set var="PREFIX" make_var="1">/usr</set>
+
 	<!-- Bakefile add-in to automatically create missing directories -->
  	<include file="rules/modules/datafiles.bkl"/>
 	<!--Create the bin/ sub directory if it is missing -->
