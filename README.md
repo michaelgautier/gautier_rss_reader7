@@ -47,10 +47,18 @@ I discuss the RSS reader at a general level on one of my blogs.
 
 That link also shows the video above and puts on <i>in proximity</i> to other articles about the RSS reader program. Numerous articles on that blog present details about the RSS reader. One of those articles triggered a WordPress shutdown on 1/2/2020 which is why this page now exist.
 
-#### Installing RSS Reader by Gautier
-The program is in a compile only state right now. It will compile under Fedora/CentOS/RedHat as well as Debian/Ubuntu and possibly other Linux distributions. I plan to build the relevant RPM and DEB packages for Linux but no MSI as this program is not intended for Microsoft Windows though it could be compiled to run on Windows. Although I can port it to Windows, I decided a better use of time is to focus on Linux.
+#### Installing RSS Reader by Gautier (Compile from Source)
+The program can be compiled from source using the makefile in __[root directory]__/project/buildscripts/build_newsreader.mk under make. The way that works is you copy that file to the ***[root directory]***/build/ directory. In that directory, run this command:
+    make --file=build_newsreader.mk
 
-Once the DEB and RPM packages are made and everything is fully tested as far as I can determine, this section of the page will change to reflect that status. Until then, the curious are invited to compile the program. Once the install packages are ready, that is the signal that the program is truly ready.
+Running that command in a Linux environment will produce the file, __[root directory]__/build/bin/__newsreader__. You can copy the newsreader program file to another directory and run it from there. The newsreader program can then be ran either by double-clicking it from a desktop file manager or in the Terminal with __./newsreader__.
+
+Compiling it from source however means you have the following libraries and tools installed:
+- Development libraries and headers for gtk, sqlite, curl, webkitgtk, and libxml
+- g++, make
+
+#### Installing RSS Reader by Gautier (Build an installer)
+An install file for Fedora and Ubuntu can be made in the form of a .rpm or .deb file. The way that is done is to setup a virtual machine running either Fedora or Ubuntu. You will need to setup the build server to build packages. The scripts under __[root directory]__/project/package_build/ contains the means to coordinate the creation of an install file. Further details can be found at the following page: <a target="_blank" href="https://gautiertalkstechnology.wordpress.com/2020/01/31/gautier-rss-linux-deployment-packages-rpm-and-deb/">Gautier RSS – Linux Deployment Packages (RPM and DEB)</a>.
 
 #### Learn Software Development
 The RSS reader program is also a way to learn software development using C++, the language the program is written in. I published a <b><a target="_blank" href="https://gautiertalkstechnology.wordpress.com/2019/11/01/cpp-the-basic-way-ui-and-command-line-22-videos/">22 video series about software development in C++</a></b> that would provide the requisite knowledge to build and compile the program from scratch. If you follow the guide, you can create the program manually under Linux. The videos can provide a jumpstart to learning and using C++ to create UIs in Linux.
