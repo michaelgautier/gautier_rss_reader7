@@ -659,8 +659,8 @@ window_destroy (GtkWidget* window, gpointer user_data)
 	return;
 }
 
-static void
-populate_rss_tabs()
+static void             /*    - MARKED FOR SIGNIFICANT PERFORMANCE IMROVEMENT */
+populate_rss_tabs() /* - See commit notes accompanying this comment*/
 {
 	namespace ns = gautier_rss_win_main_headlines_frame;
 
