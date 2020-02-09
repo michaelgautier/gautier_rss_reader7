@@ -37,6 +37,18 @@ namespace ns_data_write = gautier_rss_data_write;
 	RSS Concurrent Modification
 */
 static
+guint
+notebook_concurrent_init_interval_milliseconds = 100;
+
+extern "C"
+gboolean
+notebook_concurrent_init (gpointer data);
+
+static
+gint
+notebook_concurrent_init_id = -1;
+
+static
 bool rss_mod_running = false;
 
 static
@@ -334,7 +346,35 @@ gautier_rss_win_main::create (
 	{
 		gautier_rss_win_main_headlines_frame::initialize_headline_view (headlines_view, monitor_width, monitor_height);
 
+		/*
+			Tab page switch signal. Show news headlines for the chosen tab.
+		*/
+		headline_view_switch_page_signal_id = g_signal_connect (headlines_view, "switch-page",
+		                                      G_CALLBACK (headline_view_switch_page), NULL);
+
 		populate_rss_tabs();
+
+		int article_count = 0;
+		{
+			gint tab_i = gtk_notebook_get_current_page (GTK_NOTEBOOK (headlines_view));
+
+			if (tab_i > -1) {
+				GtkWidget* tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
+
+				std::string feed_name = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
+
+				std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
+
+				article_count = ns_data_read::get_feed_headline_count (db_file_name, feed_name);
+			}
+		}
+
+		if (article_count > 100) {
+			notebook_concurrent_init_interval_milliseconds = (article_count / 10);
+		}
+
+		notebook_concurrent_init_id = gdk_threads_add_timeout (notebook_concurrent_init_interval_milliseconds,
+		                              notebook_concurrent_init, headlines_view);
 	}
 	/*
 		Article Frame
@@ -360,18 +400,6 @@ gautier_rss_win_main::create (
 	}
 
 	gtk_widget_show_all (window);
-
-	/*
-		RSS Modifications
-	*/
-	thread_rss_mod = std::thread (process_rss_modifications);
-
-	/*
-		Allow time for theme sub-system cache to finish setup.
-	*/
-	std::this_thread::sleep_for (std::chrono::milliseconds (207));
-
-	rss_mod_running = true;
 
 	return;
 }
@@ -637,8 +665,6 @@ window_size_allocate (GtkWidget* widget, GdkRectangle* allocation, gpointer user
 void
 window_destroy (GtkWidget* window, gpointer user_data)
 {
-	shutting_down = true;
-
 	/*
 		These use GObject explicit ref counting.
 		Ref counting enables explicit clean-up sequence.
@@ -654,13 +680,11 @@ window_destroy (GtkWidget* window, gpointer user_data)
 	gtk_widget_destroy (headlines_view);
 	gtk_widget_destroy (layout_pane);
 
-	thread_rss_mod.join();
-
 	return;
 }
 
-static void             /*    - MARKED FOR SIGNIFICANT PERFORMANCE IMROVEMENT */
-populate_rss_tabs() /* - See commit notes accompanying this comment*/
+static void
+populate_rss_tabs()
 {
 	namespace ns = gautier_rss_win_main_headlines_frame;
 
@@ -677,85 +701,56 @@ populate_rss_tabs() /* - See commit notes accompanying this comment*/
 		std::string feed_name = feed.feed_name;
 
 		ns::add_headline_page (headlines_view, feed_name, -1, headline_view_select_row);
-
-		/*
-			RSS headlines.
-		*/
-		std::vector < std::string > headlines;
-
-		gautier_rss_data_read::get_feed_headlines (db_file_name, feed_name, headlines);
-
-		if (headlines.size() > 0) {
-			int headline_index_start = 0;
-
-			ns::show_headlines (headlines_view, feed_name, headline_index_start, headlines);
-		}
-	}
-
-	/*
-		Tab page switch signal. Show news headlines for the chosen tab.
-	*/
-	headline_view_switch_page_signal_id = g_signal_connect (headlines_view, "switch-page",
-	                                      G_CALLBACK (headline_view_switch_page), NULL);
-
-	int tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
-
-	if (tab_count > 0) {
-		gtk_notebook_set_current_page (GTK_NOTEBOOK (headlines_view), 0);
-
-		GtkWidget* tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), 0);
-
-		std::string feed_name = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
-
-		if (feed_name.empty() == false) {
-			ns::select_headline_row (GTK_WIDGET (headlines_view), feed_name, 0);
-		}
 	}
 
 	return;
 }
 
+gboolean
+notebook_concurrent_init (gpointer data)
+{
+	namespace ns = gautier_rss_win_main_headlines_frame;
+
+	gboolean still_active = false;
+
+	int tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
+
+	if (tab_count > 0) {
+		gint tab_i = gtk_notebook_get_current_page (GTK_NOTEBOOK (headlines_view));
+
+		if (tab_i > -1) {
+			GtkWidget* tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
+
+			std::string feed_name = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
+
+			std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
+
+			/*
+				RSS headlines.
+			*/
+			std::vector < std::string > headlines;
+
+			ns_data_read::get_feed_headlines (db_file_name, feed_name, headlines);
+
+			if (headlines.size() > 0) {
+				int headline_index_start = 0;
+
+				ns::show_headlines (headlines_view, feed_name, headline_index_start, headlines);
+			}
+
+
+			if (feed_name.empty() == false) {
+				ns::select_headline_row (GTK_WIDGET (headlines_view), feed_name, 0);
+			}
+		}
+	}
+
+	return still_active;
+}
+
 static void
 process_rss_modifications()
 {
-	while (shutting_down == false && rss_mod_running == false) {
-		std::this_thread::sleep_for (std::chrono::milliseconds (77));
-	}
-
-	while (shutting_down == false && rss_mod_running) {
-		rss_mod_running = false;
-
-		std::this_thread::sleep_for (std::chrono::milliseconds (777));
-
-		if (diagnostics_enabled) {
-			//Keep this part until the code is finished. It gives us a reliable indicator that the background thread is still in operation.
-			std::string datetime = gautier_rss_util::get_current_date_time_utc();
-
-			std::cout << "RSS configuration update: \t" << datetime << "\n";
-		}
-
-		int change_count = feed_changes.size();
-
-		if (change_count > 0) {
-			make_user_note (std::to_string (change_count) + " changes pending.");
-
-			ns_data_read::rss_feed_mod modification = feed_changes.front();
-
-			ns_data_read::rss_feed_mod_status status = modification.status;
-
-			if (status != ns_data_read::rss_feed_mod_status::none) {
-				gdk_threads_enter();
-				update_tab (modification);
-				gdk_flush();
-				gdk_threads_leave();
-			}
-		} else {
-			process_feeds();
-		}
-
-		rss_mod_running = true;
-	}
-
 	return;
 }
 
@@ -892,10 +887,7 @@ process_feeds()
 			bool new_updates = ns_data_read::check_feed_changed (feed_old, feed_new);
 
 			if (new_updates) {
-				gdk_threads_enter();
 				add_new_headlines (feed_old, feed_new);
-				gdk_flush();
-				gdk_threads_leave();
 
 				change_count++;
 			}
