@@ -19,13 +19,9 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include "rss_ui/app_resources.h"
 
 #include <iostream>
-#include <iomanip>
-#include <chrono>
-#include <sstream>
 #include <cerrno>
 #include <cstdlib>
 #include <cstring>
-#include <ctime>
 
 static
 std::string app_name = "michael.gautier.rss.v7";
@@ -89,18 +85,6 @@ load_application_icon();
 int
 main (int argc, char** argv)
 {
-	std::string program_start_datetime;
-	{
-		std::time_t result = std::time (nullptr);
-
-		std::stringstream strout;
-
-		strout << std::put_time (std::gmtime (&result), "%F %T") << std::ends;
-
-		program_start_datetime = strout.str();
-	}
-	std::cout << "Gautier RSS started: " << program_start_datetime << "\n";
-
 	namespace ns_ui_app = gautier_rss_ui_app;
 
 	int status = 0;
@@ -129,14 +113,6 @@ main (int argc, char** argv)
 		Initialize UI
 	*/
 	if (status == 0) {
-		bool gthreads_initialized = g_thread_supported();
-
-		if (gthreads_initialized == false) {
-			g_thread_init (NULL);
-		}
-
-		gdk_threads_init();
-
 		gtk_init (NULL, NULL);
 
 		status = ns_ui_app::create();

@@ -11,12 +11,8 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 */
 
 #include <iostream>
-#include <iomanip>
 #include <queue>
-#include <chrono>
-#include <sstream>
 #include <thread>
-#include <ctime>
 
 #include "rss_ui/application.hpp"
 #include "rss_ui/app_win/app_win.hpp"
@@ -376,18 +372,6 @@ gautier_rss_win_main::create (
 			notebook_concurrent_init_interval_milliseconds = (article_count / 10);
 		}
 
-		std::string thread_start_datetime;
-		{
-			std::time_t result = std::time (nullptr);
-
-			std::stringstream strout;
-
-			strout << std::put_time (std::gmtime (&result), "%F %T") << std::ends;
-
-			thread_start_datetime = strout.str();
-		}
-		std::cout << "Gautier RSS notebook init: " << thread_start_datetime << "\n";
-
 		notebook_concurrent_init_id = gdk_threads_add_timeout (notebook_concurrent_init_interval_milliseconds,
 		                              notebook_concurrent_init, headlines_view);
 	}
@@ -415,18 +399,6 @@ gautier_rss_win_main::create (
 	}
 
 	gtk_widget_show_all (window);
-
-	std::string window_finish_datetime;
-	{
-		std::time_t result = std::time (nullptr);
-
-		std::stringstream strout;
-
-		strout << std::put_time (std::gmtime (&result), "%F %T") << std::ends;
-
-		window_finish_datetime = strout.str();
-	}
-	std::cout << "Gautier RSS window finished: " << window_finish_datetime << "\n";
 
 	return;
 }
@@ -736,18 +708,6 @@ populate_rss_tabs()
 gboolean
 notebook_concurrent_init (gpointer data)
 {
-	std::string func_start_datetime;
-	{
-		std::time_t result = std::time (nullptr);
-
-		std::stringstream strout;
-
-		strout << std::put_time (std::gmtime (&result), "%F %T") << std::ends;
-
-		func_start_datetime = strout.str();
-	}
-	std::cout << "Gautier RSS notebook init run: " << func_start_datetime << "\n";
-
 	namespace ns = gautier_rss_win_main_headlines_frame;
 
 	gboolean still_active = false;
@@ -783,18 +743,6 @@ notebook_concurrent_init (gpointer data)
 			}
 		}
 	}
-
-	std::string func_end_datetime;
-	{
-		std::time_t result = std::time (nullptr);
-
-		std::stringstream strout;
-
-		strout << std::put_time (std::gmtime (&result), "%F %T") << std::ends;
-
-		func_end_datetime = strout.str();
-	}
-	std::cout << "Gautier RSS notebook init end: " << func_end_datetime << "\n";
 
 	return still_active;
 }
