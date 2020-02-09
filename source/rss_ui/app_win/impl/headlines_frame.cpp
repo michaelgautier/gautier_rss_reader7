@@ -77,14 +77,24 @@ gautier_rss_win_main_headlines_frame::add_headline_page (GtkWidget* headlines_vi
 
 	initialize_headlines_list_view (scroll_win, headlines_list_view, headline_view_select_row);
 
+	gint tab_i = -1;
+
 	if (position < 0) {
-		gtk_notebook_append_page (GTK_NOTEBOOK (headlines_view), scroll_win, gtk_label_new (feed_name.data()));
+		tab_i = gtk_notebook_append_page (GTK_NOTEBOOK (headlines_view), scroll_win, gtk_label_new (feed_name.data()));
 	} else {
-		gtk_notebook_insert_page (GTK_NOTEBOOK (headlines_view), scroll_win, gtk_label_new (feed_name.data()),
-		                          position);
+		tab_i =	gtk_notebook_insert_page (GTK_NOTEBOOK (headlines_view), scroll_win, gtk_label_new (feed_name.data()),
+		                                  position);
 	}
 
 	gtk_widget_show_all (scroll_win);
+
+	if (tab_i > -1) {
+		GtkWidget* tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
+
+		if (tab) {
+			gtk_widget_set_sensitive (tab, false);
+		}
+	}
 
 	return;
 }
