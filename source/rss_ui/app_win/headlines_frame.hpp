@@ -30,7 +30,7 @@ namespace gautier_rss_win_main_headlines_frame {
 
 	void
 	show_headlines (GtkWidget* headlines_view, std::string feed_name, int headline_index_start,
-	                std::vector<std::string>& headlines);
+	                int headline_index_end, std::vector<std::string>& headlines);
 
 	void
 	select_headline (gautier_rss_data_read::rss_article& rss_data, GtkTreeSelection* headline_row);
