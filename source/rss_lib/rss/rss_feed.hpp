@@ -19,12 +19,23 @@ namespace gautier_rss_data_read {
 	struct rss_feed
 	{
 		public:
+			/*
+				Primary fields
+			*/
 			std::string feed_name;
 			std::string feed_url;
 			std::string last_retrieved;
 			std::string retrieve_limit_hrs;
 			std::string retention_days;
 			int article_count;
+
+			/*
+				Set operations
+
+				last_index is used for application caching
+				and indexing strategies.
+			*/
+			int last_index;
 	};
 
 	bool
