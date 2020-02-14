@@ -743,7 +743,8 @@ notebook_concurrent_init (gpointer data)
 				next_notebook_tab_index++;
 
 				/*
-					Present first feed.
+					CONCURRENT BRANCH #1
+					Present the first few lines from the first feed listed in the database.
 				*/
 				if (tab_i == 0) {
 					gboolean sensitive_value = gtk_widget_get_sensitive (tab);
@@ -754,15 +755,39 @@ notebook_concurrent_init (gpointer data)
 
 					ns::select_headline_row (GTK_WIDGET (headlines_view), feed_name, 0);
 
+					/*
+						CONCURRENT BRANCH #2
+						Sets up a recursive call to notebook_concurrent_init
+
+						First pass: notebook_concurrent_init has still_active == false
+						Terminating the thread of execution frees up the UI to show a screen of information.
+						However, there is more information to show (other tabs).
+
+						The process repeats by establishing a new call to notebook_concurrent_init 
+						where still_active == true until all remaining tabs have been processed.
+
+						Those tabs may be locked for the duration of their processing. The critical method
+						is to feed enough data into each tab on each cycle in a short a time possible
+						while preserving the end-user's ability to click through the tabs while they are
+						still loading.
+					*/
 					notebook_concurrent_init_id = gdk_threads_add_timeout (notebook_concurrent_init_interval_milliseconds,
 					                              notebook_concurrent_init, headlines_view);
-				} else {
+				}
+				/*
+					CONCURRENT BRANCH #2
+					Terminate the thread on the final tab in process.
+				*/
+				else {
 					still_active = (next_notebook_tab_index < tab_count);
 				}
 			}
 		}
 	}
 
+	/*
+		Applies only to CONCURRENT BRANCH #2
+	*/
 	if (still_active == false && next_notebook_tab_index >= tab_count) {
 		for (int tab_i = 1; tab_i < tab_count; tab_i++) {
 			GtkWidget* tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
