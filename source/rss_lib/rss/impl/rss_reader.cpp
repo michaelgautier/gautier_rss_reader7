@@ -157,7 +157,7 @@ gautier_rss_data_read::get_feed_headlines (std::string db_file_name, std::string
 
 	ns_db::sql_rowset_type rows;
 	std::string sql_text =
-	    "SELECT headline_text FROM feeds_articles WHERE feed_name = @feed_name;";
+	    "SELECT headline_text FROM feeds_articles WHERE feed_name = @feed_name ORDER BY rowid DESC;";
 
 	ns_db::sql_parameter_list_type params = {
 		feed_name
