@@ -47,7 +47,8 @@ namespace gautier_rss_data_read {
 				application access the start of the range of
 				new entries regardless of sort order.
 			*/
-			int64_t last_rowid;
+			int64_t revised_index_start;
+			int64_t revised_index_end;
 	};
 
 	bool

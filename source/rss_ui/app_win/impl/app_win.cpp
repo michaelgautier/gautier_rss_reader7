@@ -697,6 +697,8 @@ populate_rss_tabs()
 		feed_index.insert_or_assign (feed_name, feed);
 
 		ns_data_read::rss_feed* feed_clone = &feed_index[feed_name];
+		feed_clone->revised_index_start = -1;
+		feed_clone->revised_index_end = -1;
 		feed_clone->last_index = 0;
 
 		feeds_articles.insert_or_assign (feed_name, std::vector<std::string>());
@@ -1170,6 +1172,27 @@ download_data()
 				if (new_updates) {
 					change_count++;
 					std::cout << __func__ << ", LINE: " << __LINE__ << ";\tChange count: " << change_count << "\n";
+
+					ns_data_read::rss_feed* feed_in_use = &feed_index[feed_name];
+
+					if (feed_in_use) {
+						const int64_t in_use_count = feed_in_use->article_count;
+						const int64_t record_count = ns_data_read::get_feed_headline_count (db_file_name, feed_name);
+
+						if (record_count > in_use_count) {
+							int diff_count = (record_count - in_use_count);
+
+							const int64_t feed_index_start = in_use_count - 1;
+							const int64_t feed_index_end = feed_index_start + diff_count;
+
+							/*
+								Signals to the UI that new records are available.
+								UI Checks for: end > start
+							*/
+							feed_in_use->revised_index_start = feed_index_start;
+							feed_in_use->revised_index_end = feed_index_end;
+						}
+					}
 				}
 			}
 		}
