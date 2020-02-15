@@ -78,7 +78,7 @@ headlines_list_refresh_id = -1;
 
 /*Feed download checks	Most of this might disappear.*/
 static int
-data_download_thread_wait_in_seconds = 10;
+data_download_thread_wait_in_seconds = 6;
 
 static
 std::thread thread_download_data;
@@ -963,8 +963,11 @@ download_data()
 
 	int successful_download_attempts = 0;
 	int failed_download_attempts = 0;
+	const int max_failed_download_attempts = 9;
+	bool failed_download_notify_was_output = false;
 	int change_count = 0;
 	std::string last_download_datetime = gautier_rss_util::get_current_date_time_utc();
+	std::string last_failed_download_datetime;
 
 	/*
 		Execution is signaled by download_running == true
@@ -973,6 +976,8 @@ download_data()
 		when the end-user signals the end of the application.
 	*/
 	int allow_process_output = true;
+
+	data_download_thread_wait_in_seconds = 2;
 
 	while (shutting_down == false && download_running) {
 		if (allow_process_output) {
@@ -1017,7 +1022,9 @@ download_data()
 				Website operators tend to dislike programs that check the website every few seconds. Setting this
 				to an hour guarantees that the program will not unintentionally violate minimum website access intervals.
 			*/
-			if (time_difference_in_seconds < 722) {
+			bool clock_still_running = (time_difference_in_seconds < 722);
+
+			if (clock_still_running) {
 				if (allow_time_output) {
 					std::cout << __func__ << ", LINE: " << __LINE__ << ";\t\t\t\tSKIP until 720s have passed.\n";
 				}
@@ -1028,16 +1035,36 @@ download_data()
 			}
 		}
 
-		if (failed_download_attempts > 9) {
-			failed_download_attempts = 0;
-
+		if (failed_download_attempts >= max_failed_download_attempts) {
 			const int download_retry_wait_in_minutes = 5;
+			int wait_time_in_seconds = (download_retry_wait_in_minutes * 60);
 
-			std::cout << __func__ << ", LINE: " << __LINE__ << ";\tSeveral failed downloads (unable to connect).\n";
-			std::cout << __func__ << ", LINE: " << __LINE__ << ";\t\tWill try again in " << download_retry_wait_in_minutes
-			          << " minutes.\n";
+			std::string download_review_datetime = gautier_rss_util::get_current_date_time_utc();
 
-			std::this_thread::sleep_for (std::chrono::minutes (download_retry_wait_in_minutes));
+			int_fast32_t time_difference_in_seconds = gautier_rss_util::get_time_difference_in_seconds (
+			            last_failed_download_datetime, download_review_datetime);
+
+			if (failed_download_notify_was_output == false) {
+				std::cout << __func__ << ", LINE: " << __LINE__ << ";\tSeveral failed downloads (unable to connect).\n";
+				std::cout << __func__ << ", LINE: " << __LINE__ << ";\t\tWill try again in " << download_retry_wait_in_minutes
+				          << " minutes.\n";
+			}
+
+			bool clock_still_running = (time_difference_in_seconds < (wait_time_in_seconds + 2));
+
+			if (clock_still_running) {
+				if (failed_download_notify_was_output == false) {
+					failed_download_notify_was_output = true;
+
+					std::cout << __func__ << ", LINE: " << __LINE__ << ";\t\t\t\tSKIP until " << wait_time_in_seconds <<
+					          "s have passed.\n";
+				}
+
+				continue;
+			} else {
+				allow_process_output = true;
+				failed_download_attempts = 0;
+			}
 		}
 
 		/*
@@ -1112,6 +1139,13 @@ download_data()
 					} else {
 						if (download_attempts == max_download_attempts) {
 							failed_download_attempts++;
+
+							if (failed_download_attempts >= max_failed_download_attempts) {
+								last_failed_download_datetime = gautier_rss_util::get_current_date_time_utc();
+
+								allow_process_output = false;
+								failed_download_notify_was_output = false;
+							}
 
 							std::cout << __func__ << ", LINE: " << __LINE__ << ";\tFAILED DOWNLOAD!!!!\n";
 						}
