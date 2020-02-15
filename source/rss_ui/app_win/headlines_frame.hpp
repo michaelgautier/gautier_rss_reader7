@@ -15,6 +15,7 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 #include <string>
 #include <vector>
+#include <cstdint>
 
 #include <gtk/gtk.h>
 
@@ -29,14 +30,14 @@ namespace gautier_rss_win_main_headlines_frame {
 	                   void (*headline_view_select_row) (GtkTreeSelection*, gpointer));
 
 	void
-	show_headlines (GtkWidget* headlines_view, std::string feed_name, int headline_index_start,
-	                int headline_index_end, std::vector<std::string>& headlines);
+	show_headlines (GtkWidget* headlines_view, std::string feed_name, int64_t headline_index_start,
+	                int64_t headline_index_end, std::vector<std::string>& headlines);
 
 	void
 	select_headline (gautier_rss_data_read::rss_article& rss_data, GtkTreeSelection* headline_row);
 
 	void
-	select_headline_row (GtkWidget* headlines_view, std::string feed_name, int headline_row_index);
+	select_headline_row (GtkWidget* headlines_view, std::string feed_name, int64_t headline_row_index);
 
 	int
 	get_default_headlines_view_content_width();

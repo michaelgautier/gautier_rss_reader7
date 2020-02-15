@@ -101,14 +101,14 @@ gautier_rss_win_main_headlines_frame::add_headline_page (GtkWidget* headlines_vi
 
 void
 gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view, std::string feed_name,
-        int headline_index_start, int headline_index_end, std::vector<std::string>& headlines)
+        int64_t headline_index_start, int64_t headline_index_end, std::vector<std::string>& headlines)
 {
 	/*
 		Tab Contents (in this case a scroll window containing a list box)
 
 		Tab > Scroll Window > List Box > individual labels (headlines)
 	*/
-	int headlines_count_new = headlines.size();
+	int64_t headlines_count_new = headlines.size();
 
 	if (headlines_count_new > -1) {
 		GtkWidget* headlines_list_view = NULL;
@@ -148,7 +148,7 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 
 			GtkTreeIter iter;
 
-			for (int i = headline_index_start; i <= headline_index_end && i < headlines_count_new; i++) {
+			for (int64_t i = headline_index_start; i <= headline_index_end && i < headlines_count_new; i++) {
 				std::string headline_text = headlines.at (i);
 
 				gautier_rss_data_read::get_feed_article_summary (db_file_name, feed_name,
@@ -211,7 +211,7 @@ gautier_rss_win_main_headlines_frame::select_headline (gautier_rss_data_read::rs
 
 void
 gautier_rss_win_main_headlines_frame::select_headline_row (GtkWidget* headlines_view, std::string feed_name,
-        int headline_row_index)
+        int64_t headline_row_index)
 {
 	if (headline_row_index > -1) {
 		GtkWidget* headlines_list_view = NULL;
