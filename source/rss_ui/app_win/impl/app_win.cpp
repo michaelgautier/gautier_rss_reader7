@@ -28,6 +28,8 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 #include "rss_ui/rss_manage/rss_manage.hpp"
 
+#include "rss_lib/rss_download/feed_download.hpp"
+
 #include <webkit2/webkit2.h>
 
 namespace ns_data_read = gautier_rss_data_read;
@@ -75,11 +77,17 @@ gint
 headlines_list_refresh_id = -1;
 
 /*Feed download checks	Most of this might disappear.*/
+static int
+data_download_thread_wait_in_seconds = 10;
+
 static
 std::thread thread_download_data;
 
 static void
 initialize_data_threads();
+
+static void
+download_data_noop();
 
 static void
 download_data();
@@ -223,6 +231,9 @@ set_window_attributes (GtkWidget* window, std::string title, int width, int heig
 
 static void
 layout_rss_view (GtkWidget* layout_pane, GtkWidget* headlines_view, GtkWidget* article_frame);
+
+static void
+populate_rss_tabs();
 
 static void
 make_user_note (std::string note);
@@ -643,6 +654,7 @@ void
 window_destroy (GtkWidget* window, gpointer user_data)
 {
 	shutting_down = true;
+	download_running = false;
 
 	thread_download_data.join();
 
@@ -718,7 +730,7 @@ notebook_concurrent_init (gpointer data)
 				*/
 				std::vector < std::string > headlines;
 				{
-					const int max_lines = 32;
+					const int64_t max_lines = 32;
 
 					std::vector < std::string > all_headlines;
 
@@ -728,9 +740,9 @@ notebook_concurrent_init (gpointer data)
 
 					ns_data_read::rss_feed* feed_index_entry = &feed_index[feed_name];
 
-					int last_index = 0;
+					int64_t last_index = 0;
 
-					for (int i = 0; i < max_lines && i < all_headlines.size(); i++) {
+					for (int64_t i = 0; i < max_lines && i < all_headlines.size(); i++) {
 						std::string headline = all_headlines.at (i);
 
 						headlines.push_back (headline);
@@ -742,7 +754,7 @@ notebook_concurrent_init (gpointer data)
 				}
 
 				if (headlines.size() > 0) {
-					int headline_index_start = 0;
+					int64_t headline_index_start = 0;
 
 					ns::show_headlines (headlines_view, feed_name, headline_index_start, headlines.size(), headlines);
 				}
@@ -842,6 +854,7 @@ notebook_concurrent_init (gpointer data)
 			CONCURRENT BRANCH #4		Depends on CONCURRENT BRANCH #1 initiating CONCURRENT BRANCH #4
 			Provide signal for active data download thread to begin contacting servers.
 		*/
+		data_download_thread_wait_in_seconds = 4;
 		download_running = true;
 	}
 
@@ -853,12 +866,16 @@ headlines_list_refresh (gpointer data)
 {
 	namespace ns = gautier_rss_win_main_headlines_frame;
 
-	gboolean still_active = true;
+	gboolean still_active = (shutting_down == false);
 
 	int tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
 
-	if (tab_count > 0) {
+	if (still_active && tab_count > 0) {
 		gint tab_i = next_notebook_tab_index++;
+
+		if (next_notebook_tab_index > tab_count) {
+			next_notebook_tab_index = 0;
+		}
 
 		if (tab_i > -1) {
 			GtkWidget* tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
@@ -868,18 +885,18 @@ headlines_list_refresh (gpointer data)
 
 				std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
 
-				const int max_lines = 32;
+				const int64_t max_lines = 32;
 
-				const int headline_count = ns_data_read::get_feed_headline_count (db_file_name, feed_name);
+				const int64_t headline_count = ns_data_read::get_feed_headline_count (db_file_name, feed_name);
 
 				ns_data_read::rss_feed* feed_index_entry = &feed_index[feed_name];
 
-				const int index_start = (feed_index_entry->last_index) + 1;
+				const int64_t index_start = (feed_index_entry->last_index) + 1;
 
 				if (index_start < headline_count) {
 					std::vector < std::string > all_headlines = feeds_articles[feed_name];
 
-					int index_end = index_start + max_lines;
+					int64_t index_end = index_start + max_lines;
 
 					if (index_end > headline_count) {
 						index_end = all_headlines.size() - 1;
@@ -895,11 +912,15 @@ headlines_list_refresh (gpointer data)
 		}
 	}
 
-	if (next_notebook_tab_index > tab_count) {
-		next_notebook_tab_index = 0;
-	}
-
 	return still_active;
+}
+
+static void
+make_user_note (std::string note)
+{
+	gtk_label_set_text (GTK_LABEL (info_bar), note.data());
+
+	return;
 }
 
 /*
@@ -913,52 +934,207 @@ initialize_data_threads()
 	return;
 }
 
+/*
+	RSS DATA INTEGRATION - The **PRIMARY** RSS function.
+	Designed to run in a separate thread. All it does is update a database.
+	The user interface is expected to have its own logic to detect database
+	modifications that occur when function executes.
+
+	This function does not interact with the user interface.
+*/
 static void
 download_data()
 {
+	/*
+		KEEP ALL the std::cout << calls. They are an intentional part of
+		this function. That way, when the program is initiated from a
+		command-line, the primary output to stdout is network/database
+		processes that occur in this function.
+	*/
+
 	std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
 
 	while (shutting_down == false && download_running == false) {
-		std::this_thread::sleep_for (std::chrono::minutes (2));
+		std::cout << __func__ << ":\tentering sleep\n";
+		std::this_thread::sleep_for (std::chrono::seconds (data_download_thread_wait_in_seconds));
 	}
 
+	std::cout << __func__ << ":\tawake\n";
+
+	int successful_download_attempts = 0;
+	int change_count = 0;
+	std::string last_download_datetime = gautier_rss_util::get_current_date_time_utc();
+
+	/*
+		Execution is signaled by download_running == true
+		When that condition changes, exit is defined in 3 key areas.
+		If a download is in progress, that download will conclude but no other will initiate
+		when the end-user signals the end of the application.
+	*/
+	int allow_process_output = true;
+
 	while (shutting_down == false && download_running) {
-		download_running = false;
+		if (allow_process_output) {
+			std::cout << __func__ << ":\tPreparing to download\n";
+		}
+
+		std::this_thread::sleep_for (std::chrono::seconds (data_download_thread_wait_in_seconds));
+
+		/*
+			End this thread if the user closes the program.
+		*/
+		if (shutting_down || download_running == false) {
+			std::cout << __func__ << ", LINE: " << __LINE__ << ";\tEXIT\n";
+			break;
+		}
+
+		/*
+			If downloads have already occurred within a hour window of time,
+			stop further download processing until 12 minutes has passed.
+		*/
+		if (successful_download_attempts > 0) {
+			std::string prep_download_datetime = gautier_rss_util::get_current_date_time_utc();
+
+			int_fast32_t time_difference_in_seconds = gautier_rss_util::get_time_difference_in_seconds (
+			            last_download_datetime, prep_download_datetime);
+
+			bool allow_time_output = (time_difference_in_seconds < 10 || time_difference_in_seconds > 718);
+
+			if (allow_time_output) {
+				std::cout << __func__ << ", LINE: " << __LINE__ << ";\t\tTime check\n";
+
+				std::cout << __func__ << ", LINE: " << __LINE__ << ";\t\t\tSeconds since last successful download: " <<
+				          time_difference_in_seconds << "\n";
+			}
+
+			/*
+				Any return to the loop entrance puts this just past 720s (12 minutes) once the time reaches 12 minutess.
+
+				This is the *Guarantee that the application will not access the network too frequently but will achieve
+				also check for data often enough in the event there is new data based on the feed's last retrieved date.
+
+				Website operators tend to dislike programs that check the website every few seconds. Setting this
+				to an hour guarantees that the program will not unintentionally violate minimum website access intervals.
+			*/
+			if (time_difference_in_seconds < 722) {
+				if (allow_time_output) {
+					std::cout << __func__ << ", LINE: " << __LINE__ << ";\t\t\t\tSKIP until 720s have passed.\n";
+				}
+
+				continue;
+			} else {
+				allow_process_output = true;
+			}
+		}
 
 		/*
 			Feeds with new data.
 		*/
-		int change_count = 0;
+		change_count = 0;
+		successful_download_attempts = 0;
 
 		std::vector <ns_data_read::rss_feed> feeds;
 
 		ns_data_read::get_feeds (db_file_name, feeds);
 
+		/*
+			Cycles through all the feeds to download, 1 at a time.
+		*/
 		for (ns_data_read::rss_feed feed : feeds) {
+			/*
+				End this thread if the user closes the program.
+			*/
+			if (shutting_down || download_running == false) {
+				std::cout << __func__ << ", LINE: " << __LINE__ << ";\tEXIT\n";
+				break;
+			}
+
 			std::string feed_name = feed.feed_name;
 			std::string feed_url = feed.feed_url;
 			std::string retrieve_limit_hrs = feed.retrieve_limit_hrs;
 			std::string retention_days = feed.retention_days;
 
+			std::cout << __func__ << ", LINE: " << __LINE__ << ";\tFEED: " << feed_name << "\n";
+
+			/*
+				Aborts the download attempt if a download has already occured within the allowed time frame.
+			*/
 			bool is_feed_still_fresh = gautier_rss_data_read::is_feed_still_fresh (db_file_name, feed_name,
 			                           feed_expire_time_enabled);
 
-			if (is_feed_still_fresh == false) {
-				ns_data_write::update_rss_db_from_network (db_file_name, feed_name, feed_url, retrieve_limit_hrs,
-				        retention_days);
+			/*
+				Handles the situation where the program is relaunched within the normal minimum website access time frame.
+				In that case, use the most recent retrieve date stored in the feed's record.
+			*/
+			if (is_feed_still_fresh) {
+				last_download_datetime = feed.last_retrieved;
+				successful_download_attempts++;
+			}
+
+			if (is_feed_still_fresh == false && (shutting_down == false && download_running)) {
+				/*
+					The download of a given feed will be retried a few times.
+				*/
+				const int max_download_attempts = 3;
+				int download_attempts = 0;
+
+				bool network_response_good = false;
+
+				while (network_response_good == false && download_attempts < max_download_attempts) {
+					download_attempts++;
+
+					long response_code = ns_data_write::update_rss_db_from_network (db_file_name, feed_name, feed_url,
+					                     retrieve_limit_hrs,
+					                     retention_days);
+
+					bool network_response_good = gautier_rss_data_read::is_network_response_ok (response_code);
+
+					if (network_response_good) {
+						successful_download_attempts++;
+
+						std::cout << __func__ << ", LINE: " << __LINE__ << ";\tDOWNLOAD OK!\n";
+
+						/*Although there is control logic in the loop, go ahead in this case and exit early.*/
+						break;
+					} else {
+						std::cout << __func__ << ", LINE: " << __LINE__ << ";\tFAILED DOWNLOAD!!!!\n";
+
+						/*Skip this iteration since no data is expected*/
+						continue;
+					}
+				}
+
+				/*
+					Determine the range of rowids to use to update the user interface.
+
+					A 'UI thread valid for updating the UI' will pick up these values.
+				*/
+				ns_data_read::rss_feed feed_new;
+
+				ns_data_read::get_feed (db_file_name, feed_name, feed_new);
+
+				std::cout << __func__ << ", LINE: " << __LINE__ << ";\tCHECK FEED\n";
+				bool new_updates = ns_data_read::check_feed_changed (feed, feed_new);
+
+				if (new_updates) {
+					change_count++;
+					std::cout << __func__ << ", LINE: " << __LINE__ << ";\tChange count: " << change_count << "\n";
+				}
 			}
 		}
 
-		download_running = true;
+		/*
+			A signal to this thread that no more downloads should be attempted for a while.
+		*/
+		if (successful_download_attempts > 0) {
+			last_download_datetime = gautier_rss_util::get_current_date_time_utc();
+
+			std::cout << __func__ << ", LINE: " << __LINE__ << ";\tdate/time last successful download:\t" <<
+			          last_download_datetime << "\n";
+
+			allow_process_output = false;
+		}
 	}
-
-	return;
-}
-
-static void
-make_user_note (std::string note)
-{
-	gtk_label_set_text (GTK_LABEL (info_bar), note.data());
 
 	return;
 }
