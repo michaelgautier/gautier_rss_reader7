@@ -14,6 +14,7 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #define michael_gautier_rss_data_rss_feed_source_h
 
 #include <string>
+#include <cstdint>
 
 namespace gautier_rss_data_read {
 	struct rss_feed
@@ -27,7 +28,9 @@ namespace gautier_rss_data_read {
 			std::string last_retrieved;
 			std::string retrieve_limit_hrs;
 			std::string retention_days;
-			int article_count;
+
+			/*SQLite uses 64-bit signed integer keys*/
+			int64_t article_count;
 
 			/*
 				Set operations
@@ -35,7 +38,16 @@ namespace gautier_rss_data_read {
 				last_index is used for application caching
 				and indexing strategies.
 			*/
-			int last_index;
+			int64_t last_index;
+
+			/*
+				Provides diff between what is likely loaded
+				from the database on start-up versus what is
+				downloaded from the network. This helps the
+				application access the start of the range of
+				new entries regardless of sort order.
+			*/
+			int64_t last_rowid;
 	};
 
 	bool
