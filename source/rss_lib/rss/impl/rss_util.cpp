@@ -16,13 +16,13 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include "rss_lib/db/db.hpp"
 #include "rss_lib/rss/rss_util.hpp"
 
-int
+int_fast32_t
 gautier_rss_util::get_time_difference_in_seconds (std::string date1, std::string date2)
 {
 	//See SQLite documentation: SQL As Understood By SQLite - Date And Time Functions
 
 	std::string db_file_name = ":memory:";
-	int seconds = 0;
+	int_fast32_t seconds = 0;
 
 	namespace ns_db = gautier_rss_database;
 

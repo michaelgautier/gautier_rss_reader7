@@ -14,6 +14,7 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #define michael_gautier_rss_util_source_h
 
 #include <string>
+#include <cstdint>
 
 namespace gautier_rss_util {
 	std::string
@@ -23,7 +24,7 @@ namespace gautier_rss_util {
 	get_current_date_time_local();
 
 	//See SQLite documentation: SQL As Understood By SQLite - Date And Time Functions
-	int
+	int_fast32_t
 	get_time_difference_in_seconds (std::string date1, std::string date2);
 };
 #endif
