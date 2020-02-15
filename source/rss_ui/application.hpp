@@ -14,6 +14,7 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #define michael_gautier_rss_ui_app_h
 
 #include <string>
+#include <cstdint>
 
 #include <gtk/gtk.h>
 
