@@ -139,7 +139,7 @@ create_feed_from_sql_row (gautier_rss_database::sql_row_type& row, gautier_rss_d
 		} else if (field.first == "retention_days") {
 			feed.retention_days = field.second;
 		} else if (field.first == "article_count") {
-			feed.article_count = std::stoi (field.second);
+			feed.article_count = std::stoll (field.second);
 		}
 	}
 
@@ -223,7 +223,7 @@ gautier_rss_data_read::get_feed_article_summary (std::string db_file_name, std::
 	return;
 }
 
-int
+int64_t
 gautier_rss_data_read::get_feed_headline_count (std::string db_file_name, std::string feed_name)
 {
 	int size = 0;
@@ -245,7 +245,7 @@ gautier_rss_data_read::get_feed_headline_count (std::string db_file_name, std::s
 	for (ns_db::sql_row_type row : rows) {
 		for (ns_db::sql_row_type::value_type field : row) {
 			if (field.first == "article_count") {
-				size = std::stoi (field.second);
+				size = std::stoll (field.second);
 			}
 		}
 	}

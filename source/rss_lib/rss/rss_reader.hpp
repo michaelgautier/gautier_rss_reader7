@@ -15,6 +15,7 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 #include <vector>
 #include <string>
+#include <cstdint>
 
 #include "rss_article.hpp"
 #include "rss_feed.hpp"
@@ -36,7 +37,7 @@ namespace gautier_rss_data_read {
 	get_feed_article_summary (std::string db_file_name, std::string feed_name, std::string headline,
 	                          rss_article& article);
 
-	int
+	int64_t
 	get_feed_headline_count (std::string db_file_name, std::string feed_name);
 
 	std::string
