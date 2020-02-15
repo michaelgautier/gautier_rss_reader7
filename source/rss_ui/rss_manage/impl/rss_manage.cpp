@@ -413,7 +413,7 @@ update_configuration_click (GtkButton* button, gpointer user_data)
 
 	std::string active_id = gtk_combo_box_get_active_id (GTK_COMBO_BOX (feed_retention_option));
 
-	int retention_id = std::stoi (active_id);
+	int retention_id = std::stoll (active_id);
 
 	switch (retention_id) {
 		case 1:
@@ -487,7 +487,7 @@ update_configuration_click (GtkButton* button, gpointer user_data)
 
 			modification->status = ns_read::rss_feed_mod_status::none;
 			modification->feed_name = feed_name;
-			modification->row_id = std::stoi (existing_row_id);
+			modification->row_id = std::stoll (existing_row_id);
 
 			if (changed) {
 				modification->feed_name = old_feed_name;
@@ -805,7 +805,7 @@ rss_tree_view_selected (GtkTreeSelection* tree_selection, gpointer user_data)
 			std::string row_id = ns_read::get_row_id (db_file_name, rss_url);
 
 			if (row_id.empty() == false) {
-				row_id_now = std::stoi (row_id);
+				row_id_now = std::stoll (row_id);
 			}
 		}
 	} else if (row_id_before > 0) {
