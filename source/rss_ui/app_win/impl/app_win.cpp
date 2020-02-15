@@ -513,12 +513,14 @@ headline_view_switch_page (GtkNotebook* headlines_view,
 
 	gtk_header_bar_set_title (GTK_HEADER_BAR (header_bar), feed_name.data());
 
-	std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
+	ns_data_read::rss_feed* feed = &feed_index[feed_name];
 
-	int article_count = ns_data_read::get_feed_headline_count (db_file_name, feed_name);
+	if (feed) {
+		const int64_t headline_count = feed->article_count;
 
-	make_user_note (std::to_string (article_count) + " articles since " +
-	                gautier_rss_util::get_current_date_time_local());
+		make_user_note (std::to_string (headline_count) + " articles since " +
+		                gautier_rss_util::get_current_date_time_local());
+	}
 
 	return;
 }
@@ -883,17 +885,15 @@ headlines_list_refresh (gpointer data)
 			if (tab) {
 				std::string feed_name = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
 
-				std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
+				ns_data_read::rss_feed* feed_index_entry = &feed_index[feed_name];
 
 				const int64_t max_lines = 32;
 
-				const int64_t headline_count = ns_data_read::get_feed_headline_count (db_file_name, feed_name);
-
-				ns_data_read::rss_feed* feed_index_entry = &feed_index[feed_name];
+				const int64_t headline_count = feed_index_entry->article_count;
 
 				const int64_t index_start = (feed_index_entry->last_index) + 1;
 
-				if (index_start < headline_count) {
+				if (headline_count > 0 && index_start > -1 && index_start < headline_count) {
 					std::vector < std::string > all_headlines = feeds_articles[feed_name];
 
 					int64_t index_end = index_start + max_lines;
