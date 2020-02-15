@@ -962,6 +962,7 @@ download_data()
 	std::cout << __func__ << ":\tawake\n";
 
 	int successful_download_attempts = 0;
+	int failed_download_attempts = 0;
 	int change_count = 0;
 	std::string last_download_datetime = gautier_rss_util::get_current_date_time_utc();
 
@@ -1025,6 +1026,18 @@ download_data()
 			} else {
 				allow_process_output = true;
 			}
+		}
+
+		if (failed_download_attempts > 9) {
+			failed_download_attempts = 0;
+
+			const int download_retry_wait_in_minutes = 5;
+
+			std::cout << __func__ << ", LINE: " << __LINE__ << ";\tSeveral failed downloads (unable to connect).\n";
+			std::cout << __func__ << ", LINE: " << __LINE__ << ";\t\tWill try again in " << download_retry_wait_in_minutes
+			          << " minutes.\n";
+
+			std::this_thread::sleep_for (std::chrono::minutes (download_retry_wait_in_minutes));
 		}
 
 		/*
@@ -1097,7 +1110,11 @@ download_data()
 						/*Although there is control logic in the loop, go ahead in this case and exit early.*/
 						break;
 					} else {
-						std::cout << __func__ << ", LINE: " << __LINE__ << ";\tFAILED DOWNLOAD!!!!\n";
+						if (download_attempts == max_download_attempts) {
+							failed_download_attempts++;
+
+							std::cout << __func__ << ", LINE: " << __LINE__ << ";\tFAILED DOWNLOAD!!!!\n";
+						}
 
 						/*Skip this iteration since no data is expected*/
 						continue;
