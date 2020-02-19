@@ -399,6 +399,9 @@ gautier_rss_win_main::create (
 
 		notebook_concurrent_init_id = gdk_threads_add_timeout (notebook_concurrent_init_interval_milliseconds,
 		                              notebook_concurrent_init, headlines_view);
+
+		headlines_list_insert_id = gdk_threads_add_timeout (headlines_list_insert_interval_milliseconds,
+		                           headlines_list_insert, headlines_view);
 	}
 
 	/*
