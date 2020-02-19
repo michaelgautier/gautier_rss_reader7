@@ -63,7 +63,7 @@ populate_rss_tabs();
 
 static
 guint
-notebook_concurrent_init_interval_milliseconds = 120;
+notebook_concurrent_init_interval_milliseconds = 124;
 
 extern "C"
 gboolean
@@ -85,7 +85,7 @@ next_notebook_tab_index = -1;
 */
 static
 guint
-headlines_list_refresh_interval_milliseconds = 40;
+headlines_list_refresh_interval_milliseconds = 88;
 
 extern "C"
 gboolean
@@ -103,7 +103,7 @@ headlines_list_refresh_id = -1;
 */
 static
 guint
-headlines_list_insert_interval_milliseconds = 1200;
+headlines_list_insert_interval_milliseconds = 12400;
 
 extern "C"
 gboolean
@@ -958,9 +958,16 @@ headlines_list_insert (gpointer data)
 {
 	namespace ns_rss_tabs = gautier_rss_win_main_headlines_frame;
 
-	gboolean still_active = true;
+	/*
+		Let this clear out automatically. Downloads typically occur
+		once per hour. When downloads occur, this is activated
+		and only needs to run a short duration.
+	*/
+	const gboolean still_active = false;
 
 	std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
+
+	headlines_list_insert_id = -1;
 
 	/*range-for provides a deep copy clone for evaluation.*/
 	for (std::pair<std::string, ns_data_read::rss_feed> feed_info : feed_index) {
@@ -987,8 +994,6 @@ headlines_list_insert (gpointer data)
 					*/
 					feed_in_use->revised_index_start = -1;
 					feed_in_use->revised_index_end = -1;
-
-					std::cout << __func__ << " download processing: " << feed_name << "\n";
 				}
 			}
 		}
@@ -997,22 +1002,11 @@ headlines_list_insert (gpointer data)
 			Process downloaded data
 		*/
 		if (feed_index_start > -1 && feed_index_end > feed_index_start) {
-			int64_t record_count = (feed_index_end - feed_index_start);
-
 			std::vector <std::string> headlines;
 
 			ns_data_read::get_feed_headlines (db_file_name, feed_name, headlines, false);
 
-			GtkWidget* tab = NULL;
-
-			ns_rss_tabs::get_tab_contents_container_by_feed_name (GTK_NOTEBOOK (headlines_view), feed_name, &tab);
-
-			if (tab) {
-				ns_rss_tabs::show_headlines (headlines_view, feed_name, feed_index_start, feed_index_end, headlines,
-				                             true);
-
-				gtk_widget_show_all (tab);
-			}
+			ns_rss_tabs::show_headlines (headlines_view, feed_name, feed_index_start, feed_index_end, headlines, true);
 		}
 	}
 
@@ -1103,12 +1097,16 @@ download_data()
 			stop further download processing until 12 minutes has passed.
 		*/
 		if (successful_download_attempts > 0) {
+			const int download_restart_wait_in_minutes = 5;
+			const int wait_time_in_seconds = (download_restart_wait_in_minutes * 60);
+
 			std::string prep_download_datetime = gautier_rss_util::get_current_date_time_utc();
 
-			int_fast32_t time_difference_in_seconds = gautier_rss_util::get_time_difference_in_seconds (
+			const int_fast32_t time_difference_in_seconds = gautier_rss_util::get_time_difference_in_seconds (
 			            last_download_datetime, prep_download_datetime);
 
-			bool allow_time_output = (time_difference_in_seconds < 10 || time_difference_in_seconds > 718);
+			bool allow_time_output = (time_difference_in_seconds <= 4 ||
+			                          time_difference_in_seconds >= (wait_time_in_seconds + 2));
 
 			if (allow_time_output) {
 				std::cout << __func__ << ", LINE: " << __LINE__ << ";\t\tTime check\n";
@@ -1126,11 +1124,11 @@ download_data()
 				Website operators tend to dislike programs that check the website every few seconds. Setting this
 				to an hour guarantees that the program will not unintentionally violate minimum website access intervals.
 			*/
-			bool clock_still_running = (time_difference_in_seconds < 722);
+			bool clock_still_running = (time_difference_in_seconds < (wait_time_in_seconds + 2));
 
 			if (clock_still_running) {
 				if (allow_time_output) {
-					std::cout << __func__ << ", LINE: " << __LINE__ << ";\t\t\t\tSKIP until 720s have passed.\n";
+					std::cout << __func__ << ", LINE: " << __LINE__ << ";\t\t\t\HOLD for " << wait_time_in_seconds << "s.\n";
 				}
 
 				continue;
@@ -1141,11 +1139,11 @@ download_data()
 
 		if (failed_download_attempts >= max_failed_download_attempts) {
 			const int download_retry_wait_in_minutes = 5;
-			int wait_time_in_seconds = (download_retry_wait_in_minutes * 60);
+			const int wait_time_in_seconds = (download_retry_wait_in_minutes * 60);
 
 			std::string download_review_datetime = gautier_rss_util::get_current_date_time_utc();
 
-			int_fast32_t time_difference_in_seconds = gautier_rss_util::get_time_difference_in_seconds (
+			const int_fast32_t time_difference_in_seconds = gautier_rss_util::get_time_difference_in_seconds (
 			            last_failed_download_datetime, download_review_datetime);
 
 			if (failed_download_notify_was_output == false) {
@@ -1154,14 +1152,13 @@ download_data()
 				          << " minutes.\n";
 			}
 
-			bool clock_still_running = (time_difference_in_seconds < (wait_time_in_seconds + 2));
+			bool clock_still_running = (time_difference_in_seconds <= (wait_time_in_seconds + 2));
 
 			if (clock_still_running) {
 				if (failed_download_notify_was_output == false) {
 					failed_download_notify_was_output = true;
 
-					std::cout << __func__ << ", LINE: " << __LINE__ << ";\t\t\t\tSKIP until " << wait_time_in_seconds <<
-					          "s have passed.\n";
+					std::cout << __func__ << ", LINE: " << __LINE__ << ";\t\t\t\tSKIP for " << wait_time_in_seconds << "s.\n";
 				}
 
 				continue;
@@ -1216,6 +1213,8 @@ download_data()
 			}
 
 			if (is_feed_still_fresh == false && (shutting_down == false && download_running)) {
+				const int64_t in_use_count = ns_data_read::get_feed_headline_count (db_file_name, feed_name);
+
 				/*
 					The download of a given feed will be retried a few times.
 				*/
@@ -1278,7 +1277,6 @@ download_data()
 					ns_data_read::rss_feed* feed_in_use = &feed_index[feed_name];
 
 					if (feed_in_use) {
-						const int64_t in_use_count = feed_in_use->article_count;
 						const int64_t record_count = ns_data_read::get_feed_headline_count (db_file_name, feed_name);
 
 						/*
@@ -1286,10 +1284,8 @@ download_data()
 							See: CONCURRENT BRANCK - Use Downloaded Data
 						*/
 						if (record_count > in_use_count) {
-							int diff_count = (record_count - in_use_count);
-
-							const int64_t feed_index_start = in_use_count - 1;
-							const int64_t feed_index_end = feed_index_start + diff_count;
+							const int64_t feed_index_start = in_use_count;
+							const int64_t feed_index_end = feed_index_start + (record_count - 1);
 
 							/*
 								Signals to the UI that new records are available.
@@ -1315,6 +1311,10 @@ download_data()
 			allow_process_output = false;
 
 			if (headlines_list_insert_id < 0) {
+				/*
+					Time for headlines_list_insert_interval_milliseconds must be at least 3 seconds.
+					Any shorter and the UI thread does not have sufficient access to the values in feed_index.
+				*/
 				headlines_list_insert_id = gdk_threads_add_timeout (headlines_list_insert_interval_milliseconds,
 				                           headlines_list_insert, headlines_view);
 			}
