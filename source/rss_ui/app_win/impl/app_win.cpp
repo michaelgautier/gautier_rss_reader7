@@ -944,6 +944,35 @@ headlines_list_refresh (gpointer data)
 	return still_active;
 }
 
+gboolean
+headlines_list_insert (gpointer data)
+{
+	gboolean still_active = true;
+
+	for (std::pair<std::string, ns_data_read::rss_feed>&& feed_info : feed_index) {
+		std::string feed_name = feed_info.first;
+
+		ns_data_read::rss_feed* feed_in_use = &feed_info.second;
+
+		if (feed_in_use) {
+			/*
+				CONCURRENT BRANCH - Using Downloaded Data
+				See download_data()	CONCURRENT BRANCK - Mark Downloaded Data
+			*/
+			const int64_t feed_index_start = feed_in_use->revised_index_start;
+			const int64_t feed_index_end = feed_in_use->revised_index_end;
+
+			if (feed_index_start > -1 && feed_index_end > feed_index_start) {
+				feed_in_use->revised_index_start = -1;
+				feed_in_use->revised_index_end = -1;
+				std::cout << __func__ << " download processing: " << feed_name << "\n";
+			}
+		}
+	}
+
+	return still_active;
+}
+
 static void
 make_user_note (std::string note)
 {
