@@ -101,7 +101,7 @@ gautier_rss_win_main_headlines_frame::add_headline_page (GtkWidget* headlines_vi
 
 void
 gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view, std::string feed_name,
-        int64_t headline_index_start, int64_t headline_index_end, std::vector<std::string>& headlines)
+        int64_t headline_index_start, int64_t headline_index_end, std::vector<std::string>& headlines, bool prepend)
 {
 	/*
 		Tab Contents (in this case a scroll window containing a list box)
@@ -165,7 +165,11 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 				/*
 					Adds a new row in the Tree Model.
 				*/
-				gtk_list_store_append (list_store, &iter);
+				if (prepend) {
+					gtk_list_store_prepend (list_store, &iter);
+				} else {
+					gtk_list_store_append (list_store, &iter);
+				}
 
 				/*
 					Links specific data to column positions in the row.
