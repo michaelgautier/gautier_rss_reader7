@@ -1179,6 +1179,10 @@ download_data()
 						const int64_t in_use_count = feed_in_use->article_count;
 						const int64_t record_count = ns_data_read::get_feed_headline_count (db_file_name, feed_name);
 
+						/*
+							CONCURRENT BRANCH - Mark Downloaded Data
+							See: CONCURRENT BRANCK - Use Downloaded Data
+						*/
 						if (record_count > in_use_count) {
 							int diff_count = (record_count - in_use_count);
 
