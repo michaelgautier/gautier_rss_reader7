@@ -103,7 +103,7 @@ headlines_list_refresh_id = -1;
 */
 static
 guint
-headlines_list_insert_interval_milliseconds = 120;
+headlines_list_insert_interval_milliseconds = 1200;
 
 extern "C"
 gboolean
@@ -952,23 +952,28 @@ headlines_list_insert (gpointer data)
 {
 	gboolean still_active = true;
 
-	for (std::pair<std::string, ns_data_read::rss_feed>&& feed_info : feed_index) {
+	/*range-for provides a deep copy clone for evaluation.*/
+	for (std::pair<std::string, ns_data_read::rss_feed> feed_info : feed_index) {
 		std::string feed_name = feed_info.first;
+		ns_data_read::rss_feed* feed_snapshot = &feed_info.second;
 
-		ns_data_read::rss_feed* feed_in_use = &feed_info.second;
-
-		if (feed_in_use) {
+		if (feed_snapshot) {
 			/*
 				CONCURRENT BRANCH - Using Downloaded Data
 				See download_data()	CONCURRENT BRANCK - Mark Downloaded Data
 			*/
-			const int64_t feed_index_start = feed_in_use->revised_index_start;
-			const int64_t feed_index_end = feed_in_use->revised_index_end;
+			const int64_t feed_index_start = feed_snapshot->revised_index_start;
+			const int64_t feed_index_end = feed_snapshot->revised_index_end;
 
 			if (feed_index_start > -1 && feed_index_end > feed_index_start) {
-				feed_in_use->revised_index_start = -1;
-				feed_in_use->revised_index_end = -1;
-				std::cout << __func__ << " download processing: " << feed_name << "\n";
+				ns_data_read::rss_feed* feed_in_use = &feed_index[feed_name];
+
+				if (feed_in_use) {
+					feed_in_use->revised_index_start = -1;
+					feed_in_use->revised_index_end = -1;
+
+					std::cout << __func__ << " download processing: " << feed_name << "\n";
+				}
 			}
 		}
 	}
