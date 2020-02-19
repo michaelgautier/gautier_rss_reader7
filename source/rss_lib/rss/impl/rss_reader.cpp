@@ -148,16 +148,22 @@ create_feed_from_sql_row (gautier_rss_database::sql_row_type& row, gautier_rss_d
 
 void
 gautier_rss_data_read::get_feed_headlines (std::string db_file_name, std::string feed_name,
-        std::vector <std::string>& headlines)
+        std::vector <std::string>& headlines, bool descending)
 {
 	namespace ns_db = gautier_rss_database;
 
 	sqlite3* db = NULL;
 	ns_db::open_db (db_file_name, &db);
 
+	std::string sort_direction = "ASC";
+
+	if (descending) {
+		sort_direction = "DESC";
+	}
+
 	ns_db::sql_rowset_type rows;
 	std::string sql_text =
-	    "SELECT headline_text FROM feeds_articles WHERE feed_name = @feed_name ORDER BY rowid DESC;";
+	    "SELECT headline_text FROM feeds_articles WHERE feed_name = @feed_name ORDER BY rowid " + sort_direction + ";";
 
 	ns_db::sql_parameter_list_type params = {
 		feed_name
