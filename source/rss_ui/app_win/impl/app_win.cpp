@@ -96,6 +96,24 @@ gint
 headlines_list_refresh_id = -1;
 
 /*
+	Start-up (3)	Detects downloaded data (see RSS Download below)
+	in each tab. This is calibrated to allow the end-user to operate the
+	UI while the program continues to saturate each tab with all available
+	information.
+*/
+static
+guint
+headlines_list_insert_interval_milliseconds = 120;
+
+extern "C"
+gboolean
+headlines_list_insert (gpointer data);
+
+static
+gint
+headlines_list_insert_id = -1;
+
+/*
 	RSS Download
 
 	Retrieves new RSS information and updates the database.
