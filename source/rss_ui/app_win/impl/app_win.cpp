@@ -142,6 +142,21 @@ extern "C"
 void
 manage_feeds_click (GtkButton* button, gpointer user_data);
 
+static void
+process_rss_feed_configuration (ns_data_read::rss_feed_mod& modification);
+
+static
+guint
+rss_feed_change_interval_milliseconds = 4400;
+
+extern "C"
+gboolean
+rss_feed_change (gpointer data);
+
+static
+gint
+rss_feed_change_id = -1;
+
 /*
 	RSS Tabs - Switch Handlers.
 */
@@ -429,6 +444,9 @@ gautier_rss_win_main::create (
 
 	gtk_widget_show_all (window);
 
+	rss_feed_change_id = gdk_threads_add_timeout (rss_feed_change_interval_milliseconds, rss_feed_change,
+	                     headlines_view);
+
 	return;
 }
 
@@ -646,16 +664,6 @@ void
 manage_feeds_click (GtkButton* button,
                     gpointer   user_data)
 {
-	/**
-	 * g_signal_handlers_disconnect_by_func:
-	 * @instance: The instance to remove handlers from.
-	 * @func: The C closure callback of the handlers (useless for non-C closures).
-	 * @data: The closure data of the handlers' closures.
-	 *
-	 * Disconnects all handlers on an instance that match @func and @data.
-	 *
-	 * Returns: The number of handlers that matched.
-	 */
 	g_signal_handler_disconnect (headlines_view, headline_view_switch_page_signal_id);
 
 	gautier_rss_win_rss_manage::set_modification_queue (&feed_changes);
@@ -663,6 +671,186 @@ manage_feeds_click (GtkButton* button,
 
 	headline_view_switch_page_signal_id = g_signal_connect (headlines_view, "switch-page",
 	                                      G_CALLBACK (headline_view_switch_page), NULL);
+
+	return;
+}
+
+gboolean
+rss_feed_change (gpointer data)
+{
+	gboolean still_active = true;
+
+	int change_count = feed_changes.size();
+
+	if (change_count > 0) {
+		ns_data_read::rss_feed_mod modification = feed_changes.front();
+
+		ns_data_read::rss_feed_mod_status status = modification.status;
+
+		if (status != ns_data_read::rss_feed_mod_status::none) {
+			process_rss_feed_configuration (modification);
+		}
+	}
+
+	return still_active;
+}
+
+static void
+process_rss_feed_configuration (ns_data_read::rss_feed_mod& modification)
+{
+	namespace ns_rss_tabs = gautier_rss_win_main_headlines_frame;
+
+	std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
+
+	ns_data_read::rss_feed_mod_status status = modification.status;
+
+	std::string feed_name = modification.feed_name;
+	const int64_t row_id_now = modification.row_id;
+
+	bool is_insert = status == ns_data_read::rss_feed_mod_status::insert;
+
+	size_t feed_index_matches = feed_index.count (feed_name);
+
+	if (feed_index_matches < 1) {
+		ns_data_read::rss_feed feed;
+
+		get_feed (db_file_name, feed_name, feed);
+
+		feed_index.insert_or_assign (feed_name, feed);
+
+		ns_data_read::rss_feed* feed_clone = &feed_index[feed_name];
+		feed_clone->revised_index_start = -1;
+		feed_clone->revised_index_end = -1;
+		feed_clone->last_index = 0;
+
+		feeds_articles.insert_or_assign (feed_name, std::vector<std::string>());
+	}
+
+	namespace ns = gautier_rss_win_main_headlines_frame;
+
+	if (is_insert == false) {
+		GtkWidget* tab = NULL;
+
+		int tab_i = ns::get_tab_contents_container_by_feed_name (GTK_NOTEBOOK (headlines_view), feed_name, &tab);
+
+		if (tab_i > -1 && tab) {
+			switch (status) {
+				case ns_data_read::rss_feed_mod_status::remove: {
+						gtk_widget_hide (tab);
+
+						make_user_note (feed_name + " DELETED.");
+
+						gtk_notebook_remove_page (GTK_NOTEBOOK (headlines_view), tab_i);
+
+						feed_index.erase (feed_name);
+						feeds_articles.erase (feed_name);
+
+						feed_changes.pop();
+					}
+					break;
+
+				case ns_data_read::rss_feed_mod_status::change: {
+						std::string row_id = std::to_string (row_id_now);
+
+						ns_data_read::rss_feed updated_feed;
+
+						ns_data_read::get_feed_by_row_id (db_file_name, row_id, updated_feed);
+
+						std::string updated_feed_name = updated_feed.feed_name;
+
+						if (updated_feed_name != feed_name) {
+							ns_data_read::rss_feed* feed_in_use = &feed_index[feed_name];
+
+							gtk_notebook_set_tab_label_text (GTK_NOTEBOOK (headlines_view), tab, updated_feed_name.data());
+							/*Only changing name -- other changes will be cached to another queue and processed as appropriate.*/
+							make_user_note (feed_name + " updated to " + updated_feed_name + ".");
+
+							feed_index.insert_or_assign (updated_feed_name, updated_feed);
+
+							ns_data_read::rss_feed* feed_clone = &feed_index[updated_feed_name];
+							feed_clone->last_index = feed_in_use->last_index;
+
+							feeds_articles.insert_or_assign (updated_feed_name, feeds_articles[feed_name]);
+
+							feed_index.erase (feed_name);
+							feeds_articles.erase (feed_name);
+						}
+
+						feed_changes.pop();
+					}
+					break;
+			}
+		}
+	} else if (is_insert) {
+		/*
+			INSERT New Tab - Download feed entries
+		*/
+		int tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
+
+		ns::add_headline_page (headlines_view, feed_name, tab_count + 1, headline_view_select_row);
+
+		tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
+
+		for (int tab_i = 0; tab_i < tab_count; tab_i++) {
+			GtkWidget* tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
+
+			if (tab == NULL) {
+				continue;
+			}
+
+			std::string tab_label = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
+
+			ns_data_read::rss_feed* feed_in_use = &feed_index[feed_name];
+
+			if (feed_in_use && feed_name == tab_label) {
+				std::string feed_url = feed_in_use->feed_url;
+				std::string retrieve_limit_hrs = feed_in_use->retrieve_limit_hrs;
+				std::string retention_days = feed_in_use->retention_days;
+
+				const int64_t in_use_count = ns_data_read::get_feed_headline_count (db_file_name, feed_name);
+
+				const long response_code = ns_data_write::update_rss_db_from_network (db_file_name, feed_name, feed_url,
+				                           retrieve_limit_hrs, retention_days);
+
+				const bool network_response_good = gautier_rss_data_read::is_network_response_ok (response_code);
+
+				if (network_response_good) {
+					ns_data_read::rss_feed feed_new;
+
+					ns_data_read::get_feed (db_file_name, feed_name, feed_new);
+
+					const bool new_updates = ns_data_read::check_feed_changed (*feed_in_use, feed_new);
+
+					if (new_updates && feed_in_use) {
+						const int64_t record_count = ns_data_read::get_feed_headline_count (db_file_name, feed_name);
+
+						if (record_count > in_use_count) {
+							const int64_t feed_index_start = in_use_count;
+							const int64_t feed_index_end = feed_index_start + (record_count - 1);
+
+							std::vector <std::string> headlines;
+
+							ns_data_read::get_feed_headlines (db_file_name, feed_name, headlines, false);
+
+							ns_rss_tabs::show_headlines (headlines_view, feed_name, feed_index_start, feed_index_end, headlines, true);
+
+							size_t feed_index_matches = feed_index.count (feed_name);
+
+							if (feed_index_matches < 1) {
+								feeds_articles.insert_or_assign (feed_name, headlines);
+							}
+						}
+					}
+				}
+
+				gtk_widget_show_all (tab);
+
+				break;
+			}
+		}
+
+		feed_changes.pop();
+	}
 
 	return;
 }
@@ -1182,6 +1370,15 @@ download_data()
 			Cycles through all the feeds to download, 1 at a time.
 		*/
 		for (ns_data_read::rss_feed feed : feeds) {
+			/*
+				Skip until next cycle if feed configuration
+				changes are pending. Configuration changes
+				take priority.
+			*/
+			if (feed_changes.size() > 0) {
+				break;
+			}
+
 			/*
 				End this thread if the user closes the program.
 			*/
