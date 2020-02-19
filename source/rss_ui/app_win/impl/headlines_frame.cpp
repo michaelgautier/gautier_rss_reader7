@@ -10,6 +10,8 @@ You should have received a copy of the GNU Lesser General Public License along w
 Author: Michael Gautier <michaelgautier.wordpress.com>
 */
 
+#include <iostream>
+
 #include "rss_ui/application.hpp"
 #include "rss_ui/app_win/headlines_frame.hpp"
 
@@ -103,6 +105,9 @@ void
 gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view, std::string feed_name,
         int64_t headline_index_start, int64_t headline_index_end, std::vector<std::string>& headlines, bool prepend)
 {
+	std::cout << __func__ << " " << feed_name << " index: \t" << headline_index_start << " to " <<
+	          headline_index_end << "\n";
+
 	/*
 		Tab Contents (in this case a scroll window containing a list box)
 
@@ -139,6 +144,8 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 			GtkListStore* list_store = GTK_LIST_STORE (list_model);
 
 			if (headline_index_start == 0) {
+				std::cout << __func__ << " " << feed_name << " LINE: " << __LINE__ << ", clear list\n";
+
 				gtk_list_store_clear (list_store);
 			}
 
@@ -147,6 +154,10 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 			gautier_rss_data_read::rss_article rss_data;
 
 			GtkTreeIter iter;
+
+			GtkTreeIter start_iter;
+
+			gboolean start_iter_is_valid = gtk_tree_model_get_iter_first (list_model, &start_iter);
 
 			for (int64_t i = headline_index_start; i <= headline_index_end && i < headlines_count_new; i++) {
 				std::string headline_text = headlines.at (i);
@@ -165,8 +176,8 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 				/*
 					Adds a new row in the Tree Model.
 				*/
-				if (prepend) {
-					gtk_list_store_prepend (list_store, &iter);
+				if (prepend && headline_index_start > 0 && start_iter_is_valid) {
+					gtk_list_store_insert_before (list_store, &iter, &start_iter);
 				} else {
 					gtk_list_store_append (list_store, &iter);
 				}
@@ -182,6 +193,10 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 				                    col_pos_article_date, article_date_data,
 				                    col_pos_article_url, article_url_data,
 				                    col_pos_stop);
+
+				if (prepend && headline_index_start > 0) {
+					start_iter_is_valid = gtk_tree_model_get_iter_first (list_model, &start_iter);
+				}
 			}
 		}
 	}
