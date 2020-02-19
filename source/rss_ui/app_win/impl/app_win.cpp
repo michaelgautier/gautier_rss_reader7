@@ -35,8 +35,15 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 namespace ns_data_read = gautier_rss_data_read;
 namespace ns_data_write = gautier_rss_data_write;
 
+/*Concurrency Control*/
+static
+bool shutting_down = false;
+
+static
+bool download_running = false;
+
 /*
-	RSS Concurrent Modification
+	RSS Data Index
 */
 static
 std::unordered_map<std::string, ns_data_read::rss_feed>
@@ -46,7 +53,14 @@ static
 std::unordered_map<std::string, std::vector<std::string>>
         feeds_articles;
 
-/*Start-up	Load first n lines*/
+/*
+	Start-up (1)	Load the first batch of lines
+	This is what produces a responsive UI on start-up when the
+	size of the database exceeds what can be initially shown.
+*/
+static void
+populate_rss_tabs();
+
 static
 guint
 notebook_concurrent_init_interval_milliseconds = 120;
@@ -63,7 +77,12 @@ static
 gint
 next_notebook_tab_index = -1;
 
-/*Load new lines either following start-up or on database refresh (download)*/
+/*
+	Start-up (2)	Loads batches of lines unitl all lines are loaded
+	in each tab. This is calibrated to allow the end-user to operate the
+	UI while the program continues to saturate each tab with all available
+	information.
+*/
 static
 guint
 headlines_list_refresh_interval_milliseconds = 40;
@@ -76,7 +95,15 @@ static
 gint
 headlines_list_refresh_id = -1;
 
-/*Feed download checks	Most of this might disappear.*/
+/*
+	RSS Download
+
+	Retrieves new RSS information and updates the database.
+	Modifies the RSS Data Index to indicate the range of data uploaded.
+*/
+static void
+download_data();
+
 static int
 data_download_thread_wait_in_seconds = 6;
 
@@ -86,34 +113,19 @@ std::thread thread_download_data;
 static void
 initialize_data_threads();
 
-static void
-download_data_noop();
-
-static void
-download_data();
-
-static std::queue<ns_data_read::rss_feed_mod>
-feed_changes;
-
-static
-bool shutting_down = false;
-
-static
-bool download_running = false;
-
-/*Do not set to true unless testing.*/
-static
-bool pre_download_pause_enabled = false;
-
 static
 bool feed_expire_time_enabled = false;
 
-/*May evolve into a compile flag #define DIAG*/
-static
-bool diagnostics_enabled = false;
+/*RSS Modification*/
+static std::queue<ns_data_read::rss_feed_mod>
+feed_changes;
+
+extern "C"
+void
+manage_feeds_click (GtkButton* button, gpointer user_data);
 
 /*
-	Signal response functions.
+	RSS Tabs - Switch Handlers.
 */
 gulong headline_view_switch_page_signal_id = -1;
 
@@ -128,31 +140,34 @@ extern "C"
 void
 headline_view_select_row (GtkTreeSelection* tree_selection, gpointer user_data);
 
+/*
+	Main screen button operations.
+*/
 extern "C"
 void
 rss_operation_click (GtkButton* button, gpointer user_data);
 
-extern "C"
-void
-manage_feeds_click (GtkButton* button, gpointer user_data);
-
-/*
-	Operations.
-*/
 //C++ style enumeration.
 enum class
 rss_operation_enum
 {
 	view_article
 };
+
+static rss_operation_enum
+rss_op_view_article = rss_operation_enum::view_article;
+
+static void
+make_user_note (std::string note);
+
 /*
-	Session data.
+	Selected RSS Feed in a Tab
 */
 static ns_data_read::rss_article
 _feed_data;
 
 /*
-	Session UI data.
+	User Interface
 */
 static GtkWidget*
 headlines_view = NULL;
@@ -199,29 +214,21 @@ window_width = 0;
 static int
 window_height = 0;
 
-static rss_operation_enum
-rss_op_view_article = rss_operation_enum::view_article;
-
 static GtkWindow*
 win = NULL;
 
 static GtkWidget*
 layout_pane = NULL;
 
+static void
+layout_rss_view (GtkWidget* layout_pane, GtkWidget* headlines_view, GtkWidget* article_frame);
+
 /*
-	Application GUI Entry Point. The program starts here.
+	UI Window Construction
 */
 extern "C"
 void
 window_size_allocate (GtkWidget* widget, GdkRectangle* allocation, gpointer user_data);
-
-extern "C"
-void
-window_destroy (GtkWidget* window, gpointer user_data);
-
-extern "C"
-void
-window_destroy (GtkWidget* window, gpointer user_data);
 
 static void
 get_screen_dimensions (GtkWindow* window);
@@ -229,15 +236,17 @@ get_screen_dimensions (GtkWindow* window);
 static void
 set_window_attributes (GtkWidget* window, std::string title, int width, int height);
 
-static void
-layout_rss_view (GtkWidget* layout_pane, GtkWidget* headlines_view, GtkWidget* article_frame);
+/*
+	UI Window Shutdown
+*/
+extern "C"
+void
+window_destroy (GtkWidget* window, gpointer user_data);
 
-static void
-populate_rss_tabs();
 
-static void
-make_user_note (std::string note);
-
+/*
+	Application GUI Entry Point. The program starts here.
+*/
 void
 gautier_rss_win_main::create (
     GtkApplication* application, gpointer user_data)
