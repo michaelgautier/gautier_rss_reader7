@@ -11,6 +11,8 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 */
 
 #include <cctype>
+#include <iomanip>
+#include <sstream>
 
 #include "libxml/parser.h"
 #include "libxml/tree.h"
@@ -52,32 +54,28 @@ gautier_rss_data_parse::get_feed_lines (std::string& feed_data,
 	 */
 	LIBXML_TEST_VERSION
 
-	int xml_parse_options = (XML_PARSE_RECOVER |
-	                         XML_PARSE_NOERROR |
-	                         XML_PARSE_NOWARNING |
-	                         XML_PARSE_NOBLANKS |
-	                         XML_PARSE_NOCDATA);
-
 	/*parse the file and get the DOM */
-	int feed_data_size = feed_data.size();
+	std::string::size_type feed_data_size = feed_data.size();
 
-	doc = xmlParseMemory (feed_data.data(), feed_data_size);
+	if (feed_data.empty() == false) {
+		doc = xmlRecoverMemory (feed_data.data(), static_cast<int> (feed_data_size));
 
-	if (doc) {
-		/*Get the root element node */
-		root_element = xmlDocGetRootElement (doc);
+		if (doc) {
+			/*Get the root element node */
+			root_element = xmlDocGetRootElement (doc);
 
-		parse_rss_feed (root_element, feed_lines, nullptr);
+			parse_rss_feed (root_element, feed_lines, nullptr);
 
-		/*free the document */
-		xmlFreeDoc (doc);
+			/*free the document */
+			xmlFreeDoc (doc);
+		}
+
+		/*
+		 *Free the global variables that may
+		 *have been allocated by the parser.
+		 */
+		xmlCleanupParser();
 	}
-
-	/*
-	 *Free the global variables that may
-	 *have been allocated by the parser.
-	 */
-	xmlCleanupParser();
 
 	return;
 }
@@ -172,7 +170,16 @@ parse_rss_feed (xmlNode* parent_xml_node, std::vector<gautier_rss_data_read::rss
 
 		std::string node_name;
 
-		lower_case ((char*)xml_node->name, node_name);
+		std::string xml_value;
+		{
+			std::stringstream xml_text;
+
+			xml_text << xml_node->name;
+
+			xml_value = xml_text.str();
+		}
+
+		lower_case (xml_value.data(), node_name);
 
 		if (node_name == "item" || node_name == "entry") {
 			feed_lines.emplace_back (gautier_rss_data_read::rss_article());
@@ -231,10 +238,24 @@ get_xml_attr_value (xmlNode* xml_node, std::string attr_name, std::string& value
 		xmlAttr* attr = NULL;
 
 		for (attr = xml_node->properties; attr; attr = attr->next) {
-			std::string name = (char*)attr->name;
+			std::string name;
+
+			if (attr_name.empty() == false) {
+				std::stringstream xml_text;
+
+				xml_text << attr->name;
+
+				name = xml_text.str();
+			}
+
+			;
 
 			if (name == attr_name) {
-				value = (char*)xmlNodeGetContent (attr->children);
+				std::stringstream xml_text;
+
+				xml_text << xmlNodeGetContent (attr->children);
+
+				value = xml_text.str();
 
 				break;
 			}
@@ -257,7 +278,7 @@ lower_case (char* raw_text, std::string& new_text)
 	while (*raw_text != '\0') {
 		char character = *raw_text++;
 
-		new_text.push_back (std::tolower (character));
+		new_text.push_back (static_cast<char> (std::tolower (character)));
 	}
 
 	return;

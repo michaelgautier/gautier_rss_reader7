@@ -29,14 +29,14 @@ gautier_rss_data_read::is_feed_still_fresh (std::string db_file_name, std::strin
 	if (feed.feed_name.empty() == false) {
 		std::string current_date_time_utc = gautier_rss_util::get_current_date_time_utc();
 
-		int seconds_elapsed = gautier_rss_util::get_time_difference_in_seconds ("", feed.last_retrieved);
+		int_fast32_t seconds_elapsed = gautier_rss_util::get_time_difference_in_seconds ("", feed.last_retrieved);
 
-		int retrieve_limit_hrs = std::stoi (feed.retrieve_limit_hrs);
-		int retrieve_limit_min = retrieve_limit_hrs * 60;
-		int retrieve_limit_sec = retrieve_limit_min * 60;
+		int_fast32_t retrieve_limit_hrs = std::stoi (feed.retrieve_limit_hrs);
+		int_fast32_t retrieve_limit_min = retrieve_limit_hrs * 60;
+		int_fast32_t retrieve_limit_sec = retrieve_limit_min * 60;
 
-		int minutes_elapsed = seconds_elapsed / 60;
-		int hours_elapsed = minutes_elapsed / 60;
+		int_fast32_t minutes_elapsed = seconds_elapsed / 60;
+		int_fast32_t hours_elapsed = minutes_elapsed / 60;
 
 		if (time_message_stdout) {
 			std::cout << "Feed " << feed.feed_name << " (" << feed.feed_url << ")" << "\n";
@@ -59,11 +59,11 @@ gautier_rss_data_read::check_feed_changed (rss_feed& feed_old, rss_feed& feed_ne
 {
 	std::string old_feed_name = feed_old.feed_name;
 	std::string old_last_retrieved = feed_old.last_retrieved;
-	int old_article_count = feed_old.article_count;
+	int64_t old_article_count = feed_old.article_count;
 
 	std::string new_feed_name = feed_new.feed_name;
 	std::string new_last_retrieved = feed_new.last_retrieved;
-	int new_article_count = feed_new.article_count;
+	int64_t new_article_count = feed_new.article_count;
 
 	bool match_found_name = old_feed_name == new_feed_name;
 	bool match_not_found_last_retrieved = old_last_retrieved != new_last_retrieved;

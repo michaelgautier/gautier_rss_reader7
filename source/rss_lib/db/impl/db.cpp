@@ -88,8 +88,6 @@ gautier_rss_database::process_sql (sqlite3** db, std::string& sql_text,
                                    sql_parameter_list_type& sql_param_values,
                                    sql_rowset_type& rows)
 {
-	sql_rowset_type* tmp_rows = &rows;
-
 	sqlite3_stmt* sql_statement;
 
 	sqlite3_prepare_v2 (*db,  sql_text.data(),  -1,  &sql_statement,  NULL);

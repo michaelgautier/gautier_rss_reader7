@@ -328,7 +328,7 @@ gautier_rss_data_write::download_feeds (std::string& db_file_name, int_fast32_t 
 	for (ns_data_read::rss_feed feed_new : rss_feeds_new) {
 		std::string feed_name = feed_new.feed_name;
 		std::string last_retrieved = feed_new.last_retrieved;
-		int article_count = feed_new.article_count;
+		int64_t article_count = feed_new.article_count;
 
 		/*
 			Pause before download.
@@ -344,7 +344,7 @@ gautier_rss_data_write::download_feeds (std::string& db_file_name, int_fast32_t 
 		for (ns_data_read::rss_feed feed_old : rss_feeds_old) {
 			std::string snapshot_feed_name = feed_old.feed_name;
 			std::string snapshot_last_retrieved = feed_old.last_retrieved;
-			int snapshot_article_count = feed_old.article_count;
+			int64_t snapshot_article_count = feed_old.article_count;
 
 			bool match_found_name = feed_name == snapshot_feed_name;
 			bool match_not_found_last_retrieved = last_retrieved != snapshot_last_retrieved;
@@ -576,6 +576,10 @@ gautier_rss_data_write::update_rss_db_from_network (std::string db_file_name,
 void
 gautier_rss_data_write::de_initialize_db (std::string db_file_name)
 {
+	if (db_file_name.empty() == false) {
+		std::cout << "implement automatic vacuum\n";
+	}
+
 	ns_data_read::de_initialize_network();
 
 	return;

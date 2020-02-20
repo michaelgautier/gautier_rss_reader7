@@ -85,6 +85,13 @@ load_application_icon();
 int
 main (int argc, char** argv)
 {
+	if (argc > 0 && argv) {
+		/*
+			Ignore passed args and print a message instead.
+		*/
+		std::cout << "Gautier RSS Reader v7\n";
+	}
+
 	namespace ns_ui_app = gautier_rss_ui_app;
 
 	int status = 0;

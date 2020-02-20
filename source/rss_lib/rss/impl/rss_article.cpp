@@ -55,10 +55,10 @@ gautier_rss_data_read::indicates_html (std::string& text)
 {
 	bool probably_has_html = false;
 
-	size_t t1_pos = text.find ("</");
-	size_t t2_pos = text.find ("&lt;/");
-	size_t t3_pos = text.find ("/>");
-	size_t t4_pos = text.find ("/&gt;");
+	int_fast32_t t1_pos = text.find ("</");
+	int_fast32_t t2_pos = text.find ("&lt;/");
+	int_fast32_t t3_pos = text.find ("/>");
+	int_fast32_t t4_pos = text.find ("/&gt;");
 
 	if (t1_pos >= 0 || t2_pos >= 0 || t3_pos >= 0 || t4_pos >= 0) {
 		probably_has_html = true;

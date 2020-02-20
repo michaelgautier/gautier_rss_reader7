@@ -10,11 +10,17 @@ You should have received a copy of the GNU Lesser General Public License along w
 Author: Michael Gautier <michaelgautier.wordpress.com>
 */
 
+#include <iostream>
+
 #include "rss_ui/app_win/article_frame.hpp"
 
 void
 gautier_rss_win_main_article_frame:: initialize_article_frame (GtkWidget* article_frame)
 {
+	if (article_frame == NULL) {
+		std::cout << __func__ << " LINE: " << __LINE__ << "article_frame NULL\n";
+	}
+
 	return;
 }
 

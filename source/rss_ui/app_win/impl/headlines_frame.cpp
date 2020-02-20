@@ -57,9 +57,12 @@ gautier_rss_win_main_headlines_frame::initialize_headline_view (GtkWidget* headl
 	double monitor_width_d = monitor_width;
 	double monitor_width_part = 1.7;
 
-	headlines_section_width = monitor_width_d / monitor_width_part;
+	headlines_section_width = static_cast<int> ((monitor_width_d / monitor_width_part));
 
-	//int article_section_width = monitor_width - headlines_section_width;
+	int article_section_width = static_cast<int> ((monitor_width - headlines_section_width));
+
+	std::cout << "Optimal article section width: " << article_section_width << "\n";
+	std::cout << "NOTE - Monitor Height: " << monitor_height << "\n";
 
 	gtk_notebook_set_scrollable (GTK_NOTEBOOK (headlines_view), true);
 

@@ -232,7 +232,7 @@ gautier_rss_data_read::get_feed_article_summary (std::string db_file_name, std::
 int64_t
 gautier_rss_data_read::get_feed_headline_count (std::string db_file_name, std::string feed_name)
 {
-	int size = 0;
+	int64_t size = 0;
 
 	namespace ns_db = gautier_rss_database;
 
@@ -251,7 +251,7 @@ gautier_rss_data_read::get_feed_headline_count (std::string db_file_name, std::s
 	for (ns_db::sql_row_type row : rows) {
 		for (ns_db::sql_row_type::value_type field : row) {
 			if (field.first == "article_count") {
-				size = std::stoll (field.second);
+				size = static_cast<int64_t> (std::stoll (field.second));
 			}
 		}
 	}

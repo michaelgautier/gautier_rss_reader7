@@ -26,5 +26,5 @@ namespace gautier_rss_util {
 	//See SQLite documentation: SQL As Understood By SQLite - Date And Time Functions
 	int_fast32_t
 	get_time_difference_in_seconds (std::string date1, std::string date2);
-};
+}
 #endif
