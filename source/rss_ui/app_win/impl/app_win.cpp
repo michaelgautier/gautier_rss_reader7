@@ -407,9 +407,7 @@ gautier_rss_win_main::create (
 
 		int tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
 
-		if (tab_count > 0) {
-			next_notebook_tab_index = 0;
-		}
+		next_notebook_tab_index = 0;
 
 		/*Approximate ideal "perceptual" rate of load per tab based on max 100 items per tab.*/
 		notebook_concurrent_init_interval_milliseconds = ((tab_count + 2) * 100) / 10;
