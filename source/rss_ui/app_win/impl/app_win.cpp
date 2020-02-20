@@ -879,7 +879,11 @@ window_destroy (GtkWidget* window, gpointer user_data)
 	shutting_down = true;
 	download_running = false;
 
-	thread_download_data.join();
+	bool thread_instance_exists = thread_download_data.joinable();
+
+	if (thread_instance_exists) {
+		thread_download_data.join();
+	}
 
 	/*
 		These use GObject explicit ref counting.
