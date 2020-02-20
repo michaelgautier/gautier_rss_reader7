@@ -455,7 +455,7 @@ gautier_rss_win_main::create (
 /*
 	Window and Screen
 */
-void
+static void
 get_screen_dimensions (GtkWindow* window)
 {
 	GdkScreen* screen = gtk_window_get_screen (window);
@@ -478,7 +478,7 @@ get_screen_dimensions (GtkWindow* window)
 	return;
 }
 
-void
+static void
 set_window_attributes (GtkWidget* window, std::string title, int width, int height)
 {
 	gtk_window_set_title (GTK_WINDOW (window), title.data());
@@ -488,7 +488,7 @@ set_window_attributes (GtkWidget* window, std::string title, int width, int heig
 	return;
 }
 
-void
+static void
 layout_rss_view (GtkWidget* window_layout, GtkWidget* rss_tabs, GtkWidget* articles_layout)
 {
 	namespace ns_rss_tabs = gautier_rss_win_main_headlines_frame;
