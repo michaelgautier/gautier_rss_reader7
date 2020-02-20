@@ -1314,7 +1314,7 @@ download_data()
 
 			if (clock_still_running) {
 				if (allow_time_output) {
-					std::cout << __func__ << ", LINE: " << __LINE__ << ";\t\t\t\HOLD for " << wait_time_in_seconds << "s.\n";
+					std::cout << __func__ << ", LINE: " << __LINE__ << ";\t\t\tHOLD for " << wait_time_in_seconds << "s.\n";
 				}
 
 				continue;
