@@ -11,6 +11,7 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 */
 
 #include <iostream>
+#include <map>
 
 #include "rss_ui/application.hpp"
 #include "rss_ui/rss_manage/rss_manage.hpp"
@@ -27,8 +28,21 @@ win = NULL;
 static GtkWindow*
 parent_win = NULL;
 
-static std::queue<gautier_rss_data_read::rss_feed_mod>*
+static std::queue<gautier_rss_data_read::rss_feed_mod>
 feed_changes;
+
+static
+std::unordered_map<std::string, gautier_rss_data_read::rss_feed> feed_model_original;
+
+static
+std::unordered_map<std::string, gautier_rss_data_read::rss_feed> feed_model_updated;
+
+static
+gautier_rss_win_rss_manage::feed_mod_cb_type* feed_mod_cb;
+
+static
+void
+finalize_rss_modifications();
 
 static void
 create_window (GtkApplication* app, GtkWindow* parent, int window_width, int window_height);
@@ -44,36 +58,36 @@ namespace ns_write = gautier_rss_data_write;
 /*
 	RSS Table
 */
-static int64_t
-row_id_before = 0;
-
-static int64_t
-row_id_now = 0;
-
-static int
+static const int
 col_pos_feed_name = 0;
 
-static int
+static const int
 col_pos_feed_article_count = 1;
 
-static int
+static const int
 col_pos_feed_retrieved = 2;
 
-static int
+static const int
 col_pos_feed_retention_days = 3;
 
-static int
+static const int
 col_pos_feed_retrieve_limit_hrs = 4;
 
-static int
+static const int
 col_pos_feed_webaddress = 5;
 
-static int
+static const int
+col_pos_feed_rowid = 6;
+
+static const int
 col_pos_stop = -1;
 
 extern "C"
 void
 rss_tree_view_selected (GtkTreeSelection* tree_selection, gpointer user_data);
+
+static gulong
+rss_tree_view_selected_signal_id = -1;
 
 static void
 layout_rss_tree_view (GtkWidget* rss_tree_view);
@@ -87,6 +101,9 @@ select_rss_tree_row_by_rss_url (std::string rss_url);
 static GtkWidget* rss_tree_view;
 static GtkListStore* list_store;
 static GtkTreeSelection* rss_tree_selection_manager;
+
+static int64_t
+feed_row_id = -1;
 
 /*
 	Update Button
@@ -164,16 +181,85 @@ feed_url_deleted (GtkEntryBuffer* buffer, guint position, guint n_chars, gpointe
 static void
 check_feed_keys (GtkEntryBuffer* feed_name_buffer, GtkEntryBuffer* feed_url_buffer);
 
+static bool
+validate_values (const std::string feed_name, const std::string feed_url, const std::string retrieve_limit_hrs,
+                 const std::string retention_days);
+
 /*
 	RSS configuration options.
 */
 static GtkWidget* feed_refresh_interval;
 static GtkWidget* feed_retention_option;
 
+/*
+	UI Window Shutdown
+*/
+extern "C"
 void
-gautier_rss_win_rss_manage::set_modification_queue (std::queue<gautier_rss_data_read::rss_feed_mod>* updates)
+rss_manage_window_destroy (GtkWidget* window, gpointer user_data);
+
+/*
+	RSS Modification Operations
+*/
+static void
+modify_feed (gautier_rss_data_read::rss_feed* feed, const std::string feed_name, const std::string feed_url,
+             const std::string retrieve_limit_hrs, const std::string retention_days);
+
+static void
+update_feed_config (const std::string feed_name, const std::string feed_url,
+                    const std::string retrieve_limit_hrs, const std::string retention_days);
+
+static void
+delete_feed (const std::string feed_url);
+
+/*
+	RSS Feed Retrieval
+*/
+static bool
+check_feed_exist_by_url (std::unordered_map<std::string, gautier_rss_data_read::rss_feed> feed_model,
+                         const std::string feed_url);
+
+static int64_t
+get_feed_count_by_name (std::unordered_map<std::string, gautier_rss_data_read::rss_feed> feed_model,
+                        const std::string feed_name);
+
+static void
+check_feed_rowid_match_name_url (std::unordered_map<std::string, gautier_rss_data_read::rss_feed> feed_model,
+                                 const std::string feed_name, const std::string feed_url, int64_t& rowid_to_name, int64_t& rowid_to_url);
+
+/*
+	RSS Management Entry Points
+*/
+void
+gautier_rss_win_rss_manage::set_feed_model (std::unordered_map<std::string, gautier_rss_data_read::rss_feed>
+        feed_model)
 {
-	feed_changes = updates;
+	const std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
+
+	for (std::pair<std::string, gautier_rss_data_read::rss_feed> feed_entry : feed_model) {
+		const std::string feed_url = feed_entry.second.feed_url;
+
+		const std::string row_id_text = gautier_rss_data_read::get_row_id (db_file_name, feed_url);
+		const int64_t row_id = std::stoll (row_id_text);
+
+		feed_model_original.try_emplace (feed_url, gautier_rss_data_read::rss_feed());
+		feed_model_updated.try_emplace (feed_url, gautier_rss_data_read::rss_feed());
+
+		gautier_rss_data_read::rss_feed* feed_original = &feed_model_original[feed_url];
+		gautier_rss_data_read::rss_feed* feed_updated = &feed_model_updated[feed_url];
+
+		feed_entry.second.row_id = row_id;
+
+		gautier_rss_data_read::copy_feed (&feed_entry.second, feed_original);
+		gautier_rss_data_read::copy_feed (&feed_entry.second, feed_updated);
+	}
+
+	return;
+}
+
+void
+gautier_rss_win_rss_manage::set_modification_callback (feed_mod_cb_type* feed_mod_callback)
+{
 
 	return;
 }
@@ -225,7 +311,8 @@ gautier_rss_win_rss_manage::show_dialog (GtkApplication* app, GtkWindow* parent,
 	gtk_widget_set_size_request (rss_tree_view, -1, window_height * 2);
 	rss_tree_selection_manager = gtk_tree_view_get_selection (GTK_TREE_VIEW (rss_tree_view));
 	gtk_tree_selection_set_mode (rss_tree_selection_manager, GTK_SELECTION_SINGLE);
-	g_signal_connect (rss_tree_selection_manager, "changed", G_CALLBACK (rss_tree_view_selected), NULL);
+	rss_tree_view_selected_signal_id = g_signal_connect (rss_tree_selection_manager, "changed",
+	                                   G_CALLBACK (rss_tree_view_selected), NULL);
 
 	GtkWidget* scroll_win = gtk_scrolled_window_new (NULL, NULL);
 	gtk_widget_set_valign (scroll_win, GTK_ALIGN_FILL);
@@ -298,6 +385,21 @@ create_window (GtkApplication* app, GtkWindow* parent, int window_width, int win
 	gtk_window_set_default_size (win, win_width, win_height);
 	gtk_window_set_position (win, GTK_WIN_POS_CENTER_ALWAYS);
 
+	return;
+}
+
+/*
+	Finalization
+*/
+void
+rss_manage_window_destroy (GtkWidget* window, gpointer user_data)
+{
+	return;
+}
+
+void
+finalize_rss_modifications()
+{
 	return;
 }
 
@@ -412,114 +514,7 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 void
 update_configuration_click (GtkButton* button, gpointer user_data)
 {
-	if (button) {
-		if (user_data) {
-			std::cout << __func__ << " called with user_data\n";
-		}
 
-		std::string db_file_name = ns_app::get_db_file_name();
-
-		std::string feed_name = gtk_entry_get_text (GTK_ENTRY (feed_name_entry));
-		std::string feed_url = gtk_entry_get_text (GTK_ENTRY (feed_url_entry));
-
-		std::string old_feed_name = feed_name;
-
-		int retrieve_limit = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (feed_refresh_interval));
-
-		std::string retrieve_limit_hrs = std::to_string (retrieve_limit);
-		std::string retention_days;
-
-		std::string active_id = gtk_combo_box_get_active_id (GTK_COMBO_BOX (feed_retention_option));
-
-		int64_t retention_id = static_cast<int64_t> (std::stoll (active_id));
-
-		switch (retention_id) {
-			case 1:
-				retention_days = "-1";
-				break;
-
-			case 2:
-				retention_days = "7";
-				break;
-
-			case 3:
-				retention_days = "1";
-				break;
-		}
-
-		if (feed_name.empty() == false && feed_url.empty() == false) {
-			bool changed = false;
-			bool added = false;
-
-			std::string existing_row_id = ns_read::get_row_id (db_file_name, feed_url);
-
-			if (row_id_now > 0) {
-				std::string row_id = std::to_string (row_id_now);
-
-				ns_read::rss_feed old_feed;
-
-				/*
-					Compare the existing database snapshot of the feed to the proposed changes.
-					Only update the database if there is a change.
-				*/
-				ns_read::get_feed_by_row_id (db_file_name, row_id, old_feed);
-
-				if (old_feed.feed_name != feed_name ||
-				        old_feed.feed_url != feed_url ||
-				        old_feed.retrieve_limit_hrs != retrieve_limit_hrs ||
-				        old_feed.retention_days != retention_days) {
-					changed = (existing_row_id.empty() == true || existing_row_id == row_id);
-
-					old_feed_name = old_feed.feed_name;
-				}
-
-				/*
-					Block duplicate feed url.
-					Existing_Row_Id can be empty if the url doesn't exist in the database.
-					Otherwise, it should be the same url.
-				*/
-				if (changed) {
-					ns_write::update_feed_config (db_file_name, row_id, feed_name, feed_url, retrieve_limit_hrs, retention_days);
-				} else {
-					std::cout << "EXISTING rss data changed. Failed update due to failed duplicate url check\n";
-				}
-			} else {
-				/*
-					Block duplicate feed url
-				*/
-				if (existing_row_id.empty() == true) {
-					ns_write::set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
-
-					added = true;
-				} else {
-					std::cout << "NEW rss data. Failed insert due to failed duplicate url check\n";
-				}
-			}
-
-			existing_row_id = ns_read::get_row_id (db_file_name, feed_url);
-
-			if ((changed || added) && existing_row_id.empty() == false) {
-				feed_changes->emplace (ns_read::rss_feed_mod());
-
-				ns_read::rss_feed_mod* modification = &feed_changes->back();
-
-				modification->status = ns_read::rss_feed_mod_status::none;
-				modification->feed_name = feed_name;
-				modification->row_id = std::stoll (existing_row_id);
-
-				if (changed) {
-					modification->feed_name = old_feed_name;
-					modification->status = ns_read::rss_feed_mod_status::change;
-				} else if (added) {
-					modification->status = ns_read::rss_feed_mod_status::insert;
-				}
-
-				populate_rss_tree_view (rss_tree_view);
-
-				select_rss_tree_row_by_rss_url (feed_url);
-			}
-		}
-	}
 
 	return;
 }
@@ -527,47 +522,7 @@ update_configuration_click (GtkButton* button, gpointer user_data)
 void
 delete_configuration_click (GtkButton* button, gpointer user_data)
 {
-	if (button) {
-		if (user_data) {
-			std::cout << __func__ << " called with user_data\n";
-		}
 
-		if (row_id_now > 0) {
-			std::string db_file_name = ns_app::get_db_file_name();
-
-			ns_read::rss_feed feed;
-
-			/*
-				Need the feed info as stored in the database.
-			*/
-			std::string row_id = std::to_string (row_id_now);
-
-			ns_read::get_feed_by_row_id (db_file_name, row_id, feed);
-
-			ns_write::delete_feed (db_file_name, feed.feed_url);
-
-			/*
-				Make sure it is deleted before invalidating the UI.
-			*/
-			std::string existing_row_id = ns_read::get_row_id (db_file_name, feed.feed_url);
-
-			if (existing_row_id.empty() == true) {
-				feed_changes->emplace (ns_read::rss_feed_mod());
-
-				ns_read::rss_feed_mod* modification = &feed_changes->back();
-
-				modification->status = ns_read::rss_feed_mod_status::none;
-				modification->feed_name = feed.feed_name;
-				modification->row_id = -1;
-
-				modification->status = ns_read::rss_feed_mod_status::remove;
-
-				populate_rss_tree_view (rss_tree_view);
-
-				reset_data_entry();
-			}
-		}
-	}
 
 	return;
 }
@@ -616,13 +571,14 @@ layout_rss_tree_view (GtkWidget* tree_view)
 		/*
 			Tree Model to describe the columns
 		*/
-		list_store = gtk_list_store_new (6 /*6 columns*/,
+		list_store = gtk_list_store_new (7 /*7 columns*/,
 		                                 G_TYPE_STRING,/*feed name*/
 		                                 G_TYPE_STRING,/*article count*/
 		                                 G_TYPE_STRING,/*last retrieved*/
 		                                 G_TYPE_STRING,/*retention in days*/
 		                                 G_TYPE_STRING,/*retrieve limit*/
-		                                 G_TYPE_STRING /*web url*/);
+		                                 G_TYPE_STRING,/*web url*/
+		                                 G_TYPE_STRING /*row_id*/);
 
 		/*
 			Column: Feed Name
@@ -687,66 +643,7 @@ layout_rss_tree_view (GtkWidget* tree_view)
 void
 populate_rss_tree_view (GtkWidget* tree_view)
 {
-	if (tree_view) {
-		gtk_list_store_clear (list_store);
 
-		row_id_before = 0;
-		row_id_now = 0;
-
-		GtkTreeIter iter;
-
-		/*
-			Make a row for each feed/url
-		*/
-		std::vector<ns_read::rss_feed> feed_info;
-
-		/*
-			std::string feed_name;
-			std::string feed_url;
-			std::string last_retrieved;
-		*/
-
-		std::string db_file_name = ns_app::get_db_file_name();
-
-		ns_read::get_feeds (db_file_name, feed_info);
-
-		for (ns_read::rss_feed feed : feed_info) {
-			gchar* feed_name = feed.feed_name.data();
-			gchar* article_count = std::to_string (feed.article_count).data();
-			gchar* last_retrieved = feed.last_retrieved.data();
-			gchar* retrieve_limit_hrs = feed.retrieve_limit_hrs.data();
-			gchar* feed_url = feed.feed_url.data();
-
-			std::string retention_period;
-
-			int retention_days = std::stoi (feed.retention_days);
-
-			if (retention_days == 1) {
-				retention_period = "1 day";
-			} else if (retention_days == 7) {
-				retention_period = "7 days";
-			} else {
-				retention_period = "Forever";
-			}
-
-			/*
-				Adds a new row in the Tree Model.
-			*/
-			gtk_list_store_append (list_store, &iter);
-
-			/*
-				Links specific data to column positions in the row.
-			*/
-			gtk_list_store_set (list_store, &iter,
-			                    col_pos_feed_name, feed_name,
-			                    col_pos_feed_article_count, article_count,
-			                    col_pos_feed_retrieved, last_retrieved,
-			                    col_pos_feed_retention_days, retention_period.data(),
-			                    col_pos_feed_retrieve_limit_hrs, retrieve_limit_hrs,
-			                    col_pos_feed_webaddress, feed_url,
-			                    col_pos_stop);
-		}
-	}
 
 	return;
 }
@@ -782,81 +679,7 @@ select_rss_tree_row_by_rss_url (std::string rss_url)
 void
 rss_tree_view_selected (GtkTreeSelection* tree_selection, gpointer user_data)
 {
-	if (tree_selection) {
-		if (user_data) {
-			std::cout << __func__ << " called with user_data\n";
-		}
 
-
-		/*
-			GTK documentation says this will not work if the selection mode is GTK_SELECTION_MULTIPLE.
-		*/
-		GtkTreeModel* tree_model;
-		GtkTreeIter tree_iterator;
-
-		gtk_widget_set_sensitive (delete_configuration_button, false);
-
-		bool row_selected = gtk_tree_selection_get_selected (tree_selection, &tree_model, &tree_iterator);
-
-		row_id_before = row_id_now;
-		row_id_now = 0;
-
-		if (row_selected) {
-			gtk_button_set_label (GTK_BUTTON (update_configuration_button), "Update");
-
-			gchar* feed_name;
-			gchar* feed_url;
-			gchar* retrieve_limit_hrs;
-			gchar* retention_days;
-
-			gtk_tree_model_get (tree_model, &tree_iterator, col_pos_feed_name, &feed_name, -1);
-			gtk_tree_model_get (tree_model, &tree_iterator, col_pos_feed_webaddress, &feed_url, -1);
-			gtk_tree_model_get (tree_model, &tree_iterator, col_pos_feed_retrieve_limit_hrs, &retrieve_limit_hrs, -1);
-			gtk_tree_model_get (tree_model, &tree_iterator, col_pos_feed_retention_days, &retention_days, -1);
-
-			gtk_entry_set_text (GTK_ENTRY (feed_name_entry), feed_name);
-			gtk_entry_set_text (GTK_ENTRY (feed_url_entry), feed_url);
-			gtk_spin_button_set_value (GTK_SPIN_BUTTON (feed_refresh_interval), std::stoi (retrieve_limit_hrs));
-
-			std::string active_id;
-			std::string retention_days_text = retention_days;
-
-			if (retention_days_text == "Forever") {
-				//Forever
-				active_id = "1";
-			} else if (retention_days_text == "7 days") {
-				//1 day
-				active_id = "2";
-			} else if (retention_days_text == "1 day") {
-				//7 days
-				active_id = "3";
-			}
-
-			gboolean row_found = gtk_combo_box_set_active_id (GTK_COMBO_BOX (feed_retention_option), active_id.data());
-
-			if (row_found == false) {
-				gtk_combo_box_set_active_id (GTK_COMBO_BOX (feed_retention_option), "1");
-			}
-
-			std::string rss_url = feed_url;
-
-			if (rss_url.empty()) {
-				row_id_now = 0;
-			} else {
-				std::string db_file_name = ns_app::get_db_file_name();
-
-				std::string row_id = ns_read::get_row_id (db_file_name, rss_url);
-
-				if (row_id.empty() == false) {
-					row_id_now = static_cast<int64_t> (std::stoll (row_id));
-				}
-			}
-		} else if (row_id_before > 0) {
-			reset_data_entry();
-		}
-
-		gtk_widget_set_sensitive (delete_configuration_button, row_id_now > 0);
-	}
 
 	return;
 }
@@ -1003,3 +826,56 @@ check_feed_keys (GtkEntryBuffer* feed_name_buffer, GtkEntryBuffer* feed_url_buff
 	return;
 }
 
+static bool
+validate_values (const std::string feed_name, const std::string feed_url, const std::string retrieve_limit_hrs,
+                 const std::string retention_days)
+{
+	return false;
+}
+
+/*
+	RSS Feed Retrieval
+*/
+static bool
+check_feed_exist_by_url (std::unordered_map<std::string, gautier_rss_data_read::rss_feed> feed_model,
+                         const std::string feed_url)
+{
+	return false;
+}
+
+static int64_t
+get_feed_count_by_name (std::unordered_map<std::string, gautier_rss_data_read::rss_feed> feed_model,
+                        const std::string feed_name)
+{
+	return feed_count;
+}
+
+static void
+check_feed_rowid_match_name_url (std::unordered_map<std::string, gautier_rss_data_read::rss_feed> feed_model,
+                                 const std::string feed_name, const std::string feed_url, int64_t& rowid_to_name, int64_t& rowid_to_url)
+{
+	return;
+}
+
+/*
+	RSS Modification Operations
+*/
+static void
+modify_feed (gautier_rss_data_read::rss_feed* feed, const std::string feed_name, const std::string feed_url,
+             const std::string retrieve_limit_hrs, const std::string retention_days)
+{
+	return;
+}
+
+static void
+update_feed_config (const std::string feed_name, const std::string feed_url,
+                    const std::string retrieve_limit_hrs, const std::string retention_days)
+{
+	return;
+}
+
+static void
+delete_feed (const std::string feed_url)
+{
+	return;
+}
