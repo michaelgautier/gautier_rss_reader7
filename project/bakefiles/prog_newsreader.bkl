@@ -144,8 +144,8 @@
 
 		<cppflags>-pipe</cppflags>
 		<ldflags>-pipe</ldflags>
-		<cppflags>-Og</cppflags>
-		<ldflags>-Og</ldflags>
+		<cppflags>-O2</cppflags>
+		<ldflags>-O2</ldflags>
 		<ldflags>-flto</ldflags>
 		<cppflags>-ggdb</cppflags>
 		<ldflags>-ggdb</ldflags>
@@ -225,7 +225,8 @@
 		<cppflags>-Wformat-signedness</cppflags>
 		<cppflags>-Wformat-truncation=2</cppflags>
 		<cppflags>-Wlogical-op</cppflags>
-		<cppflags>-Wmaybe-uninitialized</cppflags>
+		<cppflags>-Wno-unused-function</cppflags>
+		<cppflags>-Wno-maybe-uninitialized</cppflags>
 		<cppflags>-Wmissing-profile</cppflags>
 		<cppflags>-Wparentheses</cppflags>
 		<cppflags>-Wpedantic</cppflags>

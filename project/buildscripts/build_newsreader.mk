@@ -57,7 +57,7 @@ GRESOURCES_CFLAGS = -I../source -c -std=c17 -pipe -O3 \
 	-D_FORTIFY_SOURCE=2 $(CPPFLAGS) $(CFLAGS)
 GRESOURCES_OBJECTS =  \
 	gresources_app_resources.o
-NEWSREADER_CXXFLAGS = -I../source -std=c++17 -pipe -Og -ggdb `pkg-config gtk+-3.0 \
+NEWSREADER_CXXFLAGS = -I../source -std=c++17 -pipe -O2 -ggdb `pkg-config gtk+-3.0 \
 	--cflags` `pkg-config webkit2gtk-4.0 --cflags` `pkg-config libxml-2.0 \
 	--cflags` `pkg-config gthread-2.0 --cflags` -D_FORTIFY_SOURCE=2 -DNDEBUG \
 	-fasynchronous-unwind-tables -fcf-protection=full \
@@ -69,8 +69,8 @@ NEWSREADER_CXXFLAGS = -I../source -std=c++17 -pipe -Og -ggdb `pkg-config gtk+-3.
 	-Wcatch-value=3 -Wconversion -Wdate-time -Wdisabled-optimization \
 	-Wdouble-promotion -Wduplicated-branches -Wduplicated-cond -Wextra \
 	-Wextra-semi -Wfloat-equal -Wformat=2 -Wformat-overflow=2 \
-	-Wformat-signedness -Wformat-truncation=2 -Wlogical-op \
-	-Wmaybe-uninitialized -Wmissing-profile -Wparentheses -Wpedantic \
+	-Wformat-signedness -Wformat-truncation=2 -Wlogical-op -Wno-unused-function \
+	-Wno-maybe-uninitialized -Wmissing-profile -Wparentheses -Wpedantic \
 	-Wplacement-new=2 -Wredundant-decls -Wshadow -Wstack-protector \
 	-Wstrict-overflow=5 -Wstringop-overflow=4 -Wstringop-truncation \
 	-Wsuggest-final-methods -Wsuggest-final-types -Wsuggest-override \
@@ -135,7 +135,7 @@ bin/libgresources.a: $(GRESOURCES_OBJECTS) bin ../source/rss_ui/app_style.css ..
 	$(RANLIB) $@
 
 bin/newsreader: $(NEWSREADER_OBJECTS) bin bin/libgresources.a
-	$(CXX) -o $@ $(NEWSREADER_OBJECTS)  gresources_app_resources.o -std=c++17 -pipe -Og -flto -ggdb -flinker-output=pie `pkg-config gtk+-3.0 --libs` `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `pkg-config webkit2gtk-4.0 --libs` `pkg-config libxml-2.0 --libs` `pkg-config gthread-2.0 --libs` $(LDFLAGS)
+	$(CXX) -o $@ $(NEWSREADER_OBJECTS)  gresources_app_resources.o -std=c++17 -pipe -O2 -flto -ggdb -flinker-output=pie `pkg-config gtk+-3.0 --libs` `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `pkg-config webkit2gtk-4.0 --libs` `pkg-config libxml-2.0 --libs` `pkg-config gthread-2.0 --libs` $(LDFLAGS)
 
 install_newsreader: bin/newsreader
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/bin
