@@ -71,3 +71,22 @@ gautier_rss_data_read::check_feed_changed (rss_feed& feed_old, rss_feed& feed_ne
 
 	return match_found_name && match_not_found_last_retrieved && increased_article_count;
 }
+
+void
+gautier_rss_data_read::copy_feed (rss_feed* feed_in, rss_feed* feed_out)
+{
+	if (feed_in && feed_out) {
+		feed_out->row_id = feed_in->row_id;
+		feed_out->feed_name = feed_in->feed_name;
+		feed_out->feed_url = feed_in->feed_url;
+		feed_out->last_retrieved = feed_in->last_retrieved;
+		feed_out->retrieve_limit_hrs = feed_in->retrieve_limit_hrs;
+		feed_out->retention_days = feed_in->retention_days;
+		feed_out->article_count = feed_in->article_count;
+		feed_out->last_index = feed_in->last_index;
+		feed_out->revised_index_start = feed_in->revised_index_start;
+		feed_out->revised_index_end = feed_in->revised_index_end;
+	}
+
+	return;
+}

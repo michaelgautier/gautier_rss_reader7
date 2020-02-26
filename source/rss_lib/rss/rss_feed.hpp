@@ -60,5 +60,7 @@ namespace gautier_rss_data_read {
 	bool
 	is_feed_still_fresh (std::string db_file_name, std::string feed_name, bool time_message_stdout);
 
+	void
+	copy_feed (rss_feed* feed_in, rss_feed* feed_out);
 }
 #endif
