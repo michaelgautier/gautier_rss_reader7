@@ -134,7 +134,7 @@ initialize_data_threads();
 static
 bool feed_expire_time_enabled = false;
 
-/*RSS Modification*/
+/*RSS Configuration Updates*/
 static std::queue<ns_data_read::rss_feed_mod>
 feed_changes;
 
@@ -157,10 +157,15 @@ static
 gint
 rss_feed_change_id = -1;
 
+static void
+synchronize_feeds_to_configuration (std::queue<ns_data_read::rss_feed_mod>& feed_modifications,
+                                    std::unordered_map<std::string, ns_data_read::rss_feed>& feed_model);
+
 /*
 	RSS Tabs - Switch Handlers.
 */
-gulong headline_view_switch_page_signal_id = -1;
+static gulong
+headline_view_switch_page_signal_id = -1;
 
 extern "C"
 void
@@ -414,7 +419,9 @@ gautier_rss_win_main::create (
 		next_notebook_tab_index = 0;
 
 		/*Approximate ideal "perceptual" rate of load per tab based on max 100 items per tab.*/
-		notebook_concurrent_init_interval_milliseconds = ((tab_count + 2) * 100) / 10;
+		const uint32_t divisor = 10;
+
+		notebook_concurrent_init_interval_milliseconds = ((tab_count + 2) * 100) / divisor;
 
 		notebook_concurrent_init_id = gdk_threads_add_timeout (notebook_concurrent_init_interval_milliseconds,
 		                              notebook_concurrent_init, headlines_view);
@@ -678,11 +685,31 @@ manage_feeds_click (GtkButton* button,
 			std::cout << __func__ << " called with user_data\n";
 		}
 
-		g_signal_handler_disconnect (headlines_view, headline_view_switch_page_signal_id);
+		gautier_rss_win_rss_manage::set_feed_model (feed_index);
+		gautier_rss_win_rss_manage::set_modification_callback (synchronize_feeds_to_configuration);
 
-		gautier_rss_win_rss_manage::set_modification_queue (&feed_changes);
 		gautier_rss_win_rss_manage::show_dialog (NULL, win, window_width, window_height);
+	}
 
+	return;
+}
+
+static void
+synchronize_feeds_to_configuration (std::queue<ns_data_read::rss_feed_mod>& feed_modifications,
+                                    std::unordered_map<std::string, ns_data_read::rss_feed>& feed_model)
+{
+	decltype (feed_changes)::size_type config_change_count = feed_modifications.size();
+	decltype (feed_changes)::size_type feed_model_change_count = feed_model.size();
+
+	bool config_changed = (config_change_count > 0);
+	bool feed_model_changed = (feed_model_change_count > 0);
+
+	if (config_changed && feed_model_changed) {
+		g_signal_handler_disconnect (headlines_view, headline_view_switch_page_signal_id);
+	}
+
+
+	if (config_changed && feed_model_changed) {
 		headline_view_switch_page_signal_id = g_signal_connect (headlines_view, "switch-page",
 		                                      G_CALLBACK (headline_view_switch_page), NULL);
 	}
@@ -693,8 +720,8 @@ manage_feeds_click (GtkButton* button,
 gboolean
 rss_feed_change (gpointer data)
 {
-	if (data) {
-		std::cout << __func__ << " called with user_data\n";
+	if (data == NULL) {
+		std::cout << __func__ << " called without user_data\n";
 	}
 
 	gboolean still_active = true;
@@ -967,8 +994,8 @@ notebook_concurrent_init (gpointer data)
 {
 	namespace ns_rss_tabs = gautier_rss_win_main_headlines_frame;
 
-	if (data) {
-		std::cout << __func__ << " called with user_data\n";
+	if (data == NULL) {
+		std::cout << __func__ << " called without user_data\n";
 	}
 
 	gboolean still_active = false;
@@ -1185,8 +1212,8 @@ headlines_list_insert (gpointer data)
 {
 	namespace ns_rss_tabs = gautier_rss_win_main_headlines_frame;
 
-	if (data) {
-		std::cout << __func__ << " called with user_data\n";
+	if (data == NULL) {
+		std::cout << __func__ << " called without user_data\n";
 	}
 
 	/*
