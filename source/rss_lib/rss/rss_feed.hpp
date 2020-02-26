@@ -32,6 +32,8 @@ namespace gautier_rss_data_read {
 			/*SQLite uses 64-bit signed integer keys*/
 			int64_t article_count;
 
+			int64_t row_id;
+
 			/*
 				Set operations
 
