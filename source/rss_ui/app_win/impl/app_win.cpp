@@ -145,18 +145,6 @@ manage_feeds_click (GtkButton* button, gpointer user_data);
 static void
 process_rss_feed_configuration (ns_data_read::rss_feed_mod& modification);
 
-static
-guint
-rss_feed_change_interval_milliseconds = 4400;
-
-extern "C"
-gboolean
-rss_feed_change (gpointer data);
-
-static
-gint
-rss_feed_change_id = -1;
-
 static void
 synchronize_feeds_to_configuration (std::queue<ns_data_read::rss_feed_mod>& feed_modifications,
                                     std::unordered_map<std::string, ns_data_read::rss_feed>& feed_model);
@@ -453,9 +441,6 @@ gautier_rss_win_main::create (
 
 	gtk_widget_show_all (window);
 
-	rss_feed_change_id = gdk_threads_add_timeout (rss_feed_change_interval_milliseconds, rss_feed_change,
-	                     headlines_view);
-
 	return;
 }
 
@@ -698,6 +683,8 @@ static void
 synchronize_feeds_to_configuration (std::queue<ns_data_read::rss_feed_mod>& feed_modifications,
                                     std::unordered_map<std::string, ns_data_read::rss_feed>& feed_model)
 {
+	feed_changes = feed_modifications;
+
 	decltype (feed_changes)::size_type config_change_count = feed_modifications.size();
 	decltype (feed_changes)::size_type feed_model_change_count = feed_model.size();
 
@@ -708,27 +695,9 @@ synchronize_feeds_to_configuration (std::queue<ns_data_read::rss_feed_mod>& feed
 		g_signal_handler_disconnect (headlines_view, headline_view_switch_page_signal_id);
 	}
 
-
-	if (config_changed && feed_model_changed) {
-		headline_view_switch_page_signal_id = g_signal_connect (headlines_view, "switch-page",
-		                                      G_CALLBACK (headline_view_switch_page), NULL);
-	}
-
-	return;
-}
-
-gboolean
-rss_feed_change (gpointer data)
-{
-	if (data == NULL) {
-		std::cout << __func__ << " called without user_data\n";
-	}
-
-	gboolean still_active = true;
-
 	decltype (feed_changes)::size_type change_count = feed_changes.size();
 
-	if (change_count > 0) {
+	while (change_count > 0) {
 		ns_data_read::rss_feed_mod modification = feed_changes.front();
 
 		ns_data_read::rss_feed_mod_status status = modification.status;
@@ -736,9 +705,16 @@ rss_feed_change (gpointer data)
 		if (status != ns_data_read::rss_feed_mod_status::none) {
 			process_rss_feed_configuration (modification);
 		}
+
+		change_count = feed_changes.size();
 	}
 
-	return still_active;
+	if (config_changed && feed_model_changed) {
+		headline_view_switch_page_signal_id = g_signal_connect (headlines_view, "switch-page",
+		                                      G_CALLBACK (headline_view_switch_page), NULL);
+	}
+
+	return;
 }
 
 static void
