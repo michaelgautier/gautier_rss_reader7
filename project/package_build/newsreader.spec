@@ -1,5 +1,5 @@
 Name:           newsreader
-Version:        7.1.0
+Version:        7.2.0
 Release:        1%{?dist}
 Summary:        Ultra simple desktop feed reader
 
