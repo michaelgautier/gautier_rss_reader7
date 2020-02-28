@@ -748,7 +748,7 @@ populate_rss_tree_view (GtkWidget* tree_view)
 			std::string article_count_text = std::to_string (feed.article_count);
 			std::string row_id_text = std::to_string (feed.row_id);
 
-			gchar* feed_name = std::string (feed.feed_name).data();
+			gchar* feed_name = feed.feed_name.data();
 			gchar* article_count = article_count_text.data();
 			gchar* last_retrieved = feed.last_retrieved.data();
 			gchar* retrieve_limit_hrs = feed.retrieve_limit_hrs.data();
@@ -851,12 +851,11 @@ rss_tree_view_selected (GtkTreeSelection* tree_selection, gpointer user_data)
 			gtk_button_set_label (GTK_BUTTON (update_configuration_button), "Update");
 
 			std::string feed_name;
-			std::string article_count;
 			std::string last_retrieved;
 			std::string retention_days;
-			std::string retrieve_limit_hrs;
+			int_fast32_t retrieve_limit_hrs;
 			std::string feed_url;
-			std::string rowid;
+			int64_t rowid;
 
 			const gint column_count = gtk_tree_model_get_n_columns (tree_model);
 
@@ -868,37 +867,17 @@ rss_tree_view_selected (GtkTreeSelection* tree_selection, gpointer user_data)
 				const gchar* value = g_value_get_string (&gvalue);
 
 				if (i == col_pos_feed_name) {
-					feed_name = value;
-				} else if (i == col_pos_feed_article_count) {
-					article_count = value;
+					feed_name.insert (0, value);
 				} else if (i == col_pos_feed_retrieved) {
-					last_retrieved = value;
+					last_retrieved.insert (0, value);
 				} else if (i == col_pos_feed_retention_days) {
-					retention_days = value;
+					retention_days.insert (0, value);
 				} else if (i == col_pos_feed_retrieve_limit_hrs) {
-					std::string detail = value;
-					std::string::size_type count = detail.size();
-
-					for (std::string::size_type s_i = 0; s_i < count; s_i++) {
-						char character = detail.at (s_i);
-
-						if (std::isdigit (character)) {
-							retrieve_limit_hrs.push_back (static_cast<char> (character));
-						}
-					}
+					retrieve_limit_hrs = gautier_rss_util::convert_chars_to_number (value, -1);
 				} else if (i == col_pos_feed_webaddress) {
-					feed_url = value;
+					feed_url.insert (0, value);
 				} else if (i == col_pos_feed_rowid) {
-					std::string detail = value;
-					std::string::size_type count = detail.size();
-
-					for (std::string::size_type s_i = 0; s_i < count; s_i++) {
-						char character = detail.at (s_i);
-
-						if (std::isdigit (character)) {
-							rowid.push_back (static_cast<char> (character));
-						}
-					}
+					rowid = gautier_rss_util::convert_chars_to_number (value, -1);
 				}
 
 				g_value_unset (&gvalue);
@@ -913,11 +892,7 @@ rss_tree_view_selected (GtkTreeSelection* tree_selection, gpointer user_data)
 			gtk_entry_buffer_set_text (b1, feed_name.data(), -1);
 			gtk_entry_buffer_set_text (b2, feed_url.data(), -1);
 
-			std::string retrieve_limit_hrs_text = retrieve_limit_hrs;
-
-			if (retrieve_limit_hrs_text.empty() == false) {
-				gtk_spin_button_set_value (GTK_SPIN_BUTTON (feed_refresh_interval), std::stoi (retrieve_limit_hrs_text));
-			}
+			gtk_spin_button_set_value (GTK_SPIN_BUTTON (feed_refresh_interval), static_cast<gdouble> (retrieve_limit_hrs));
 
 			std::string active_id;
 			const std::string retention_days_text = retention_days;
@@ -940,11 +915,7 @@ rss_tree_view_selected (GtkTreeSelection* tree_selection, gpointer user_data)
 				gtk_combo_box_set_active_id (GTK_COMBO_BOX (feed_retention_option), "1");
 			}
 
-			const std::string row_id_text = rowid;
-
-			if (row_id_text.empty() == false) {
-				feed_row_id = std::stoll (row_id_text);
-			}
+			feed_row_id = rowid;
 
 			gtk_widget_set_sensitive (delete_configuration_button, row_selected);
 
