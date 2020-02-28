@@ -15,6 +15,7 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 #include <string>
 #include <cstdint>
+#include <charconv>
 
 namespace gautier_rss_util {
 	std::string
@@ -26,5 +27,34 @@ namespace gautier_rss_util {
 	//See SQLite documentation: SQL As Understood By SQLite - Date And Time Functions
 	int_fast32_t
 	get_time_difference_in_seconds (std::string date1, std::string date2);
+
+	void
+	convert_chars_to_lower_case_string (char* chars, std::string& str);
+
+	bool
+	convert_chars_to_string (const char* chars, std::string& str);
+
+	bool
+	convert_chars_to_int_string (const char* chars, std::string& str);
+
+	template<typename T> T
+	convert_chars_to_number (const char* chars, T default_error_value)
+	{
+		const std::string detail = chars;
+		const std::string::size_type char_count = detail.size();
+
+		T n = default_error_value;
+
+		std::from_chars_result res = std::from_chars (detail.data(), detail.data() + char_count, n);
+
+		if (res.ec == std::errc::invalid_argument || res.ec == std::errc::result_out_of_range) {
+			n = default_error_value;
+		}
+
+		return n;
+	}
+
+	//template int64_t convert_chars_to_number<int64_t>
+	//(const char* chars, int64_t default_error_value);
 }
 #endif

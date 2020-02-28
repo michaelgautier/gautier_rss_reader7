@@ -108,3 +108,61 @@ gautier_rss_util::get_current_date_time_local()
 
 	return datetime;
 }
+
+
+/*
+	LOWER CASE all characters.
+
+	Expects a null terminated string.
+
+	Converts all characters to lower case.
+*/
+void
+gautier_rss_util::convert_chars_to_lower_case_string (char* chars, std::string& str)
+{
+	const std::string detail = chars;
+	const std::string::size_type char_count = detail.size();
+
+	for (std::string::size_type char_index = 0; char_index < char_count; char_index++) {
+		const char character = detail.at (char_index);
+
+		str.push_back (static_cast<char> (std::tolower (character)));
+	}
+
+	return;
+}
+
+/*
+	Chars to Numeric
+*/
+bool
+gautier_rss_util::convert_chars_to_string (const char* chars, std::string& str)
+{
+	const std::string detail = chars;
+	const std::string::size_type char_count = detail.size();
+
+	for (std::string::size_type char_index = 0; char_index < char_count; char_index++) {
+		const char character = detail.at (char_index);
+
+		str.push_back (static_cast<char> (character));
+	}
+
+	return (str.empty() == false);
+}
+
+bool
+gautier_rss_util::convert_chars_to_int_string (const char* chars, std::string& str)
+{
+	const std::string detail = chars;
+	const std::string::size_type char_count = detail.size();
+
+	for (std::string::size_type char_index = 0; char_index < char_count; char_index++) {
+		const char character = detail.at (char_index);
+
+		if (std::isdigit (character)) {
+			str.push_back (static_cast<char> (character));
+		}
+	}
+
+	return (str.empty() == false);
+}
