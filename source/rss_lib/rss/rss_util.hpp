@@ -54,7 +54,39 @@ namespace gautier_rss_util {
 		return n;
 	}
 
-	//template int64_t convert_chars_to_number<int64_t>
-	//(const char* chars, int64_t default_error_value);
+	template<typename T> bool
+	is_numeric (const char* chars)
+	{
+		const std::string detail = chars;
+		const std::string::size_type char_count = detail.size();
+
+		bool is_valid_number_operation = true;
+		T n = -1;
+
+		std::from_chars_result res = std::from_chars (detail.data(), detail.data() + char_count, n);
+
+		if (res.ec == std::errc::invalid_argument || res.ec == std::errc::result_out_of_range) {
+			is_valid_number_operation = false;
+		}
+
+		return is_valid_number_operation;
+	}
+
+	template<typename T> bool
+	is_numeric (const std::string value)
+	{
+		const std::string::size_type char_count = value.size();
+
+		bool is_valid_number_operation = true;
+		T n = -1;
+
+		std::from_chars_result res = std::from_chars (value.data(), value.data() + char_count, n);
+
+		if (res.ec == std::errc::invalid_argument || res.ec == std::errc::result_out_of_range) {
+			is_valid_number_operation = false;
+		}
+
+		return is_valid_number_operation;
+	}
 }
 #endif
