@@ -30,8 +30,8 @@ namespace gautier_rss_data_read {
 	{
 		public:
 			std::string feed_name;
-			rss_feed_mod_status status;
-			int64_t row_id;
+			rss_feed_mod_status status = rss_feed_mod_status::none;
+			int64_t row_id = -1;
 	};
 }
 #endif

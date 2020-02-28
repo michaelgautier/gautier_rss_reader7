@@ -30,9 +30,9 @@ namespace gautier_rss_data_read {
 			std::string retention_days;
 
 			/*SQLite uses 64-bit signed integer keys*/
-			int64_t article_count;
+			int64_t article_count = 0;
 
-			int64_t row_id;
+			int64_t row_id = -1;
 
 			/*
 				Set operations
@@ -40,7 +40,7 @@ namespace gautier_rss_data_read {
 				last_index is used for application caching
 				and indexing strategies.
 			*/
-			int64_t last_index;
+			int64_t last_index = -1;
 
 			/*
 				Provides diff between what is likely loaded
@@ -49,8 +49,8 @@ namespace gautier_rss_data_read {
 				application access the start of the range of
 				new entries regardless of sort order.
 			*/
-			int64_t revised_index_start;
-			int64_t revised_index_end;
+			int64_t revised_index_start = -1;
+			int64_t revised_index_end = -1;
 	};
 
 	bool
