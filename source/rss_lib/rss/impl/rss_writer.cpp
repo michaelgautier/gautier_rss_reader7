@@ -577,7 +577,19 @@ void
 gautier_rss_data_write::de_initialize_db (std::string db_file_name)
 {
 	if (db_file_name.empty() == false) {
-		std::cout << "implement automatic vacuum\n";
+		std::string sql_text =
+		    "VACUUM;";
+
+		ns_db::sql_parameter_list_type params;
+
+		sqlite3* db = NULL;
+		ns_db::open_db (db_file_name, &db);
+
+		ns_db::sql_rowset_type rows;
+
+		ns_db::process_sql (&db, sql_text, params, rows);
+
+		ns_db::close_db (&db);
 	}
 
 	ns_data_read::de_initialize_network();
