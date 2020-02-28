@@ -638,9 +638,6 @@ reset_data_entry()
 	gtk_entry_buffer_delete_text (b1, 0, -1);
 	gtk_entry_buffer_delete_text (b2, 0, -1);
 
-	gtk_entry_buffer_set_text (b1, "", -1);
-	gtk_entry_buffer_set_text (b2, "", -1);
-
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (feed_refresh_interval), 1);
 	gtk_combo_box_set_active_id (GTK_COMBO_BOX (feed_retention_option), "1");
 
