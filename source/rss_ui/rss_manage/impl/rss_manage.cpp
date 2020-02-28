@@ -96,7 +96,7 @@ static void
 populate_rss_tree_view (GtkWidget* rss_tree_view);
 
 static void
-select_rss_tree_row_by_rss_url (std::string rss_url);
+select_rss_tree_row();
 
 static GtkWidget* rss_tree_view;
 static GtkListStore* list_store;
@@ -507,7 +507,7 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 		/*
 			Reset
 		*/
-		reset_configuration_button = gtk_button_new_with_label ("Reset");
+		reset_configuration_button = gtk_button_new_with_label ("Clear");
 		gautier_rss_ui_app::set_css_class (reset_configuration_button, "button");
 
 		gtk_widget_set_sensitive (reset_configuration_button, true);
@@ -580,7 +580,7 @@ update_configuration_click (GtkButton* button, gpointer user_data)
 			rss_tree_view_selected_signal_id = g_signal_connect (rss_tree_selection_manager, "changed",
 			                                   G_CALLBACK (rss_tree_view_selected), NULL);
 
-			select_rss_tree_row_by_rss_url (feed_url);
+			select_rss_tree_row();
 		}
 	}
 
@@ -591,8 +591,8 @@ void
 delete_configuration_click (GtkButton* button, gpointer user_data)
 {
 	if (button) {
-		if (user_data == NULL) {
-			std::cout << __func__ << " called without user_data\n";
+		if (user_data) {
+			std::cout << __func__ << " called with user_data\n";
 		}
 
 		const std::string feed_url = gtk_entry_get_text (GTK_ENTRY (feed_url_entry));
@@ -611,8 +611,8 @@ void
 reset_configuration_click (GtkButton* button, gpointer user_data)
 {
 	if (button) {
-		if (user_data == NULL) {
-			std::cout << __func__ << " called without user_data\n";
+		if (user_data != NULL) {
+			std::cout << __func__ << " called with user_data\n";
 		}
 
 		gint row_count = gtk_tree_selection_count_selected_rows (rss_tree_selection_manager);
@@ -632,8 +632,15 @@ reset_data_entry()
 {
 	gtk_widget_set_sensitive (delete_configuration_button, false);
 
-	gtk_entry_set_text (GTK_ENTRY (feed_name_entry), "");
-	gtk_entry_set_text (GTK_ENTRY (feed_url_entry), "");
+	GtkEntryBuffer* b1 = gtk_entry_get_buffer (GTK_ENTRY (feed_name_entry));
+	GtkEntryBuffer* b2 = gtk_entry_get_buffer (GTK_ENTRY (feed_url_entry));
+
+	gtk_entry_buffer_delete_text (b1, 0, -1);
+	gtk_entry_buffer_delete_text (b2, 0, -1);
+
+	gtk_entry_buffer_set_text (b1, "", -1);
+	gtk_entry_buffer_set_text (b2, "", -1);
+
 	gtk_spin_button_set_value (GTK_SPIN_BUTTON (feed_refresh_interval), 1);
 	gtk_combo_box_set_active_id (GTK_COMBO_BOX (feed_retention_option), "1");
 
@@ -789,26 +796,30 @@ populate_rss_tree_view (GtkWidget* tree_view)
 }
 
 void
-select_rss_tree_row_by_rss_url (std::string rss_url)
+select_rss_tree_row()
 {
-	if (rss_url.empty() == false) {
+	if (feed_row_id > 0) {
 		GtkTreeModel* tree_model = gtk_tree_view_get_model (GTK_TREE_VIEW (rss_tree_view));
 
 		GtkTreeIter tree_iterator;
 
-		gtk_tree_model_get_iter_first (tree_model, &tree_iterator);
+		gboolean iter_is_valid = gtk_tree_model_get_iter_first (tree_model, &tree_iterator);
 
-		while (gtk_tree_model_iter_next (tree_model, &tree_iterator)) {
-			gchar* feed_url;
+		while (iter_is_valid) {
+			gchar* row_id_chars;
 
-			gtk_tree_model_get (tree_model, &tree_iterator, col_pos_feed_webaddress, &feed_url, -1);
+			gtk_tree_model_get (tree_model, &tree_iterator, col_pos_feed_rowid, &row_id_chars, -1);
 
-			std::string rss_url_now = feed_url;
+			const std::string row_id_text = row_id_chars;
 
-			if (feed_url == rss_url) {
+			const int64_t id = std::stoll (row_id_text);
+
+			if (id == feed_row_id) {
 				gtk_tree_selection_select_iter (rss_tree_selection_manager, &tree_iterator);
 
 				break;
+			} else {
+				iter_is_valid = gtk_tree_model_iter_next (tree_model, &tree_iterator);
 			}
 		}
 	}
@@ -823,6 +834,8 @@ rss_tree_view_selected (GtkTreeSelection* tree_selection, gpointer user_data)
 
 	feed_row_id = -1;
 
+	gtk_button_set_label (GTK_BUTTON (reset_configuration_button), "Clear");
+
 	if (tree_selection) {
 		if (user_data != NULL) {
 			std::cout << __func__ << " called with user_data\n";
@@ -834,8 +847,6 @@ rss_tree_view_selected (GtkTreeSelection* tree_selection, gpointer user_data)
 		*/
 		GtkTreeModel* tree_model;
 		GtkTreeIter tree_iterator;
-
-		gtk_widget_set_sensitive (delete_configuration_button, false);
 
 		row_selected = gtk_tree_selection_get_selected (tree_selection, &tree_model, &tree_iterator);
 
@@ -937,14 +948,16 @@ rss_tree_view_selected (GtkTreeSelection* tree_selection, gpointer user_data)
 			if (row_id_text.empty() == false) {
 				feed_row_id = std::stoll (row_id_text);
 			}
+
+			gtk_widget_set_sensitive (delete_configuration_button, row_selected);
+
+			gtk_button_set_label (GTK_BUTTON (reset_configuration_button), "New");
 		}
 	}
 
 	if (row_selected == false) {
 		reset_data_entry();
 	}
-
-	gtk_widget_set_sensitive (delete_configuration_button, row_selected);
 
 	return;
 }
@@ -1143,23 +1156,39 @@ update_feed_config (const std::string feed_name, const std::string feed_url,
 		gautier_rss_data_read::rss_feed feed_to_update;
 
 		const int64_t id = feed_row_id;
-		const bool row_selected_is_orig = (id > 0);
 
-		if (row_selected_is_orig) {
-			for (std::pair<std::string, gautier_rss_data_read::rss_feed> feed_entry : feed_model_original) {
-				gautier_rss_data_read::rss_feed feed_item = feed_entry.second;
+		for (std::pair<std::string, gautier_rss_data_read::rss_feed> feed_entry : feed_model_original) {
+			gautier_rss_data_read::rss_feed feed_item = feed_entry.second;
 
-				if (feed_item.row_id == id) {
-					feed_name_original = feed_item.feed_name;
-					feed_url_original = feed_item.feed_url;
+			const std::string existing_url = feed_item.feed_url;
+			const int64_t existing_id = feed_item.row_id;
 
-					gautier_rss_data_read::copy_feed (&feed_item, &feed_to_update);
+			const bool name_eq = (feed_item.feed_name == feed_name);
+			const bool url_eq = (existing_url == feed_url);
 
-					break;
+			const bool feed_is_new = (id < 1);
+			const bool id_same = (existing_id == id);
+
+			/*This should ALWAYS be false; Added this check as a defensive safeguard.*/
+			const bool feed_new_is_orig_id = (feed_is_new && id_same && existing_id > 0);
+
+			if ((feed_new_is_orig_id == false) &&
+			        (id_same || (feed_is_new && url_eq) || (feed_is_new && name_eq))) {
+				feed_name_original = feed_item.feed_name;
+				feed_url_original = feed_item.feed_url;
+
+				gautier_rss_data_read::copy_feed (&feed_item, &feed_to_update);
+
+				/*
+					New feed entry but values match existing feed (in database).
+					Keep the existing id to preserve related data.
+				*/
+				if (feed_is_new) {
+					feed_row_id = id;
 				}
+
+				break;
 			}
-		} else {
-			feed_to_update.row_id = -1;
 		}
 
 		modify_feed (&feed_to_update, feed_name, feed_url, retrieve_limit_hrs, retention_days);
@@ -1184,30 +1213,42 @@ update_feed_config (const std::string feed_name, const std::string feed_url,
 		for (std::pair<std::string, gautier_rss_data_read::rss_feed> feed_entry : feed_model_updated) {
 			gautier_rss_data_read::rss_feed feed_item = feed_entry.second;
 
+			const std::string existing_url = feed_item.feed_url;
+			const int64_t existing_id = feed_item.row_id;
+
 			const bool name_eq = (feed_item.feed_name == feed_name);
-			const bool url_eq = (feed_item.feed_url == feed_url);
+			const bool url_eq = (existing_url == feed_url);
 
 			const bool feed_is_new = (id < 1);
-			const bool item_is_orig = (feed_item.row_id > 0);
+			const bool item_is_orig = (existing_id > 0);
+			const bool id_same = (existing_id == id);
 
 			if (name_eq || url_eq) {
 				/*
 					Feed entry to remove. Indicated by url.
 				*/
-				urls_to_invalidate.push_back (feed_item.feed_url);
+				urls_to_invalidate.push_back (existing_url);
 
 				/*
 					Preserve the row id.
 				*/
 				if (feed_is_new && item_is_orig) {
-					int64_t preserved_rowid = feed_item.row_id;
+					int64_t preserved_rowid = existing_id;
 
-					if (row_selected_is_orig) {
+					if (feed_is_new == false) {
 						preserved_rowid = id;
 					}
 
 					feed_to_update.row_id = preserved_rowid;
 				}
+			}
+
+			if (feed_is_new == false && id_same) {
+				/*
+					Feed entry to remove. Indicated by url.
+					Repopulate the entry after modifications are made.
+				*/
+				urls_to_invalidate.push_back (existing_url);
 			}
 		}
 
