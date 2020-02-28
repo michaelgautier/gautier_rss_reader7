@@ -18,9 +18,7 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include "libxml/tree.h"
 
 #include "rss_lib/rss_parse/feed_parse.hpp"
-
-static void
-lower_case (char* raw_text, std::string& new_text);
+#include "rss_lib/rss/rss_util.hpp"
 
 static void
 parse_rss_feed (xmlNode* parent_xml_node, std::vector<gautier_rss_data_read::rss_article>& feed_lines,
@@ -179,7 +177,7 @@ parse_rss_feed (xmlNode* parent_xml_node, std::vector<gautier_rss_data_read::rss
 			xml_value = xml_text.str();
 		}
 
-		lower_case (xml_value.data(), node_name);
+		gautier_rss_util::convert_chars_to_lower_case_string (xml_value.data(), node_name);
 
 		if (node_name == "item" || node_name == "entry") {
 			feed_lines.emplace_back (gautier_rss_data_read::rss_article());
@@ -260,25 +258,6 @@ get_xml_attr_value (xmlNode* xml_node, std::string attr_name, std::string& value
 				break;
 			}
 		}
-	}
-
-	return;
-}
-
-/*
-	LOWER CASE all characters.
-
-	Expects a null terminated string.
-
-	Converts all characters to lower case.
-*/
-void
-lower_case (char* raw_text, std::string& new_text)
-{
-	while (*raw_text != '\0') {
-		char character = *raw_text++;
-
-		new_text.push_back (static_cast<char> (std::tolower (character)));
 	}
 
 	return;
