@@ -226,6 +226,9 @@ void
 gautier_rss_win_rss_manage::set_feed_model (std::unordered_map<std::string, gautier_rss_data_read::rss_feed>
         feed_model)
 {
+	feed_model_original.clear();
+	feed_model_updated.clear();
+
 	const std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
 
 	for (std::pair<std::string, gautier_rss_data_read::rss_feed> feed_entry : feed_model) {
@@ -406,22 +409,116 @@ void
 finalize_rss_modifications()
 {
 	if (win && feed_mod_cb) {
-		/*
-			ns_write::update_feed_config (db_file_name, row_id, feed_name, feed_url, retrieve_limit_hrs, retention_days);
-			ns_write::set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
-			ns_write::delete_feed (db_file_name, feed.feed_url);
-		*/
+		std::string db_file_name = ns_app::get_db_file_name();
 
 		/*
 			Reduce feed changes down to actual changes.
 
 			Implement actual modifications.
 		*/
+		for (std::pair<std::string, gautier_rss_data_read::rss_feed> feed_entry : feed_model_updated) {
+			gautier_rss_data_read::rss_feed feed_item = feed_entry.second;
+
+			const int64_t row_id = feed_item.row_id;
+
+			const std::string feed_name = feed_item.feed_name;
+			const std::string feed_url = feed_item.feed_url;
+			const std::string retrieve_limit_hrs = feed_item.retrieve_limit_hrs;
+			const std::string retention_days = feed_item.retention_days;
+
+			/*
+				Compare the existing database snapshot of the feed to the proposed changes.
+				Only update the database if there is a change.
+			*/
+			if (row_id > 0) {
+				const std::string row_id_text = std::to_string (row_id);
+
+				ns_read::rss_feed old_feed;
+
+				ns_read::get_feed_by_row_id (db_file_name, row_id_text, old_feed);
+
+				const bool changed = (old_feed.feed_name != feed_name ||
+				                      old_feed.feed_url != feed_url ||
+				                      old_feed.retrieve_limit_hrs != retrieve_limit_hrs ||
+				                      old_feed.retention_days != retention_days);
+
+				if (changed) {
+					const std::string old_feed_name = old_feed.feed_name;
+
+					ns_write::update_feed_config (db_file_name, row_id_text, feed_name, feed_url, retrieve_limit_hrs,
+					                              retention_days);
+
+					feed_changes.emplace (ns_read::rss_feed_mod());
+
+					ns_read::rss_feed_mod* modification = &feed_changes.back();
+
+					modification->feed_name = old_feed_name;
+					modification->status = ns_read::rss_feed_mod_status::change;
+					modification->row_id = row_id;
+				}
+			}
+			/*
+				New feed metadata entry.
+			*/
+			else {
+				ns_write::set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
+
+				const std::string row_id_text = ns_read::get_row_id (db_file_name, feed_url);
+				const int64_t new_row_id = std::stoll (row_id_text);
+
+				if (new_row_id > 0) {
+					feed_changes.emplace (ns_read::rss_feed_mod());
+
+					ns_read::rss_feed_mod* modification = &feed_changes.back();
+
+					modification->status = ns_read::rss_feed_mod_status::insert;
+					modification->feed_name = feed_name;
+					modification->row_id = new_row_id;
+				}
+			}
+		}
+
+		/*
+			Deletions
+		*/
+		for (std::pair<std::string, gautier_rss_data_read::rss_feed> feed_entry : feed_model_original) {
+			gautier_rss_data_read::rss_feed feed_item_original = feed_entry.second;
+
+			bool exists_in_update = false;
+			const int64_t orig_rowid = feed_item_original.row_id;
+
+			for (std::pair<std::string, gautier_rss_data_read::rss_feed> feed_entry_updated : feed_model_updated) {
+				gautier_rss_data_read::rss_feed feed_item_update = feed_entry_updated.second;
+
+				const int64_t updt_rowid = feed_item_update.row_id;
+
+				exists_in_update = (orig_rowid == updt_rowid);
+
+				if (exists_in_update) {
+					break;
+				}
+			}
+
+			if (exists_in_update == false) {
+				ns_write::delete_feed (db_file_name, feed_item_original.feed_url);
+
+				feed_changes.emplace (ns_read::rss_feed_mod());
+
+				ns_read::rss_feed_mod* modification = &feed_changes.back();
+
+				modification->status = ns_read::rss_feed_mod_status::remove;
+				modification->feed_name = feed_item_original.feed_name;
+				modification->row_id = orig_rowid;
+			}
+		}
+
 		feed_mod_cb (feed_changes, feed_model_updated);
 	}
 
+	/*
+		Remove residual data
+	*/
 	feed_model_original.clear();
-	feed_model_updated.clear();
 
 	return;
 }
