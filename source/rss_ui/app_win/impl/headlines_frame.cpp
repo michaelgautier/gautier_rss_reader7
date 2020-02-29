@@ -108,8 +108,8 @@ void
 gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view, std::string feed_name,
         int64_t headline_index_start, int64_t headline_index_end, std::vector<std::string>& headlines, bool prepend)
 {
-	std::cout << __func__ << " " << feed_name << " index: \t" << headline_index_start << " to " <<
-	          headline_index_end << "\n";
+	std::cout << __func__ << " \t\t" << feed_name << " index from \t" << headline_index_start << " to " <<
+	          headline_index_end << " out of " << headlines.size() << "\n";
 
 	/*
 		Tab Contents (in this case a scroll window containing a list box)
