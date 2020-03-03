@@ -28,14 +28,14 @@ win = NULL;
 static GtkWindow*
 parent_win = NULL;
 
-static std::queue<gautier_rss_data_read::rss_feed_mod>
+static std::map<std::string, gautier_rss_data_read::rss_feed_mod>
 feed_changes;
 
 static
-std::unordered_map<std::string, gautier_rss_data_read::rss_feed> feed_model_original;
+std::map<std::string, gautier_rss_data_read::rss_feed> feed_model_original;
 
 static
-std::unordered_map<std::string, gautier_rss_data_read::rss_feed> feed_model_updated;
+std::map<std::string, gautier_rss_data_read::rss_feed> feed_model_updated;
 
 static
 gautier_rss_win_rss_manage::feed_mod_cb_type* feed_mod_cb;
@@ -216,15 +216,14 @@ delete_feed (const std::string feed_url);
 	RSS Feed Retrieval
 */
 static bool
-check_feed_exist_by_url (std::unordered_map<std::string, gautier_rss_data_read::rss_feed> feed_model,
+check_feed_exist_by_url (std::map<std::string, gautier_rss_data_read::rss_feed> feed_model,
                          const std::string feed_url);
 
 /*
 	RSS Management Entry Points
 */
 void
-gautier_rss_win_rss_manage::set_feed_model (std::unordered_map<std::string, gautier_rss_data_read::rss_feed>
-        feed_model)
+gautier_rss_win_rss_manage::set_feed_model (std::map<std::string, gautier_rss_data_read::rss_feed> feed_model)
 {
 	feed_model_original.clear();
 	feed_model_updated.clear();
@@ -448,9 +447,9 @@ finalize_rss_modifications()
 					ns_write::update_feed_config (db_file_name, row_id_text, feed_name, feed_url, retrieve_limit_hrs,
 					                              retention_days);
 
-					feed_changes.emplace (ns_read::rss_feed_mod());
+					feed_changes.insert_or_assign (old_feed_name, ns_read::rss_feed_mod());
 
-					ns_read::rss_feed_mod* modification = &feed_changes.back();
+					ns_read::rss_feed_mod* modification = &feed_changes[feed_name];
 
 					modification->feed_name = old_feed_name;
 					modification->status = ns_read::rss_feed_mod_status::change;
@@ -467,9 +466,9 @@ finalize_rss_modifications()
 				const int64_t new_row_id = std::stoll (row_id_text);
 
 				if (new_row_id > 0) {
-					feed_changes.emplace (ns_read::rss_feed_mod());
+					feed_changes.insert_or_assign (feed_name, ns_read::rss_feed_mod());
 
-					ns_read::rss_feed_mod* modification = &feed_changes.back();
+					ns_read::rss_feed_mod* modification = &feed_changes[feed_name];
 
 					modification->status = ns_read::rss_feed_mod_status::insert;
 					modification->feed_name = feed_name;
@@ -502,17 +501,19 @@ finalize_rss_modifications()
 			if (exists_in_update == false) {
 				ns_write::delete_feed (db_file_name, feed_item_original.feed_url);
 
-				feed_changes.emplace (ns_read::rss_feed_mod());
+				const std::string feed_name = feed_item_original.feed_name;
 
-				ns_read::rss_feed_mod* modification = &feed_changes.back();
+				feed_changes.insert_or_assign (feed_name, ns_read::rss_feed_mod());
+
+				ns_read::rss_feed_mod* modification = &feed_changes[feed_name];
 
 				modification->status = ns_read::rss_feed_mod_status::remove;
-				modification->feed_name = feed_item_original.feed_name;
+				modification->feed_name = feed_name;
 				modification->row_id = orig_rowid;
 			}
 		}
 
-		feed_mod_cb (feed_changes, feed_model_updated);
+		feed_mod_cb (feed_changes);
 	}
 
 	/*
@@ -1183,10 +1184,10 @@ validate_values (const std::string feed_name, const std::string feed_url, const 
 	RSS Feed Retrieval
 */
 static bool
-check_feed_exist_by_url (std::unordered_map<std::string, gautier_rss_data_read::rss_feed> feed_model,
+check_feed_exist_by_url (std::map<std::string, gautier_rss_data_read::rss_feed> feed_model,
                          const std::string feed_url)
 {
-	const std::unordered_map<int, int>::size_type feed_count = feed_model.count (feed_url);
+	const size_t feed_count = feed_model.count (feed_url);
 
 	return (feed_count > 0);
 }

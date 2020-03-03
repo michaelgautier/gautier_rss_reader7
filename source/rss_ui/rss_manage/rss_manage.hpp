@@ -15,18 +15,16 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 #include <gtk/gtk.h>
 
-#include <queue>
-#include <unordered_map>
+#include <map>
 
 #include "rss_lib/rss/rss_feed.hpp"
 #include "rss_lib/rss/rss_feed_mod.hpp"
 
 namespace gautier_rss_win_rss_manage {
-	using feed_mod_cb_type = void (std::queue<gautier_rss_data_read::rss_feed_mod>&,
-	                               std::unordered_map<std::string, gautier_rss_data_read::rss_feed>&);
+	using feed_mod_cb_type = void (std::map<std::string, gautier_rss_data_read::rss_feed_mod> feed_changes);
 
 	void
-	set_feed_model (std::unordered_map<std::string, gautier_rss_data_read::rss_feed> feed_model);
+	set_feed_model (std::map<std::string, gautier_rss_data_read::rss_feed> feed_model);
 
 	void
 	set_modification_callback (feed_mod_cb_type* feed_mod_callback);
