@@ -20,6 +20,7 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include <gtk/gtk.h>
 
 #include "rss_lib/rss/rss_reader.hpp"
+#include "rss_lib/rss/rss_article.hpp"
 
 namespace gautier_rss_win_main_headlines_frame {
 	void
@@ -31,7 +32,7 @@ namespace gautier_rss_win_main_headlines_frame {
 
 	void
 	show_headlines (GtkWidget* headlines_view, std::string feed_name, int64_t headline_index_start,
-	                int64_t headline_index_end, std::vector<std::string>& headlines, bool prepend);
+	                int64_t headline_index_end, std::vector<gautier_rss_data_read::rss_article>& headlines, bool prepend);
 
 	void
 	select_headline (gautier_rss_data_read::rss_article& rss_data, GtkTreeSelection* headline_row);

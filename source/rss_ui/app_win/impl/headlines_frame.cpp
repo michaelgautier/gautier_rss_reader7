@@ -106,17 +106,18 @@ gautier_rss_win_main_headlines_frame::add_headline_page (GtkWidget* headlines_vi
 
 void
 gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view, std::string feed_name,
-        int64_t headline_index_start, int64_t headline_index_end, std::vector<std::string>& headlines, bool prepend)
+        int64_t headline_index_start, int64_t headline_index_end,
+        std::vector<gautier_rss_data_read::rss_article>& headlines, bool prepend)
 {
 	std::cout << __func__ << " \t\t" << feed_name << " index from \t" << headline_index_start << " to " <<
-	          headline_index_end << " out of " << headlines.size() << "\n";
+	          headline_index_end << ", list contains " << headlines.size() << " articles\n";
 
 	/*
 		Tab Contents (in this case a scroll window containing a list box)
 
 		Tab > Scroll Window > List Box > individual labels (headlines)
 	*/
-	int64_t headlines_count_new = headlines.size();
+	const int64_t headlines_count_new = headlines.size();
 
 	if (headlines_count_new > -1) {
 		GtkWidget* headlines_list_view = NULL;
@@ -146,15 +147,11 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 			GtkTreeModel* list_model = gtk_tree_view_get_model (GTK_TREE_VIEW (headlines_list_view));
 			GtkListStore* list_store = GTK_LIST_STORE (list_model);
 
-			if (headline_index_start == 0) {
+			if (headline_index_start == 0 && prepend == false) {
 				std::cout << __func__ << " " << feed_name << " LINE: " << __LINE__ << ", clear list\n";
 
 				gtk_list_store_clear (list_store);
 			}
-
-			std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
-
-			gautier_rss_data_read::rss_article rss_data;
 
 			GtkTreeIter iter;
 
@@ -163,14 +160,10 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 			gboolean start_iter_is_valid = gtk_tree_model_get_iter_first (list_model, &start_iter);
 
 			for (int64_t i = headline_index_start; i <= headline_index_end && i < headlines_count_new; i++) {
-				std::string headline_text = headlines.at (i);
-
-				gautier_rss_data_read::get_feed_article_summary (db_file_name, feed_name,
-				        headline_text,
-				        rss_data);
+				gautier_rss_data_read::rss_article rss_data = headlines.at (i);
 
 				gchar* feed_name_data = feed_name.data();
-				gchar* headline_text_data = headline_text.data();
+				gchar* headline_text_data = rss_data.headline.data();
 				gchar* article_summary_data = rss_data.article_summary.data();
 				gchar* article_text_data = rss_data.article_text.data();
 				gchar* article_date_data = rss_data.article_date.data();
@@ -179,7 +172,7 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 				/*
 					Adds a new row in the Tree Model.
 				*/
-				if (prepend && headline_index_start > 0 && start_iter_is_valid) {
+				if (prepend && headline_index_start > -1 && start_iter_is_valid) {
 					gtk_list_store_insert_before (list_store, &iter, &start_iter);
 				} else {
 					gtk_list_store_append (list_store, &iter);
@@ -197,7 +190,7 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 				                    col_pos_article_url, article_url_data,
 				                    col_pos_stop);
 
-				if (prepend && headline_index_start > 0) {
+				if (prepend && headline_index_start > -1) {
 					start_iter_is_valid = gtk_tree_model_get_iter_first (list_model, &start_iter);
 				}
 			}
