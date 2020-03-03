@@ -53,7 +53,7 @@ gautier_rss_data_parse::get_feed_lines (std::string& feed_data,
 	LIBXML_TEST_VERSION
 
 	/*parse the file and get the DOM */
-	std::string::size_type feed_data_size = feed_data.size();
+	size_t feed_data_size = feed_data.size();
 
 	if (feed_data.empty() == false) {
 		doc = xmlRecoverMemory (feed_data.data(), static_cast<int> (feed_data_size));
