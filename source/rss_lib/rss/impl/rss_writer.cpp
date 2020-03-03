@@ -237,7 +237,7 @@ gautier_rss_data_write::delete_feed (std::string db_file_name,
 */
 void
 gautier_rss_data_write::set_feed_headline (std::string db_file_name,
-        gautier_rss_data_read::rss_article& article)
+        ns_data_read::rss_article& article)
 {
 	std::string sql_text =
 	    "INSERT INTO feeds_articles (feed_name, headline_text, article_summary, article_text, article_date, article_url)\
@@ -283,7 +283,8 @@ gautier_rss_data_write::set_feed_headline (std::string db_file_name,
 	Stores the feed data in the database.
 */
 void
-gautier_rss_data_write::update_rss_feeds (std::string db_file_name)
+gautier_rss_data_write::update_rss_feeds (std::string db_file_name,
+        std::map<std::string, std::vector<ns_data_read::rss_article>>& feed_data)
 {
 	std::vector<ns_data_read::rss_feed> rss_feeds;
 
@@ -295,33 +296,51 @@ gautier_rss_data_write::update_rss_feeds (std::string db_file_name)
 		std::string retrieve_limit_hrs = feed.retrieve_limit_hrs;
 		std::string retention_days = feed.retention_days;
 
-		update_rss_db_from_network (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
+		std::vector<ns_data_read::rss_article> articles;
+
+		update_rss_db_from_network (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days, articles);
+
+		feed_data[feed_name] = articles;
 	}
 
 	return;
 }
 
 /*
-	Primary RSS function, application-level.
+		Convenience RSS function, application-level.
 
-	Uses the get_feed_info update_rss_feeds functions to create a before and after snapshot.
-	The before and after snapshot is used to create a list containing only feeds that changed
-	since the last download. That way, the application only has to deal with modifications
-	instead of reprocessing all lines.
+		Best for batch and background processes. Not for use in a GUI.
 
-	Pass 0 to pause_interval_in_seconds unless you want a pause before download occurs.
+		Uses the get_feed_info update_rss_feeds functions to create a before and after snapshot.
+		The before and after snapshot is used to create a list containing only feeds that changed
+		since the last download. That way, the application only has to deal with modifications
+		instead of reprocessing all lines.
+
+		Pass 0 to pause_interval_in_seconds unless you want a pause before download occurs.
+
+		Includes articles downloaded for the updated feeds.
 */
 void
 gautier_rss_data_write::download_feeds (std::string& db_file_name, int_fast32_t pause_interval_in_seconds,
-                                        std::vector<std::pair<ns_data_read::rss_feed, ns_data_read::rss_feed>>& changed_feeds)
+                                        std::vector<std::pair<ns_data_read::rss_feed, ns_data_read::rss_feed>>& changed_feeds,
+                                        std::map<std::string, std::vector<ns_data_read::rss_article>> articles)
 {
 	std::vector<ns_data_read::rss_feed> rss_feeds_old;
 	std::vector<ns_data_read::rss_feed> rss_feeds_new;
 
 	ns_data_read::get_feeds (db_file_name, rss_feeds_old);
 
-	/*Automatically downloads feeds according to time limit for each feed.*/
-	update_rss_feeds (db_file_name);
+	/*
+		Automatically downloads feeds according to time limit for each feed.
+		Aborts the attempt if feed metadata is absent.
+	*/
+	if (rss_feeds_old.size() > 0) {
+		std::map<std::string, std::vector<ns_data_read::rss_article>> feeds_articles;
+
+		update_rss_feeds (db_file_name, feeds_articles);
+
+		articles = feeds_articles;
+	}
 
 	ns_data_read::get_feeds (db_file_name, rss_feeds_new);
 
@@ -455,7 +474,7 @@ gautier_rss_data_write::update_rss_xml_from_network (std::string db_file_name,
 
 	set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
-	bool is_feed_still_fresh = gautier_rss_data_read::is_feed_still_fresh (db_file_name, feed_name, false);
+	bool is_feed_still_fresh = ns_data_read::is_feed_still_fresh (db_file_name, feed_name, false);
 
 	if (is_feed_still_fresh == false) {
 		std::string feed_data;
@@ -498,7 +517,7 @@ gautier_rss_data_write::update_rss_xml_db_from_network (std::string db_file_name
 
 	set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
-	bool is_feed_still_fresh = gautier_rss_data_read::is_feed_still_fresh (db_file_name, feed_name, false);
+	bool is_feed_still_fresh = ns_data_read::is_feed_still_fresh (db_file_name, feed_name, false);
 
 	if (is_feed_still_fresh == false) {
 		std::string feed_data;
@@ -534,19 +553,22 @@ gautier_rss_data_write::update_rss_xml_db_from_network (std::string db_file_name
 	Visits the feed url.
 	Retrieves the data for the feed.
 	Stores the feed data in the database.
+
+	Provides an article download.
 */
 long
 gautier_rss_data_write::update_rss_db_from_network (std::string db_file_name,
         std::string feed_name,
         std::string feed_url,
         std::string retrieve_limit_hrs,
-        std::string retention_days)
+        std::string retention_days,
+        std::vector<ns_data_read::rss_article>& articles)
 {
 	long response_code = 0;
 
 	set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
-	bool is_feed_still_fresh = gautier_rss_data_read::is_feed_still_fresh (db_file_name, feed_name, false);
+	bool is_feed_still_fresh = ns_data_read::is_feed_still_fresh (db_file_name, feed_name, false);
 
 	if (is_feed_still_fresh == false) {
 		std::string feed_data;
@@ -568,6 +590,8 @@ gautier_rss_data_write::update_rss_db_from_network (std::string db_file_name,
 
 			set_feed_headline (db_file_name, article);
 		}
+
+		articles = feed_lines;
 	}
 
 	return response_code;

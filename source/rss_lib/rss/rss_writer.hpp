@@ -15,6 +15,7 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 #include <string>
 #include <vector>
+#include <map>
 #include <cstdint>
 
 #include "rss_article.hpp"
@@ -115,10 +116,13 @@ namespace gautier_rss_data_write {
 		Stores the feed data in the database.
 	*/
 	void
-	update_rss_feeds (std::string db_file_name);
+	update_rss_feeds (std::string db_file_name,
+	                  std::map<std::string, std::vector<gautier_rss_data_read::rss_article>>& feed_data);
 
 	/*
-		Primary RSS function, application-level.
+		Convenience RSS function, application-level.
+
+		Best for batch and background processes. Not for use in a GUI.
 
 		Uses the get_feed_info update_rss_feeds functions to create a before and after snapshot.
 		The before and after snapshot is used to create a list containing only feeds that changed
@@ -126,10 +130,13 @@ namespace gautier_rss_data_write {
 		instead of reprocessing all lines.
 
 		Pass 0 to pause_interval_in_seconds unless you want a pause before download occurs.
+
+		Includes articles downloaded for the updated feeds.
 	*/
 	void
 	download_feeds (std::string& db_file_name, int_fast32_t pause_interval_in_seconds,
-	                std::vector<std::pair<gautier_rss_data_read::rss_feed, gautier_rss_data_read::rss_feed>>& changed_feeds);
+	                std::vector<std::pair<gautier_rss_data_read::rss_feed, gautier_rss_data_read::rss_feed>>& changed_feeds,
+	                std::map<std::string, std::vector<gautier_rss_data_read::rss_article>> articles);
 
 	/*
 		RSS FEED Retrieve Date
@@ -206,13 +213,16 @@ namespace gautier_rss_data_write {
 		Visits the feed url.
 		Retrieves the data for the feed.
 		Stores the feed data in the database.
+
+		Provides an article download.
 	*/
 	long
 	update_rss_db_from_network (std::string db_file_name,
 	                            std::string feed_name,
 	                            std::string feed_url,
 	                            std::string retrieve_limit_hrs,
-	                            std::string retention_days);
+	                            std::string retention_days,
+	                            std::vector<gautier_rss_data_read::rss_article>& articles);
 
 	void
 	de_initialize_db (std::string db_file_name);
