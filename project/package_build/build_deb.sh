@@ -52,7 +52,7 @@ cp --recursive --preserve * ~/debbuild/
 
 tar -czf newsreader.tar.gz *
 
-cp --preserve newsreader.tar.gz ~/debbuild/newsreader_7.1.0.orig.tar.gz
+cp --preserve newsreader.tar.gz ~/debbuild/newsreader_7.3.0.orig.tar.gz
 
 pwd
 ls -gGh ~/debbuild_tmp/
@@ -77,10 +77,6 @@ cd ~/debbuild/
 echo "-------------------------------------------------------------"
 pwd
 ls -gGh ~/debbuild/
-
-#Generate installation DEB (binary executable)
-## **	Intent here is to test the generated source DEB while generating the binary DEB.
-#		debbuild --rebuild --nodebuginfo ~/debbuild/SRPMS/newsreader-7.1.0-1.fc31.src.rpm
 
 #Clean-up
 ## **	Delete preliminary setup files
