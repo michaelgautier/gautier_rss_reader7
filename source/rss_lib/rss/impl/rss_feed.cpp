@@ -57,19 +57,19 @@ gautier_rss_data_read::is_feed_still_fresh (std::string db_file_name, std::strin
 bool
 gautier_rss_data_read::check_feed_changed (rss_feed& feed_old, rss_feed& feed_new)
 {
-	std::string old_feed_name = feed_old.feed_name;
-	std::string old_last_retrieved = feed_old.last_retrieved;
-	int64_t old_article_count = feed_old.article_count;
+	const std::string old_feed_name = feed_old.feed_name;
+	const std::string old_last_retrieved = feed_old.last_retrieved;
+	const int64_t old_article_count = feed_old.article_count;
 
-	std::string new_feed_name = feed_new.feed_name;
-	std::string new_last_retrieved = feed_new.last_retrieved;
-	int64_t new_article_count = feed_new.article_count;
+	const std::string new_feed_name = feed_new.feed_name;
+	const std::string new_last_retrieved = feed_new.last_retrieved;
+	const int64_t new_article_count = feed_new.article_count;
 
-	bool match_found_name = old_feed_name == new_feed_name;
-	bool match_not_found_last_retrieved = old_last_retrieved != new_last_retrieved;
-	bool increased_article_count = new_article_count > old_article_count;
+	const bool named_the_same = (old_feed_name == new_feed_name);
+	const bool last_retrieved_differs = (old_last_retrieved != new_last_retrieved);
+	const bool article_count_differs = (new_article_count != old_article_count);
 
-	return match_found_name && match_not_found_last_retrieved && increased_article_count;
+	return (named_the_same && (last_retrieved_differs || article_count_differs));
 }
 
 void
@@ -84,8 +84,6 @@ gautier_rss_data_read::copy_feed (rss_feed* feed_in, rss_feed* feed_out)
 		feed_out->retention_days = feed_in->retention_days;
 		feed_out->article_count = feed_in->article_count;
 		feed_out->last_index = feed_in->last_index;
-		feed_out->revised_index_start = feed_in->revised_index_start;
-		feed_out->revised_index_end = feed_in->revised_index_end;
 	}
 
 	return;

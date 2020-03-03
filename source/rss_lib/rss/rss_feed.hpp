@@ -15,6 +15,8 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 #include <string>
 #include <cstdint>
+#include <vector>
+#include <algorithm>
 
 namespace gautier_rss_data_read {
 	struct rss_feed
@@ -41,16 +43,6 @@ namespace gautier_rss_data_read {
 				and indexing strategies.
 			*/
 			int64_t last_index = -1;
-
-			/*
-				Provides diff between what is likely loaded
-				from the database on start-up versus what is
-				downloaded from the network. This helps the
-				application access the start of the range of
-				new entries regardless of sort order.
-			*/
-			int64_t revised_index_start = -1;
-			int64_t revised_index_end = -1;
 	};
 
 	bool
@@ -62,5 +54,24 @@ namespace gautier_rss_data_read {
 
 	void
 	copy_feed (rss_feed* feed_in, rss_feed* feed_out);
+
+	bool
+	contains_feed (std::vector<rss_feed> feeds, std::string feed_name);
+
+	template<typename T1, typename T2> bool
+	contains_feed (T1 container, const T2 value)
+	{
+		bool exists = false;
+
+		for (auto entry : container) {
+			exists = (entry.first == value);
+
+			if (exists) {
+				break;
+			}
+		}
+
+		return exists;
+	}
 }
 #endif
