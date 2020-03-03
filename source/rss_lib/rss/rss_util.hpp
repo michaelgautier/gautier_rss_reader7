@@ -41,7 +41,7 @@ namespace gautier_rss_util {
 	convert_chars_to_number (const char* chars, T default_error_value)
 	{
 		const std::string detail = chars;
-		const std::string::size_type char_count = detail.size();
+		const size_t char_count = detail.size();
 
 		T n = default_error_value;
 
@@ -58,7 +58,7 @@ namespace gautier_rss_util {
 	is_numeric (const char* chars)
 	{
 		const std::string detail = chars;
-		const std::string::size_type char_count = detail.size();
+		const size_t char_count = detail.size();
 
 		bool is_valid_number_operation = true;
 		T n = -1;
@@ -75,7 +75,7 @@ namespace gautier_rss_util {
 	template<typename T> bool
 	is_numeric (const std::string value)
 	{
-		const std::string::size_type char_count = value.size();
+		const size_t char_count = value.size();
 
 		bool is_valid_number_operation = true;
 		T n = -1;
