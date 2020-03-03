@@ -10,10 +10,9 @@ You should have received a copy of the GNU Lesser General Public License along w
 Author: Michael Gautier <michaelgautier.wordpress.com>
 */
 
+#include <map>
 #include <iostream>
-#include <queue>
 #include <thread>
-#include <unordered_map>
 
 #include "rss_ui/application.hpp"
 #include "rss_ui/app_win/app_win.hpp"
@@ -42,58 +41,78 @@ bool shutting_down = false;
 static
 bool download_running = false;
 
+static
+bool download_available = false;
+
+static
+bool download_in_progress = false;
+
+static
+bool rss_management_running = false;
 /*
 	RSS Data Index
 */
 static
-std::unordered_map<std::string, ns_data_read::rss_feed>
+std::map<std::string, ns_data_read::rss_feed>
 feed_index;
 
 static
-std::unordered_map<std::string, std::vector<std::string>>
+std::map<std::string, ns_data_read::rss_feed>
+downloaded_feeds;
+
+static
+std::map<std::string, std::vector<ns_data_read::rss_article>>
         feeds_articles;
+
+static
+std::map<std::string, std::vector<ns_data_read::rss_article>>
+        downloaded_articles;
+
+/*
+	Async UI
+*/
+std::thread thread_synchronize_ui;
+
+static
+void
+initialize_ui_threads();
+
+static
+void
+synchronize_ui();
 
 /*
 	Start-up (1)	Load the first batch of lines
 	This is what produces a responsive UI on start-up when the
 	size of the database exceeds what can be initially shown.
 */
-static void
+static
+void
 populate_rss_tabs();
 
 static
-guint
-notebook_concurrent_init_interval_milliseconds = 124;
-
-extern "C"
 gboolean
-notebook_concurrent_init (gpointer data);
+async_initialize_tabs (gpointer data);
 
 static
-gint
-notebook_concurrent_init_id = -1;
+gboolean
+async_initialize_rss_management (gpointer data);
 
 static
-gint
-next_notebook_tab_index = -1;
+gint next_notebook_tab_index = -1;
 
+static
+gboolean
+flush_tabs (gpointer data);
 /*
-	Start-up (2)	Loads batches of lines unitl all lines are loaded
+	Start-up (2)	Loads batches of lines until all lines are loaded
 	in each tab. This is calibrated to allow the end-user to operate the
 	UI while the program continues to saturate each tab with all available
 	information.
 */
 static
-guint
-headlines_list_refresh_interval_milliseconds = 88;
-
-extern "C"
 gboolean
-headlines_list_refresh (gpointer data);
-
-static
-gint
-headlines_list_refresh_id = -1;
+async_load_tabs (gpointer data);
 
 /*
 	Start-up (3)	Detects downloaded data (see RSS Download below)
@@ -102,16 +121,8 @@ headlines_list_refresh_id = -1;
 	information.
 */
 static
-guint
-headlines_list_insert_interval_milliseconds = 12400;
-
-extern "C"
 gboolean
-headlines_list_insert (gpointer data);
-
-static
-gint
-headlines_list_insert_id = -1;
+async_load_tabs_with_downloaded_data (gpointer data);
 
 /*
 	RSS Download
@@ -135,9 +146,6 @@ static
 bool feed_expire_time_enabled = false;
 
 /*RSS Configuration Updates*/
-static std::queue<ns_data_read::rss_feed_mod>
-feed_changes;
-
 extern "C"
 void
 manage_feeds_click (GtkButton* button, gpointer user_data);
@@ -146,8 +154,7 @@ static void
 process_rss_feed_configuration (ns_data_read::rss_feed_mod& modification);
 
 static void
-synchronize_feeds_to_configuration (std::queue<ns_data_read::rss_feed_mod>& feed_modifications,
-                                    std::unordered_map<std::string, ns_data_read::rss_feed>& feed_model);
+synchronize_feeds_to_configuration (std::map<std::string, gautier_rss_data_read::rss_feed_mod> feed_changes);
 
 /*
 	RSS Tabs - Switch Handlers.
@@ -402,17 +409,9 @@ gautier_rss_win_main::create (
 
 		populate_rss_tabs();
 
-		int tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
-
 		next_notebook_tab_index = 0;
 
-		/*Approximate ideal "perceptual" rate of load per tab based on max 100 items per tab.*/
-		const uint32_t divisor = 10;
-
-		notebook_concurrent_init_interval_milliseconds = ((tab_count + 2) * 100) / divisor;
-
-		notebook_concurrent_init_id = gdk_threads_add_timeout (notebook_concurrent_init_interval_milliseconds,
-		                              notebook_concurrent_init, headlines_view);
+		initialize_ui_threads();
 	}
 
 	/*
@@ -519,7 +518,9 @@ headline_view_switch_page (GtkNotebook* rss_tabs,
 {
 	namespace ns_rss_tabs = gautier_rss_win_main_headlines_frame;
 
-	std::cout << "Switch to Tab # (" << page_num << ")\n";
+	if (page_num > feed_index.size()) {
+		std::cout << "Feed " << page_num << " with no in-memory source.\n";
+	}
 
 	if (user_data) {
 		std::cout << __func__ << " called with user_data\n";
@@ -541,7 +542,7 @@ headline_view_switch_page (GtkNotebook* rss_tabs,
 		GtkTextBuffer* text_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (article_summary));
 
 		std::string article_text = "";
-		std::string::size_type article_text_size = article_text.size();
+		const size_t article_text_size = article_text.size();
 
 		gtk_text_buffer_set_text (text_buffer, article_text.data(), static_cast<gint> (article_text_size));
 
@@ -618,7 +619,7 @@ headline_view_select_row (GtkTreeSelection* tree_selection, gpointer user_data)
 				article_text = _feed_data.article_summary;
 			}
 
-			std::string::size_type article_text_size = article_text.size();
+			const size_t article_text_size = article_text.size();
 
 			gtk_text_buffer_set_text (text_buffer, article_text.data(), static_cast<gint> (article_text_size));
 		}
@@ -670,6 +671,8 @@ manage_feeds_click (GtkButton* button,
 			std::cout << __func__ << " called with user_data\n";
 		}
 
+		rss_management_running = true;
+
 		gautier_rss_win_rss_manage::set_feed_model (feed_index);
 		gautier_rss_win_rss_manage::set_modification_callback (synchronize_feeds_to_configuration);
 
@@ -680,39 +683,24 @@ manage_feeds_click (GtkButton* button,
 }
 
 static void
-synchronize_feeds_to_configuration (std::queue<ns_data_read::rss_feed_mod>& feed_modifications,
-                                    std::unordered_map<std::string, ns_data_read::rss_feed>& feed_model)
+synchronize_feeds_to_configuration (std::map<std::string, gautier_rss_data_read::rss_feed_mod> feed_changes)
 {
-	feed_changes = feed_modifications;
+	g_signal_handler_disconnect (headlines_view, headline_view_switch_page_signal_id);
 
-	decltype (feed_changes)::size_type config_change_count = feed_modifications.size();
-	decltype (feed_changes)::size_type feed_model_change_count = feed_model.size();
+	for (std::pair<std::string, ns_data_read::rss_feed_mod> modification_entry : feed_changes) {
+		ns_data_read::rss_feed_mod modification = modification_entry.second;
 
-	bool config_changed = (config_change_count > 0);
-	bool feed_model_changed = (feed_model_change_count > 0);
-
-	if (config_changed && feed_model_changed) {
-		g_signal_handler_disconnect (headlines_view, headline_view_switch_page_signal_id);
-	}
-
-	decltype (feed_changes)::size_type change_count = feed_changes.size();
-
-	while (change_count > 0) {
-		ns_data_read::rss_feed_mod modification = feed_changes.front();
-
-		ns_data_read::rss_feed_mod_status status = modification.status;
+		const ns_data_read::rss_feed_mod_status status = modification.status;
 
 		if (status != ns_data_read::rss_feed_mod_status::none) {
 			process_rss_feed_configuration (modification);
 		}
-
-		change_count = feed_changes.size();
 	}
 
-	if (config_changed && feed_model_changed) {
-		headline_view_switch_page_signal_id = g_signal_connect (headlines_view, "switch-page",
-		                                      G_CALLBACK (headline_view_switch_page), NULL);
-	}
+	headline_view_switch_page_signal_id = g_signal_connect (headlines_view, "switch-page",
+	                                      G_CALLBACK (headline_view_switch_page), NULL);
+
+	rss_management_running = false;
 
 	return;
 }
@@ -731,9 +719,9 @@ process_rss_feed_configuration (ns_data_read::rss_feed_mod& modification)
 
 	bool is_insert = status == ns_data_read::rss_feed_mod_status::insert;
 
-	decltype (feed_index)::size_type feed_index_matches = feed_index.count (feed_name);
+	const size_t feed_index_match_count = feed_index.count (feed_name);
 
-	if (feed_index_matches < 1) {
+	if (feed_index_match_count < 1) {
 		ns_data_read::rss_feed feed;
 
 		get_feed (db_file_name, feed_name, feed);
@@ -741,11 +729,9 @@ process_rss_feed_configuration (ns_data_read::rss_feed_mod& modification)
 		feed_index.insert_or_assign (feed_name, feed);
 
 		ns_data_read::rss_feed* feed_clone = &feed_index[feed_name];
-		feed_clone->revised_index_start = -1;
-		feed_clone->revised_index_end = -1;
-		feed_clone->last_index = 0;
+		feed_clone->last_index = -1;
 
-		feeds_articles.insert_or_assign (feed_name, std::vector<std::string>());
+		feeds_articles.insert_or_assign (feed_name, std::vector<ns_data_read::rss_article>());
 	}
 
 	namespace ns = gautier_rss_win_main_headlines_frame;
@@ -765,8 +751,6 @@ process_rss_feed_configuration (ns_data_read::rss_feed_mod& modification)
 
 				feed_index.erase (feed_name);
 				feeds_articles.erase (feed_name);
-
-				feed_changes.pop();
 			} else if (status ==  ns_data_read::rss_feed_mod_status::change) {
 				std::string row_id = std::to_string (row_id_now);
 
@@ -793,8 +777,6 @@ process_rss_feed_configuration (ns_data_read::rss_feed_mod& modification)
 					feed_index.erase (feed_name);
 					feeds_articles.erase (feed_name);
 				}
-
-				feed_changes.pop();
 			}
 
 		}
@@ -808,7 +790,7 @@ process_rss_feed_configuration (ns_data_read::rss_feed_mod& modification)
 
 		tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
 
-		for (int tab_i = 0; tab_i < tab_count; tab_i++) {
+		for (gint tab_i = 0; tab_i < tab_count; tab_i++) {
 			GtkWidget* tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
 
 			if (tab == NULL) {
@@ -824,49 +806,41 @@ process_rss_feed_configuration (ns_data_read::rss_feed_mod& modification)
 				std::string retrieve_limit_hrs = feed_in_use->retrieve_limit_hrs;
 				std::string retention_days = feed_in_use->retention_days;
 
-				const int64_t in_use_count = ns_data_read::get_feed_headline_count (db_file_name, feed_name);
+				std::vector<ns_data_read::rss_article> articles;
 
-				const long response_code = ns_data_write::update_rss_db_from_network (db_file_name, feed_name, feed_url,
-				                           retrieve_limit_hrs, retention_days);
+				long response_code = ns_data_write::update_rss_db_from_network (db_file_name,
+				                     feed_name,
+				                     feed_url,
+				                     retrieve_limit_hrs,
+				                     retention_days,
+				                     articles);
 
-				const bool network_response_good = gautier_rss_data_read::is_network_response_ok (response_code);
+				const bool network_response_good = ns_data_read::is_network_response_ok (response_code);
 
+				/*
+					Failure here is acceptable.
+					The main download process will pick up any updates in a later thread.
+					This is merely a convenience to show results early if possible.
+					That is why this code is less elaborate compared to the main download process.
+				*/
 				if (network_response_good) {
-					ns_data_read::rss_feed feed_new;
+					const int64_t in_use_count = ns_data_read::get_feed_headline_count (db_file_name, feed_name);
 
-					ns_data_read::get_feed (db_file_name, feed_name, feed_new);
+					const int64_t index_start = 0;
+					const int64_t index_end = in_use_count - 1;
 
-					const bool new_updates = ns_data_read::check_feed_changed (*feed_in_use, feed_new);
+					if (index_start < index_end) {
+						ns_rss_tabs::show_headlines (headlines_view, feed_name, index_start, index_end, articles, true);
 
-					if (new_updates && feed_in_use) {
-						const int64_t record_count = ns_data_read::get_feed_headline_count (db_file_name, feed_name);
-
-						if (record_count > in_use_count) {
-							const int64_t feed_index_start = in_use_count;
-							const int64_t feed_index_end = feed_index_start + (record_count - 1);
-
-							std::vector <std::string> headlines;
-
-							ns_data_read::get_feed_headlines (db_file_name, feed_name, headlines, false);
-
-							ns_rss_tabs::show_headlines (headlines_view, feed_name, feed_index_start, feed_index_end, headlines, true);
-
-							decltype (feed_index)::size_type in_use_matches = feed_index.count (feed_name);
-
-							if (in_use_matches < 1) {
-								feeds_articles.insert_or_assign (feed_name, headlines);
-							}
-						}
+						gtk_widget_show_all (tab);
 					}
 				}
 
-				gtk_widget_show_all (tab);
+				gtk_widget_set_sensitive (tab, true);
 
 				break;
 			}
 		}
-
-		feed_changes.pop();
 	}
 
 	return;
@@ -909,10 +883,16 @@ window_destroy (GtkWidget* window, gpointer user_data)
 		shutting_down = true;
 		download_running = false;
 
-		bool thread_instance_exists = thread_download_data.joinable();
+		const bool data_thread_instance_exists = thread_download_data.joinable();
 
-		if (thread_instance_exists) {
+		if (data_thread_instance_exists) {
 			thread_download_data.join();
+		}
+
+		const bool ui_thread_instance_exists = thread_synchronize_ui.joinable();
+
+		if (ui_thread_instance_exists) {
+			thread_synchronize_ui.join();
 		}
 
 		/*
@@ -947,36 +927,126 @@ populate_rss_tabs()
 
 	ns_data_read::get_feeds (db_file_name, feed_names);
 
+	std::vector<ns_data_read::rss_article> headline_snapshot;
+
 	for (ns_data_read::rss_feed feed : feed_names) {
 		std::string feed_name = feed.feed_name;
 
 		feed_index.insert_or_assign (feed_name, feed);
 
 		ns_data_read::rss_feed* feed_clone = &feed_index[feed_name];
-		feed_clone->revised_index_start = -1;
-		feed_clone->revised_index_end = -1;
-		feed_clone->last_index = 0;
+		feed_clone->last_index = -1;
 
-		feeds_articles.insert_or_assign (feed_name, std::vector<std::string>());
+		ns_data_read::get_feed_headlines (db_file_name, feed_name, headline_snapshot, true);
+
+		feeds_articles.insert_or_assign (feed_name, headline_snapshot);
 
 		ns_rss_tabs::add_headline_page (headlines_view, feed_name, -1, headline_view_select_row);
+
+		headline_snapshot.clear();
 	}
 
 	return;
 }
 
-gboolean
-notebook_concurrent_init (gpointer data)
+/*
+	UI threads
+*/
+static void
+initialize_ui_threads()
 {
-	namespace ns_rss_tabs = gautier_rss_win_main_headlines_frame;
+	thread_synchronize_ui = std::thread (synchronize_ui);
 
-	if (data == NULL) {
-		std::cout << __func__ << " called without user_data\n";
+	return;
+}
+
+static void
+synchronize_ui()
+{
+	while (shutting_down == false) {
+		const int async_tab_init_wait_in_milliseconds = 108;
+
+		std::this_thread::sleep_for (std::chrono::milliseconds (async_tab_init_wait_in_milliseconds));
+
+		const gint tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
+
+		const bool tabs_initialized = (next_notebook_tab_index >= tab_count);
+
+		if (tabs_initialized) {
+			break;
+		} else {
+			g_main_context_invoke (NULL, async_initialize_tabs, NULL);
+		}
+
+		next_notebook_tab_index++;
 	}
 
-	gboolean still_active = false;
+	g_main_context_invoke (NULL, async_initialize_rss_management, NULL);
 
-	int tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
+	initialize_data_threads();
+
+	g_main_context_invoke (NULL, flush_tabs, NULL);
+
+	int cycles = 0;
+	bool download_update_active = false;
+
+	next_notebook_tab_index = -1;
+
+	while (shutting_down == false) {
+		const int async_tab_load_wait_in_milliseconds = 220;
+
+		std::this_thread::sleep_for (std::chrono::milliseconds (async_tab_load_wait_in_milliseconds));
+
+		next_notebook_tab_index++;
+		cycles++;
+
+		const gint tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
+
+		if (next_notebook_tab_index > tab_count) {
+			next_notebook_tab_index = 0;
+		}
+
+		if (cycles >= 10) {
+			cycles = 0;
+
+			g_main_context_invoke (NULL, flush_tabs, NULL);
+		}
+
+		if (download_available) {
+			if (download_update_active == false) {
+				download_update_active = true;
+				next_notebook_tab_index = 0;
+			}
+
+			g_main_context_invoke (NULL, async_load_tabs_with_downloaded_data, NULL);
+		} else {
+			if (download_update_active) {
+				download_update_active = false;
+				next_notebook_tab_index = 0;
+			}
+
+			g_main_context_invoke (NULL, async_load_tabs, NULL);
+		}
+	}
+
+	return;
+}
+
+static
+gboolean
+async_initialize_tabs (gpointer data)
+{
+	if (data) {
+		std::cout << __func__ << " called with user_data\n";
+	}
+
+	namespace ns_rss_tabs = gautier_rss_win_main_headlines_frame;
+
+	const gint tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
+
+	bool feed_exists = false;
+
+	std::string feed_name;
 
 	if (tab_count > 0) {
 		gint tab_i = next_notebook_tab_index;
@@ -985,163 +1055,97 @@ notebook_concurrent_init (gpointer data)
 			GtkWidget* tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
 
 			if (tab) {
-				std::string feed_name = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
+				feed_name = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
 
-				std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
+				feed_exists = ns_data_read::contains_feed<decltype (feed_index), decltype (feed_name)> (feed_index, feed_name);
+			}
+		}
+	}
 
-				/*
-					RSS headlines.
-				*/
-				std::vector < std::string > headlines;
-				{
-					const int64_t max_lines = 32;
-					int64_t last_index = 0;
+	if (feed_exists && feed_name.empty() == false) {
+		/*
+			RSS headlines.
+		*/
+		std::vector<ns_data_read::rss_article> headlines = feeds_articles[feed_name];
 
-					std::vector < std::string > all_headlines;
+		ns_data_read::rss_feed* feed = &feed_index[feed_name];
 
-					ns_data_read::get_feed_headlines (db_file_name, feed_name, all_headlines, true);
+		const int64_t max_lines = 32;
+		const int64_t range_end = headlines.size() - 1;
 
-					feeds_articles[feed_name] = all_headlines;
+		const int64_t index_start = (feed->last_index + 1);
+		int64_t index_end = (index_start + (max_lines - 1));
 
-					ns_data_read::rss_feed* feed_index_entry = &feed_index[feed_name];
+		if (index_end > range_end) {
+			index_end = range_end;
+		}
 
-					const int64_t headline_count = static_cast<int64_t> (all_headlines.size());
+		feed->last_index = index_end;
 
-					for (int64_t i = 0; i < max_lines && i < headline_count; i++) {
-						std::string headline = all_headlines.at (i);
+		if (index_start > -1 && index_start < index_end) {
+			ns_rss_tabs::show_headlines (headlines_view, feed_name, index_start, index_end, headlines, false);
+		}
+	}
 
-						headlines.push_back (headline);
+	return false;
+}
 
-						last_index = i;
-					}
+static
+gboolean
+async_initialize_rss_management (gpointer data)
+{
+	if (data) {
+		std::cout << __func__ << " called with user_data\n";
+	}
 
-					feed_index_entry->last_index = last_index;
-				}
+	const gint tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
 
-				if (headlines.size() > 0) {
-					int64_t headline_index_start = 0;
+	for (gint tab_i = 0; tab_i <= tab_count; tab_i++) {
+		GtkWidget* tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
 
-					ns_rss_tabs::show_headlines (headlines_view, feed_name, headline_index_start, headlines.size(), headlines,
-					                             false);
-				}
+		if (tab) {
+			gboolean sensitive_value = gtk_widget_get_sensitive (tab);
 
-				next_notebook_tab_index++;
-
-				/*
-					CONCURRENT BRANCH #1
-					Present the first few lines from the first feed listed in the database.
-				*/
-				if (tab_i == 0) {
-					gboolean sensitive_value = gtk_widget_get_sensitive (tab);
-
-					if (sensitive_value == false) {
-						gtk_widget_set_sensitive (tab, true);
-					}
-
-					ns_rss_tabs::select_headline_row (GTK_WIDGET (headlines_view), feed_name, 0);
-
-					/*
-						CONCURRENT BRANCH #2
-						Sets up a recursive call to notebook_concurrent_init
-
-						First pass: notebook_concurrent_init has still_active == false
-						Terminating the thread of execution frees up the UI to show a screen of information.
-						However, there is more information to show (other tabs).
-
-						The process repeats by establishing a new call to notebook_concurrent_init
-						where still_active == true until all remaining tabs have been processed.
-
-						Those tabs may be locked for the duration of their processing. The critical method
-						is to feed enough data into each tab on each cycle in a short a time possible
-						while preserving the end-user's ability to click through the tabs while they are
-						still loading.
-					*/
-					notebook_concurrent_init_id = gdk_threads_add_timeout (notebook_concurrent_init_interval_milliseconds,
-					                              notebook_concurrent_init, headlines_view);
-
-					/*
-						CONCURRENT BRANCH #4
-
-						The #1 goal of a UI is to show that UI first, everything else is secondary.
-						After the UI is established (conclusion of CONCURRENT BRANCH #1), only then should subsequent actions can be initiated.
-
-						This call will begin the process of acquiring data and setting the conditions for showing new data in the UI.
-						The threads initiated by this will not modify the UI, these threads will manage the data only.
-					*/
-					initialize_data_threads();
-				}
-				/*
-					CONCURRENT BRANCH #2
-					Terminate the thread on the final tab in process.
-				*/
-				else {
-					still_active = (next_notebook_tab_index < tab_count);
-				}
+			if (sensitive_value == false) {
+				gtk_widget_set_sensitive (tab, true);
 			}
 		}
 	}
 
 	/*
-		Applies only to CONCURRENT BRANCH #2
+		Tab page switch signal. Show news headlines for the chosen tab.
 	*/
-	if (still_active == false && next_notebook_tab_index >= tab_count) {
-		for (int tab_i = 1; tab_i < tab_count; tab_i++) {
-			GtkWidget* tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
+	headline_view_switch_page_signal_id = g_signal_connect (headlines_view, "switch-page",
+	                                      G_CALLBACK (headline_view_switch_page), NULL);
 
-			if (tab) {
-				gboolean sensitive_value = gtk_widget_get_sensitive (tab);
+	gtk_widget_set_sensitive (manage_feeds_button, true);
 
-				if (sensitive_value == false) {
-					gtk_widget_set_sensitive (tab, true);
-				}
+	data_download_thread_wait_in_seconds = 4;
+	download_running = true;
 
-				gtk_widget_show_all (tab);
-			}
-		}
-
-		/*
-			Tab page switch signal. Show news headlines for the chosen tab.
-		*/
-		headline_view_switch_page_signal_id = g_signal_connect (headlines_view, "switch-page",
-		                                      G_CALLBACK (headline_view_switch_page), NULL);
-
-		gtk_widget_set_sensitive (manage_feeds_button, true);
-
-		/*
-			CONCURRENT BRANCH #3
-			Initiate the process of populating remaining data from database.
-		*/
-		next_notebook_tab_index = 0;
-
-		headlines_list_refresh_id = gdk_threads_add_timeout (headlines_list_refresh_interval_milliseconds,
-		                            headlines_list_refresh, NULL);
-
-		/*
-			CONCURRENT BRANCH #4		Depends on CONCURRENT BRANCH #1 initiating CONCURRENT BRANCH #4
-			Provide signal for active data download thread to begin contacting servers.
-		*/
-		data_download_thread_wait_in_seconds = 4;
-		download_running = true;
-	}
-
-	return still_active;
+	return false;
 }
 
+static
 gboolean
-headlines_list_refresh (gpointer data)
+async_load_tabs (gpointer data)
 {
-	namespace ns_rss_tabs = gautier_rss_win_main_headlines_frame;
-
 	if (data) {
 		std::cout << __func__ << " called with user_data\n";
 	}
 
-	gboolean still_active = (shutting_down == false);
+	namespace ns_rss_tabs = gautier_rss_win_main_headlines_frame;
 
-	int tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
+	const gint tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
 
-	if (still_active && tab_count > 0) {
-		gint tab_i = next_notebook_tab_index++;
+	bool feed_exists = false;
+
+	std::string feed_name;
+
+	const bool download_active = (download_available || download_in_progress);
+
+	if (download_active == false && tab_count > 0) {
+		gint tab_i = next_notebook_tab_index;
 
 		if (next_notebook_tab_index > tab_count) {
 			next_notebook_tab_index = 0;
@@ -1151,100 +1155,146 @@ headlines_list_refresh (gpointer data)
 			GtkWidget* tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
 
 			if (tab) {
-				std::string feed_name = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
+				feed_name = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
 
-				ns_data_read::rss_feed* feed_index_entry = &feed_index[feed_name];
-
-				const int64_t max_lines = 32;
-
-				const int64_t headline_count = feed_index_entry->article_count;
-
-				const int64_t index_start = (feed_index_entry->last_index) + 1;
-
-				if (headline_count > 0 && index_start > -1 && index_start < headline_count) {
-					std::vector < std::string > all_headlines = feeds_articles[feed_name];
-
-					int64_t index_end = index_start + max_lines;
-
-					if (index_end > headline_count) {
-						index_end = all_headlines.size() - 1;
-					}
-
-					feed_index_entry->last_index = index_end;
-
-					ns_rss_tabs::show_headlines (headlines_view, feed_name, index_start, index_end, all_headlines, false);
-
-					gtk_widget_show_all (tab);
-				}
+				feed_exists = ns_data_read::contains_feed<decltype (feed_index), decltype (feed_name)> (feed_index, feed_name);
 			}
 		}
 	}
 
-	return still_active;
+	if (download_active == false && feed_exists && feed_name.empty() == false) {
+		std::vector<ns_data_read::rss_article> headlines = feeds_articles[feed_name];
+
+		ns_data_read::rss_feed* feed = &feed_index[feed_name];
+
+		const int64_t max_lines = 32;
+		const int64_t range_end = headlines.size() - 1;
+
+		const int64_t index_start = (feed->last_index + 1);
+		int64_t index_end = (index_start + (max_lines - 1));
+
+		if (index_end > range_end) {
+			index_end = range_end;
+		}
+
+		feed->last_index = index_end;
+
+		if (index_start > -1 && index_start < index_end) {
+			ns_rss_tabs::show_headlines (headlines_view, feed_name, index_start, index_end, headlines, false);
+		} else {
+			/*
+				Reclaim the memory consumed by the snapshot.
+
+				No further need for it in the current program design (3/2/2020).
+			*/
+			feeds_articles.erase (feed_name);
+		}
+	}
+
+	return false;
 }
 
+static
 gboolean
-headlines_list_insert (gpointer data)
+async_load_tabs_with_downloaded_data (gpointer data)
 {
+	std::cout << __FILE__ << " \t\t\t\t\t" << __func__ << " feed \t\t ENTER  \n";
+
+	if (data) {
+		std::cout << __func__ << " called with user_data\n";
+	}
+
 	namespace ns_rss_tabs = gautier_rss_win_main_headlines_frame;
 
-	if (data == NULL) {
-		std::cout << __func__ << " called without user_data\n";
-	}
+	const gint tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
 
-	/*
-		Let this clear out automatically. Downloads typically occur
-		once per hour. When downloads occur, this is activated
-		and only needs to run a short duration.
-	*/
-	const gboolean still_active = false;
+	bool feed_exists = false;
 
-	std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
+	std::string feed_name;
 
-	headlines_list_insert_id = -1;
+	if (download_available && tab_count > 0) {
+		gint tab_i = next_notebook_tab_index;
 
-	/*range-for provides a deep copy clone for evaluation.*/
-	for (std::pair<std::string, ns_data_read::rss_feed> feed_info : feed_index) {
-		std::string feed_name = feed_info.first;
-		ns_data_read::rss_feed* feed_snapshot = &feed_info.second;
+		if (next_notebook_tab_index > tab_count) {
+			next_notebook_tab_index = 0;
+		}
 
-		int64_t feed_index_start = -1;
-		int64_t feed_index_end = -1;
+		if (tab_i > -1) {
+			GtkWidget* tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
 
-		if (feed_snapshot) {
-			/*
-				CONCURRENT BRANCH - Using Downloaded Data
-				See download_data()	CONCURRENT BRANCK - Mark Downloaded Data
-			*/
-			feed_index_start = feed_snapshot->revised_index_start;
-			feed_index_end = feed_snapshot->revised_index_end;
+			if (tab) {
+				feed_name = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
 
-			if (feed_index_start > -1 && feed_index_end > feed_index_start) {
-				ns_data_read::rss_feed* feed_in_use = &feed_index[feed_name];
-
-				if (feed_in_use) {
-					/*
-						Mark Downloaded Data as *Detected*
-					*/
-					feed_in_use->revised_index_start = -1;
-					feed_in_use->revised_index_end = -1;
-				}
+				feed_exists = ns_data_read::contains_feed<decltype (downloaded_feeds), decltype (feed_name)> (downloaded_feeds,
+				              feed_name);
 			}
 		}
+	}
 
-		/*
-			Process downloaded data
-		*/
-		if (feed_index_start > -1 && feed_index_end > feed_index_start) {
-			std::vector <std::string> headlines;
+	if (feed_exists && feed_name.empty() == false) {
+		std::cout << __FILE__ << " \t\t\t\t\t" << __func__ << " feed " << feed_name << "  \n";
 
-			ns_data_read::get_feed_headlines (db_file_name, feed_name, headlines, false);
+		std::vector<ns_data_read::rss_article> headlines = downloaded_articles[feed_name];
 
-			ns_rss_tabs::show_headlines (headlines_view, feed_name, feed_index_start, feed_index_end, headlines, true);
+		ns_data_read::rss_feed* feed = &downloaded_feeds[feed_name];
+
+		const int64_t max_lines = 32;
+		const int64_t range_end = headlines.size() - 1;
+
+		const int64_t index_start = (feed->last_index + 1);
+		int64_t index_end = (index_start + (max_lines - 1));
+
+		if (index_end > range_end) {
+			index_end = range_end;
+		}
+
+		feed->last_index = index_end;
+
+		if (index_start > -1 && index_start < index_end) {
+			std::cout << __func__ << " add download to tab\n";
+			std::cout << __func__ << " \t\t" << feed_name << ": headlines " << headlines.size() << "\n";
+			std::cout << __func__ << " \t\t" << feed_name << ": indices " << index_start << " to " << index_end << "\n";
+
+			ns_rss_tabs::show_headlines (headlines_view, feed_name, index_start, index_end, headlines, true);
+		} else {
+			std::cout << __FILE__ << " \t\t\t\t\t" << __func__ << " feed " << feed_name << "\t *erase*  \n";
+
+			downloaded_feeds.erase (feed_name);
+			downloaded_articles.erase (feed_name);
+
+			const size_t feed_count = downloaded_feeds.size();
+
+			download_available = (feed_count > 0);
+		}
+	} else {
+		std::cout << "********************* feed [ |" << feed_name << "| ] exists == " << feed_exists <<
+		          "\t article count: " << downloaded_articles[feed_name].size() << "\n";
+	}
+
+	std::cout << __FILE__ << " \t\t\t\t\t" << __func__ << " feed " << feed_name << "\t EXIT  \n";
+
+	return false;
+}
+
+static
+gboolean
+flush_tabs (gpointer data)
+{
+	if (data) {
+		std::cout << __func__ << " called with user_data\n";
+	}
+
+	const gint tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
+
+	for (gint tab_i = 0; tab_i < tab_count; tab_i++) {
+		GtkWidget* tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
+
+		if (tab) {
+			gtk_widget_show_all (tab);
 		}
 	}
 
-	return still_active;
+	return false;
 }
 
 static void
@@ -1312,11 +1362,17 @@ download_data()
 	data_download_thread_wait_in_seconds = 2;
 
 	while (shutting_down == false && download_running) {
-		if (allow_process_output) {
-			std::cout << __func__ << ":\tPreparing to download\n";
-		}
-
 		std::this_thread::sleep_for (std::chrono::seconds (data_download_thread_wait_in_seconds));
+
+		std::vector <ns_data_read::rss_feed> feeds;
+
+		ns_data_read::get_feeds (db_file_name, feeds);
+
+		if (feeds.size() < 1 ||
+		        rss_management_running ||
+		        download_available) {
+			continue;
+		}
 
 		/*
 			End this thread if the user closes the program.
@@ -1326,11 +1382,19 @@ download_data()
 			break;
 		}
 
+		if (allow_process_output) {
+			std::cout << __func__ << ":\tPreparing to download\n";
+		}
+
 		/*
 			If downloads have already occurred within a hour window of time,
 			stop further download processing until 12 minutes has passed.
 		*/
 		if (successful_download_attempts > 0) {
+			if (download_in_progress) {
+				download_in_progress = false;
+			}
+
 			const int download_restart_wait_in_minutes = 5;
 			const int wait_time_in_seconds = (download_restart_wait_in_minutes * 60);
 
@@ -1408,37 +1472,27 @@ download_data()
 		change_count = 0;
 		successful_download_attempts = 0;
 
-		std::vector <ns_data_read::rss_feed> feeds;
-
-		ns_data_read::get_feeds (db_file_name, feeds);
-
 		/*
 			Cycles through all the feeds to download, 1 at a time.
 		*/
 		for (ns_data_read::rss_feed feed : feeds) {
-			/*
-				Skip until next cycle if feed configuration
-				changes are pending. Configuration changes
-				take priority.
-			*/
-			if (feed_changes.size() > 0) {
-				break;
+			std::string feed_name = feed.feed_name;
+			std::string feed_url = feed.feed_url;
+			std::string retrieve_limit_hrs = feed.retrieve_limit_hrs;
+			std::string retention_days = feed.retention_days;
+
+			if (feed_name.empty() || feed_url.empty()) {
+				continue;
 			}
 
 			/*
 				End this thread if the user closes the program.
 			*/
 			if (shutting_down || download_running == false) {
-				std::cout << __func__ << ", LINE: " << __LINE__ << ";\tEXIT\n";
 				break;
 			}
 
-			std::string feed_name = feed.feed_name;
-			std::string feed_url = feed.feed_url;
-			std::string retrieve_limit_hrs = feed.retrieve_limit_hrs;
-			std::string retention_days = feed.retention_days;
-
-			std::cout << __func__ << ", LINE: " << __LINE__ << ";\tFEED: " << feed_name << "\n";
+			std::cout << "DOWNLOAD ATTEMPT FOR FEED: \t\t\t\t ********** " <<  feed_name << " ********** \n";
 
 			/*
 				Aborts the download attempt if a download has already occured within the allowed time frame.
@@ -1456,7 +1510,7 @@ download_data()
 			}
 
 			if (is_feed_still_fresh == false && (shutting_down == false && download_running)) {
-				const int64_t in_use_count = ns_data_read::get_feed_headline_count (db_file_name, feed_name);
+				std::vector<ns_data_read::rss_article> articles;
 
 				/*
 					The download of a given feed will be retried a few times.
@@ -1466,19 +1520,24 @@ download_data()
 
 				bool network_response_good = false;
 
+				download_in_progress = true;
+
 				while (network_response_good == false && download_attempts < max_download_attempts) {
 					download_attempts++;
 
-					long response_code = ns_data_write::update_rss_db_from_network (db_file_name, feed_name, feed_url,
+					long response_code = ns_data_write::update_rss_db_from_network (db_file_name,
+					                     feed_name,
+					                     feed_url,
 					                     retrieve_limit_hrs,
-					                     retention_days);
+					                     retention_days,
+					                     articles);
 
-					network_response_good = gautier_rss_data_read::is_network_response_ok (response_code);
+					network_response_good = ns_data_read::is_network_response_ok (response_code);
 
 					if (network_response_good) {
 						successful_download_attempts++;
 
-						std::cout << __func__ << ", LINE: " << __LINE__ << ";\tDOWNLOAD OK!\n";
+						std::cout << "DOWNLOAD SUCCESS FOR FEED: \t\t\t\t ********** " <<  feed_name << " [GOOD] ***\n";
 
 						/*Although there is control logic in the loop, go ahead in this case and exit early.*/
 						break;
@@ -1493,7 +1552,7 @@ download_data()
 								failed_download_notify_was_output = false;
 							}
 
-							std::cout << __func__ << ", LINE: " << __LINE__ << ";\tFAILED DOWNLOAD!!!!\n";
+							std::cout << "DOWNLOAD FAILURE FOR FEED: \t\t\t\t ********** " <<  feed_name << " [FAIL] ***\n";
 						}
 
 						/*Skip this iteration since no data is expected*/
@@ -1502,7 +1561,7 @@ download_data()
 				}
 
 				/*
-					Determine the range of rowids to use to update the user interface.
+					Transfer new data to cache.
 
 					A 'UI thread valid for updating the UI' will pick up these values.
 				*/
@@ -1510,34 +1569,18 @@ download_data()
 
 				ns_data_read::get_feed (db_file_name, feed_name, feed_new);
 
-				std::cout << __func__ << ", LINE: " << __LINE__ << ";\tCHECK FEED\n";
 				bool new_updates = ns_data_read::check_feed_changed (feed, feed_new);
 
 				if (new_updates) {
 					change_count++;
-					std::cout << __func__ << ", LINE: " << __LINE__ << ";\tChange count: " << change_count << "\n";
 
-					ns_data_read::rss_feed* feed_in_use = &feed_index[feed_name];
+					downloaded_feeds.insert_or_assign (feed_name, feed_new);
 
-					if (feed_in_use) {
-						const int64_t record_count = ns_data_read::get_feed_headline_count (db_file_name, feed_name);
+					downloaded_articles.insert_or_assign (feed_name, articles);
 
-						/*
-							CONCURRENT BRANCH - Mark Downloaded Data
-							See: CONCURRENT BRANCK - Use Downloaded Data
-						*/
-						if (record_count > in_use_count) {
-							const int64_t feed_index_start = in_use_count;
-							const int64_t feed_index_end = feed_index_start + (record_count - 1);
+					ns_data_read::rss_feed* updated_feed = &downloaded_feeds[feed_name];
 
-							/*
-								Signals to the UI that new records are available.
-								UI Checks for: end > start
-							*/
-							feed_in_use->revised_index_start = feed_index_start;
-							feed_in_use->revised_index_end = feed_index_end;
-						}
-					}
+					updated_feed->last_index = -1;
 				}
 			}
 		}
@@ -1548,20 +1591,23 @@ download_data()
 		if (successful_download_attempts > 0) {
 			last_download_datetime = gautier_rss_util::get_current_date_time_utc();
 
-			std::cout << __func__ << ", LINE: " << __LINE__ << ";\tdate/time last successful download:\t" <<
-			          last_download_datetime << "\n";
+			std::cout << "DOWNLOAD COMPLETE (" << last_download_datetime << ") \t\t\t"
+			          << downloaded_feeds.size() << " feeds:\n";
+
+			for (std::pair<std::string, ns_data_read::rss_feed> feed_entry : downloaded_feeds) {
+				std::cout << "\t\t\t\t\t"
+				          << feed_entry.first
+				          << "\t\t" << feed_entry.second.feed_url
+				          << " \t\tLAST RETRIEVED: "
+				          << feed_entry.second.last_retrieved << "\n";
+			}
+
+			download_available = (downloaded_feeds.size() > 0);
 
 			allow_process_output = false;
-
-			if (headlines_list_insert_id < 0) {
-				/*
-					Time for headlines_list_insert_interval_milliseconds must be at least 3 seconds.
-					Any shorter and the UI thread does not have sufficient access to the values in feed_index.
-				*/
-				headlines_list_insert_id = gdk_threads_add_timeout (headlines_list_insert_interval_milliseconds,
-				                           headlines_list_insert, headlines_view);
-			}
 		}
+
+		download_in_progress = false;
 	}
 
 	return;
