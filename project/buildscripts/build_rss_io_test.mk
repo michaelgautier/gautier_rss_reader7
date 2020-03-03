@@ -46,7 +46,24 @@ CPPDEPS = -MT$@ -MF`echo $@ | sed -e 's,\.o$$,.d,'` -MD -MP
 ARGTABLE_CFLAGS =   -c -std=c17 -O3 $(CPPFLAGS) $(CFLAGS)
 ARGTABLE_OBJECTS =  \
 	argtable_argtable3.o
-RSS_IO_TEST_CXXFLAGS = -std=c++17 -g `xml2-config --cflags` -I../source \
+RSS_IO_TEST_CXXFLAGS = -std=c++17 -pipe -O2 -ggdb -D_FORTIFY_SOURCE=2 \
+	-fasynchronous-unwind-tables -fcf-protection=full \
+	-fdelete-null-pointer-checks -feliminate-unused-debug-symbols -fexceptions \
+	-fno-common -fnon-call-exceptions -fsized-deallocation -fsplit-stack \
+	-fstack-clash-protection -fstack-protector-all -fstrict-aliasing -ftrapv \
+	-fvisibility=hidden -Werror -Wfatal-errors -pedantic-errors -Wall -Walloca \
+	-Walloc-zero -Wcast-align=strict -Wcast-function-type -Wcast-qual \
+	-Wcatch-value=3 -Wconversion -Wdate-time -Wdisabled-optimization \
+	-Wdouble-promotion -Wduplicated-branches -Wduplicated-cond -Wextra \
+	-Wextra-semi -Wfloat-equal -Wformat=2 -Wformat-overflow=2 \
+	-Wformat-signedness -Wformat-truncation=2 -Wlogical-op -Wno-unused-function \
+	-Wno-maybe-uninitialized -Wmissing-profile -Wparentheses -Wpedantic \
+	-Wplacement-new=2 -Wredundant-decls -Wno-shadow -Wno-sizeof-pointer-div \
+	-Wstack-protector -Wstrict-overflow=5 -Wstringop-overflow=4 \
+	-Wstringop-truncation -Wsuggest-final-methods -Wsuggest-final-types \
+	-Wsuggest-override -Wtrampolines -Wundef -Wuninitialized -Wunknown-pragmas \
+	-Wunused-const-variable=2 -Wunused-macros -Wunused-parameter \
+	-Wzero-as-null-pointer-constant `xml2-config --cflags` -I../source \
 	$(CPPFLAGS) $(CXXFLAGS)
 RSS_IO_TEST_OBJECTS =  \
 	rss_io_test_rss_io_test.o \
@@ -86,7 +103,7 @@ bin/libargtable.a: $(ARGTABLE_OBJECTS) bin
 	$(RANLIB) $@
 
 bin/rss_io_test: $(RSS_IO_TEST_OBJECTS) bin bin/libargtable.a
-	$(CXX) -o $@ $(RSS_IO_TEST_OBJECTS)  -std=c++17 -no-pie argtable_argtable3.o `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `xml2-config --libs` $(LDFLAGS)
+	$(CXX) -o $@ $(RSS_IO_TEST_OBJECTS)  -std=c++17 -pipe -O2 -flto -ggdb -flinker-output=pie argtable_argtable3.o `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `xml2-config --libs` $(LDFLAGS)
 
 argtable_argtable3.o: ./../source/external/argtable/argtable3.c
 	$(CC) -c -o $@ $(ARGTABLE_CFLAGS) $(CPPDEPS) $<

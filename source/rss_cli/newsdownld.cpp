@@ -10,12 +10,16 @@ You should have received a copy of the GNU Lesser General Public License along w
 Author: Michael Gautier <michaelgautier.wordpress.com>
 */
 
+#include <string>
 #include <iostream>
+#include <vector>
+#include <map>
 
 #include "rss_lib/rss/rss_writer.hpp"
 #include "rss_lib/rss/rss_reader.hpp"
 #include "rss_lib/rss/rss_feed.hpp"
 #include "rss_lib/rss/rss_util.hpp"
+#include "rss_lib/rss/rss_article.hpp"
 
 #include "external/argtable/argtable3.h"
 
@@ -251,10 +255,12 @@ main (int argc, char** argv)
 	if (cli_op_self_update->count > 0) {
 		std::cout << "Get latest RSS feed data and update database\n";
 
-		ns_write::update_rss_feeds (db_file_name);
+		std::map<std::string, std::vector<ns_read::rss_article>> articles;
+
+		ns_write::update_rss_feeds (db_file_name, articles);
 
 		if (verbose) {
-			std::cout << "RSS feed update process finished.\n";
+			std::cout << "RSS feed update process finished with " << articles.size() << " article downloaded.\n";
 		}
 	}
 
@@ -339,8 +345,10 @@ main (int argc, char** argv)
 		if (http_feed_info_good) {
 			std::cout << "Save RSS feed to database: \"" << feed_name << "\" \"" << feed_url << "\"\n";
 
+			std::vector<ns_read::rss_article> articles;
+
 			ns_write::update_rss_db_from_network (db_file_name, feed_name, feed_url, feed_retrieve_limit_hrs,
-			                                      feed_retention_days);
+			                                      feed_retention_days, articles);
 
 			if (verbose) {
 				std::cout << "HTTP/XML Feed -> Database process finished.\n";
@@ -356,7 +364,7 @@ main (int argc, char** argv)
 		std::string datetime1 = *cli_datetime1->sval;
 		std::string datetime2 = *cli_datetime2->sval;
 
-		int seconds = gautier_rss_util::get_time_difference_in_seconds (datetime1, datetime2);
+		int_fast32_t seconds = gautier_rss_util::get_time_difference_in_seconds (datetime1, datetime2);
 
 		std::cout << "elapsed seconds: " << seconds << "\n";
 	}
@@ -370,7 +378,9 @@ main (int argc, char** argv)
 	else {
 		std::cout << "Get latest RSS feed data and update database\n";
 
-		ns_write::update_rss_feeds (db_file_name);
+		std::map<std::string, std::vector<ns_read::rss_article>> articles;
+
+		ns_write::update_rss_feeds (db_file_name, articles);
 
 		if (verbose) {
 			std::cout << "RSS feed update process finished.\n";

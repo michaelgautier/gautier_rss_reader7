@@ -20,7 +20,7 @@
 		<!--Additional compiler flags -->
 		<cflags>-c</cflags>
 		<cflags>-std=c17</cflags>
-		<cflags>-O3</cflags>
+		<cflags>-O2</cflags>
 	</lib>
 
 	<!-- Command-line RSS Downloader 
@@ -50,12 +50,103 @@
 
 		<!--Additional compiler flags -->
 		<cppflags>-std=c++17</cppflags>
-		<cppflags>-g</cppflags>
+		<ldflags>-std=c++17</ldflags>
+
+		<cppflags>-pipe</cppflags>
+		<ldflags>-pipe</ldflags>
+		<cppflags>-O2</cppflags>
+		<ldflags>-O2</ldflags>
+		<ldflags>-flto</ldflags>
+		<cppflags>-ggdb</cppflags>
+		<ldflags>-ggdb</ldflags>
+
+
+		<cppflags>-D_FORTIFY_SOURCE=2</cppflags>
+
+		<!-- Compile time optimization, security, correctness -->
+
+		<cppflags>-fasynchronous-unwind-tables</cppflags>
+		<cppflags>-fcf-protection=full</cppflags>
+		<cppflags>-fdelete-null-pointer-checks</cppflags>
+		<cppflags>-feliminate-unused-debug-symbols</cppflags>
+		<cppflags>-fexceptions</cppflags>
+		<cppflags>-fno-common</cppflags>
+		<cppflags>-fnon-call-exceptions</cppflags>
+		<cppflags>-fsized-deallocation</cppflags>
+		<cppflags>-fsplit-stack</cppflags>
+		<cppflags>-fstack-clash-protection</cppflags>
+		<cppflags>-fstack-protector-all</cppflags>
+		<cppflags>-fstrict-aliasing</cppflags>
+		<cppflags>-ftrapv</cppflags>
+		<cppflags>-fvisibility=hidden</cppflags>
+
+		<!--Warnings. Check for correctness -->
+
+		<cppflags>-Werror</cppflags>
+		<cppflags>-Wfatal-errors</cppflags>
+		<cppflags>-pedantic-errors</cppflags>
+		<cppflags>-Wall</cppflags>
+		<cppflags>-Walloca</cppflags>
+		<cppflags>-Walloc-zero</cppflags>
+		<cppflags>-Wcast-align=strict</cppflags>
+		<cppflags>-Wcast-function-type</cppflags>
+		<cppflags>-Wcast-qual</cppflags>
+		<cppflags>-Wcatch-value=3</cppflags>
+		<cppflags>-Wconversion</cppflags>
+		<cppflags>-Wdate-time</cppflags>
+		<cppflags>-Wdisabled-optimization</cppflags>
+		<cppflags>-Wdouble-promotion</cppflags>
+		<cppflags>-Wduplicated-branches</cppflags>
+		<cppflags>-Wduplicated-cond</cppflags>
+		<cppflags>-Wextra</cppflags>
+		<cppflags>-Wextra-semi</cppflags>
+		<cppflags>-Wfloat-equal</cppflags>
+		<cppflags>-Wformat=2</cppflags>
+		<cppflags>-Wformat-overflow=2</cppflags>
+		<cppflags>-Wformat-signedness</cppflags>
+		<cppflags>-Wformat-truncation=2</cppflags>
+		<cppflags>-Wlogical-op</cppflags>
+		<cppflags>-Wno-unused-function</cppflags>
+		<cppflags>-Wno-maybe-uninitialized</cppflags>
+		<cppflags>-Wmissing-profile</cppflags>
+		<cppflags>-Wparentheses</cppflags>
+		<cppflags>-Wpedantic</cppflags>
+		<cppflags>-Wplacement-new=2</cppflags>
+		<cppflags>-Wredundant-decls</cppflags>
+
+		<!-- Turn off warning since argtable arg_rem shadows a constr. -->
+		<!-- 
+		argtable3.h:198:78: error: ‘arg_rem* arg_rem(const char*, const char*)’ hides constructor for ‘struct arg_rem’ [-Werror=shadow]
+		-->
+		<cppflags>-Wno-shadow</cppflags>
+
+		<!-- Turn off warning since argtable clean-up approach is not valid C++ -->
+		<!--
+		error: division ‘sizeof (void**) / sizeof (void*)’ does not compute the number of array elements [-Werror=sizeof-pointer-div]
+		-->
+		<cppflags>-Wno-sizeof-pointer-div</cppflags>
+
+		<cppflags>-Wstack-protector</cppflags>
+		<cppflags>-Wstrict-overflow=5</cppflags>
+		<cppflags>-Wstringop-overflow=4</cppflags>
+		<cppflags>-Wstringop-truncation</cppflags>
+		<cppflags>-Wsuggest-final-methods</cppflags>
+		<cppflags>-Wsuggest-final-types</cppflags>
+		<cppflags>-Wsuggest-override</cppflags>
+		<cppflags>-Wtrampolines</cppflags>
+		<cppflags>-Wundef</cppflags>
+		<cppflags>-Wuninitialized</cppflags>
+		<cppflags>-Wunknown-pragmas</cppflags>
+		<cppflags>-Wunused-const-variable=2</cppflags>
+		<cppflags>-Wunused-macros</cppflags>
+		<cppflags>-Wunused-parameter</cppflags>
+		<cppflags>-Wzero-as-null-pointer-constant</cppflags>
+
 		<cppflags>`xml2-config --cflags`</cppflags>
+		<ldflags>-flinker-output=pie</ldflags>
 
 		<!--Additional linker flags -->
-		<ldflags>-std=c++17</ldflags>
-		<ldflags>-no-pie</ldflags>
+
 		<ldflags>argtable_argtable3.o</ldflags>
 		<ldflags>`pkg-config sqlite3 --libs`</ldflags>
 		<ldflags>`pkg-config libcurl --libs`</ldflags>
