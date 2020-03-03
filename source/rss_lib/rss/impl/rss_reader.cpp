@@ -105,7 +105,8 @@ gautier_rss_data_read::get_feeds (std::string db_file_name, std::vector <rss_fee
 		COUNT(*) AS article_count \
 		FROM feeds AS f \
 		LEFT OUTER JOIN feeds_articles AS fa ON f.feed_name = fa.feed_name \
-		GROUP BY f.feed_name, f.feed_url, f.last_retrieved, f.retrieve_limit_hrs, f.retention_days;";
+		GROUP BY f.feed_name, f.feed_url, f.last_retrieved, f.retrieve_limit_hrs, f.retention_days \
+		ORDER BY f.feed_name, f.feed_url;";
 
 	ns_db::sql_parameter_list_type params;
 
@@ -148,7 +149,7 @@ create_feed_from_sql_row (gautier_rss_database::sql_row_type& row, gautier_rss_d
 
 void
 gautier_rss_data_read::get_feed_headlines (std::string db_file_name, std::string feed_name,
-        std::vector <std::string>& headlines, bool descending)
+        std::vector <rss_article>& headlines, bool descending)
 {
 	namespace ns_db = gautier_rss_database;
 
@@ -163,7 +164,8 @@ gautier_rss_data_read::get_feed_headlines (std::string db_file_name, std::string
 
 	ns_db::sql_rowset_type rows;
 	std::string sql_text =
-	    "SELECT headline_text FROM feeds_articles WHERE feed_name = @feed_name ORDER BY rowid " + sort_direction + ";";
+	    "SELECT feed_name, headline_text, article_summary, article_text, article_date, article_url \
+		FROM feeds_articles WHERE feed_name = @feed_name ORDER BY rowid " + sort_direction + ";";
 
 	ns_db::sql_parameter_list_type params = {
 		feed_name
@@ -172,10 +174,46 @@ gautier_rss_data_read::get_feed_headlines (std::string db_file_name, std::string
 	ns_db::process_sql (&db, sql_text, params, rows);
 
 	for (ns_db::sql_row_type row : rows) {
+		std::string article_feed_name;
+		std::string headline;
+		std::string article_date;
+		std::string article_summary;
+		std::string article_text;
+		std::string url;
+
 		for (ns_db::sql_row_type::value_type field : row) {
-			if (field.first == "headline_text") {
-				headlines.emplace_back (field.second);
+			if (field.first == "feed_name") {
+				const std::string feed_name_out = field.second;
+
+				if (feed_name_out.empty() == false && feed_name_out == feed_name) {
+					article_feed_name = field.second;
+				} else {
+					break;
+				}
+			} else if (field.first == "headline_text") {
+				headline = field.second;
+			} else if (field.first == "article_summary") {
+				article_summary = field.second;
+			} else if (field.first == "article_text") {
+				article_text = field.second;
+			} else if (field.first == "article_date") {
+				article_date = field.second;
+			} else if (field.first == "article_url") {
+				url = field.second;
 			}
+		}
+
+		if (article_feed_name.empty() == false && article_feed_name == feed_name) {
+			rss_article article;
+
+			article.feed_name = feed_name;
+			article.headline = headline;
+			article.article_date = article_date;
+			article.article_summary = article_summary;
+			article.article_text = article_text;
+			article.url = url;
+
+			headlines.emplace_back (article);
 		}
 	}
 
@@ -240,7 +278,7 @@ gautier_rss_data_read::get_feed_headline_count (std::string db_file_name, std::s
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;
-	std::string sql_text = "SELECT count(*) as article_count FROM feeds_articles WHERE feed_name = @feed_name";
+	std::string sql_text = "SELECT COUNT(*) AS article_count FROM feeds_articles WHERE feed_name = @feed_name";
 
 	ns_db::sql_parameter_list_type params = {
 		feed_name
