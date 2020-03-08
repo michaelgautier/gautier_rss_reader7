@@ -201,45 +201,11 @@ gautier_rss_data_read::get_feed_headlines (std::string db_file_name, std::string
 	ns_db::process_sql (&db, sql_text, params, rows);
 
 	for (ns_db::sql_row_type row : rows) {
-		std::string article_feed_name;
-		std::string headline;
-		std::string article_date;
-		std::string article_summary;
-		std::string article_text;
-		std::string url;
+		rss_article article;
 
-		for (ns_db::sql_row_type::value_type field : row) {
-			if (field.first == "feed_name") {
-				const std::string feed_name_out = field.second;
+		create_article_from_sql_row (row, article);
 
-				if (feed_name_out.empty() == false && feed_name_out == feed_name) {
-					article_feed_name = field.second;
-				} else {
-					break;
-				}
-			} else if (field.first == "headline_text") {
-				headline = field.second;
-			} else if (field.first == "article_summary") {
-				article_summary = field.second;
-			} else if (field.first == "article_text") {
-				article_text = field.second;
-			} else if (field.first == "article_date") {
-				article_date = field.second;
-			} else if (field.first == "article_url") {
-				url = field.second;
-			}
-		}
-
-		if (article_feed_name.empty() == false && article_feed_name == feed_name) {
-			rss_article article;
-
-			article.feed_name = feed_name;
-			article.headline = headline;
-			article.article_date = article_date;
-			article.article_summary = article_summary;
-			article.article_text = article_text;
-			article.url = url;
-
+		if (article.feed_name.empty() == false && article.feed_name == feed_name) {
 			headlines.emplace_back (article);
 		}
 	}
