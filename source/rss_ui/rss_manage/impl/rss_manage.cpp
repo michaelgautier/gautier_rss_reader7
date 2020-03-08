@@ -233,8 +233,7 @@ gautier_rss_win_rss_manage::set_feed_model (std::map<std::string, gautier_rss_da
 	for (std::pair<std::string, gautier_rss_data_read::rss_feed> feed_entry : feed_model) {
 		const std::string feed_url = feed_entry.second.feed_url;
 
-		const std::string row_id_text = gautier_rss_data_read::get_row_id (db_file_name, feed_url);
-		const int64_t row_id = std::stoll (row_id_text);
+		const int64_t row_id = gautier_rss_data_read::get_row_id (db_file_name, feed_url);
 
 		feed_model_original.try_emplace (feed_url, gautier_rss_data_read::rss_feed());
 		feed_model_updated.try_emplace (feed_url, gautier_rss_data_read::rss_feed());
@@ -430,11 +429,9 @@ finalize_rss_modifications()
 				Only update the database if there is a change.
 			*/
 			if (row_id > 0) {
-				const std::string row_id_text = std::to_string (row_id);
-
 				ns_read::rss_feed old_feed;
 
-				ns_read::get_feed_by_row_id (db_file_name, row_id_text, old_feed);
+				ns_read::get_feed_by_row_id (db_file_name, row_id, old_feed);
 
 				const bool changed = (old_feed.feed_name != feed_name ||
 				                      old_feed.feed_url != feed_url ||
@@ -444,7 +441,7 @@ finalize_rss_modifications()
 				if (changed) {
 					const std::string old_feed_name = old_feed.feed_name;
 
-					ns_write::update_feed_config (db_file_name, row_id_text, feed_name, feed_url, retrieve_limit_hrs,
+					ns_write::update_feed_config (db_file_name, row_id, feed_name, feed_url, retrieve_limit_hrs,
 					                              retention_days);
 
 					feed_changes.insert_or_assign (old_feed_name, ns_read::rss_feed_mod());
@@ -462,8 +459,7 @@ finalize_rss_modifications()
 			else {
 				ns_write::set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
-				const std::string row_id_text = ns_read::get_row_id (db_file_name, feed_url);
-				const int64_t new_row_id = std::stoll (row_id_text);
+				const int64_t new_row_id = ns_read::get_row_id (db_file_name, feed_url);
 
 				if (new_row_id > 0) {
 					feed_changes.insert_or_assign (feed_name, ns_read::rss_feed_mod());

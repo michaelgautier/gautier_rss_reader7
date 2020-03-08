@@ -111,7 +111,7 @@ gautier_rss_data_write::set_feed_config (std::string db_file_name,
 */
 void
 gautier_rss_data_write::update_feed_config (std::string db_file_name,
-        std::string row_id,
+        int64_t row_id,
         std::string feed_name,
         std::string feed_url,
         std::string retrieve_limit_hrs,
@@ -138,7 +138,7 @@ gautier_rss_data_write::update_feed_config (std::string db_file_name,
 		feed_url,
 		retrieve_limit_hrs,
 		retention_days,
-		row_id
+		std::to_string (row_id)
 	};
 
 	sqlite3* db = NULL;

@@ -54,7 +54,7 @@ gautier_rss_data_read::get_feed (std::string db_file_name, std::string feed_name
 }
 
 void
-gautier_rss_data_read::get_feed_by_row_id (std::string db_file_name, std::string row_id, rss_feed& feed)
+gautier_rss_data_read::get_feed_by_row_id (std::string db_file_name, int64_t row_id, rss_feed& feed)
 {
 	namespace ns_db = gautier_rss_database;
 
@@ -72,7 +72,7 @@ gautier_rss_data_read::get_feed_by_row_id (std::string db_file_name, std::string
 		GROUP BY f.feed_name, f.feed_url, f.last_retrieved, f.retrieve_limit_hrs, f.retention_days;";
 
 	ns_db::sql_parameter_list_type params = {
-		row_id
+		std::to_string (row_id)
 	};
 
 	ns_db::process_sql (&db, sql_text, params, rows);
@@ -299,10 +299,10 @@ gautier_rss_data_read::get_feed_headline_count (std::string db_file_name, std::s
 	return size;
 }
 
-std::string
+int64_t
 gautier_rss_data_read::get_row_id (std::string db_file_name, std::string feed_url)
 {
-	std::string row_id;
+	int64_t row_id;
 
 	namespace ns_db = gautier_rss_database;
 
@@ -321,7 +321,7 @@ gautier_rss_data_read::get_row_id (std::string db_file_name, std::string feed_ur
 	for (ns_db::sql_row_type row : rows) {
 		for (ns_db::sql_row_type::value_type field : row) {
 			if (field.first == "rowid") {
-				row_id = field.second;
+				row_id = std::stoll (field.second);
 
 				break;
 			}

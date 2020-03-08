@@ -715,7 +715,6 @@ process_rss_feed_configuration (ns_data_read::rss_feed_mod& modification)
 	ns_data_read::rss_feed_mod_status status = modification.status;
 
 	std::string feed_name = modification.feed_name;
-	const int64_t row_id_now = modification.row_id;
 
 	bool is_insert = status == ns_data_read::rss_feed_mod_status::insert;
 
@@ -752,7 +751,7 @@ process_rss_feed_configuration (ns_data_read::rss_feed_mod& modification)
 				feed_index.erase (feed_name);
 				feeds_articles.erase (feed_name);
 			} else if (status ==  ns_data_read::rss_feed_mod_status::change) {
-				std::string row_id = std::to_string (row_id_now);
+				const int64_t row_id = modification.row_id;
 
 				ns_data_read::rss_feed updated_feed;
 
