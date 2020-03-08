@@ -23,7 +23,7 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include <cstdlib>
 #include <cstring>
 
-static
+static const
 std::string app_name = "michael.gautier.rss.v7";
 
 /*
@@ -73,7 +73,7 @@ create_user_data_directory();
 
 static
 int
-create_directory (std::string directory_path);
+create_directory (const std::string directory_path);
 
 static
 void
@@ -111,7 +111,7 @@ main (int argc, char** argv)
 		Initialize database to hold RSS feed data.
 	*/
 	if (status == 0) {
-		std::string db_file_name = ns_ui_app::get_db_file_name();
+		const std::string db_file_name = ns_ui_app::get_db_file_name();
 
 		gautier_rss_data_write::initialize_db (db_file_name);
 	}
@@ -152,7 +152,7 @@ gautier_rss_ui_app::create()
 	{
 		g_object_unref (application);
 
-		std::string db_file_name = get_db_file_name();
+		const std::string db_file_name = get_db_file_name();
 		{
 			namespace ns_write = gautier_rss_data_write;
 			ns_write::de_initialize_db (db_file_name);
@@ -179,9 +179,9 @@ gautier_rss_ui_app::activate (GtkApplication* application, gpointer user_data)
 	CSS Style
 */
 void
-gautier_rss_ui_app::set_css_class (GtkWidget* widget, std::string css_class_name)
+gautier_rss_ui_app::set_css_class (GtkWidget* widget, const std::string css_class_name)
 {
-	std::string css_style_resource_path = "/newsreader/app_style.css";
+	const std::string css_style_resource_path = "/newsreader/app_style.css";
 
 	GtkCssProvider* css_provider = gtk_css_provider_new();
 
@@ -206,7 +206,7 @@ gautier_rss_ui_app::get_gtk_class_type_name (GtkWidget* widget)
 	GtkWidgetClass* widget_class = GTK_WIDGET_GET_CLASS (widget);
 	GType class_type = G_OBJECT_CLASS_TYPE (widget_class);
 
-	std::string widget_type_name = g_type_name (class_type);
+	const std::string widget_type_name = g_type_name (class_type);
 
 	return widget_type_name;
 }
@@ -217,7 +217,7 @@ gautier_rss_ui_app::get_scroll_content_as_list_view (GtkScrolledWindow* scroll_w
 	if (scroll_win) {
 		GtkWidget* viewport = gtk_bin_get_child (GTK_BIN (scroll_win));
 
-		std::string gtk_widget_type_name = get_gtk_class_type_name (viewport);
+		const std::string gtk_widget_type_name = get_gtk_class_type_name (viewport);
 
 		if (viewport) {
 			if (gtk_widget_type_name == "GtkTextView" ||
@@ -284,9 +284,9 @@ gautier_rss_ui_app::get_user_directory_name()
 
 static
 int
-create_directory (std::string directory_path)
+create_directory (const std::string directory_path)
 {
-	std::string directory_name = directory_path;
+	const std::string directory_name = directory_path;
 
 	int directory_status = mkdir (directory_name.data(), S_IRWXU | S_IRWXG | S_IRWXO);
 
@@ -320,7 +320,7 @@ create_user_root_directory()
 {
 	int status  = -1;
 
-	uid_t user_id = getuid();
+	const uid_t user_id = getuid();
 	struct passwd* user_info = getpwuid (user_id);
 
 	if (!user_info) {
@@ -336,7 +336,7 @@ create_user_root_directory()
 	}
 
 	if (status == 0) {
-		std::string directory_name = user_home_directory + root_user_data_directory;
+		const std::string directory_name = user_home_directory + root_user_data_directory;
 
 		status = create_directory (directory_name);
 	}
@@ -348,9 +348,9 @@ static
 int
 create_user_data_directory()
 {
-	std::string directory_name = gautier_rss_ui_app::get_user_directory_name();
+	const std::string directory_name = gautier_rss_ui_app::get_user_directory_name();
 
-	int directory_status = create_directory (directory_name);
+	const int directory_status = create_directory (directory_name);
 
 	return directory_status;
 }
@@ -359,7 +359,7 @@ static
 void
 load_application_icon()
 {
-	std::string app_icon_resource_path = "/newsreader/app_icon.png";
+	const std::string app_icon_resource_path = "/newsreader/app_icon.png";
 
 	GdkPixbuf* application_icon_pixbuf = gdk_pixbuf_new_from_resource (app_icon_resource_path.data(), NULL);
 

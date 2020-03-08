@@ -24,27 +24,28 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 namespace gautier_rss_win_main_headlines_frame {
 	void
-	initialize_headline_view (GtkWidget* headlines_view, int monitor_width, int monitor_height);
+	initialize_headline_view (GtkWidget* headlines_view, const int monitor_width, const int monitor_height);
 
 	void
-	add_headline_page (GtkWidget* headlines_view, std::string& feed_name, int position,
+	add_headline_page (GtkWidget* headlines_view, const std::string feed_name, const int position,
 	                   void (*headline_view_select_row) (GtkTreeSelection*, gpointer));
 
 	void
-	show_headlines (GtkWidget* headlines_view, std::string feed_name, int64_t headline_index_start,
-	                int64_t headline_index_end, std::vector<gautier_rss_data_read::rss_article>& headlines, bool prepend);
+	show_headlines (GtkWidget* headlines_view, std::string feed_name, const int64_t headline_index_start,
+	                const int64_t headline_index_end, std::vector<gautier_rss_data_read::rss_article>& headlines,
+	                const bool prepend);
 
 	void
 	select_headline (gautier_rss_data_read::rss_article& rss_data, GtkTreeSelection* headline_row);
 
 	void
-	select_headline_row (GtkWidget* headlines_view, std::string feed_name, int64_t headline_row_index);
+	select_headline_row (GtkWidget* headlines_view, const std::string feed_name, const int64_t headline_row_index);
 
 	int
 	get_default_headlines_view_content_width();
 
 	int
-	get_tab_contents_container_by_feed_name (GtkNotebook* headlines_view, std::string& feed_name,
+	get_tab_contents_container_by_feed_name (GtkNotebook* headlines_view, const std::string feed_name,
 	        GtkWidget** notebook_tab);
 }
 #endif

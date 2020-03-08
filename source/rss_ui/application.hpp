@@ -26,7 +26,7 @@ namespace gautier_rss_ui_app {
 	activate (GtkApplication* application, gpointer user_data);
 
 	void
-	set_css_class (GtkWidget* widget, std::string css_class_name);
+	set_css_class (GtkWidget* widget, const std::string css_class_name);
 
 	std::string
 	get_gtk_class_type_name (GtkWidget* widget);

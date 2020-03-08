@@ -51,15 +51,15 @@ get_row_data (GtkTreeSelection* tree_selection, std::string& feed_name, std::str
               std::string& article_summary, std::string& article_text, std::string& article_date, std::string& article_url);
 
 void
-gautier_rss_win_main_headlines_frame::initialize_headline_view (GtkWidget* headlines_view, int monitor_width,
-        int monitor_height)
+gautier_rss_win_main_headlines_frame::initialize_headline_view (GtkWidget* headlines_view,
+        const int monitor_width, const int monitor_height)
 {
-	double monitor_width_d = monitor_width;
-	double monitor_width_part = 1.7;
+	const double monitor_width_d = monitor_width;
+	const double monitor_width_part = 1.7;
 
 	headlines_section_width = static_cast<int> ((monitor_width_d / monitor_width_part));
 
-	int article_section_width = static_cast<int> ((monitor_width - headlines_section_width));
+	const int article_section_width = static_cast<int> ((monitor_width - headlines_section_width));
 
 	std::cout << "Optimal article section width: " << article_section_width << "\n";
 	std::cout << "NOTE - Monitor Height: " << monitor_height << "\n";
@@ -70,9 +70,8 @@ gautier_rss_win_main_headlines_frame::initialize_headline_view (GtkWidget* headl
 }
 
 void
-gautier_rss_win_main_headlines_frame::add_headline_page (GtkWidget* headlines_view, std::string& feed_name,
-        int position,
-        void (*headline_view_select_row) (GtkTreeSelection*, gpointer))
+gautier_rss_win_main_headlines_frame::add_headline_page (GtkWidget* headlines_view, const std::string feed_name,
+        const int position, void (*headline_view_select_row) (GtkTreeSelection*, gpointer))
 {
 	GtkWidget* scroll_win = gtk_scrolled_window_new (NULL, NULL);
 
@@ -106,8 +105,8 @@ gautier_rss_win_main_headlines_frame::add_headline_page (GtkWidget* headlines_vi
 
 void
 gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view, std::string feed_name,
-        int64_t headline_index_start, int64_t headline_index_end,
-        std::vector<gautier_rss_data_read::rss_article>& headlines, bool prepend)
+        const int64_t headline_index_start, const int64_t headline_index_end,
+        std::vector<gautier_rss_data_read::rss_article>& headlines, const bool prepend)
 {
 	std::cout << __func__ << " \t\t" << feed_name << " index from \t" << headline_index_start << " to " <<
 	          headline_index_end << ", list contains " << headlines.size() << " articles\n";
@@ -128,7 +127,7 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 		{
 			GtkWidget* tab = NULL;
 
-			int tab_i = get_tab_contents_container_by_feed_name (GTK_NOTEBOOK (headlines_view), feed_name, &tab);
+			const gint tab_i = get_tab_contents_container_by_feed_name (GTK_NOTEBOOK (headlines_view), feed_name, &tab);
 
 			/*
 				Headlines List Widget
@@ -225,8 +224,8 @@ gautier_rss_win_main_headlines_frame::select_headline (gautier_rss_data_read::rs
 }
 
 void
-gautier_rss_win_main_headlines_frame::select_headline_row (GtkWidget* headlines_view, std::string feed_name,
-        int64_t headline_row_index)
+gautier_rss_win_main_headlines_frame::select_headline_row (GtkWidget* headlines_view,
+        const std::string feed_name, const int64_t headline_row_index)
 {
 	if (headline_row_index > -1) {
 		GtkWidget* headlines_list_view = NULL;
@@ -237,7 +236,7 @@ gautier_rss_win_main_headlines_frame::select_headline_row (GtkWidget* headlines_
 		{
 			GtkWidget* tab = NULL;
 
-			int tab_i = get_tab_contents_container_by_feed_name (GTK_NOTEBOOK (headlines_view), feed_name, &tab);
+			const gint tab_i = get_tab_contents_container_by_feed_name (GTK_NOTEBOOK (headlines_view), feed_name, &tab);
 
 			/*
 				Headlines List Widget
@@ -253,7 +252,7 @@ gautier_rss_win_main_headlines_frame::select_headline_row (GtkWidget* headlines_
 			Select row.
 		*/
 		if (headlines_list_view != NULL) {
-			bool data_entry_in_cell_is_enabled = false;
+			const bool data_entry_in_cell_is_enabled = false;
 
 			GtkTreeViewColumn* headline_column = gtk_tree_view_get_column (GTK_TREE_VIEW (headlines_list_view),
 			                                     col_pos_headline_text);
@@ -356,17 +355,16 @@ get_row_data (GtkTreeSelection* tree_selection, std::string& feed_name, std::str
 
 int
 gautier_rss_win_main_headlines_frame::get_tab_contents_container_by_feed_name (GtkNotebook* headlines_view,
-        std::string& feed_name,
-        GtkWidget** notebook_tab)
+        const std::string feed_name, GtkWidget** notebook_tab)
 {
 	int tab_n = -1;
 
-	int page_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
+	const gint page_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
 
-	for (int tab_i = 0; tab_i < page_count; tab_i++) {
+	for (gint tab_i = 0; tab_i < page_count; tab_i++) {
 		GtkWidget* tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
 
-		std::string tab_label = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
+		const std::string tab_label = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
 
 		if (feed_name == tab_label) {
 			tab_n = tab_i;

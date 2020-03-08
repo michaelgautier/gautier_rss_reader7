@@ -45,7 +45,7 @@ void
 finalize_rss_modifications();
 
 static void
-create_window (GtkApplication* app, GtkWindow* parent, int window_width, int window_height);
+create_window (GtkApplication* app, GtkWindow* parent, const int window_width, const int window_height);
 
 static void
 layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_entry_layout_row2,
@@ -259,8 +259,8 @@ gautier_rss_win_rss_manage::set_modification_callback (feed_mod_cb_type* feed_mo
 }
 
 void
-gautier_rss_win_rss_manage::show_dialog (GtkApplication* app, GtkWindow* parent, int window_width,
-        int window_height)
+gautier_rss_win_rss_manage::show_dialog (GtkApplication* app, GtkWindow* parent, const int window_width,
+        const int window_height)
 {
 	/*
 		RSS Management Window.
@@ -333,7 +333,7 @@ gautier_rss_win_rss_manage::show_dialog (GtkApplication* app, GtkWindow* parent,
 }
 
 static void
-create_window (GtkApplication* app, GtkWindow* parent, int window_width, int window_height)
+create_window (GtkApplication* app, GtkWindow* parent, const int window_width, const int window_height)
 {
 	/*
 		Operating in a valid instance of a GTK application.
@@ -407,7 +407,7 @@ void
 finalize_rss_modifications()
 {
 	if (win && feed_mod_cb) {
-		std::string db_file_name = ns_app::get_db_file_name();
+		const std::string db_file_name = ns_app::get_db_file_name();
 
 		/*
 			Reduce feed changes down to actual changes.

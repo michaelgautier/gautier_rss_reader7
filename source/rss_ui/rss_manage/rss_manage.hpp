@@ -30,6 +30,6 @@ namespace gautier_rss_win_rss_manage {
 	set_modification_callback (feed_mod_cb_type* feed_mod_callback);
 
 	void
-	show_dialog (GtkApplication* app, GtkWindow* parent, int window_width, int window_height);
+	show_dialog (GtkApplication* app, GtkWindow* parent, const int window_width, const int window_height);
 }
 #endif
