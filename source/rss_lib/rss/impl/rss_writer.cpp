@@ -528,18 +528,18 @@ gautier_rss_data_write::update_rss_xml_db_from_network (std::string db_file_name
 
 		if (response_good) {
 			update_feed_retrieved (db_file_name, feed_url);
-		}
 
-		ns_parse::save_feed_data_to_file (feed_name, ".xml", feed_data);
+			ns_parse::save_feed_data_to_file (feed_name, ".xml", feed_data);
 
-		std::vector<ns_data_read::rss_article> feed_lines;
+			std::vector<ns_data_read::rss_article> feed_lines;
 
-		ns_parse::get_feed_lines (feed_data, feed_lines);
+			ns_parse::get_feed_lines (feed_data, feed_lines);
 
-		for (ns_data_read::rss_article article : feed_lines) {
-			article.feed_name = feed_name;
+			for (ns_data_read::rss_article article : feed_lines) {
+				article.feed_name = feed_name;
 
-			set_feed_headline (db_file_name, article);
+				set_feed_headline (db_file_name, article);
+			}
 		}
 	}
 
@@ -571,6 +571,8 @@ gautier_rss_data_write::update_rss_db_from_network (std::string db_file_name,
 	bool is_feed_still_fresh = ns_data_read::is_feed_still_fresh (db_file_name, feed_name, false);
 
 	if (is_feed_still_fresh == false) {
+		const int64_t rowid = ns_data_read::get_feed_article_max_row_id (db_file_name, feed_name);
+
 		std::string feed_data;
 
 		response_code = ns_data_read::download_rss_feed (feed_url, feed_data);
@@ -579,19 +581,19 @@ gautier_rss_data_write::update_rss_db_from_network (std::string db_file_name,
 
 		if (response_good) {
 			update_feed_retrieved (db_file_name, feed_url);
+
+			std::vector<ns_data_read::rss_article> feed_lines;
+
+			ns_parse::get_feed_lines (feed_data, feed_lines);
+
+			for (ns_data_read::rss_article article : feed_lines) {
+				article.feed_name = feed_name;
+
+				set_feed_headline (db_file_name, article);
+			}
+
+			ns_data_read::get_feed_headlines_after_row_id (db_file_name, feed_name, articles, true, rowid);
 		}
-
-		std::vector<ns_data_read::rss_article> feed_lines;
-
-		ns_parse::get_feed_lines (feed_data, feed_lines);
-
-		for (ns_data_read::rss_article article : feed_lines) {
-			article.feed_name = feed_name;
-
-			set_feed_headline (db_file_name, article);
-		}
-
-		articles = feed_lines;
 	}
 
 	return response_code;

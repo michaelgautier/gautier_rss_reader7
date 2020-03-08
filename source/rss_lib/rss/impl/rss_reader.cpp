@@ -216,6 +216,51 @@ gautier_rss_data_read::get_feed_headlines (std::string db_file_name, std::string
 }
 
 void
+gautier_rss_data_read::get_feed_headlines_after_row_id (std::string db_file_name, std::string feed_name,
+        std::vector <rss_article>& headlines, bool descending, int64_t row_id)
+{
+	namespace ns_db = gautier_rss_database;
+
+	sqlite3* db = NULL;
+	ns_db::open_db (db_file_name, &db);
+
+	std::string sort_direction = "ASC";
+
+	if (descending) {
+		sort_direction = "DESC";
+	}
+
+	ns_db::sql_rowset_type rows;
+	std::string sql_text =
+	    "SELECT feed_name, headline_text, article_summary, article_text, article_date, article_url \
+		FROM feeds_articles \
+		WHERE feed_name = @feed_name \
+		and rowid > @rowid \
+		ORDER BY rowid " + sort_direction + ";";
+
+	ns_db::sql_parameter_list_type params = {
+		feed_name,
+		std::to_string (row_id)
+	};
+
+	ns_db::process_sql (&db, sql_text, params, rows);
+
+	for (ns_db::sql_row_type row : rows) {
+		rss_article article;
+
+		create_article_from_sql_row (row, article);
+
+		if (article.feed_name.empty() == false && article.feed_name == feed_name) {
+			headlines.emplace_back (article);
+		}
+	}
+
+	ns_db::close_db (&db);
+
+	return;
+}
+
+void
 gautier_rss_data_read::get_feed_article_summary (std::string db_file_name, std::string feed_name,
         std::string headline, rss_article& article)
 {
@@ -337,7 +382,8 @@ gautier_rss_data_read::get_feed_article_max_row_id (std::string db_file_name, st
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;
-	std::string sql_text = "SELECT MAX(rowid) FROM feeds_articles WHERE feed_name = @feed_name";
+	std::string sql_text =
+	    "SELECT IFNULL(MAX(rowid), -1) AS rowid FROM feeds_articles WHERE feed_name = @feed_name";
 
 	ns_db::sql_parameter_list_type params = {
 		feed_name

@@ -35,6 +35,10 @@ namespace gautier_rss_data_read {
 	                    bool descending);
 
 	void
+	get_feed_headlines_after_row_id (std::string db_file_name, std::string feed_name,
+	                                 std::vector <rss_article>& headlines, bool descending, int64_t row_id);
+
+	void
 	get_feed_article_summary (std::string db_file_name, std::string feed_name, std::string headline,
 	                          rss_article& article);
 
