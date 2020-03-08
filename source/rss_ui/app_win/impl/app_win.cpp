@@ -1281,7 +1281,7 @@ async_load_tabs_with_downloaded_data (gpointer data)
 			visible_feed_name = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
 		}
 
-		if (visible_feed_name.empty() == false && visible_feed_name == feed_name) {
+		if (visible_feed_name.empty() == false && visible_feed_name == feed_name && _feed_data.feed_name.empty()) {
 			ns_rss_tabs::select_headline_row (GTK_WIDGET (headlines_view), feed_name, 0);
 		}
 	}
