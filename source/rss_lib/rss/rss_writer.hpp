@@ -38,7 +38,7 @@ namespace gautier_rss_data_write {
 		function that access the database (read or write).
 	*/
 	void
-	initialize_db (std::string db_file_name);
+	initialize_db (const std::string db_file_name);
 
 	/*
 		RSS FEED CONFIGURATION
@@ -46,11 +46,11 @@ namespace gautier_rss_data_write {
 		Creates an RSS feed configuration.
 	*/
 	void
-	set_feed_config (std::string db_file_name,
-	                 std::string feed_name,
-	                 std::string feed_url,
-	                 std::string retrieve_limit_hrs,
-	                 std::string retention_days);
+	set_feed_config (const std::string db_file_name,
+	                 const std::string feed_name,
+	                 const std::string feed_url,
+	                 const std::string retrieve_limit_hrs,
+	                 const std::string retention_days);
 
 	/*
 		RSS FEED CONFIGURATION
@@ -58,12 +58,12 @@ namespace gautier_rss_data_write {
 		Updates an RSS feed configuration.
 	*/
 	void
-	update_feed_config (std::string db_file_name,
-	                    int64_t row_id,
-	                    std::string feed_name,
-	                    std::string feed_url,
-	                    std::string retrieve_limit_hrs,
-	                    std::string retention_days);
+	update_feed_config (const std::string db_file_name,
+	                    const int64_t row_id,
+	                    const std::string feed_name,
+	                    const std::string feed_url,
+	                    const std::string retrieve_limit_hrs,
+	                    const std::string retention_days);
 
 	/*
 		RSS FEED CONFIGURATION - PART III
@@ -71,7 +71,8 @@ namespace gautier_rss_data_write {
 		Fixes links to the feed configuration.
 	*/
 	void
-	update_feed_config_related (std::string db_file_name, std::string feed_name_old, std::string feed_name_new);
+	update_feed_config_related (const std::string db_file_name, const std::string feed_name_old,
+	                            const std::string feed_name_new);
 
 	/*
 		RSS FEED REMOVAL
@@ -94,8 +95,7 @@ namespace gautier_rss_data_write {
 		information.
 	*/
 	void
-	delete_feed (std::string db_file_name,
-	             std::string feed_url);
+	delete_feed (const std::string db_file_name, const std::string feed_url);
 
 	/*
 		RSS HEADLINE/ARTICLE
@@ -103,9 +103,7 @@ namespace gautier_rss_data_write {
 		Stores an individual line from an RSS feed.
 	*/
 	void
-	set_feed_headline (std::string db_file_name,
-	                   gautier_rss_data_read::rss_article&
-	                   article);
+	set_feed_headline (const std::string db_file_name, gautier_rss_data_read::rss_article& article);
 
 	/*
 		Primary RSS function.
@@ -116,7 +114,7 @@ namespace gautier_rss_data_write {
 		Stores the feed data in the database.
 	*/
 	void
-	update_rss_feeds (std::string db_file_name,
+	update_rss_feeds (const std::string db_file_name,
 	                  std::map<std::string, std::vector<gautier_rss_data_read::rss_article>>& feed_data);
 
 	/*
@@ -134,7 +132,7 @@ namespace gautier_rss_data_write {
 		Includes articles downloaded for the updated feeds.
 	*/
 	void
-	download_feeds (std::string& db_file_name, int_fast32_t pause_interval_in_seconds,
+	download_feeds (const std::string& db_file_name, const int_fast32_t pause_interval_in_seconds,
 	                std::vector<std::pair<gautier_rss_data_read::rss_feed, gautier_rss_data_read::rss_feed>>& changed_feeds,
 	                std::map<std::string, std::vector<gautier_rss_data_read::rss_article>> articles);
 
@@ -149,7 +147,7 @@ namespace gautier_rss_data_write {
 		Sets the last_retrieved date.
 	*/
 	void
-	update_feed_retrieved (std::string db_file_name, std::string feed_url);
+	update_feed_retrieved (const std::string db_file_name, const std::string feed_url);
 
 	/*
 		RSS XML file to SQLite Db
@@ -163,11 +161,11 @@ namespace gautier_rss_data_write {
 		the input data. This function greatly assist that effort.
 	*/
 	void
-	update_rss_db_from_rss_xml (std::string db_file_name,
-	                            std::string feed_name,
-	                            std::string feed_url,
-	                            std::string retrieve_limit_hrs,
-	                            std::string retention_days);
+	update_rss_db_from_rss_xml (const std::string db_file_name,
+	                            const std::string feed_name,
+	                            const std::string feed_url,
+	                            const std::string retrieve_limit_hrs,
+	                            const std::string retention_days);
 
 	/*
 		RSS XML (HTTP) to RSS XML (LOCAL FILE)
@@ -180,11 +178,11 @@ namespace gautier_rss_data_write {
 		for inspection and analysis. Used to calibrate parsing functions.
 	*/
 	long
-	update_rss_xml_from_network (std::string db_file_name,
-	                             std::string feed_name,
-	                             std::string feed_url,
-	                             std::string retrieve_limit_hrs,
-	                             std::string retention_days);
+	update_rss_xml_from_network (const std::string db_file_name,
+	                             const std::string feed_name,
+	                             const std::string feed_url,
+	                             const std::string retrieve_limit_hrs,
+	                             const std::string retention_days);
 
 	/*
 		RSS XML (HTTP) to RSS XML (LOCAL FILE) to SQLite Db
@@ -200,11 +198,11 @@ namespace gautier_rss_data_write {
 		an alternative source of offline/recovery information.
 	*/
 	long
-	update_rss_xml_db_from_network (std::string db_file_name,
-	                                std::string feed_name,
-	                                std::string feed_url,
-	                                std::string retrieve_limit_hrs,
-	                                std::string retention_days);
+	update_rss_xml_db_from_network (const std::string db_file_name,
+	                                const std::string feed_name,
+	                                const std::string feed_url,
+	                                const std::string retrieve_limit_hrs,
+	                                const std::string retention_days);
 
 	/*
 		Foundation RSS function.
@@ -217,14 +215,14 @@ namespace gautier_rss_data_write {
 		Provides an article download.
 	*/
 	long
-	update_rss_db_from_network (std::string db_file_name,
-	                            std::string feed_name,
-	                            std::string feed_url,
-	                            std::string retrieve_limit_hrs,
-	                            std::string retention_days,
+	update_rss_db_from_network (const std::string db_file_name,
+	                            const std::string feed_name,
+	                            const std::string feed_url,
+	                            const std::string retrieve_limit_hrs,
+	                            const std::string retention_days,
 	                            std::vector<gautier_rss_data_read::rss_article>& articles);
 
 	void
-	de_initialize_db (std::string db_file_name);
+	de_initialize_db (const std::string db_file_name);
 }
 #endif

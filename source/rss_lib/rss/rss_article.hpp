@@ -34,9 +34,9 @@ namespace gautier_rss_data_read {
 	clear_feed_data_keep_name (rss_article& feed_data);
 
 	bool
-	validate_feed_info_missing (std::string feed_name, std::string feed_url);
+	validate_feed_info_missing (const std::string feed_name, const std::string feed_url);
 
 	bool
-	indicates_html (std::string& text);
+	indicates_html (const std::string& text);
 }
 #endif

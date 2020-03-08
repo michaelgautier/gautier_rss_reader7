@@ -51,7 +51,7 @@ struct MemoryStruct
 };
 
 static size_t
-WriteMemoryCallback (void* contents, size_t size, size_t nmemb, void* userp)
+WriteMemoryCallback (void* contents, const size_t size, const size_t nmemb, void* userp)
 {
 	size_t realsize = size * nmemb;
 
@@ -77,7 +77,7 @@ WriteMemoryCallback (void* contents, size_t size, size_t nmemb, void* userp)
 }
 
 long
-gautier_rss_data_read::download_rss_feed (std::string feed_url, std::string& headlines)
+gautier_rss_data_read::download_rss_feed (const std::string feed_url, std::string& headlines)
 {
 	long response_code = 0L;
 
@@ -180,9 +180,9 @@ gautier_rss_data_read::download_rss_feed (std::string feed_url, std::string& hea
 }
 
 bool
-gautier_rss_data_read::is_network_response_ok (long response_code)
+gautier_rss_data_read::is_network_response_ok (const long response_code)
 {
-	bool good = (response_code >= http_response_min_good && response_code <= http_response_max_good);
+	const bool good = (response_code >= http_response_min_good && response_code <= http_response_max_good);
 
 	return good;
 }

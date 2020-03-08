@@ -21,7 +21,7 @@ create_article_from_sql_row (gautier_rss_database::sql_row_type& row,
                              gautier_rss_data_read::rss_article& article);
 
 void
-gautier_rss_data_read::get_feed (std::string db_file_name, std::string feed_name, rss_feed& feed)
+gautier_rss_data_read::get_feed (const std::string db_file_name, const std::string feed_name, rss_feed& feed)
 {
 	namespace ns_db = gautier_rss_database;
 
@@ -29,7 +29,7 @@ gautier_rss_data_read::get_feed (std::string db_file_name, std::string feed_name
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;
-	std::string sql_text =
+	const std::string sql_text =
 	    "SELECT f.feed_name, f.feed_url, \
 		f.last_retrieved, f.retrieve_limit_hrs, f.retention_days, \
 		COUNT(*) AS article_count \
@@ -58,7 +58,7 @@ gautier_rss_data_read::get_feed (std::string db_file_name, std::string feed_name
 }
 
 void
-gautier_rss_data_read::get_feed_by_row_id (std::string db_file_name, int64_t row_id, rss_feed& feed)
+gautier_rss_data_read::get_feed_by_row_id (const std::string db_file_name, const int64_t row_id, rss_feed& feed)
 {
 	namespace ns_db = gautier_rss_database;
 
@@ -66,7 +66,7 @@ gautier_rss_data_read::get_feed_by_row_id (std::string db_file_name, int64_t row
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;
-	std::string sql_text =
+	const std::string sql_text =
 	    "SELECT f.feed_name, f.feed_url, \
 		f.last_retrieved, f.retrieve_limit_hrs, f.retention_days, \
 		COUNT(*) AS article_count \
@@ -95,7 +95,7 @@ gautier_rss_data_read::get_feed_by_row_id (std::string db_file_name, int64_t row
 }
 
 void
-gautier_rss_data_read::get_feeds (std::string db_file_name, std::vector <rss_feed>& feeds)
+gautier_rss_data_read::get_feeds (const std::string db_file_name, std::vector <rss_feed>& feeds)
 {
 	namespace ns_db = gautier_rss_database;
 
@@ -103,7 +103,7 @@ gautier_rss_data_read::get_feeds (std::string db_file_name, std::vector <rss_fee
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;
-	std::string sql_text =
+	const std::string sql_text =
 	    "SELECT f.feed_name, f.feed_url, \
 		f.last_retrieved, f.retrieve_limit_hrs, f.retention_days, \
 		COUNT(*) AS article_count \
@@ -175,8 +175,8 @@ create_article_from_sql_row (gautier_rss_database::sql_row_type& row,
 }
 
 void
-gautier_rss_data_read::get_feed_headlines (std::string db_file_name, std::string feed_name,
-        std::vector <rss_article>& headlines, bool descending)
+gautier_rss_data_read::get_feed_headlines (const std::string db_file_name, const std::string feed_name,
+        std::vector <rss_article>& headlines, const bool descending)
 {
 	namespace ns_db = gautier_rss_database;
 
@@ -190,7 +190,7 @@ gautier_rss_data_read::get_feed_headlines (std::string db_file_name, std::string
 	}
 
 	ns_db::sql_rowset_type rows;
-	std::string sql_text =
+	const std::string sql_text =
 	    "SELECT feed_name, headline_text, article_summary, article_text, article_date, article_url \
 		FROM feeds_articles WHERE feed_name = @feed_name ORDER BY rowid " + sort_direction + ";";
 
@@ -216,8 +216,9 @@ gautier_rss_data_read::get_feed_headlines (std::string db_file_name, std::string
 }
 
 void
-gautier_rss_data_read::get_feed_headlines_after_row_id (std::string db_file_name, std::string feed_name,
-        std::vector <rss_article>& headlines, bool descending, int64_t row_id)
+gautier_rss_data_read::get_feed_headlines_after_row_id (const std::string db_file_name,
+        const std::string feed_name,
+        std::vector <rss_article>& headlines, const bool descending, const int64_t row_id)
 {
 	namespace ns_db = gautier_rss_database;
 
@@ -231,7 +232,7 @@ gautier_rss_data_read::get_feed_headlines_after_row_id (std::string db_file_name
 	}
 
 	ns_db::sql_rowset_type rows;
-	std::string sql_text =
+	const std::string sql_text =
 	    "SELECT feed_name, headline_text, article_summary, article_text, article_date, article_url \
 		FROM feeds_articles \
 		WHERE feed_name = @feed_name \
@@ -261,8 +262,8 @@ gautier_rss_data_read::get_feed_headlines_after_row_id (std::string db_file_name
 }
 
 void
-gautier_rss_data_read::get_feed_article_summary (std::string db_file_name, std::string feed_name,
-        std::string headline, rss_article& article)
+gautier_rss_data_read::get_feed_article_summary (const std::string db_file_name, const std::string feed_name,
+        const std::string headline, rss_article& article)
 {
 	namespace ns_db = gautier_rss_database;
 
@@ -270,8 +271,11 @@ gautier_rss_data_read::get_feed_article_summary (std::string db_file_name, std::
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;
-	std::string sql_text =
-	    "SELECT article_summary, article_text, article_date, article_url FROM feeds_articles WHERE feed_name = @feed_name AND headline_text = @headline_text";
+	const std::string sql_text =
+	    "SELECT article_summary, article_text, article_date, article_url \
+		FROM feeds_articles \
+		WHERE feed_name = @feed_name \
+			AND headline_text = @headline_text";
 
 	ns_db::sql_parameter_list_type params = {
 		feed_name,
@@ -306,7 +310,7 @@ gautier_rss_data_read::get_feed_article_summary (std::string db_file_name, std::
 }
 
 int64_t
-gautier_rss_data_read::get_feed_headline_count (std::string db_file_name, std::string feed_name)
+gautier_rss_data_read::get_feed_headline_count (const std::string db_file_name, const std::string feed_name)
 {
 	int64_t size = 0;
 
@@ -316,7 +320,9 @@ gautier_rss_data_read::get_feed_headline_count (std::string db_file_name, std::s
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;
-	std::string sql_text = "SELECT COUNT(*) AS article_count FROM feeds_articles WHERE feed_name = @feed_name";
+	const std::string sql_text = "SELECT COUNT(*) AS article_count \
+	FROM feeds_articles \
+		WHERE feed_name = @feed_name";
 
 	ns_db::sql_parameter_list_type params = {
 		feed_name
@@ -338,9 +344,9 @@ gautier_rss_data_read::get_feed_headline_count (std::string db_file_name, std::s
 }
 
 int64_t
-gautier_rss_data_read::get_row_id (std::string db_file_name, std::string feed_url)
+gautier_rss_data_read::get_row_id (const std::string db_file_name, const std::string feed_url)
 {
-	int64_t row_id;
+	int64_t row_id = -1;
 
 	namespace ns_db = gautier_rss_database;
 
@@ -348,7 +354,9 @@ gautier_rss_data_read::get_row_id (std::string db_file_name, std::string feed_ur
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;
-	std::string sql_text = "SELECT rowid FROM feeds WHERE feed_url = @feed_url";
+	const std::string sql_text = "SELECT rowid \
+	FROM feeds \
+	WHERE feed_url = @feed_url";
 
 	ns_db::sql_parameter_list_type params = {
 		feed_url
@@ -372,9 +380,9 @@ gautier_rss_data_read::get_row_id (std::string db_file_name, std::string feed_ur
 }
 
 int64_t
-gautier_rss_data_read::get_feed_article_max_row_id (std::string db_file_name, std::string feed_name)
+gautier_rss_data_read::get_feed_article_max_row_id (const std::string db_file_name, const std::string feed_name)
 {
-	int64_t row_id;
+	int64_t row_id = -1;
 
 	namespace ns_db = gautier_rss_database;
 
@@ -382,8 +390,10 @@ gautier_rss_data_read::get_feed_article_max_row_id (std::string db_file_name, st
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;
-	std::string sql_text =
-	    "SELECT IFNULL(MAX(rowid), -1) AS rowid FROM feeds_articles WHERE feed_name = @feed_name";
+	const std::string sql_text =
+	    "SELECT IFNULL(MAX(rowid), -1) AS rowid \
+		FROM feeds_articles \
+		WHERE feed_name = @feed_name";
 
 	ns_db::sql_parameter_list_type params = {
 		feed_name

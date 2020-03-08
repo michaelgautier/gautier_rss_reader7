@@ -26,10 +26,10 @@ namespace gautier_rss_util {
 
 	//See SQLite documentation: SQL As Understood By SQLite - Date And Time Functions
 	int_fast32_t
-	get_time_difference_in_seconds (std::string date1, std::string date2);
+	get_time_difference_in_seconds (const std::string date1, const std::string date2);
 
 	void
-	convert_chars_to_lower_case_string (char* chars, std::string& str);
+	convert_chars_to_lower_case_string (const char* chars, std::string& str);
 
 	bool
 	convert_chars_to_string (const char* chars, std::string& str);

@@ -50,13 +50,14 @@ namespace gautier_rss_data_read {
 
 	//Determine best time (in elapsed seconds) to refresh a feed.
 	bool
-	is_feed_still_fresh (std::string db_file_name, std::string feed_name, bool time_message_stdout);
+	is_feed_still_fresh (const std::string db_file_name, const std::string feed_name,
+	                     const bool time_message_stdout);
 
 	void
 	copy_feed (rss_feed* feed_in, rss_feed* feed_out);
 
 	bool
-	contains_feed (std::vector<rss_feed> feeds, std::string feed_name);
+	contains_feed (std::vector<rss_feed> feeds, const std::string feed_name);
 
 	template<typename T1, typename T2> bool
 	contains_feed (T1 container, const T2 value)

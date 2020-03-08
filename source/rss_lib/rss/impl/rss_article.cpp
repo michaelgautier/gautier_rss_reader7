@@ -38,10 +38,9 @@ gautier_rss_data_read::clear_feed_data_keep_name (rss_article& feed_data)
 }
 
 bool
-gautier_rss_data_read::validate_feed_info_missing (std::string feed_name, std::string feed_url)
+gautier_rss_data_read::validate_feed_info_missing (const std::string feed_name, const std::string feed_url)
 {
-	bool
-	is_missing = false;
+	bool is_missing = false;
 
 	if (feed_name.empty() || feed_url.empty()) {
 		is_missing = true;
@@ -51,14 +50,14 @@ gautier_rss_data_read::validate_feed_info_missing (std::string feed_name, std::s
 }
 
 bool
-gautier_rss_data_read::indicates_html (std::string& text)
+gautier_rss_data_read::indicates_html (const std::string& text)
 {
 	bool probably_has_html = false;
 
-	int_fast32_t t1_pos = text.find ("</");
-	int_fast32_t t2_pos = text.find ("&lt;/");
-	int_fast32_t t3_pos = text.find ("/>");
-	int_fast32_t t4_pos = text.find ("/&gt;");
+	const int_fast32_t t1_pos = text.find ("</");
+	const int_fast32_t t2_pos = text.find ("&lt;/");
+	const int_fast32_t t3_pos = text.find ("/>");
+	const int_fast32_t t4_pos = text.find ("/&gt;");
 
 	if (t1_pos >= 0 || t2_pos >= 0 || t3_pos >= 0 || t4_pos >= 0) {
 		probably_has_html = true;

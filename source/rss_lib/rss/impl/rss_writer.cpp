@@ -43,7 +43,7 @@ namespace ns_parse = gautier_rss_data_parse;
 	function that access the database (read or write).
 */
 void
-gautier_rss_data_write::initialize_db (std::string db_file_name)
+gautier_rss_data_write::initialize_db (const std::string db_file_name)
 {
 	ns_data_read::initialize_network();
 
@@ -57,7 +57,7 @@ gautier_rss_data_write::initialize_db (std::string db_file_name)
 
 	ns_db::sql_parameter_list_type params;
 
-	for (std::string sql_text : sql_texts) {
+	for (const std::string sql_text : sql_texts) {
 		ns_db::process_sql (&db, sql_text, params);
 	}
 
@@ -72,13 +72,13 @@ gautier_rss_data_write::initialize_db (std::string db_file_name)
 	Creates an RSS feed configuration.
 */
 void
-gautier_rss_data_write::set_feed_config (std::string db_file_name,
-        std::string feed_name,
-        std::string feed_url,
-        std::string retrieve_limit_hrs,
-        std::string retention_days)
+gautier_rss_data_write::set_feed_config (const std::string db_file_name,
+        const std::string feed_name,
+        const std::string feed_url,
+        const std::string retrieve_limit_hrs,
+        const std::string retention_days)
 {
-	std::string sql_text =
+	const std::string sql_text =
 	    "INSERT INTO feeds (feed_name, feed_url, last_retrieved, retrieve_limit_hrs, retention_days)\
 		SELECT @feed_name, @feed_url, '2000-01-01 01:01:01', @retrieve_limit_hrs, @retention_days\
 		WHERE 0 = (\
@@ -110,12 +110,12 @@ gautier_rss_data_write::set_feed_config (std::string db_file_name,
 	Updates an RSS feed configuration.
 */
 void
-gautier_rss_data_write::update_feed_config (std::string db_file_name,
-        int64_t row_id,
-        std::string feed_name,
-        std::string feed_url,
-        std::string retrieve_limit_hrs,
-        std::string retention_days)
+gautier_rss_data_write::update_feed_config (const std::string db_file_name,
+        const int64_t row_id,
+        const std::string feed_name,
+        const std::string feed_url,
+        const std::string retrieve_limit_hrs,
+        const std::string retention_days)
 {
 	ns_data_read::rss_feed feed;
 
@@ -125,7 +125,7 @@ gautier_rss_data_write::update_feed_config (std::string db_file_name,
 		update_feed_config_related (db_file_name, feed.feed_name, feed_name);
 	}
 
-	std::string sql_text =
+	const std::string sql_text =
 	    "UPDATE feeds SET\
 		feed_name = @feed_name, \
 		feed_url = @feed_url, \
@@ -160,11 +160,10 @@ gautier_rss_data_write::update_feed_config (std::string db_file_name,
 	Fixes links to the feed configuration.
 */
 void
-gautier_rss_data_write::update_feed_config_related (std::string db_file_name,
-        std::string feed_name_old,
-        std::string feed_name_new)
+gautier_rss_data_write::update_feed_config_related (const std::string db_file_name,
+        const std::string feed_name_old, const std::string feed_name_new)
 {
-	std::string sql_text =
+	const std::string sql_text =
 	    "UPDATE feeds_articles SET\
 		feed_name = @feed_name_new\
 		WHERE upper(feed_name) = upper(@feed_name_old)";
@@ -207,10 +206,9 @@ gautier_rss_data_write::update_feed_config_related (std::string db_file_name,
 	information.
 */
 void
-gautier_rss_data_write::delete_feed (std::string db_file_name,
-                                     std::string feed_url)
+gautier_rss_data_write::delete_feed (const std::string db_file_name, const std::string feed_url)
 {
-	std::string sql_text =
+	const std::string sql_text =
 	    "DELETE FROM feeds\
 		WHERE upper(feed_url) = upper(@feed_url)";
 
@@ -236,14 +234,20 @@ gautier_rss_data_write::delete_feed (std::string db_file_name,
 	Stores an individual line from an RSS feed.
 */
 void
-gautier_rss_data_write::set_feed_headline (std::string db_file_name,
+gautier_rss_data_write::set_feed_headline (const std::string db_file_name,
         ns_data_read::rss_article& article)
 {
-	std::string sql_text =
-	    "INSERT INTO feeds_articles (feed_name, headline_text, article_summary, article_text, article_date, article_url)\
-		SELECT @feed_name, @headline_text, @article_summary, @article_text, @article_date, @feed_url\
-		WHERE 0 = (\
-			SELECT COUNT(*) FROM feeds_articles WHERE upper(feed_name) = upper(@feed_name) AND upper(headline_text) = upper(@headline_text)\
+	const std::string sql_text =
+	    "INSERT INTO feeds_articles \
+		(feed_name, headline_text, article_summary, article_text, \
+		article_date, article_url) \
+			SELECT  @feed_name, @headline_text, @article_summary, \
+				@article_text, @article_date, @feed_url \
+		WHERE 0 = ( \
+			SELECT COUNT(*) \
+			FROM feeds_articles \
+			WHERE upper(feed_name) = upper(@feed_name) \
+				AND upper(headline_text) = upper(@headline_text) \
 		)";
 
 	ns_db::sql_parameter_list_type params = {
@@ -283,7 +287,7 @@ gautier_rss_data_write::set_feed_headline (std::string db_file_name,
 	Stores the feed data in the database.
 */
 void
-gautier_rss_data_write::update_rss_feeds (std::string db_file_name,
+gautier_rss_data_write::update_rss_feeds (const std::string db_file_name,
         std::map<std::string, std::vector<ns_data_read::rss_article>>& feed_data)
 {
 	std::vector<ns_data_read::rss_feed> rss_feeds;
@@ -291,10 +295,10 @@ gautier_rss_data_write::update_rss_feeds (std::string db_file_name,
 	ns_data_read::get_feeds (db_file_name, rss_feeds);
 
 	for (ns_data_read::rss_feed feed : rss_feeds) {
-		std::string feed_name = feed.feed_name;
-		std::string feed_url = feed.feed_url;
-		std::string retrieve_limit_hrs = feed.retrieve_limit_hrs;
-		std::string retention_days = feed.retention_days;
+		const std::string feed_name = feed.feed_name;
+		const std::string feed_url = feed.feed_url;
+		const std::string retrieve_limit_hrs = feed.retrieve_limit_hrs;
+		const std::string retention_days = feed.retention_days;
 
 		std::vector<ns_data_read::rss_article> articles;
 
@@ -321,7 +325,7 @@ gautier_rss_data_write::update_rss_feeds (std::string db_file_name,
 		Includes articles downloaded for the updated feeds.
 */
 void
-gautier_rss_data_write::download_feeds (std::string& db_file_name, int_fast32_t pause_interval_in_seconds,
+gautier_rss_data_write::download_feeds (const std::string& db_file_name, int_fast32_t pause_interval_in_seconds,
                                         std::vector<std::pair<ns_data_read::rss_feed, ns_data_read::rss_feed>>& changed_feeds,
                                         std::map<std::string, std::vector<ns_data_read::rss_article>> articles)
 {
@@ -345,9 +349,10 @@ gautier_rss_data_write::download_feeds (std::string& db_file_name, int_fast32_t 
 	ns_data_read::get_feeds (db_file_name, rss_feeds_new);
 
 	for (ns_data_read::rss_feed feed_new : rss_feeds_new) {
-		std::string feed_name = feed_new.feed_name;
-		std::string last_retrieved = feed_new.last_retrieved;
-		int64_t article_count = feed_new.article_count;
+		const std::string feed_name = feed_new.feed_name;
+		const std::string last_retrieved = feed_new.last_retrieved;
+
+		const int64_t article_count = feed_new.article_count;
 
 		/*
 			Pause before download.
@@ -361,13 +366,14 @@ gautier_rss_data_write::download_feeds (std::string& db_file_name, int_fast32_t 
 		}
 
 		for (ns_data_read::rss_feed feed_old : rss_feeds_old) {
-			std::string snapshot_feed_name = feed_old.feed_name;
-			std::string snapshot_last_retrieved = feed_old.last_retrieved;
-			int64_t snapshot_article_count = feed_old.article_count;
+			const std::string snapshot_feed_name = feed_old.feed_name;
+			const std::string snapshot_last_retrieved = feed_old.last_retrieved;
 
-			bool match_found_name = feed_name == snapshot_feed_name;
-			bool match_not_found_last_retrieved = last_retrieved != snapshot_last_retrieved;
-			bool increased_article_count = article_count > snapshot_article_count;
+			const int64_t snapshot_article_count = feed_old.article_count;
+
+			const bool match_found_name = feed_name == snapshot_feed_name;
+			const bool match_not_found_last_retrieved = last_retrieved != snapshot_last_retrieved;
+			const bool increased_article_count = article_count > snapshot_article_count;
 
 			if (match_found_name && match_not_found_last_retrieved && increased_article_count) {
 				changed_feeds.push_back (std::make_pair (feed_old, feed_new));
@@ -391,9 +397,9 @@ gautier_rss_data_write::download_feeds (std::string& db_file_name, int_fast32_t 
 	Sets the last_retrieved date.
 */
 void
-gautier_rss_data_write::update_feed_retrieved (std::string db_file_name, std::string feed_url)
+gautier_rss_data_write::update_feed_retrieved (const std::string db_file_name, const std::string feed_url)
 {
-	std::string sql_text =
+	const std::string sql_text =
 	    "UPDATE feeds SET\
 		last_retrieved = @last_retrieved \
 		WHERE upper(feed_url) = upper(@feed_url)";
@@ -428,11 +434,11 @@ gautier_rss_data_write::update_feed_retrieved (std::string db_file_name, std::st
 	the input data. This function greatly assist that effort.
 */
 void
-gautier_rss_data_write::update_rss_db_from_rss_xml (std::string db_file_name,
-        std::string feed_name,
-        std::string feed_url,
-        std::string retrieve_limit_hrs,
-        std::string retention_days)
+gautier_rss_data_write::update_rss_db_from_rss_xml (const std::string db_file_name,
+        const std::string feed_name,
+        const std::string feed_url,
+        const std::string retrieve_limit_hrs,
+        const std::string retention_days)
 {
 	set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
@@ -464,24 +470,24 @@ gautier_rss_data_write::update_rss_db_from_rss_xml (std::string db_file_name,
 	for inspection and analysis. Used to calibrate parsing functions.
 */
 long
-gautier_rss_data_write::update_rss_xml_from_network (std::string db_file_name,
-        std::string feed_name,
-        std::string feed_url,
-        std::string retrieve_limit_hrs,
-        std::string retention_days)
+gautier_rss_data_write::update_rss_xml_from_network (const std::string db_file_name,
+        const std::string feed_name,
+        const std::string feed_url,
+        const std::string retrieve_limit_hrs,
+        const std::string retention_days)
 {
 	long response_code = 0;
 
 	set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
-	bool is_feed_still_fresh = ns_data_read::is_feed_still_fresh (db_file_name, feed_name, false);
+	const bool is_feed_still_fresh = ns_data_read::is_feed_still_fresh (db_file_name, feed_name, false);
 
 	if (is_feed_still_fresh == false) {
 		std::string feed_data;
 
 		response_code = ns_data_read::download_rss_feed (feed_url, feed_data);
 
-		bool response_good = ns_data_read::is_network_response_ok (response_code);
+		const bool response_good = ns_data_read::is_network_response_ok (response_code);
 
 		if (response_good) {
 			update_feed_retrieved (db_file_name, feed_url);
@@ -507,24 +513,24 @@ gautier_rss_data_write::update_rss_xml_from_network (std::string db_file_name,
 	an alternative source of offline/recovery information.
 */
 long
-gautier_rss_data_write::update_rss_xml_db_from_network (std::string db_file_name,
-        std::string feed_name,
-        std::string feed_url,
-        std::string retrieve_limit_hrs,
-        std::string retention_days)
+gautier_rss_data_write::update_rss_xml_db_from_network (const std::string db_file_name,
+        const std::string feed_name,
+        const std::string feed_url,
+        const std::string retrieve_limit_hrs,
+        const std::string retention_days)
 {
 	long response_code = 0;
 
 	set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
-	bool is_feed_still_fresh = ns_data_read::is_feed_still_fresh (db_file_name, feed_name, false);
+	const bool is_feed_still_fresh = ns_data_read::is_feed_still_fresh (db_file_name, feed_name, false);
 
 	if (is_feed_still_fresh == false) {
 		std::string feed_data;
 
 		response_code = ns_data_read::download_rss_feed (feed_url, feed_data);
 
-		bool response_good = ns_data_read::is_network_response_ok (response_code);
+		const bool response_good = ns_data_read::is_network_response_ok (response_code);
 
 		if (response_good) {
 			update_feed_retrieved (db_file_name, feed_url);
@@ -557,18 +563,18 @@ gautier_rss_data_write::update_rss_xml_db_from_network (std::string db_file_name
 	Provides an article download.
 */
 long
-gautier_rss_data_write::update_rss_db_from_network (std::string db_file_name,
-        std::string feed_name,
-        std::string feed_url,
-        std::string retrieve_limit_hrs,
-        std::string retention_days,
+gautier_rss_data_write::update_rss_db_from_network (const std::string db_file_name,
+        const std::string feed_name,
+        const std::string feed_url,
+        const std::string retrieve_limit_hrs,
+        const std::string retention_days,
         std::vector<ns_data_read::rss_article>& articles)
 {
 	long response_code = 0;
 
 	set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
 
-	bool is_feed_still_fresh = ns_data_read::is_feed_still_fresh (db_file_name, feed_name, false);
+	const bool is_feed_still_fresh = ns_data_read::is_feed_still_fresh (db_file_name, feed_name, false);
 
 	if (is_feed_still_fresh == false) {
 		const int64_t rowid = ns_data_read::get_feed_article_max_row_id (db_file_name, feed_name);
@@ -577,7 +583,7 @@ gautier_rss_data_write::update_rss_db_from_network (std::string db_file_name,
 
 		response_code = ns_data_read::download_rss_feed (feed_url, feed_data);
 
-		bool response_good = ns_data_read::is_network_response_ok (response_code);
+		const bool response_good = ns_data_read::is_network_response_ok (response_code);
 
 		if (response_good) {
 			update_feed_retrieved (db_file_name, feed_url);
@@ -600,11 +606,10 @@ gautier_rss_data_write::update_rss_db_from_network (std::string db_file_name,
 }
 
 void
-gautier_rss_data_write::de_initialize_db (std::string db_file_name)
+gautier_rss_data_write::de_initialize_db (const std::string db_file_name)
 {
 	if (db_file_name.empty() == false) {
-		std::string sql_text =
-		    "VACUUM;";
+		const std::string sql_text = "VACUUM;";
 
 		ns_db::sql_parameter_list_type params;
 

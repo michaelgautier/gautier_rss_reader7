@@ -22,33 +22,33 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 namespace gautier_rss_data_read {
 	void
-	get_feed (std::string db_file_name, std::string feed_name, rss_feed& feed);
+	get_feed (const std::string db_file_name, const std::string feed_name, rss_feed& feed);
 
 	void
-	get_feed_by_row_id (std::string db_file_name, int64_t row_id, rss_feed& feed);
+	get_feed_by_row_id (const std::string db_file_name, const int64_t row_id, rss_feed& feed);
 
 	void
-	get_feeds (std::string db_file_name, std::vector < rss_feed >& feeds);
+	get_feeds (const std::string db_file_name, std::vector < rss_feed >& feeds);
 
 	void
-	get_feed_headlines (std::string db_file_name, std::string feed_name, std::vector < rss_article >& headlines,
-	                    bool descending);
+	get_feed_headlines (const std::string db_file_name, const std::string feed_name,
+	                    std::vector < rss_article >& headlines, const bool descending);
 
 	void
-	get_feed_headlines_after_row_id (std::string db_file_name, std::string feed_name,
-	                                 std::vector <rss_article>& headlines, bool descending, int64_t row_id);
+	get_feed_headlines_after_row_id (const std::string db_file_name, const std::string feed_name,
+	                                 std::vector <rss_article>& headlines, const bool descending, const int64_t row_id);
 
 	void
-	get_feed_article_summary (std::string db_file_name, std::string feed_name, std::string headline,
-	                          rss_article& article);
+	get_feed_article_summary (const std::string db_file_name, const std::string feed_name,
+	                          const std::string headline, rss_article& article);
 
 	int64_t
-	get_feed_headline_count (std::string db_file_name, std::string feed_name);
+	get_feed_headline_count (const std::string db_file_name, const std::string feed_name);
 
 	int64_t
-	get_row_id (std::string db_file_name, std::string feed_url);
+	get_row_id (const std::string db_file_name, const std::string feed_url);
 
 	int64_t
-	get_feed_article_max_row_id (std::string db_file_name, std::string feed_name);
+	get_feed_article_max_row_id (const std::string db_file_name, const std::string feed_name);
 }
 #endif

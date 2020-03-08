@@ -39,7 +39,7 @@ get_xml_attr_value (xmlNode* xml_node, std::string attr_name, std::string& value
 	Example code was indexed at:		libxml/examples/index.html#tree1.c
 */
 void
-gautier_rss_data_parse::get_feed_lines (std::string& feed_data,
+gautier_rss_data_parse::get_feed_lines (const std::string feed_data,
                                         std::vector<gautier_rss_data_read::rss_article>& feed_lines)
 {
 	xmlDoc* doc = NULL;
@@ -53,7 +53,7 @@ gautier_rss_data_parse::get_feed_lines (std::string& feed_data,
 	LIBXML_TEST_VERSION
 
 	/*parse the file and get the DOM */
-	size_t feed_data_size = feed_data.size();
+	const size_t feed_data_size = feed_data.size();
 
 	if (feed_data.empty() == false) {
 		doc = xmlRecoverMemory (feed_data.data(), static_cast<int> (feed_data_size));
@@ -88,14 +88,15 @@ gautier_rss_data_parse::get_feed_lines (std::string& feed_data,
 	Unless the operating system prevents it, there will be a file.
 */
 void
-gautier_rss_data_parse::save_feed_data_to_file (std::string file_name, std::string ext, std::string& file_data)
+gautier_rss_data_parse::save_feed_data_to_file (const std::string file_name, const std::string ext,
+        const std::string file_data)
 {
-	std::string data_file_name = file_name + ext;
+	const std::string data_file_name = file_name + ext;
 
 	FILE* data_file = fopen (data_file_name.data(), "w");
 
 	if (data_file) {
-		char* str = file_data.data();
+		const char* str = file_data.data();
 
 		fputs (str, data_file);
 
@@ -117,9 +118,10 @@ gautier_rss_data_parse::save_feed_data_to_file (std::string file_name, std::stri
 	The appropriate application level error check is none-technical. Check for an empty string.
 */
 void
-gautier_rss_data_parse::get_feed_data_from_file (std::string file_name, std::string ext, std::string& file_data)
+gautier_rss_data_parse::get_feed_data_from_file (const std::string file_name, const std::string ext,
+        std::string& file_data)
 {
-	std::string data_file_name = file_name + ext;
+	const std::string data_file_name = file_name + ext;
 
 	FILE* data_file = fopen (data_file_name.data(), "r");
 
@@ -230,7 +232,7 @@ parse_rss_feed (xmlNode* parent_xml_node, std::vector<gautier_rss_data_read::rss
 	Returns the value of that xml attribute if found.
 */
 void
-get_xml_attr_value (xmlNode* xml_node, std::string attr_name, std::string& value)
+get_xml_attr_value (xmlNode* xml_node, const std::string attr_name, std::string& value)
 {
 	if (xml_node->properties) {
 		xmlAttr* attr = NULL;

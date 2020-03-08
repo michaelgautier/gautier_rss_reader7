@@ -19,11 +19,13 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include "rss_lib/db/db.hpp"
 
 bool
-gautier_rss_database::open_db (std::string& db_file_name, sqlite3** db)
+gautier_rss_database::open_db (const std::string db_file_name, sqlite3** db)
 {
 	bool success = false;
-	int options = (SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE);
-	int open_result = sqlite3_open_v2 (db_file_name.data(), db, options, NULL);
+
+	const int options = (SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE);
+
+	const int open_result = sqlite3_open_v2 (db_file_name.data(), db, options, NULL);
 
 	if (open_result == SQLITE_OK) {
 		success = true;
@@ -43,7 +45,8 @@ gautier_rss_database::close_db (sqlite3** db)
 }
 
 int
-gautier_rss_database::create_sql_row (void* generic_object, int col_count, char** col_values, char** col_names)
+gautier_rss_database::create_sql_row (void* generic_object, const int col_count, char** col_values,
+                                      char** col_names)
 {
 	sql_rowset_type* rows = (sql_rowset_type*)generic_object;
 
@@ -52,8 +55,8 @@ gautier_rss_database::create_sql_row (void* generic_object, int col_count, char*
 	sql_row_type* row = & (rows->back());
 
 	for (int i = 0; i < col_count; i++) {
-		std::string name = col_names[i];
-		std::string value = (col_values[i] ? col_values[i] : "");
+		const std::string name = col_names[i];
+		const std::string value = (col_values[i] ? col_values[i] : "");
 
 		row->insert_or_assign (name, value);
 	}
@@ -62,7 +65,7 @@ gautier_rss_database::create_sql_row (void* generic_object, int col_count, char*
 }
 
 void
-gautier_rss_database::process_sql_simple (sqlite3** db, std::string& sql_text, sql_rowset_type& rows)
+gautier_rss_database::process_sql_simple (sqlite3** db, const std::string sql_text, sql_rowset_type& rows)
 {
 	sql_rowset_type* tmp_rows = &rows;
 
@@ -74,7 +77,7 @@ gautier_rss_database::process_sql_simple (sqlite3** db, std::string& sql_text, s
 }
 
 void
-gautier_rss_database::process_sql_simple (sqlite3** db, std::string& sql_text)
+gautier_rss_database::process_sql_simple (sqlite3** db, const std::string sql_text)
 {
 	char* error_message;
 
@@ -84,9 +87,8 @@ gautier_rss_database::process_sql_simple (sqlite3** db, std::string& sql_text)
 }
 
 void
-gautier_rss_database::process_sql (sqlite3** db, std::string& sql_text,
-                                   sql_parameter_list_type& sql_param_values,
-                                   sql_rowset_type& rows)
+gautier_rss_database::process_sql (sqlite3** db, const std::string sql_text,
+                                   sql_parameter_list_type& sql_param_values, sql_rowset_type& rows)
 {
 	sqlite3_stmt* sql_statement;
 
@@ -105,7 +107,7 @@ gautier_rss_database::process_sql (sqlite3** db, std::string& sql_text,
 		sql_result = sqlite3_step (sql_statement);
 
 		if (sql_result == SQLITE_ROW) {
-			int col_count = sqlite3_data_count (sql_statement);
+			const int col_count = sqlite3_data_count (sql_statement);
 
 			rows.emplace_back (sql_row_type());
 
@@ -131,7 +133,7 @@ gautier_rss_database::process_sql (sqlite3** db, std::string& sql_text,
 }
 
 void
-gautier_rss_database::process_sql (sqlite3** db, std::string& sql_text,
+gautier_rss_database::process_sql (sqlite3** db, const std::string sql_text,
                                    sql_parameter_list_type& sql_param_values)
 {
 	sql_rowset_type rows;

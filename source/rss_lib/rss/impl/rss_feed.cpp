@@ -17,8 +17,8 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 /*checks if the feed can be retrieved based on expiration date. */
 bool
-gautier_rss_data_read::is_feed_still_fresh (std::string db_file_name, std::string feed_name,
-        bool time_message_stdout)
+gautier_rss_data_read::is_feed_still_fresh (const std::string db_file_name, const std::string feed_name,
+        const bool time_message_stdout)
 {
 	bool fresh = true;
 
@@ -29,14 +29,14 @@ gautier_rss_data_read::is_feed_still_fresh (std::string db_file_name, std::strin
 	if (feed.feed_name.empty() == false) {
 		std::string current_date_time_utc = gautier_rss_util::get_current_date_time_utc();
 
-		int_fast32_t seconds_elapsed = gautier_rss_util::get_time_difference_in_seconds ("", feed.last_retrieved);
+		const int_fast32_t seconds_elapsed = gautier_rss_util::get_time_difference_in_seconds ("", feed.last_retrieved);
 
-		int_fast32_t retrieve_limit_hrs = std::stoi (feed.retrieve_limit_hrs);
-		int_fast32_t retrieve_limit_min = retrieve_limit_hrs * 60;
-		int_fast32_t retrieve_limit_sec = retrieve_limit_min * 60;
+		const int_fast32_t retrieve_limit_hrs = std::stoi (feed.retrieve_limit_hrs);
+		const int_fast32_t retrieve_limit_min = retrieve_limit_hrs * 60;
+		const int_fast32_t retrieve_limit_sec = retrieve_limit_min * 60;
 
-		int_fast32_t minutes_elapsed = seconds_elapsed / 60;
-		int_fast32_t hours_elapsed = minutes_elapsed / 60;
+		const int_fast32_t minutes_elapsed = seconds_elapsed / 60;
+		const int_fast32_t hours_elapsed = minutes_elapsed / 60;
 
 		if (time_message_stdout) {
 			std::cout << "Feed " << feed.feed_name << " (" << feed.feed_url << ")" << "\n";

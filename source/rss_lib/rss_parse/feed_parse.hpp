@@ -20,12 +20,12 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 namespace gautier_rss_data_parse {
 	void
-	get_feed_lines (std::string& feed_data, std::vector<gautier_rss_data_read::rss_article>& feed_lines);
+	get_feed_lines (const std::string feed_data, std::vector<gautier_rss_data_read::rss_article>& feed_lines);
 
 	void
-	save_feed_data_to_file (std::string file_name, std::string ext, std::string& file_data);
+	save_feed_data_to_file (const std::string file_name, const std::string ext, const std::string file_data);
 
 	void
-	get_feed_data_from_file (std::string file_name, std::string ext, std::string& file_data);
+	get_feed_data_from_file (const std::string file_name, const std::string ext, std::string& file_data);
 }
 #endif

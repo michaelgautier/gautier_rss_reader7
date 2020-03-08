@@ -25,26 +25,26 @@ namespace gautier_rss_database {
 	using sql_parameter_list_type = std::vector<std::string>;
 
 	bool
-	open_db (std::string& db_file_name, sqlite3** db);
+	open_db (const std::string db_file_name, sqlite3** db);
 
 	extern "C" int
-	create_sql_row (void* generic_object, int col_count, char** col_values, char** col_names);
+	create_sql_row (void* generic_object, const int col_count, char** col_values, char** col_names);
 
 	void
-	process_sql_simple (sqlite3** db, std::string& sql_text, sql_rowset_type& rows);
+	process_sql_simple (sqlite3** db, const std::string sql_text, sql_rowset_type& rows);
 
 	void
-	process_sql_simple (sqlite3** db, std::string& sql_text);
+	process_sql_simple (sqlite3** db, const std::string sql_text);
 
 	void
 	close_db (sqlite3** db);
 
 	void
-	process_sql (sqlite3** db, std::string& sql_text, sql_parameter_list_type& sql_param_values,
+	process_sql (sqlite3** db, const std::string sql_text, sql_parameter_list_type& sql_param_values,
 	             sql_rowset_type& rows);
 
 	void
-	process_sql (sqlite3** db, std::string& sql_text, sql_parameter_list_type& sql_param_values);
+	process_sql (sqlite3** db, const std::string sql_text, sql_parameter_list_type& sql_param_values);
 
 }
 #endif

@@ -17,11 +17,11 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include "rss_lib/rss/rss_util.hpp"
 
 int_fast32_t
-gautier_rss_util::get_time_difference_in_seconds (std::string date1, std::string date2)
+gautier_rss_util::get_time_difference_in_seconds (const std::string date1, const std::string date2)
 {
 	//See SQLite documentation: SQL As Understood By SQLite - Date And Time Functions
 
-	std::string db_file_name = ":memory:";
+	const std::string db_file_name = ":memory:";
 	int_fast32_t seconds = 0;
 
 	namespace ns_db = gautier_rss_database;
@@ -30,7 +30,7 @@ gautier_rss_util::get_time_difference_in_seconds (std::string date1, std::string
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;
-	std::string sql_text = "select abs(strftime('%s', @date1) - strftime('%s', @date2)) as result;";
+	const std::string sql_text = "SELECT ABS(STRFTIME('%s', @date1) - strftime('%s', @date2)) AS result;";
 
 	std::string datetime1 = date1;
 	std::string datetime2 = date2;
@@ -118,7 +118,7 @@ gautier_rss_util::get_current_date_time_local()
 	Converts all characters to lower case.
 */
 void
-gautier_rss_util::convert_chars_to_lower_case_string (char* chars, std::string& str)
+gautier_rss_util::convert_chars_to_lower_case_string (const char* chars, std::string& str)
 {
 	const std::string detail = chars;
 	const size_t char_count = detail.size();

@@ -25,10 +25,10 @@ namespace gautier_rss_data_read {
 		The string data can then be parsed.
 	*/
 	long
-	download_rss_feed (std::string feed_url, std::string& headlines);
+	download_rss_feed (const std::string feed_url, std::string& headlines);
 
 	bool
-	is_network_response_ok (long response_code);
+	is_network_response_ok (const long response_code);
 
 	void
 	de_initialize_network();
