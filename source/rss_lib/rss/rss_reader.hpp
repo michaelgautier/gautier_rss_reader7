@@ -43,5 +43,8 @@ namespace gautier_rss_data_read {
 
 	int64_t
 	get_row_id (std::string db_file_name, std::string feed_url);
+
+	int64_t
+	get_feed_article_max_row_id (std::string db_file_name, std::string feed_name);
 }
 #endif
