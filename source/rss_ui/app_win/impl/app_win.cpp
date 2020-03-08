@@ -1268,6 +1268,22 @@ async_load_tabs_with_downloaded_data (gpointer data)
 	} else {
 		std::cout << "********************* feed [ |" << feed_name << "| ] exists == " << feed_exists <<
 		          "\t article count: " << downloaded_articles[feed_name].size() << "\n";
+
+		const gint tab_i = gtk_notebook_get_current_page (GTK_NOTEBOOK (headlines_view));
+		GtkWidget* tab = NULL;
+		std::string visible_feed_name;
+
+		if (tab_i > -1) {
+			tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
+		}
+
+		if (tab) {
+			visible_feed_name = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
+		}
+
+		if (visible_feed_name.empty() == false && visible_feed_name == feed_name) {
+			ns_rss_tabs::select_headline_row (GTK_WIDGET (headlines_view), feed_name, 0);
+		}
 	}
 
 	std::cout << __FILE__ << " \t\t\t\t\t" << __func__ << " feed " << feed_name << "\t EXIT  \n";
