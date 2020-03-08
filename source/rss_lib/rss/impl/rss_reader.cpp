@@ -16,6 +16,10 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 static void
 create_feed_from_sql_row (gautier_rss_database::sql_row_type& row, gautier_rss_data_read::rss_feed& feed);
 
+static void
+create_article_from_sql_row (gautier_rss_database::sql_row_type& row,
+                             gautier_rss_data_read::rss_article& article);
+
 void
 gautier_rss_data_read::get_feed (std::string db_file_name, std::string feed_name, rss_feed& feed)
 {
@@ -141,6 +145,29 @@ create_feed_from_sql_row (gautier_rss_database::sql_row_type& row, gautier_rss_d
 			feed.retention_days = field.second;
 		} else if (field.first == "article_count") {
 			feed.article_count = std::stoll (field.second);
+		}
+	}
+
+	return;
+}
+
+static void
+create_article_from_sql_row (gautier_rss_database::sql_row_type& row,
+                             gautier_rss_data_read::rss_article& article)
+{
+	for (gautier_rss_database::sql_row_type::value_type field : row) {
+		if (field.first == "feed_name") {
+			article.feed_name = field.second;
+		} else if (field.first == "headline_text") {
+			article.headline = field.second;
+		} else if (field.first == "article_summary") {
+			article.article_summary = field.second;
+		} else if (field.first == "article_text") {
+			article.article_text = field.second;
+		} else if (field.first == "article_date") {
+			article.article_date = field.second;
+		} else if (field.first == "article_url") {
+			article.url = field.second;
 		}
 	}
 
