@@ -458,7 +458,7 @@ get_screen_dimensions (GtkWindow* window)
 
 	gdk_monitor_get_geometry (monitor, &geometry);
 
-	int scale_factor = gdk_window_get_scale_factor (screen_window);
+	const int scale_factor = gdk_window_get_scale_factor (screen_window);
 
 	monitor_width = geometry.width * scale_factor;
 	monitor_height = geometry.height * scale_factor;
@@ -470,7 +470,7 @@ get_screen_dimensions (GtkWindow* window)
 }
 
 static void
-set_window_attributes (GtkWidget* window, std::string title, int width, int height)
+set_window_attributes (GtkWidget* window, const std::string title, const int width, const int height)
 {
 	gtk_window_set_title (GTK_WINDOW (window), title.data());
 	gtk_window_set_default_size (GTK_WINDOW (window), width, height);
@@ -549,14 +549,14 @@ headline_view_switch_page (GtkNotebook* rss_tabs,
 		webkit_web_view_load_plain_text (WEBKIT_WEB_VIEW (article_details), article_text.data());
 	}
 	{
-		std::string url = "no feed data";
+		const std::string url = "no feed data";
 
 		gtk_widget_set_tooltip_text (view_article_button, url.data());
 	}
 	/*
 		Setup tab.
 	*/
-	std::string feed_name = gtk_notebook_get_tab_label_text (rss_tabs, content);
+	const std::string feed_name = gtk_notebook_get_tab_label_text (rss_tabs, content);
 	_feed_data.feed_name = feed_name;
 
 	if (feed_name.empty() == false) {
@@ -602,7 +602,7 @@ headline_view_select_row (GtkTreeSelection* tree_selection, gpointer user_data)
 		/*
 			Article date.
 		*/
-		std::string date_status = "Published -- " + _feed_data.article_date;
+		const std::string date_status = "Published -- " + _feed_data.article_date;
 		gtk_label_set_text (GTK_LABEL (article_date), date_status.data());
 
 		/*
@@ -611,7 +611,7 @@ headline_view_select_row (GtkTreeSelection* tree_selection, gpointer user_data)
 		{
 			GtkTextBuffer* text_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (article_summary));
 
-			bool indicates_html = ns_data_read::indicates_html (_feed_data.article_summary);
+			const bool indicates_html = ns_data_read::indicates_html (_feed_data.article_summary);
 
 			std::string article_text = _feed_data.headline;
 
@@ -710,13 +710,13 @@ process_rss_feed_configuration (ns_data_read::rss_feed_mod& modification)
 {
 	namespace ns_rss_tabs = gautier_rss_win_main_headlines_frame;
 
-	std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
+	const std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
 
 	ns_data_read::rss_feed_mod_status status = modification.status;
 
-	std::string feed_name = modification.feed_name;
+	const std::string feed_name = modification.feed_name;
 
-	bool is_insert = status == ns_data_read::rss_feed_mod_status::insert;
+	const bool is_insert = (status == ns_data_read::rss_feed_mod_status::insert);
 
 	const size_t feed_index_match_count = feed_index.count (feed_name);
 
@@ -738,7 +738,7 @@ process_rss_feed_configuration (ns_data_read::rss_feed_mod& modification)
 	if (is_insert == false) {
 		GtkWidget* tab = NULL;
 
-		int tab_i = ns::get_tab_contents_container_by_feed_name (GTK_NOTEBOOK (headlines_view), feed_name, &tab);
+		const gint tab_i = ns::get_tab_contents_container_by_feed_name (GTK_NOTEBOOK (headlines_view), feed_name, &tab);
 
 		if (tab_i > -1 && tab) {
 			if (status == ns_data_read::rss_feed_mod_status::remove) {
@@ -757,7 +757,7 @@ process_rss_feed_configuration (ns_data_read::rss_feed_mod& modification)
 
 				ns_data_read::get_feed_by_row_id (db_file_name, row_id, updated_feed);
 
-				std::string updated_feed_name = updated_feed.feed_name;
+				const std::string updated_feed_name = updated_feed.feed_name;
 
 				if (updated_feed_name != feed_name) {
 					ns_data_read::rss_feed* feed_in_use = &feed_index[feed_name];
@@ -783,7 +783,7 @@ process_rss_feed_configuration (ns_data_read::rss_feed_mod& modification)
 		/*
 			INSERT New Tab - Download feed entries
 		*/
-		int tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
+		gint tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
 
 		ns::add_headline_page (headlines_view, feed_name, tab_count + 1, headline_view_select_row);
 
@@ -922,14 +922,14 @@ populate_rss_tabs()
 	*/
 	std::vector<ns_data_read::rss_feed> feed_names;
 
-	std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
+	const std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
 
 	ns_data_read::get_feeds (db_file_name, feed_names);
 
 	std::vector<ns_data_read::rss_article> headline_snapshot;
 
 	for (ns_data_read::rss_feed feed : feed_names) {
-		std::string feed_name = feed.feed_name;
+		const std::string feed_name = feed.feed_name;
 
 		feed_index.insert_or_assign (feed_name, feed);
 
@@ -1048,7 +1048,7 @@ async_initialize_tabs (gpointer data)
 	std::string feed_name;
 
 	if (tab_count > 0) {
-		gint tab_i = next_notebook_tab_index;
+		const gint tab_i = next_notebook_tab_index;
 
 		if (tab_i > -1) {
 			GtkWidget* tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
@@ -1144,7 +1144,7 @@ async_load_tabs (gpointer data)
 	const bool download_active = (download_available || download_in_progress);
 
 	if (download_active == false && tab_count > 0) {
-		gint tab_i = next_notebook_tab_index;
+		const gint tab_i = next_notebook_tab_index;
 
 		if (next_notebook_tab_index > tab_count) {
 			next_notebook_tab_index = 0;
@@ -1212,7 +1212,7 @@ async_load_tabs_with_downloaded_data (gpointer data)
 	std::string feed_name;
 
 	if (download_available && tab_count > 0) {
-		gint tab_i = next_notebook_tab_index;
+		const gint tab_i = next_notebook_tab_index;
 
 		if (next_notebook_tab_index > tab_count) {
 			next_notebook_tab_index = 0;
@@ -1333,7 +1333,7 @@ download_data()
 		processes that occur in this function.
 	*/
 
-	std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
+	const std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
 
 	while (shutting_down == false && download_running == false) {
 		std::cout << __func__ << ":\tentering sleep\n";
@@ -1397,13 +1397,13 @@ download_data()
 			const int download_restart_wait_in_minutes = 5;
 			const int wait_time_in_seconds = (download_restart_wait_in_minutes * 60);
 
-			std::string prep_download_datetime = gautier_rss_util::get_current_date_time_utc();
+			const std::string prep_download_datetime = gautier_rss_util::get_current_date_time_utc();
 
 			const int_fast32_t time_difference_in_seconds = gautier_rss_util::get_time_difference_in_seconds (
 			            last_download_datetime, prep_download_datetime);
 
-			bool allow_time_output = (time_difference_in_seconds <= 4 ||
-			                          time_difference_in_seconds >= (wait_time_in_seconds + 2));
+			const bool allow_time_output = (time_difference_in_seconds <= 4 ||
+			                                time_difference_in_seconds >= (wait_time_in_seconds + 2));
 
 			if (allow_time_output) {
 				std::cout << __func__ << ", LINE: " << __LINE__ << ";\t\tTime check\n";
@@ -1421,7 +1421,7 @@ download_data()
 				Website operators tend to dislike programs that check the website every few seconds. Setting this
 				to an hour guarantees that the program will not unintentionally violate minimum website access intervals.
 			*/
-			bool clock_still_running = (time_difference_in_seconds < (wait_time_in_seconds + 2));
+			const bool clock_still_running = (time_difference_in_seconds < (wait_time_in_seconds + 2));
 
 			if (clock_still_running) {
 				if (allow_time_output) {
@@ -1438,7 +1438,7 @@ download_data()
 			const int download_retry_wait_in_minutes = 5;
 			const int wait_time_in_seconds = (download_retry_wait_in_minutes * 60);
 
-			std::string download_review_datetime = gautier_rss_util::get_current_date_time_utc();
+			const std::string download_review_datetime = gautier_rss_util::get_current_date_time_utc();
 
 			const int_fast32_t time_difference_in_seconds = gautier_rss_util::get_time_difference_in_seconds (
 			            last_failed_download_datetime, download_review_datetime);
@@ -1449,7 +1449,7 @@ download_data()
 				          << " minutes.\n";
 			}
 
-			bool clock_still_running = (time_difference_in_seconds <= (wait_time_in_seconds + 2));
+			const bool clock_still_running = (time_difference_in_seconds <= (wait_time_in_seconds + 2));
 
 			if (clock_still_running) {
 				if (failed_download_notify_was_output == false) {
@@ -1475,10 +1475,10 @@ download_data()
 			Cycles through all the feeds to download, 1 at a time.
 		*/
 		for (ns_data_read::rss_feed feed : feeds) {
-			std::string feed_name = feed.feed_name;
-			std::string feed_url = feed.feed_url;
-			std::string retrieve_limit_hrs = feed.retrieve_limit_hrs;
-			std::string retention_days = feed.retention_days;
+			const std::string feed_name = feed.feed_name;
+			const std::string feed_url = feed.feed_url;
+			const std::string retrieve_limit_hrs = feed.retrieve_limit_hrs;
+			const std::string retention_days = feed.retention_days;
 
 			if (feed_name.empty() || feed_url.empty()) {
 				continue;
@@ -1496,8 +1496,8 @@ download_data()
 			/*
 				Aborts the download attempt if a download has already occured within the allowed time frame.
 			*/
-			bool is_feed_still_fresh = gautier_rss_data_read::is_feed_still_fresh (db_file_name, feed_name,
-			                           feed_expire_time_enabled);
+			const bool is_feed_still_fresh = gautier_rss_data_read::is_feed_still_fresh (db_file_name, feed_name,
+			                                 feed_expire_time_enabled);
 
 			/*
 				Handles the situation where the program is relaunched within the normal minimum website access time frame.
@@ -1524,12 +1524,12 @@ download_data()
 				while (network_response_good == false && download_attempts < max_download_attempts) {
 					download_attempts++;
 
-					long response_code = ns_data_write::update_rss_db_from_network (db_file_name,
-					                     feed_name,
-					                     feed_url,
-					                     retrieve_limit_hrs,
-					                     retention_days,
-					                     articles);
+					const long response_code = ns_data_write::update_rss_db_from_network (db_file_name,
+					                           feed_name,
+					                           feed_url,
+					                           retrieve_limit_hrs,
+					                           retention_days,
+					                           articles);
 
 					network_response_good = ns_data_read::is_network_response_ok (response_code);
 
@@ -1568,7 +1568,7 @@ download_data()
 
 				ns_data_read::get_feed (db_file_name, feed_name, feed_new);
 
-				bool new_updates = ns_data_read::check_feed_changed (feed, feed_new);
+				const bool new_updates = ns_data_read::check_feed_changed (feed, feed_new);
 
 				if (new_updates) {
 					change_count++;
