@@ -116,7 +116,7 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 
 		Tab > Scroll Window > List Box > individual labels (headlines)
 	*/
-	const int64_t headlines_count_new = headlines.size();
+	const int64_t headlines_count_new = static_cast<int64_t> (headlines.size());
 
 	if (headlines_count_new > -1) {
 		GtkWidget* headlines_list_view = NULL;
@@ -159,7 +159,9 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 			gboolean start_iter_is_valid = gtk_tree_model_get_iter_first (list_model, &start_iter);
 
 			for (int64_t i = headline_index_start; i <= headline_index_end && i < headlines_count_new; i++) {
-				gautier_rss_data_read::rss_article rss_data = headlines.at (i);
+				const size_t headline_i = static_cast<size_t> (i);
+
+				gautier_rss_data_read::rss_article rss_data = headlines.at (headline_i);
 
 				gchar* feed_name_data = feed_name.data();
 				gchar* headline_text_data = rss_data.headline.data();

@@ -87,7 +87,7 @@ void
 rss_tree_view_selected (GtkTreeSelection* tree_selection, gpointer user_data);
 
 static gulong
-rss_tree_view_selected_signal_id = -1;
+rss_tree_view_selected_signal_id = -1UL;
 
 static void
 layout_rss_tree_view (GtkWidget* rss_tree_view);
@@ -1155,8 +1155,8 @@ check_feed_keys (GtkEntryBuffer* feed_name_buffer, GtkEntryBuffer* feed_url_buff
 	if (feed_name_buffer && feed_url_buffer) {
 		bool enabled = false;
 
-		gint feed_name_length = gtk_entry_buffer_get_length (feed_name_buffer);
-		gint feed_url_length = gtk_entry_buffer_get_length (feed_url_buffer);
+		guint feed_name_length = gtk_entry_buffer_get_length (feed_name_buffer);
+		guint feed_url_length = gtk_entry_buffer_get_length (feed_url_buffer);
 
 		enabled = (feed_name_length > 2 && feed_url_length > 6);
 

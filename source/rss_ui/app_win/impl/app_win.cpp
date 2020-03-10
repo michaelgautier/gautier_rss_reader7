@@ -160,7 +160,7 @@ synchronize_feeds_to_configuration (std::map<std::string, gautier_rss_data_read:
 	RSS Tabs - Switch Handlers.
 */
 static gulong
-headline_view_switch_page_signal_id = -1;
+headline_view_switch_page_signal_id = -1UL;
 
 extern "C"
 void
@@ -1069,8 +1069,10 @@ async_initialize_tabs (gpointer data)
 
 		ns_data_read::rss_feed* feed = &feed_index[feed_name];
 
+		const size_t headline_count = headlines.size();
+
 		const int64_t max_lines = 32;
-		const int64_t range_end = headlines.size() - 1;
+		const int64_t range_end = static_cast<int64_t> (headline_count - 1);
 
 		const int64_t index_start = (feed->last_index + 1);
 		int64_t index_end = (index_start + (max_lines - 1));
@@ -1166,8 +1168,10 @@ async_load_tabs (gpointer data)
 
 		ns_data_read::rss_feed* feed = &feed_index[feed_name];
 
+		const size_t headline_count = headlines.size();
+
 		const int64_t max_lines = 32;
-		const int64_t range_end = headlines.size() - 1;
+		const int64_t range_end = static_cast<int64_t> (headline_count - 1);
 
 		const int64_t index_start = (feed->last_index + 1);
 		int64_t index_end = (index_start + (max_lines - 1));
@@ -1237,8 +1241,10 @@ async_load_tabs_with_downloaded_data (gpointer data)
 
 		ns_data_read::rss_feed* feed = &downloaded_feeds[feed_name];
 
+		const size_t headline_count = headlines.size();
+
 		const int64_t max_lines = 32;
-		const int64_t range_end = headlines.size() - 1;
+		const int64_t range_end = static_cast<int64_t> (headline_count - 1);
 
 		const int64_t index_start = (feed->last_index + 1);
 		int64_t index_end = (index_start + (max_lines - 1));
