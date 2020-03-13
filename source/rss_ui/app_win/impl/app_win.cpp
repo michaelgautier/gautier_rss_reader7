@@ -1072,7 +1072,7 @@ async_initialize_tabs (gpointer data)
 		const size_t headline_count = headlines.size();
 
 		const int64_t max_lines = 32;
-		const int64_t range_end = static_cast<int64_t> (headline_count - 1);
+		const int64_t range_end = static_cast<int64_t> (headline_count);
 
 		const int64_t index_start = (feed->last_index + 1);
 		int64_t index_end = (index_start + (max_lines - 1));
@@ -1171,7 +1171,7 @@ async_load_tabs (gpointer data)
 		const size_t headline_count = headlines.size();
 
 		const int64_t max_lines = 32;
-		const int64_t range_end = static_cast<int64_t> (headline_count - 1);
+		const int64_t range_end = static_cast<int64_t> (headline_count);
 
 		const int64_t index_start = (feed->last_index + 1);
 		int64_t index_end = (index_start + (max_lines - 1));
@@ -1244,7 +1244,7 @@ async_load_tabs_with_downloaded_data (gpointer data)
 		const size_t headline_count = headlines.size();
 
 		const int64_t max_lines = 32;
-		const int64_t range_end = static_cast<int64_t> (headline_count - 1);
+		const int64_t range_end = static_cast<int64_t> (headline_count);
 
 		const int64_t index_start = (feed->last_index + 1);
 		int64_t index_end = (index_start + (max_lines - 1));
