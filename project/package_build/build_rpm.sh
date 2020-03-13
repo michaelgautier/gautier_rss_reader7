@@ -54,7 +54,7 @@ cd ../build/rpmbuild/
 
 tar -czf newsreader.tar.gz *
 
-mv newsreader.tar.gz ~/rpmbuild/SOURCES/v7.3.0.tar.gz
+mv newsreader.tar.gz ~/rpmbuild/SOURCES/v7.4.0.tar.gz
 
 #Generate source RPM
 ## **	A source RPM will contain instruction on how a package should be configured on a system.
@@ -64,7 +64,7 @@ rpmbuild -bs ~/rpmbuild/SPECS/newsreader.spec
 
 #Generate installation RPM (binary executable)
 ## **	Intent here is to test the generated source RPM while generating the binary RPM.
-rpmbuild --rebuild --nodebuginfo ~/rpmbuild/SRPMS/newsreader-7.3.0-1.fc31.src.rpm
+rpmbuild --rebuild --nodebuginfo ~/rpmbuild/SRPMS/newsreader-7.4.0-1.fc31.src.rpm
 
 #Clean-up
 ## **	Delete preliminary setup files
