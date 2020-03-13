@@ -114,6 +114,8 @@ main (int argc, char** argv)
 		const std::string db_file_name = ns_ui_app::get_db_file_name();
 
 		gautier_rss_data_write::initialize_db (db_file_name);
+
+		gautier_rss_data_write::remove_expired_articles (db_file_name);
 	}
 
 	/*
