@@ -223,6 +223,9 @@ namespace gautier_rss_data_write {
 	                            std::vector<gautier_rss_data_read::rss_article>& articles);
 
 	void
+	remove_expired_articles (const std::string db_file_name);
+
+	void
 	de_initialize_db (const std::string db_file_name);
 }
 #endif
