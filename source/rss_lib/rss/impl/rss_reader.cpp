@@ -116,6 +116,8 @@ gautier_rss_data_read::get_feeds (const std::string db_file_name, std::vector <r
 
 	ns_db::process_sql (&db, sql_text, params, rows);
 
+	feeds.reserve(rows.size());
+
 	for (ns_db::sql_row_type row : rows) {
 		rss_feed feed;
 
@@ -200,6 +202,8 @@ gautier_rss_data_read::get_feed_headlines (const std::string db_file_name, const
 
 	ns_db::process_sql (&db, sql_text, params, rows);
 
+	headlines.reserve(rows.size());
+
 	for (ns_db::sql_row_type row : rows) {
 		rss_article article;
 
@@ -245,6 +249,8 @@ gautier_rss_data_read::get_feed_headlines_after_row_id (const std::string db_fil
 	};
 
 	ns_db::process_sql (&db, sql_text, params, rows);
+
+	headlines.reserve(rows.size());
 
 	for (ns_db::sql_row_type row : rows) {
 		rss_article article;
