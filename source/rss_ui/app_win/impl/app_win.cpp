@@ -68,6 +68,8 @@ static
 std::map<std::string, std::vector<ns_data_read::rss_article>>
         downloaded_articles;
 
+static
+std::map<std::string, std::string> feed_article_urls;
 /*
 	Async UI
 */
@@ -197,7 +199,7 @@ make_user_note (std::string note);
 	Selected RSS Feed in a Tab
 */
 static ns_data_read::rss_article
-_feed_data;
+visible_feed_article;
 
 /*
 	User Interface
@@ -529,15 +531,40 @@ headline_view_switch_page (GtkNotebook* rss_tabs,
 	/*
 		Clear feed data.
 	*/
-	ns_data_read::clear_feed_data_all (_feed_data);
+	ns_data_read::clear_feed_data_all (visible_feed_article);
+
+	/*
+		Get tab name.
+	*/
+	const std::string feed_name = gtk_notebook_get_tab_label_text (rss_tabs, content);
+	int64_t headline_count = 0;
+	std::string date_status;
+
+	ns_rss_tabs::select_headline_row (GTK_WIDGET (rss_tabs), feed_name, "");
+
+	if (feed_name.empty() == false) {
+		const std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
+
+		visible_feed_article.feed_name = feed_name;
+
+		ns_data_read::rss_feed feed;
+
+		ns_data_read::get_feed (db_file_name, feed_name, feed);
+
+		headline_count = feed.article_count;
+		date_status = feed.last_retrieved;
+
+		gtk_header_bar_set_title (GTK_HEADER_BAR (header_bar), feed_name.data());
+
+		const std::string article_url = feed_article_urls[feed_name];
+
+		ns_rss_tabs::select_headline_row (GTK_WIDGET (rss_tabs), feed_name, article_url);
+	}
 
 	/*
 		Clear content.
 	*/
-	std::string date_status = "";
-
 	gtk_label_set_text (GTK_LABEL (article_date), date_status.data());
-
 	{
 		GtkTextBuffer* text_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (article_summary));
 
@@ -547,32 +574,20 @@ headline_view_switch_page (GtkNotebook* rss_tabs,
 		gtk_text_buffer_set_text (text_buffer, article_text.data(), static_cast<gint> (article_text_size));
 
 		webkit_web_view_load_plain_text (WEBKIT_WEB_VIEW (article_details), article_text.data());
-	}
-	{
+
 		const std::string url = "no feed data";
 
 		gtk_widget_set_tooltip_text (view_article_button, url.data());
 	}
-	/*
-		Setup tab.
-	*/
-	const std::string feed_name = gtk_notebook_get_tab_label_text (rss_tabs, content);
-	_feed_data.feed_name = feed_name;
 
-	if (feed_name.empty() == false) {
-		ns_rss_tabs::select_headline_row (GTK_WIDGET (rss_tabs), feed_name, 0);
+	if (headline_count > 0) {
+		gautier_rss_win_main_headlines_frame::set_headlines_title (headlines_view, page_num,
+		        feed_name + " " + std::to_string (headline_count) + " records");
+	} else {
+		gautier_rss_win_main_headlines_frame::set_headlines_title (headlines_view, page_num, feed_name);
 	}
 
-	gtk_header_bar_set_title (GTK_HEADER_BAR (header_bar), feed_name.data());
-
-	ns_data_read::rss_feed* feed = &feed_index[feed_name];
-
-	if (feed) {
-		const int64_t headline_count = feed->article_count;
-
-		make_user_note (std::to_string (headline_count) + " articles since " +
-		                gautier_rss_util::get_current_date_time_local());
-	}
+	make_user_note (std::to_string (headline_count) + " articles since " + date_status);
 
 	return;
 }
@@ -595,14 +610,16 @@ headline_view_select_row (GtkTreeSelection* tree_selection, gpointer user_data)
 		/*
 			Clear feed headline/article data.
 		*/
-		ns_data_read::clear_feed_data_keep_name (_feed_data);
+		ns_data_read::clear_feed_data_keep_name (visible_feed_article);
 
-		ns_rss_tabs::select_headline (_feed_data, tree_selection);
+		ns_rss_tabs::update_rss_article (tree_selection, visible_feed_article);
+
+		feed_article_urls[visible_feed_article.feed_name] = visible_feed_article.url;
 
 		/*
 			Article date.
 		*/
-		const std::string date_status = "Published -- " + _feed_data.article_date;
+		const std::string date_status = "Published -- " + visible_feed_article.article_date;
 		gtk_label_set_text (GTK_LABEL (article_date), date_status.data());
 
 		/*
@@ -611,12 +628,12 @@ headline_view_select_row (GtkTreeSelection* tree_selection, gpointer user_data)
 		{
 			GtkTextBuffer* text_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (article_summary));
 
-			const bool indicates_html = ns_data_read::indicates_html (_feed_data.article_summary);
+			const bool indicates_html = ns_data_read::indicates_html (visible_feed_article.article_summary);
 
-			std::string article_text = _feed_data.headline;
+			std::string article_text = visible_feed_article.headline;
 
-			if (_feed_data.article_summary.empty() == false && indicates_html == false) {
-				article_text = _feed_data.article_summary;
+			if (visible_feed_article.article_summary.empty() == false && indicates_html == false) {
+				article_text = visible_feed_article.article_summary;
 			}
 
 			const size_t article_text_size = article_text.size();
@@ -628,10 +645,10 @@ headline_view_select_row (GtkTreeSelection* tree_selection, gpointer user_data)
 			Article text.
 		*/
 		{
-			std::string article_text = _feed_data.article_text;
+			std::string article_text = visible_feed_article.article_text;
 
 			if (article_text.empty()) {
-				article_text = _feed_data.article_summary;
+				article_text = visible_feed_article.article_summary;
 			}
 
 			if (article_text.empty() == false) {
@@ -641,7 +658,7 @@ headline_view_select_row (GtkTreeSelection* tree_selection, gpointer user_data)
 			}
 		}
 
-		gtk_widget_set_tooltip_text (view_article_button, _feed_data.url.data());
+		gtk_widget_set_tooltip_text (view_article_button, visible_feed_article.url.data());
 	}
 
 	return;
@@ -655,7 +672,7 @@ rss_operation_click (GtkButton* button,
 		rss_operation_enum operation = * (rss_operation_enum*)user_data;
 
 		if (operation == rss_operation_enum::view_article) {
-			gtk_show_uri_on_window (win, _feed_data.url.data(), GDK_CURRENT_TIME, NULL);
+			gtk_show_uri_on_window (win, visible_feed_article.url.data(), GDK_CURRENT_TIME, NULL);
 		}
 	}
 
@@ -920,6 +937,8 @@ populate_rss_tabs()
 	/*
 		Make a tab for each feed name.
 	*/
+	make_user_note ("Setting up tabs");
+
 	std::vector<ns_data_read::rss_feed> feed_names;
 
 	const std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
@@ -1056,6 +1075,8 @@ async_initialize_tabs (gpointer data)
 			if (tab) {
 				feed_name = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
 
+				make_user_note ("Setting up " + feed_name);
+
 				feed_exists = ns_data_read::contains_feed<decltype (feed_index), decltype (feed_name)> (feed_index, feed_name);
 			}
 		}
@@ -1184,6 +1205,9 @@ async_load_tabs (gpointer data)
 
 		if (index_start > -1 && index_start < index_end) {
 			ns_rss_tabs::show_headlines (headlines_view, feed_name, index_start, index_end, headlines, false);
+
+			make_user_note (feed_name +  " added articles " + std::to_string (index_start + 1) + " to " + std::to_string (
+			                    index_end + 1));
 		} else {
 			/*
 				Reclaim the memory consumed by the snapshot.
@@ -1261,6 +1285,9 @@ async_load_tabs_with_downloaded_data (gpointer data)
 			std::cout << __func__ << " \t\t" << feed_name << ": indices " << index_start << " to " << index_end << "\n";
 
 			ns_rss_tabs::show_headlines (headlines_view, feed_name, index_start, index_end, headlines, true);
+
+			make_user_note ("Downloaded " + std::to_string (headline_count) + " entries " + feed_name +  " adding articles "
+			                + std::to_string (index_start + 1) + " to " + std::to_string (index_end + 1));
 		} else {
 			std::cout << __FILE__ << " \t\t\t\t\t" << __func__ << " feed " << feed_name << "\t *erase*  \n";
 
@@ -1287,8 +1314,10 @@ async_load_tabs_with_downloaded_data (gpointer data)
 			visible_feed_name = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
 		}
 
-		if (visible_feed_name.empty() == false && visible_feed_name == feed_name && _feed_data.feed_name.empty()) {
-			ns_rss_tabs::select_headline_row (GTK_WIDGET (headlines_view), feed_name, 0);
+		if (visible_feed_name.empty() == false && visible_feed_name == feed_name) {
+			const std::string article_url = feed_article_urls[feed_name];
+
+			ns_rss_tabs::select_headline_row (GTK_WIDGET (headlines_view), feed_name, article_url);
 		}
 	}
 
