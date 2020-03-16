@@ -116,7 +116,7 @@ gautier_rss_data_read::get_feeds (const std::string db_file_name, std::vector <r
 
 	ns_db::process_sql (&db, sql_text, params, rows);
 
-	feeds.reserve(rows.size());
+	feeds.reserve (rows.size());
 
 	for (ns_db::sql_row_type row : rows) {
 		rss_feed feed;
@@ -202,7 +202,7 @@ gautier_rss_data_read::get_feed_headlines (const std::string db_file_name, const
 
 	ns_db::process_sql (&db, sql_text, params, rows);
 
-	headlines.reserve(rows.size());
+	headlines.reserve (rows.size());
 
 	for (ns_db::sql_row_type row : rows) {
 		rss_article article;
@@ -250,7 +250,7 @@ gautier_rss_data_read::get_feed_headlines_after_row_id (const std::string db_fil
 
 	ns_db::process_sql (&db, sql_text, params, rows);
 
-	headlines.reserve(rows.size());
+	headlines.reserve (rows.size());
 
 	for (ns_db::sql_row_type row : rows) {
 		rss_article article;
@@ -366,6 +366,42 @@ gautier_rss_data_read::get_row_id (const std::string db_file_name, const std::st
 
 	ns_db::sql_parameter_list_type params = {
 		feed_url
+	};
+
+	ns_db::process_sql (&db, sql_text, params, rows);
+
+	for (ns_db::sql_row_type row : rows) {
+		for (ns_db::sql_row_type::value_type field : row) {
+			if (field.first == "rowid") {
+				row_id = std::stoll (field.second);
+
+				break;
+			}
+		}
+	}
+
+	ns_db::close_db (&db);
+
+	return row_id;
+}
+
+int64_t
+gautier_rss_data_read::get_article_row_id (const std::string db_file_name, const std::string article_url)
+{
+	int64_t row_id = -1;
+
+	namespace ns_db = gautier_rss_database;
+
+	sqlite3* db = NULL;
+	ns_db::open_db (db_file_name, &db);
+
+	ns_db::sql_rowset_type rows;
+	const std::string sql_text = "SELECT rowid \
+	FROM feeds_articles \
+	WHERE article_url = @article_url";
+
+	ns_db::sql_parameter_list_type params = {
+		article_url
 	};
 
 	ns_db::process_sql (&db, sql_text, params, rows);
