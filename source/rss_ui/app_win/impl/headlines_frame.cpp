@@ -204,8 +204,8 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 }
 
 void
-gautier_rss_win_main_headlines_frame::select_headline (gautier_rss_data_read::rss_article& rss_data,
-        GtkTreeSelection* headline_row)
+gautier_rss_win_main_headlines_frame::update_rss_article (GtkTreeSelection* headline_row,
+        gautier_rss_data_read::rss_article& rss_data)
 {
 	if (headline_row) {
 		std::string feed_name;
@@ -229,23 +229,98 @@ gautier_rss_win_main_headlines_frame::select_headline (gautier_rss_data_read::rs
 
 void
 gautier_rss_win_main_headlines_frame::select_headline_row (GtkWidget* headlines_view,
-        const std::string feed_name, const int64_t headline_row_index)
+        const std::string feed_name, const std::string article_url)
 {
-	if (headline_row_index > -1) {
+	GtkWidget* headlines_list_view = NULL;
+
+	/*
+		Tab (contents)
+	*/
+	if (feed_name.empty() == false) {
+		GtkWidget* tab = NULL;
+
+		const gint page_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
+
+		for (gint tab_i = 0; tab_i < page_count; tab_i++) {
+			GtkWidget* notebook_tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
+
+			const std::string tab_label = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), notebook_tab);
+
+			if (feed_name == tab_label) {
+				tab = notebook_tab;
+
+				break;
+			}
+		}
+
+		/*
+			Headlines List Widget
+		*/
+		if (tab) {
+			GtkScrolledWindow* scroll_win = GTK_SCROLLED_WINDOW (tab);
+
+			gautier_rss_ui_app::get_scroll_content_as_list_view (scroll_win, &headlines_list_view);
+		}
+	}
+
+
+	/*
+		Select row.
+	*/
+	if (headlines_list_view != NULL) {
+		GtkTreeSelection* rss_tree_selection_manager = gtk_tree_view_get_selection (GTK_TREE_VIEW (
+		            headlines_list_view));
+
+		GtkTreeModel* tree_model = gtk_tree_view_get_model (GTK_TREE_VIEW (headlines_list_view));
+
+		GtkTreeIter tree_iterator;
+
+		gtk_tree_selection_unselect_all (rss_tree_selection_manager);
+
+		if (article_url.empty()) {
+			gtk_tree_model_get_iter_first (tree_model, &tree_iterator);
+
+			gtk_tree_selection_select_iter (rss_tree_selection_manager, &tree_iterator);
+		} else {
+			gboolean iter_is_valid = gtk_tree_model_get_iter_first (tree_model, &tree_iterator);
+
+			while (iter_is_valid) {
+				gchar* data;
+
+				gtk_tree_model_get (tree_model, &tree_iterator, col_pos_article_url, &data, -1);
+
+				const std::string row_article_url = data;
+
+				if (article_url == row_article_url) {
+					gtk_tree_selection_select_iter (rss_tree_selection_manager, &tree_iterator);
+
+					break;
+				} else {
+					iter_is_valid = gtk_tree_model_iter_next (tree_model, &tree_iterator);
+				}
+			}
+		}
+	}
+
+	return;
+}
+void
+gautier_rss_win_main_headlines_frame::set_headlines_title (GtkWidget* headlines_view, const gint tab_number,
+        const std::string title)
+{
+	if (title.empty() == false && tab_number > -1) {
 		GtkWidget* headlines_list_view = NULL;
 
 		/*
 			Tab (contents)
 		*/
 		{
-			GtkWidget* tab = NULL;
-
-			const gint tab_i = get_tab_contents_container_by_feed_name (GTK_NOTEBOOK (headlines_view), feed_name, &tab);
+			GtkWidget* tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_number);
 
 			/*
 				Headlines List Widget
 			*/
-			if (tab_i > -1 && tab) {
+			if (tab) {
 				GtkScrolledWindow* scroll_win = GTK_SCROLLED_WINDOW (tab);
 
 				gautier_rss_ui_app::get_scroll_content_as_list_view (scroll_win, &headlines_list_view);
@@ -256,17 +331,14 @@ gautier_rss_win_main_headlines_frame::select_headline_row (GtkWidget* headlines_
 			Select row.
 		*/
 		if (headlines_list_view != NULL) {
-			const bool data_entry_in_cell_is_enabled = false;
+			const gint visible_column_number = 0;
 
 			GtkTreeViewColumn* headline_column = gtk_tree_view_get_column (GTK_TREE_VIEW (headlines_list_view),
-			                                     col_pos_headline_text);
+			                                     visible_column_number);
 
-			std::string row_path_query = std::to_string (headline_row_index);
-
-			GtkTreePath* row_path = gtk_tree_path_new_from_string (row_path_query.data());
-
-			gtk_tree_view_set_cursor (GTK_TREE_VIEW (headlines_list_view), row_path, headline_column,
-			                          data_entry_in_cell_is_enabled);
+			if (headline_column) {
+				gtk_tree_view_column_set_title (headline_column, title.data());
+			}
 		}
 	}
 

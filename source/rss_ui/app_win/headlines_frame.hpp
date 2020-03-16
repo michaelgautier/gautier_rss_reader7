@@ -36,10 +36,13 @@ namespace gautier_rss_win_main_headlines_frame {
 	                const bool prepend);
 
 	void
-	select_headline (gautier_rss_data_read::rss_article& rss_data, GtkTreeSelection* headline_row);
+	update_rss_article (GtkTreeSelection* headline_row, gautier_rss_data_read::rss_article& rss_data);
 
 	void
-	select_headline_row (GtkWidget* headlines_view, const std::string feed_name, const int64_t headline_row_index);
+	set_headlines_title (GtkWidget* headlines_view, const gint tab_number, const std::string title);
+
+	void
+	select_headline_row (GtkWidget* headlines_view, const std::string feed_name, const std::string article_url);
 
 	int
 	get_default_headlines_view_content_width();
