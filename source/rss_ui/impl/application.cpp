@@ -14,6 +14,7 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include "rss_ui/app_win/app_win.hpp"
 
 #include "rss_lib/rss/rss_writer.hpp"
+#include "rss_lib/rss/rss_util.hpp"
 
 #include <gio/gio.h>
 #include "rss_ui/app_resources.h"
@@ -85,11 +86,27 @@ load_application_icon();
 int
 main (int argc, char** argv)
 {
+	const std::string program_time_started =  gautier_rss_util::get_current_date_time_utc();
+
+	std::cout << "Gautier RSS Reader 7, compiled under C++ std " <<  __cplusplus << "\n";
+	std::cout << "Originally created by Michael Gautier, https://michaelgautier.github.io/gautier_rss_reader7/ \n";
+	std::cout << "This is free software under LGPLv2; see the source for copying conditions.\n";
+	std::cout << "NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n";
+	std::cout << "--------------------------------------------------------------------------------\n";
+	std::cout << "--------------------------------------------------------------------------------\n";
+	std::cout << "--------------------------------------------------------------------------------\n";
+	std::cout << "--------------------------------------------------------------------------------\n";
+	std::cout << "--------------------------------------------------------------------------------\n";
+	std::cout << "--------------------------------------------------------------------------------\n";
+	std::cout << "--------------------------------------------------------------------------------\n";
+
+	std::cout << "\n\nProgram started: " << program_time_started << ".\n";
+
 	if (argc > 0 && argv) {
 		/*
 			Ignore passed args and print a message instead.
 		*/
-		std::cout << "Gautier RSS Reader v7\n";
+		std::cout << "Program does not accept any command arguments.\n";
 	}
 
 	namespace ns_ui_app = gautier_rss_ui_app;
@@ -124,8 +141,25 @@ main (int argc, char** argv)
 	if (status == 0) {
 		gtk_init (NULL, NULL);
 
+		std::cout << "Creating user interface - main screen.\n";
+
 		status = ns_ui_app::create();
 	}
+
+	const std::string program_time_ended_precleanup =  gautier_rss_util::get_current_date_time_utc();
+
+	const int_fast32_t time_difference_in_seconds = gautier_rss_util::get_time_difference_in_seconds (
+	            program_time_started, program_time_ended_precleanup);
+
+	std::cout << "--------------------------------------------------------------------------------\n";
+	std::cout << "--------------------------------------------------------------------------------\n";
+	std::cout << "--------------------------------------------------------------------------------\n";
+	std::cout << "--------------------------------------------------------------------------------\n";
+	std::cout << "--------------------------------------------------------------------------------\n";
+	std::cout << "--------------------------------------------------------------------------------\n";
+	std::cout << "--------------------------------------------------------------------------------\n";
+	std::cout << "Program ended " << program_time_ended_precleanup << ".\n";
+	std::cout << "Program running time: " << time_difference_in_seconds << " seconds.\n";
 
 	return status;
 }
@@ -151,6 +185,7 @@ gautier_rss_ui_app::create()
 	/*
 		Clean-up.
 	*/
+	std::cout << "clean-up before exit.\n";
 	{
 		g_object_unref (application);
 
