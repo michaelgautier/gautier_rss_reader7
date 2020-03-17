@@ -52,7 +52,7 @@ cp --recursive --preserve * ~/debbuild/
 
 tar -czf newsreader.tar.gz *
 
-cp --preserve newsreader.tar.gz ~/debbuild/newsreader_7.4.0.orig.tar.gz
+cp --preserve newsreader.tar.gz ~/debbuild/newsreader_7.5.0.orig.tar.gz
 
 pwd
 ls -gGh ~/debbuild_tmp/
