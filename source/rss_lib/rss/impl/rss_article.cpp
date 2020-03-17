@@ -12,31 +12,6 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 #include "rss_lib/rss/rss_article.hpp"
 
-void
-gautier_rss_data_read::clear_feed_data_all (rss_article& feed_data)
-{
-	feed_data.feed_name = "";
-	feed_data.headline = "";
-	feed_data.article_date = "";
-	feed_data.article_summary = "";
-	feed_data.article_text = "";
-	feed_data.url = "";
-
-	return;
-}
-
-void
-gautier_rss_data_read::clear_feed_data_keep_name (rss_article& feed_data)
-{
-	std::string feed_name = feed_data.feed_name;
-
-	clear_feed_data_all (feed_data);
-
-	feed_data.feed_name = feed_name;
-
-	return;
-}
-
 bool
 gautier_rss_data_read::validate_feed_info_missing (const std::string feed_name, const std::string feed_url)
 {

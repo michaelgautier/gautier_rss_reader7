@@ -27,12 +27,6 @@ namespace gautier_rss_data_read {
 			std::string url;
 	};
 
-	void
-	clear_feed_data_all (rss_article& feed_data);
-
-	void
-	clear_feed_data_keep_name (rss_article& feed_data);
-
 	bool
 	validate_feed_info_missing (const std::string feed_name, const std::string feed_url);
 
