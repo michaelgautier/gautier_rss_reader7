@@ -44,6 +44,9 @@ namespace gautier_rss_win_main_headlines_frame {
 	void
 	select_headline_row (GtkWidget* headlines_view, const std::string feed_name, const std::string article_url);
 
+	void
+	clear_row_selection (GtkWidget* headlines_view, const std::string feed_name);
+
 	int
 	get_default_headlines_view_content_width();
 
