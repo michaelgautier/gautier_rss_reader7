@@ -55,7 +55,9 @@ gautier_rss_util::get_time_difference_in_seconds (const std::string date1, const
 			if (field.first == "result") {
 				std::string result = field.second;
 
-				seconds = std::stoi (result);
+				if (result.empty() == false) {
+					seconds = std::stoi (result);
+				}
 			}
 		}
 	}
@@ -79,7 +81,8 @@ gautier_rss_util::get_current_date_time_utc()
 
 		std::stringstream strout;
 
-		strout << std::put_time (std::gmtime (&result), "%F %T") << std::ends;
+		/* MinGW Windows Cross Compile does not understand the short-hand: %F %T */
+		strout << std::put_time (std::gmtime (&result), "%Y-%m-%d %H:%M:%S");
 
 		datetime = strout.str();
 	}
@@ -101,7 +104,8 @@ gautier_rss_util::get_current_date_time_local()
 
 		std::stringstream strout;
 
-		strout << std::put_time (std::localtime (&result), "%F %T") << std::ends;
+		/* MinGW Windows Cross Compile does not understand the short-hand: %F %T */
+		strout << std::put_time (std::localtime (&result), "%Y-%m-%d %H:%M:%S");
 
 		datetime = strout.str();
 	}

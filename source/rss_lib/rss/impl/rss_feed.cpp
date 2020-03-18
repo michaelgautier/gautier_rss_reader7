@@ -31,7 +31,12 @@ gautier_rss_data_read::is_feed_still_fresh (const std::string db_file_name, cons
 
 		const int_fast32_t seconds_elapsed = gautier_rss_util::get_time_difference_in_seconds ("", feed.last_retrieved);
 
-		const int_fast32_t retrieve_limit_hrs = std::stoi (feed.retrieve_limit_hrs);
+		int_fast32_t retrieve_limit_hrs = 1;
+
+		if (feed.retrieve_limit_hrs.empty() == false) {
+			retrieve_limit_hrs = std::stoi (feed.retrieve_limit_hrs);
+		}
+
 		const int_fast32_t retrieve_limit_min = retrieve_limit_hrs * 60;
 		const int_fast32_t retrieve_limit_sec = retrieve_limit_min * 60;
 

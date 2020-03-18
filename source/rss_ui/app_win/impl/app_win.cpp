@@ -29,7 +29,9 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 #include "rss_lib/rss_download/feed_download.hpp"
 
+#ifndef _WIN32//MS Windows == false	Include WebKit if not on MS Windows
 #include <webkit2/webkit2.h>
+#endif
 
 namespace ns_data_read = gautier_rss_data_read;
 namespace ns_data_write = gautier_rss_data_write;
@@ -331,6 +333,7 @@ gautier_rss_win_main::create (
 	/*
 		Article Text
 	*/
+#ifndef _WIN32//MS Windows == false	Setup the WebKit HTML Renderer if not on MS Windows.
 	{
 		WebKitSettings* settings = webkit_settings_new();
 
@@ -354,6 +357,7 @@ gautier_rss_win_main::create (
 		g_object_ref_sink (article_details);
 		webkit_web_view_set_settings (WEBKIT_WEB_VIEW (article_details), settings);
 	}
+#endif
 
 	/*
 		Article Date
@@ -532,8 +536,10 @@ headline_view_switch_page (GtkNotebook* rss_tabs,
 
 	/*
 		Clear content.
+
+		Article details will be absent if this is running on Microsoft Windows.
 	*/
-	{
+	if (article_details) {
 		GtkTextBuffer* text_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (article_summary));
 
 		std::string article_text = "";
@@ -541,7 +547,9 @@ headline_view_switch_page (GtkNotebook* rss_tabs,
 
 		gtk_text_buffer_set_text (text_buffer, article_text.data(), static_cast<gint> (article_text_size));
 
+#ifndef _WIN32//MS Windows == false	Set the WebKit HTML Renderer's text if not on MS Windows
 		webkit_web_view_load_plain_text (WEBKIT_WEB_VIEW (article_details), article_text.data());
+#endif
 
 		const std::string url = "no feed data";
 
@@ -641,6 +649,9 @@ show_article (const ns_data_read::rss_article& article)
 
 			if (article.article_summary.empty() == false && indicates_html == false) {
 				article_text = article.article_summary;
+#ifdef _WIN32//MS Windows == true	No suitable HTML renderer for Microsoft Windows. Use raw article text.
+				article_text = article.article_text;
+#endif
 			}
 
 			const size_t article_text_size = article_text.size();
@@ -658,11 +669,18 @@ show_article (const ns_data_read::rss_article& article)
 				article_text = article.article_summary;
 			}
 
-			if (article_text.empty() == false) {
-				webkit_web_view_load_html (WEBKIT_WEB_VIEW (article_details), article_text.data(), NULL);
-			} else {
-				webkit_web_view_load_plain_text (WEBKIT_WEB_VIEW (article_details), article_text.data());
+#ifndef _WIN32//MS Windows == false	Add article details the normal way if not on MS Windows.
+
+			if (article_details) {
+				if (article_text.empty() == false) {
+					webkit_web_view_load_html (WEBKIT_WEB_VIEW (article_details), article_text.data(), NULL);
+				} else {
+					webkit_web_view_load_plain_text (WEBKIT_WEB_VIEW (article_details), article_text.data());
+				}
 			}
+
+#endif
+
 		}
 
 		gtk_widget_set_tooltip_text (view_article_button, article.url.data());
@@ -922,8 +940,11 @@ window_destroy (GtkWidget* window, gpointer user_data)
 			These use GObject explicit ref counting.
 			Ref counting enables explicit clean-up sequence.
 		*/
+		if (article_details) {
+			gtk_widget_destroy (article_details);
+		}
+
 		gtk_widget_destroy (article_date);
-		gtk_widget_destroy (article_details);
 		gtk_widget_destroy (article_summary);
 		gtk_widget_destroy (header_bar);
 		gtk_widget_destroy (info_bar);
