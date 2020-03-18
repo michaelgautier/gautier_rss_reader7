@@ -1,5 +1,5 @@
 Name:           newsreader
-Version:        7.5.0
+Version:        7.6.0
 Release:        1%{?dist}
 Summary:        Ultra simple desktop feed reader
 
@@ -76,5 +76,5 @@ rm -rf %{buildroot}
 %{_metainfodir}/%{name}.appdata.xml
 
 %changelog
-* Tue Mar 17 2020 Michael Gautier <michaelgautier.wordpress.com> - 7.5.0-1
-- Clean RPM built based on git commit 6df057bf7ee13a9ee0a33860b1b225c7415e17bf.
+* Wed Mar 18 2020 Michael Gautier <michaelgautier.wordpress.com> - 7.6.0-1
+- A Microsoft Windows Version exists that resulted in some code changes.
