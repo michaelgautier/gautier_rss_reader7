@@ -48,10 +48,8 @@ std::string app_name = "michael.gautier.rss.v7";
 
 	UNIX/LINUX specific
 */
-#ifndef _WIN32//MS Windows == false	Do not include UNIX/LINUX user info check when on MS Windows.
 #include <grp.h>
 #include <pwd.h>
-#endif
 /*
 	- End all directory paths in this program with / to make concatenation trivial.
 	- Referencing root_user_data_directory fails under the following conditions:
@@ -119,7 +117,6 @@ main (int argc, char** argv)
 	/*
 		Initialize User's directory to hold data files.
 	*/
-#ifndef _WIN32//MS Windows == false	When on MS Windows, have the database file sit next to the executable.
 	{
 		status = create_user_root_directory();
 
@@ -127,8 +124,6 @@ main (int argc, char** argv)
 			status = create_user_data_directory();
 		}
 	}
-
-#endif
 
 	/*
 		Initialize database to hold RSS feed data.
@@ -324,14 +319,11 @@ gautier_rss_ui_app::get_user_directory_name()
 {
 	std::string base_directory;
 
-#ifndef _WIN32//MS Windows == false	Use same directory as .exe when on MS Windows.
 	base_directory = user_home_directory + root_user_data_directory + "data/";
-#endif
 
 	return base_directory;
 }
 
-#ifndef _WIN32//MS Windows == false	Strip out this entire group of code when compiling the program for MS Windows.
 static
 int
 create_directory (const std::string directory_path)
@@ -404,7 +396,6 @@ create_user_data_directory()
 
 	return directory_status;
 }
-#endif
 
 static
 void
