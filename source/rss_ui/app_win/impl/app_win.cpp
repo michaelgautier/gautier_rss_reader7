@@ -34,6 +34,10 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 namespace ns_data_read = gautier_rss_data_read;
 namespace ns_data_write = gautier_rss_data_write;
 
+using single_article_by_feed_type = std::map<std::string, ns_data_read::rss_article>;
+using articles_by_feed_type = std::map<std::string, std::vector<ns_data_read::rss_article>>;
+using feed_by_name_type = std::map<std::string, ns_data_read::rss_feed>;
+
 /*Concurrency Control*/
 static
 bool shutting_down = false;
@@ -53,23 +57,19 @@ bool rss_management_running = false;
 	RSS Data Index
 */
 static
-std::map<std::string, ns_data_read::rss_feed>
-feed_index;
+feed_by_name_type feed_index;
 
 static
-std::map<std::string, ns_data_read::rss_feed>
-downloaded_feeds;
+feed_by_name_type downloaded_feeds;
 
 static
-std::map<std::string, std::vector<ns_data_read::rss_article>>
-        feeds_articles;
+articles_by_feed_type feeds_articles;
 
 static
-std::map<std::string, std::vector<ns_data_read::rss_article>>
-        downloaded_articles;
+articles_by_feed_type downloaded_articles;
 
 static
-std::map<std::string, ns_data_read::rss_article> feed_article_selection;
+single_article_by_feed_type feed_article_selection;
 /*
 	Async UI
 */
