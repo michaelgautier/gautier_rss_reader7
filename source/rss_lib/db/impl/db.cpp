@@ -12,6 +12,7 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 #include <iostream>
 #include <sstream>
+#include <string>
 
 #include <libxml/parser.h>
 #include <libxml/tree.h>

@@ -10,10 +10,15 @@ You should have received a copy of the GNU Lesser General Public License along w
 Author: Michael Gautier <michaelgautier.wordpress.com>
 */
 
-#include <cstring>
+#include <cstddef>
+#include <cstdio>
 #include <cstdlib>
-
+#include <cstring>
+#include <ctime>
+#include <cuchar>
+#include <cwchar>
 #include <iostream>
+#include <string>
 
 #include <curl/curl.h>
 

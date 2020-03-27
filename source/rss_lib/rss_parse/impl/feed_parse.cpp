@@ -11,8 +11,18 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 */
 
 #include <cctype>
+#include <cstddef>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+#include <cuchar>
+#include <cwchar>
 #include <iomanip>
+#include <iostream>
 #include <sstream>
+#include <string>
+#include <vector>
 
 #include "libxml/parser.h"
 #include "libxml/tree.h"

@@ -10,17 +10,25 @@ You should have received a copy of the GNU Lesser General Public License along w
 Author: Michael Gautier <michaelgautier.wordpress.com>
 */
 
+#include <cstddef>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+#include <cuchar>
+#include <cwchar>
 #include <iostream>
 #include <map>
-
-#include "rss_ui/application.hpp"
-#include "rss_ui/rss_manage/rss_manage.hpp"
+#include <string>
+#include <vector>
 
 #include "rss_lib/rss/rss_reader.hpp"
 #include "rss_lib/rss/rss_writer.hpp"
 #include "rss_lib/rss/rss_feed.hpp"
 #include "rss_lib/rss/rss_util.hpp"
 
+#include "rss_ui/application.hpp"
+#include "rss_ui/rss_manage/rss_manage.hpp"
 
 static GtkWindow*
 win = NULL;

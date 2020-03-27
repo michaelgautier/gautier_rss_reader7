@@ -10,22 +10,20 @@ You should have received a copy of the GNU Lesser General Public License along w
 Author: Michael Gautier <michaelgautier.wordpress.com>
 */
 
-#include "rss_ui/application.hpp"
-#include "rss_ui/app_win/app_win.hpp"
-
-#include "rss_lib/rss/rss_writer.hpp"
-#include "rss_lib/rss/rss_util.hpp"
-
-#include <gio/gio.h>
-#include "rss_ui/app_resources.h"
-
-#include <iostream>
 #include <cerrno>
 #include <cstdlib>
 #include <cstring>
+#include <iostream>
+#include <string>
 
-static const
-std::string app_name = "michael.gautier.rss.v7";
+#include "rss_lib/rss/rss_util.hpp"
+#include "rss_lib/rss/rss_writer.hpp"
+
+#include "rss_ui/application.hpp"
+#include "rss_ui/app_resources.h"
+#include "rss_ui/app_win/app_win.hpp"
+
+#include <gio/gio.h>
 
 /*
 	GNU C Library extensions
@@ -80,6 +78,9 @@ create_directory (const std::string directory_path);
 static
 void
 load_application_icon();
+
+static const
+std::string app_name = "michael.gautier.rss.v7";
 
 /*
 	Program start-up.

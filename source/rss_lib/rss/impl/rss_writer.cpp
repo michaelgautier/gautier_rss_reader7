@@ -10,18 +10,25 @@ You should have received a copy of the GNU Lesser General Public License along w
 Author: Michael Gautier <michaelgautier.wordpress.com>
 */
 
+#include <cstddef>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+#include <cuchar>
+#include <cwchar>
 #include <iostream>
+#include <map>
+#include <string>
 #include <thread>
+#include <vector>
 
 #include "rss_lib/db/db.hpp"
-
 #include "rss_lib/rss_download/feed_download.hpp"
-
 #include "rss_lib/rss_parse/feed_parse.hpp"
-
 #include "rss_lib/rss/rss_reader.hpp"
-#include "rss_lib/rss/rss_writer.hpp"
 #include "rss_lib/rss/rss_util.hpp"
+#include "rss_lib/rss/rss_writer.hpp"
 
 namespace ns_data_read = gautier_rss_data_read;
 namespace ns_db = gautier_rss_database;

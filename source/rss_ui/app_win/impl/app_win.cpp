@@ -10,26 +10,34 @@ You should have received a copy of the GNU Lesser General Public License along w
 Author: Michael Gautier <michaelgautier.wordpress.com>
 */
 
-#include <map>
+#include <cstddef>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
+#include <cuchar>
+#include <cwchar>
 #include <iostream>
+#include <map>
+#include <string>
 #include <thread>
+#include <vector>
+
+#include <webkit2/webkit2.h>
+
+#include "rss_lib/rss_download/feed_download.hpp"
+#include "rss_lib/rss/rss_feed_mod.hpp"
+#include "rss_lib/rss/rss_reader.hpp"
+#include "rss_lib/rss/rss_util.hpp"
+#include "rss_lib/rss/rss_writer.hpp"
 
 #include "rss_ui/application.hpp"
 #include "rss_ui/app_win/app_win.hpp"
-#include "rss_ui/app_win/article_header.hpp"
 #include "rss_ui/app_win/article_frame.hpp"
+#include "rss_ui/app_win/article_header.hpp"
 #include "rss_ui/app_win/headlines_frame.hpp"
 
-#include "rss_lib/rss/rss_reader.hpp"
-#include "rss_lib/rss/rss_writer.hpp"
-#include "rss_lib/rss/rss_feed_mod.hpp"
-#include "rss_lib/rss/rss_util.hpp"
-
 #include "rss_ui/rss_manage/rss_manage.hpp"
-
-#include "rss_lib/rss_download/feed_download.hpp"
-
-#include <webkit2/webkit2.h>
 
 namespace ns_data_read = gautier_rss_data_read;
 namespace ns_data_write = gautier_rss_data_write;
@@ -153,7 +161,7 @@ void
 manage_feeds_click (GtkButton* button, gpointer user_data);
 
 static void
-process_rss_feed_configuration (ns_data_read::rss_feed_mod& modification);
+process_rss_feed_configuration (const ns_data_read::rss_feed_mod modification);
 
 static void
 synchronize_feeds_to_configuration (std::map<std::string, gautier_rss_data_read::rss_feed_mod> feed_changes);
@@ -176,7 +184,7 @@ void
 select_headline_row (GtkTreeSelection* tree_selection, gpointer user_data);
 
 static void
-show_article (const ns_data_read::rss_article& article);
+show_article (const ns_data_read::rss_article article);
 /*
 	Main screen button operations.
 */
@@ -268,7 +276,7 @@ static void
 get_screen_dimensions (GtkWindow* window);
 
 static void
-set_window_attributes (GtkWidget* window, std::string title, int width, int height);
+set_window_attributes (GtkWidget* window, const std::string title, const int width, const int height);
 
 /*
 	UI Window Shutdown
@@ -615,7 +623,7 @@ select_headline_row (GtkTreeSelection* tree_selection, gpointer user_data)
 }
 
 static void
-show_article (const ns_data_read::rss_article& article)
+show_article (const ns_data_read::rss_article article)
 {
 	namespace ns_rss_tabs = gautier_rss_win_main_headlines_frame;
 
@@ -734,7 +742,7 @@ synchronize_feeds_to_configuration (std::map<std::string, gautier_rss_data_read:
 }
 
 static void
-process_rss_feed_configuration (ns_data_read::rss_feed_mod& modification)
+process_rss_feed_configuration (const ns_data_read::rss_feed_mod modification)
 {
 	namespace ns_rss_tabs = gautier_rss_win_main_headlines_frame;
 
