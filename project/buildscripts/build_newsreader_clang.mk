@@ -56,21 +56,11 @@ GRESOURCES_CFLAGS = -I../source -c -std=c17 -pipe -O3 \
 	--cflags` -D_FORTIFY_SOURCE=2 $(CPPFLAGS) $(CFLAGS)
 GRESOURCES_OBJECTS =  \
 	gresources_app_resources.o
-NEWSREADER_CLANG_TEST_CXXFLAGS = -I../source -std=c++17 -pipe -O2 -ggdb \
-	`pkg-config gtk+-3.0 --cflags` `pkg-config webkit2gtk-4.0 --cflags` \
-	`pkg-config libxml-2.0 --cflags` `pkg-config gthread-2.0 --cflags` \
-	-D_FORTIFY_SOURCE=2 -DNDEBUG -fasynchronous-unwind-tables \
-	-fcf-protection=full -fdelete-null-pointer-checks -fexceptions -fno-common \
-	-fnon-call-exceptions -fsized-deallocation -fstack-protector-all \
-	-fstrict-aliasing -ftrapv -fvisibility=hidden -Werror -Wfatal-errors \
-	-pedantic-errors -Wall -Wcast-align -Wcast-qual -Wconversion -Wdate-time \
-	-Wdisabled-optimization -Wdouble-promotion -Wduplicate-enum -Wextra \
-	-Wextra-semi -Wfloat-equal -Wformat=2 -Wno-unused-function \
-	-Wno-uninitialized -Wparentheses -Wpedantic -Wredundant-decls -Wshadow \
-	-Wstack-protector -Wstrict-overflow=5 -Wundef -Wuninitialized \
-	-Wunknown-pragmas -Wunused-const-variable -Wunused-macros \
-	-Wunused-parameter -Wno-zero-as-null-pointer-constant $(CPPFLAGS) \
-	$(CXXFLAGS)
+NEWSREADER_CLANG_TEST_CXXFLAGS = -I../source -std=c++17 -pipe `pkg-config \
+	gtk+-3.0 --cflags` `pkg-config webkit2gtk-4.0 --cflags` `pkg-config libxml-2.0 \
+	--cflags` `pkg-config gthread-2.0 --cflags` -Werror -Wfatal-errors \
+	-pedantic-errors -Wall -Wextra -Wno-unused-function -Wno-uninitialized \
+	$(CPPFLAGS) $(CXXFLAGS)
 NEWSREADER_CLANG_TEST_OBJECTS =  \
 	newsreader_clang_test_application.o \
 	newsreader_clang_test_app_win.o \
@@ -129,7 +119,7 @@ bin/libgresources.a: $(GRESOURCES_OBJECTS) bin ../source/rss_ui/app_style.css ..
 	$(RANLIB) $@
 
 bin/newsreader_clang_test: $(NEWSREADER_CLANG_TEST_OBJECTS) bin bin/libgresources.a
-	$(CXX) -o $@ $(NEWSREADER_CLANG_TEST_OBJECTS)  gresources_app_resources.o -std=c++17 -pipe -O2 -flto -ggdb `pkg-config gtk+-3.0 --libs` `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `pkg-config webkit2gtk-4.0 --libs` `pkg-config libxml-2.0 --libs` `pkg-config gthread-2.0 --libs` $(LDFLAGS)
+	$(CXX) -o $@ $(NEWSREADER_CLANG_TEST_OBJECTS)  gresources_app_resources.o -std=c++17 -pipe `pkg-config gtk+-3.0 --libs` `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `pkg-config webkit2gtk-4.0 --libs` `pkg-config libxml-2.0 --libs` `pkg-config gthread-2.0 --libs` $(LDFLAGS)
 
 install_newsreader_clang_test: bin/newsreader_clang_test
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/bin

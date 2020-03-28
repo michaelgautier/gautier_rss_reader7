@@ -144,11 +144,6 @@
 
 		<cppflags>-pipe</cppflags>
 		<ldflags>-pipe</ldflags>
-		<cppflags>-O2</cppflags>
-		<ldflags>-O2</ldflags>
-		<ldflags>-flto</ldflags>
-		<cppflags>-ggdb</cppflags>
-		<ldflags>-ggdb</ldflags>
 
 		<!-- Linked resources -->
 
@@ -164,65 +159,14 @@
 		<ldflags>`pkg-config libxml-2.0 --libs`</ldflags>
 		<ldflags>`pkg-config gthread-2.0 --libs`</ldflags>
 
-		<!-- Defines -->
-		<!-- Suggested in the Red Hat publication:
-			Developing Applictions in RHEL 8 (2019-11-15)  -->
-
-		<cppflags>-D_FORTIFY_SOURCE=2</cppflags>
-
-		<!-- Libc assertions
-			Disallow assertions in production use.
-			GTK and Pango use assertions useful during development
-			that are extremely useful.
-			Comment out this line to enable the assertions. -->
-
-		<cppflags>-DNDEBUG</cppflags>
-
-		<!-- Compile time optimization, security, correctness -->
-
-		<cppflags>-fasynchronous-unwind-tables</cppflags>
-		<cppflags>-fcf-protection=full</cppflags>
-		<cppflags>-fdelete-null-pointer-checks</cppflags>
-		<cppflags>-fexceptions</cppflags>
-		<cppflags>-fno-common</cppflags>
-		<cppflags>-fnon-call-exceptions</cppflags>
-		<cppflags>-fsized-deallocation</cppflags>
-		<cppflags>-fstack-protector-all</cppflags>
-		<cppflags>-fstrict-aliasing</cppflags>
-		<cppflags>-ftrapv</cppflags>
-		<cppflags>-fvisibility=hidden</cppflags>
-
 		<!--Warnings. Check for correctness -->
 
 		<cppflags>-Werror</cppflags>
 		<cppflags>-Wfatal-errors</cppflags>
 		<cppflags>-pedantic-errors</cppflags>
 		<cppflags>-Wall</cppflags>
-		<cppflags>-Wcast-align</cppflags>
-		<cppflags>-Wcast-qual</cppflags>
-		<cppflags>-Wconversion</cppflags>
-		<cppflags>-Wdate-time</cppflags>
-		<cppflags>-Wdisabled-optimization</cppflags>
-		<cppflags>-Wdouble-promotion</cppflags>
-		<cppflags>-Wduplicate-enum</cppflags>
 		<cppflags>-Wextra</cppflags>
-		<cppflags>-Wextra-semi</cppflags>
-		<cppflags>-Wfloat-equal</cppflags>
-		<cppflags>-Wformat=2</cppflags>
 		<cppflags>-Wno-unused-function</cppflags>
 		<cppflags>-Wno-uninitialized</cppflags>
-		<cppflags>-Wparentheses</cppflags>
-		<cppflags>-Wpedantic</cppflags>
-		<cppflags>-Wredundant-decls</cppflags>
-		<cppflags>-Wshadow</cppflags>
-		<cppflags>-Wstack-protector</cppflags>
-		<cppflags>-Wstrict-overflow=5</cppflags>
-		<cppflags>-Wundef</cppflags>
-		<cppflags>-Wuninitialized</cppflags>
-		<cppflags>-Wunknown-pragmas</cppflags>
-		<cppflags>-Wunused-const-variable</cppflags>
-		<cppflags>-Wunused-macros</cppflags>
-		<cppflags>-Wunused-parameter</cppflags>
-		<cppflags>-Wno-zero-as-null-pointer-constant</cppflags>
 	</exe>
 </makefile>
