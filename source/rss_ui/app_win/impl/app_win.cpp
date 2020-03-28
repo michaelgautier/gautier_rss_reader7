@@ -549,7 +549,7 @@ headline_view_switch_page (GtkNotebook* rss_tabs,
 		std::string article_text = "";
 		const size_t article_text_size = article_text.size();
 
-		gtk_text_buffer_set_text (text_buffer, article_text.data(), static_cast<gint> (article_text_size));
+		gtk_text_buffer_set_text (text_buffer, article_text.data(), (gint) (article_text_size));
 
 		webkit_web_view_load_plain_text (WEBKIT_WEB_VIEW (article_details), article_text.data());
 
@@ -655,7 +655,7 @@ show_article (const ns_data_read::rss_article article)
 
 			const size_t article_text_size = article_text.size();
 
-			gtk_text_buffer_set_text (text_buffer, article_text.data(), static_cast<gint> (article_text_size));
+			gtk_text_buffer_set_text (text_buffer, article_text.data(), (gint) (article_text_size));
 		}
 
 		/*
@@ -1115,7 +1115,7 @@ async_initialize_tabs (gpointer data)
 		const size_t headline_count = headlines.size();
 
 		const int64_t max_lines = 32;
-		const int64_t range_end = static_cast<int64_t> (headline_count);
+		const int64_t range_end = (int64_t) (headline_count);
 
 		const int64_t index_start = (feed->last_index + 1);
 		int64_t index_end = (index_start + (max_lines - 1));
@@ -1214,7 +1214,7 @@ async_load_tabs (gpointer data)
 		const size_t headline_count = headlines.size();
 
 		const int64_t max_lines = 32;
-		const int64_t range_end = static_cast<int64_t> (headline_count);
+		const int64_t range_end = (int64_t) (headline_count);
 
 		const int64_t index_start = (feed->last_index + 1);
 		int64_t index_end = (index_start + (max_lines - 1));
@@ -1290,7 +1290,7 @@ async_load_tabs_with_downloaded_data (gpointer data)
 		const size_t headline_count = headlines.size();
 
 		const int64_t max_lines = 32;
-		const int64_t range_end = static_cast<int64_t> (headline_count);
+		const int64_t range_end = (int64_t) (headline_count);
 
 		const int64_t index_start = (feed->last_index + 1);
 		int64_t index_end = (index_start + (max_lines - 1));

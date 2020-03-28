@@ -139,7 +139,7 @@ gautier_rss_util::convert_chars_to_lower_case_string (const char* chars, std::st
 	for (size_t char_index = 0; char_index < char_count; char_index++) {
 		const char character = detail.at (char_index);
 
-		str.push_back (static_cast<char> (std::tolower (character)));
+		str.push_back ((char) (std::tolower (character)));
 	}
 
 	return;
@@ -157,7 +157,7 @@ gautier_rss_util::convert_chars_to_string (const char* chars, std::string& str)
 	for (size_t char_index = 0; char_index < char_count; char_index++) {
 		const char character = detail.at (char_index);
 
-		str.push_back (static_cast<char> (character));
+		str.push_back ((char) (character));
 	}
 
 	return (str.empty() == false);
@@ -173,7 +173,7 @@ gautier_rss_util::convert_chars_to_int_string (const char* chars, std::string& s
 		const char character = detail.at (char_index);
 
 		if (std::isdigit (character)) {
-			str.push_back (static_cast<char> (character));
+			str.push_back ((char) (character));
 		}
 	}
 

@@ -66,7 +66,7 @@ gautier_rss_data_parse::get_feed_lines (const std::string feed_data,
 	const size_t feed_data_size = feed_data.size();
 
 	if (feed_data.empty() == false) {
-		doc = xmlRecoverMemory (feed_data.data(), static_cast<int> (feed_data_size));
+		doc = xmlRecoverMemory (feed_data.data(), (int) (feed_data_size));
 
 		if (doc) {
 			/*Get the root element node */

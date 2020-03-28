@@ -66,9 +66,9 @@ gautier_rss_win_main_headlines_frame::initialize_headline_view (GtkWidget* headl
 	const double monitor_width_d = monitor_width;
 	const double monitor_width_part = 1.7;
 
-	headlines_section_width = static_cast<int> ((monitor_width_d / monitor_width_part));
+	headlines_section_width = (int) ((monitor_width_d / monitor_width_part));
 
-	const int article_section_width = static_cast<int> ((monitor_width - headlines_section_width));
+	const int article_section_width = (int) ((monitor_width - headlines_section_width));
 
 	std::cout << "Optimal article section width: " << article_section_width << "\n";
 	std::cout << "NOTE - Monitor Height: " << monitor_height << "\n";
@@ -127,7 +127,7 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 	*/
 	const size_t headline_count = headlines.size();
 
-	const int64_t range_end = static_cast<int64_t> (headline_count);
+	const int64_t range_end = (int64_t) (headline_count);
 
 	if (range_end > -1) {
 		GtkWidget* headlines_list_view = NULL;
@@ -170,7 +170,7 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 			gboolean start_iter_is_valid = gtk_tree_model_get_iter_first (list_model, &start_iter);
 
 			for (int64_t i = headline_index_start; i <= headline_index_end && i < range_end; i++) {
-				const size_t headline_i = static_cast<size_t> (i);
+				const size_t headline_i = (size_t) (i);
 
 				gautier_rss_data_read::rss_article rss_data = headlines.at (headline_i);
 

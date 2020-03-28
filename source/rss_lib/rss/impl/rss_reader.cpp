@@ -350,7 +350,7 @@ gautier_rss_data_read::get_feed_headline_count (const std::string db_file_name, 
 	for (ns_db::sql_row_type row : rows) {
 		for (ns_db::sql_row_type::value_type field : row) {
 			if (field.first == "article_count") {
-				size = static_cast<int64_t> (std::stoll (field.second));
+				size = (int64_t) (std::stoll (field.second));
 			}
 		}
 	}

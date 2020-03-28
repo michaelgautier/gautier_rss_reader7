@@ -658,7 +658,7 @@ update_configuration_click (GtkButton* button, gpointer user_data)
 		const std::string active_id = gtk_combo_box_get_active_id (GTK_COMBO_BOX (feed_retention_option));
 
 		if (active_id.empty() == false) {
-			const int_fast32_t retention_id = static_cast<int_fast32_t> (std::stoi (active_id));
+			const int_fast32_t retention_id = (int_fast32_t) (std::stoi (active_id));
 
 			switch (retention_id) {
 				case 1:
@@ -997,7 +997,7 @@ rss_tree_view_selected (GtkTreeSelection* tree_selection, gpointer user_data)
 			gtk_entry_buffer_set_text (b1, feed_name.data(), -1);
 			gtk_entry_buffer_set_text (b2, feed_url.data(), -1);
 
-			gtk_spin_button_set_value (GTK_SPIN_BUTTON (feed_refresh_interval), static_cast<gdouble> (retrieve_limit_hrs));
+			gtk_spin_button_set_value (GTK_SPIN_BUTTON (feed_refresh_interval), (gdouble) (retrieve_limit_hrs));
 
 			std::string active_id;
 			const std::string retention_days_text = retention_days;
