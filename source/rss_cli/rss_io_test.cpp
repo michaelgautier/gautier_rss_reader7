@@ -151,18 +151,18 @@ main (int argc, char** argv)
 
 			Common Linux command-line options
 		*/
-		cli_help		= arg_litn (NULL, "help", 0, 1, "display this help and exit"),
-		cli_version 		= arg_litn (NULL, "version", 0, 1, "display version info and exit"),
-		cli_verbose    		= arg_litn (NULL, "verbose", 0, 1, "verbose output"),
+		cli_help		= arg_litn (nullptr, "help", 0, 1, "display this help and exit"),
+		cli_version 		= arg_litn (nullptr, "version", 0, 1, "display version info and exit"),
+		cli_verbose    		= arg_litn (nullptr, "verbose", 0, 1, "verbose output"),
 
 		/*Primary options*/
-		cli_op_file_in_and_out  = arg_litn /*1*/ (NULL, "fifo", 0, 1, "Duplicate a file to test basic file I/O"),
-		cli_op_rss_download   	= arg_litn /*2*/ (NULL, "get-rss", 0, 1, "Download rss feed to an offline rss xml file"),
-		cli_op_flat_rss    	= arg_litn /*3*/ (NULL, "flat-rss-file", 0, 1, "Convert an RSS XML file to flat data file"),
+		cli_op_file_in_and_out  = arg_litn /*1*/ (nullptr, "fifo", 0, 1, "Duplicate a file to test basic file I/O"),
+		cli_op_rss_download   	= arg_litn /*2*/ (nullptr, "get-rss", 0, 1, "Download rss feed to an offline rss xml file"),
+		cli_op_flat_rss    	= arg_litn /*3*/ (nullptr, "flat-rss-file", 0, 1, "Convert an RSS XML file to flat data file"),
 
 		/*Additional options*/
-		cli_rss_feed_name	= arg_strn (NULL, "rss-feedname", "<string>", 0, 1, "Name of the RSS Feed"),
-		cli_rss_feed_url	= arg_strn (NULL, "rss-url", "<string>", 0, 1, "Network address containing latest feed content for rss-feedname"),
+		cli_rss_feed_name	= arg_strn (nullptr, "rss-feedname", "<string>", 0, 1, "Name of the RSS Feed"),
+		cli_rss_feed_url	= arg_strn (nullptr, "rss-url", "<string>", 0, 1, "Network address containing latest feed content for rss-feedname"),
 
 		/*
 			TABLE END
@@ -186,7 +186,7 @@ main (int argc, char** argv)
 	int cli_parse_errors = arg_parse (argc, argv, argtable);
 
 	if (arg_nullcheck (argtable) != 0) {
-		std::cout << "line: " << __LINE__ << ". CLI options parse table contains one or more NULL entries.\n";
+		std::cout << "line: " << __LINE__ << ". CLI options parse table contains one or more nullptr entries.\n";
 
 		return cleanup_argtable (argtable, exit_code);
 	}

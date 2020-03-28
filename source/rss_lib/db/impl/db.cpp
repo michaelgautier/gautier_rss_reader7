@@ -26,7 +26,7 @@ gautier_rss_database::open_db (const std::string db_file_name, sqlite3** db)
 
 	const int options = (SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE);
 
-	const int open_result = sqlite3_open_v2 (db_file_name.data(), db, options, NULL);
+	const int open_result = sqlite3_open_v2 (db_file_name.data(), db, options, nullptr);
 
 	if (open_result == SQLITE_OK) {
 		success = true;
@@ -82,7 +82,7 @@ gautier_rss_database::process_sql_simple (sqlite3** db, const std::string sql_te
 {
 	char* error_message;
 
-	sqlite3_exec (*db, sql_text.data(), NULL, NULL, &error_message);
+	sqlite3_exec (*db, sql_text.data(), nullptr, nullptr, &error_message);
 
 	return;
 }
@@ -93,7 +93,7 @@ gautier_rss_database::process_sql (sqlite3** db, const std::string sql_text,
 {
 	sqlite3_stmt* sql_statement;
 
-	sqlite3_prepare_v2 (*db,  sql_text.data(),  -1,  &sql_statement,  NULL);
+	sqlite3_prepare_v2 (*db,  sql_text.data(),  -1,  &sql_statement,  nullptr);
 
 	int i = 0;
 

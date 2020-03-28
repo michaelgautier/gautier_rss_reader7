@@ -129,26 +129,26 @@ main (int argc, char** argv)
 
 			Common Linux command-line options
 		*/
-		cli_help		= arg_litn (NULL, "help", 0, 1, "display this help and exit"),
-		cli_version 		= arg_litn (NULL, "version", 0, 1, "display version info and exit"),
-		cli_verbose    		= arg_litn (NULL, "verbose", 0, 1, "verbose output"),
+		cli_help		= arg_litn (nullptr, "help", 0, 1, "display this help and exit"),
+		cli_version 		= arg_litn (nullptr, "version", 0, 1, "display version info and exit"),
+		cli_verbose    		= arg_litn (nullptr, "verbose", 0, 1, "verbose output"),
 
 		/*Primary options*/
-		cli_op_xmldb    	= arg_litn /*1*/ (NULL, "xmldb", 0, 1, "Use generated offline rss xml to load rss database"),
-		cli_op_http_xml_only   	= arg_litn /*2*/ (NULL, "http-xml-only", 0, 1, "Download rss feed to an offline rss xml file"),
-		cli_op_http_xmldb    	= arg_litn /*3*/ (NULL, "http-xmldb", 0, 1, "Combines xmldb + http-xml-only"),
-		cli_op_http_db    	= arg_litn /*4*/ (NULL, "http-db-only", 0, 1, "Download rss feed directly to rss database"),
-		cli_op_self_update    	= arg_litn /*5*/ (NULL, "self-update", 0, 1, "[DEFAULT] Download updated content for feeds in the database"),
+		cli_op_xmldb    	= arg_litn /*1*/ (nullptr, "xmldb", 0, 1, "Use generated offline rss xml to load rss database"),
+		cli_op_http_xml_only   	= arg_litn /*2*/ (nullptr, "http-xml-only", 0, 1, "Download rss feed to an offline rss xml file"),
+		cli_op_http_xmldb    	= arg_litn /*3*/ (nullptr, "http-xmldb", 0, 1, "Combines xmldb + http-xml-only"),
+		cli_op_http_db    	= arg_litn /*4*/ (nullptr, "http-db-only", 0, 1, "Download rss feed directly to rss database"),
+		cli_op_self_update    	= arg_litn /*5*/ (nullptr, "self-update", 0, 1, "[DEFAULT] Download updated content for feeds in the database"),
 
 		/*Additional options*/
-		cli_alt_db_name		= arg_strn (NULL, "alt-dbname", "<string>", 0, 1, "Useful for testing, i.e. rss_test.db"),
-		cli_rss_feed_name	= arg_strn (NULL, "rss-feedname", "<string>", 0, 1, "Name of the RSS Feed"),
-		cli_rss_feed_url	= arg_strn (NULL, "rss-url", "<string>", 0, 1, "Network address containing latest feed content for rss-feedname"),
+		cli_alt_db_name		= arg_strn (nullptr, "alt-dbname", "<string>", 0, 1, "Useful for testing, i.e. rss_test.db"),
+		cli_rss_feed_name	= arg_strn (nullptr, "rss-feedname", "<string>", 0, 1, "Name of the RSS Feed"),
+		cli_rss_feed_url	= arg_strn (nullptr, "rss-url", "<string>", 0, 1, "Network address containing latest feed content for rss-feedname"),
 
-		cli_op_datetime_sec 	= arg_litn /*6*/ (NULL, "datetime-sec", 0, 1, "Use SQLite to obtain the seconds that passed between two date time values"),
-		cli_check_time_limit	= arg_litn /*7*/ (NULL, "check-timelimit", 0, 1, "true/false to see a diagnostic output of the time limit"),
-		cli_datetime1		= arg_strn (NULL, "datetime1", "<string>", 0, 1, "datetime-1"),
-		cli_datetime2		= arg_strn (NULL, "datetime2", "<string>", 0, 1, "datetime-2"),
+		cli_op_datetime_sec 	= arg_litn /*6*/ (nullptr, "datetime-sec", 0, 1, "Use SQLite to obtain the seconds that passed between two date time values"),
+		cli_check_time_limit	= arg_litn /*7*/ (nullptr, "check-timelimit", 0, 1, "true/false to see a diagnostic output of the time limit"),
+		cli_datetime1		= arg_strn (nullptr, "datetime1", "<string>", 0, 1, "datetime-1"),
+		cli_datetime2		= arg_strn (nullptr, "datetime2", "<string>", 0, 1, "datetime-2"),
 
 		/*
 			TABLE END
@@ -172,7 +172,7 @@ main (int argc, char** argv)
 	int cli_parse_errors = arg_parse (argc, argv, argtable);
 
 	if (arg_nullcheck (argtable) != 0) {
-		std::cout << "line: " << __LINE__ << ". CLI options parse table contains one or more NULL entries.\n";
+		std::cout << "line: " << __LINE__ << ". CLI options parse table contains one or more nullptr entries.\n";
 
 		return cleanup_argtable (argtable, exit_code);
 	}

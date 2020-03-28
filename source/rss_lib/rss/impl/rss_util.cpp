@@ -35,7 +35,7 @@ gautier_rss_util::get_time_difference_in_seconds (const std::string date1, const
 
 	namespace ns_db = gautier_rss_database;
 
-	sqlite3* db = NULL;
+	sqlite3* db = nullptr;
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;

@@ -153,7 +153,7 @@ load_application_icon()
 {
 	const std::string app_icon_resource_path = "/newsreader/app_icon.png";
 
-	GdkPixbuf* application_icon_pixbuf = gdk_pixbuf_new_from_resource (app_icon_resource_path.data(), NULL);
+	GdkPixbuf* application_icon_pixbuf = gdk_pixbuf_new_from_resource (app_icon_resource_path.data(), nullptr);
 
 	gtk_window_set_default_icon (application_icon_pixbuf);
 
@@ -173,11 +173,11 @@ gautier_rss_ui_app::create()
 	*/
 	GtkApplication* application = gtk_application_new (app_name.data(), G_APPLICATION_FLAGS_NONE);
 
-	g_signal_connect (application, "activate", G_CALLBACK (gautier_rss_ui_app::activate), NULL);
+	g_signal_connect (application, "activate", G_CALLBACK (gautier_rss_ui_app::activate), nullptr);
 
 	load_application_icon();
 
-	status = g_application_run (G_APPLICATION (application), 0, NULL);
+	status = g_application_run (G_APPLICATION (application), 0, nullptr);
 
 	/*
 		Clean-up.
@@ -379,7 +379,7 @@ main (int argc, char** argv)
 		Initialize UI
 	*/
 	if (status == 0) {
-		gtk_init (NULL, NULL);
+		gtk_init (nullptr, nullptr);
 
 		std::cout << "Creating user interface - main screen.\n";
 

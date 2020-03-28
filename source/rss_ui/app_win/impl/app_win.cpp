@@ -63,34 +63,34 @@ extern "C" {
 	User Interface Pointers
 */
 GtkWidget*
-headlines_view = NULL;
+headlines_view = nullptr;
 
 GtkWidget*
-header_bar = NULL;
+header_bar = nullptr;
 
 GtkWidget*
-article_date = NULL;
+article_date = nullptr;
 
 GtkWidget*
-article_summary = NULL;
+article_summary = nullptr;
 
 GtkWidget*
-article_details = NULL;
+article_details = nullptr;
 
 GtkWidget*
-info_bar = NULL;
+info_bar = nullptr;
 
 GtkWidget*
-view_article_button = NULL;
+view_article_button = nullptr;
 
 GtkWidget*
-manage_feeds_button = NULL;
+manage_feeds_button = nullptr;
 
 GtkWindow*
-win = NULL;
+win = nullptr;
 
 GtkWidget*
-layout_pane = NULL;
+layout_pane = nullptr;
 
 std::thread
 thread_download_data;
@@ -479,7 +479,7 @@ show_article (const ns_data_read::rss_article article)
 
 			if (article_details) {
 				if (article_text.empty() == false) {
-					webkit_web_view_load_html (WEBKIT_WEB_VIEW (article_details), article_text.data(), NULL);
+					webkit_web_view_load_html (WEBKIT_WEB_VIEW (article_details), article_text.data(), nullptr);
 				} else {
 					webkit_web_view_load_plain_text (WEBKIT_WEB_VIEW (article_details), article_text.data());
 				}
@@ -500,7 +500,7 @@ rss_operation_click (GtkButton* button,
 		rss_operation_enum operation = * (rss_operation_enum*)user_data;
 
 		if (operation == rss_operation_enum::view_article) {
-			gtk_show_uri_on_window (win, visible_feed_article.url.data(), GDK_CURRENT_TIME, NULL);
+			gtk_show_uri_on_window (win, visible_feed_article.url.data(), GDK_CURRENT_TIME, nullptr);
 		}
 	}
 
@@ -521,7 +521,7 @@ manage_feeds_click (GtkButton* button,
 		gautier_rss_win_rss_manage::set_feed_model (feed_index);
 		gautier_rss_win_rss_manage::set_modification_callback (synchronize_feeds_to_configuration);
 
-		gautier_rss_win_rss_manage::show_dialog (NULL, win, window_width, window_height);
+		gautier_rss_win_rss_manage::show_dialog (nullptr, win, window_width, window_height);
 	}
 
 	return;
@@ -543,7 +543,7 @@ synchronize_feeds_to_configuration (std::map<std::string, gautier_rss_data_read:
 	}
 
 	headline_view_switch_page_signal_id = g_signal_connect (headlines_view, "switch-page",
-	                                      G_CALLBACK (headline_view_switch_page), NULL);
+	                                      G_CALLBACK (headline_view_switch_page), nullptr);
 
 	rss_management_running = false;
 
@@ -581,7 +581,7 @@ process_rss_feed_configuration (const ns_data_read::rss_feed_mod modification)
 	namespace ns = gautier_rss_win_main_headlines_frame;
 
 	if (is_insert == false) {
-		GtkWidget* tab = NULL;
+		GtkWidget* tab = nullptr;
 
 		const gint tab_i = ns::get_tab_contents_container_by_feed_name (GTK_NOTEBOOK (headlines_view), feed_name, &tab);
 
@@ -637,7 +637,7 @@ process_rss_feed_configuration (const ns_data_read::rss_feed_mod modification)
 		for (gint tab_i = 0; tab_i < tab_count; tab_i++) {
 			GtkWidget* tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
 
-			if (tab == NULL) {
+			if (tab == nullptr) {
 				continue;
 			}
 
@@ -824,17 +824,17 @@ synchronize_ui()
 		if (tabs_initialized) {
 			break;
 		} else {
-			g_main_context_invoke (NULL, async_initialize_tabs, NULL);
+			g_main_context_invoke (nullptr, async_initialize_tabs, nullptr);
 		}
 
 		next_notebook_tab_index++;
 	}
 
-	g_main_context_invoke (NULL, async_initialize_rss_management, NULL);
+	g_main_context_invoke (nullptr, async_initialize_rss_management, nullptr);
 
 	initialize_data_threads();
 
-	g_main_context_invoke (NULL, flush_tabs, NULL);
+	g_main_context_invoke (nullptr, flush_tabs, nullptr);
 
 	int cycles = 0;
 	bool download_update_active = false;
@@ -858,7 +858,7 @@ synchronize_ui()
 		if (cycles >= 10) {
 			cycles = 0;
 
-			g_main_context_invoke (NULL, flush_tabs, NULL);
+			g_main_context_invoke (nullptr, flush_tabs, nullptr);
 		}
 
 		if (download_available) {
@@ -867,14 +867,14 @@ synchronize_ui()
 				next_notebook_tab_index = 0;
 			}
 
-			g_main_context_invoke (NULL, async_load_tabs_with_downloaded_data, NULL);
+			g_main_context_invoke (nullptr, async_load_tabs_with_downloaded_data, nullptr);
 		} else {
 			if (download_update_active) {
 				download_update_active = false;
 				next_notebook_tab_index = 0;
 			}
 
-			g_main_context_invoke (NULL, async_load_tabs, NULL);
+			g_main_context_invoke (nullptr, async_load_tabs, nullptr);
 		}
 	}
 
@@ -967,7 +967,7 @@ async_initialize_rss_management (gpointer data)
 		Tab page switch signal. Show news headlines for the chosen tab.
 	*/
 	headline_view_switch_page_signal_id = g_signal_connect (headlines_view, "switch-page",
-	                                      G_CALLBACK (headline_view_switch_page), NULL);
+	                                      G_CALLBACK (headline_view_switch_page), nullptr);
 
 	gtk_widget_set_sensitive (manage_feeds_button, true);
 
@@ -1130,7 +1130,7 @@ async_load_tabs_with_downloaded_data (gpointer data)
 		          "\t article count: " << downloaded_articles[feed_name].size() << "\n";
 
 		const gint tab_i = gtk_notebook_get_current_page (GTK_NOTEBOOK (headlines_view));
-		GtkWidget* tab = NULL;
+		GtkWidget* tab = nullptr;
 		std::string visible_feed_name;
 
 		if (tab_i > -1) {
@@ -1509,8 +1509,8 @@ gautier_rss_win_main::create (
 	*/
 	GtkWidget* window = gtk_application_window_new (application);
 
-	g_signal_connect (window, "size-allocate", G_CALLBACK (window_size_allocate), NULL);
-	g_signal_connect (window, "destroy", G_CALLBACK (window_destroy), NULL);
+	g_signal_connect (window, "size-allocate", G_CALLBACK (window_size_allocate), nullptr);
+	g_signal_connect (window, "destroy", G_CALLBACK (window_destroy), nullptr);
 
 	win = GTK_WINDOW (window);
 	get_screen_dimensions (win);
@@ -1570,7 +1570,7 @@ gautier_rss_win_main::create (
 	/*
 		Article Date
 	*/
-	article_date = gtk_label_new (NULL);
+	article_date = gtk_label_new (nullptr);
 	g_object_ref_sink (article_date);
 	gautier_rss_ui_app::set_css_class (article_date, "article_date");
 
@@ -1599,7 +1599,7 @@ gautier_rss_win_main::create (
 
 		gautier_rss_ui_app::set_css_class (manage_feeds_button, "button");
 
-		g_signal_connect (manage_feeds_button, "clicked", G_CALLBACK (manage_feeds_click), NULL);
+		g_signal_connect (manage_feeds_button, "clicked", G_CALLBACK (manage_feeds_click), nullptr);
 
 		gtk_container_add (GTK_CONTAINER (primary_function_buttons), view_article_button);
 		gtk_container_add (GTK_CONTAINER (primary_function_buttons), manage_feeds_button);

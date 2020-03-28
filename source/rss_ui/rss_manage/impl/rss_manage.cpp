@@ -60,10 +60,10 @@ extern "C" {
 }
 
 GtkWindow*
-win = NULL;
+win = nullptr;
 
 GtkWindow*
-parent_win = NULL;
+parent_win = nullptr;
 
 GtkWidget*
 rss_tree_view;
@@ -253,7 +253,7 @@ create_window (GtkApplication* app, GtkWindow* parent, const int window_width, c
 	gtk_window_set_position (win, GTK_WIN_POS_CENTER_ALWAYS);
 
 	if (win) {
-		g_signal_connect (win, "destroy", G_CALLBACK (rss_manage_window_destroy), NULL);
+		g_signal_connect (win, "destroy", G_CALLBACK (rss_manage_window_destroy), nullptr);
 	}
 
 	return;
@@ -462,14 +462,14 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 		/*Begin with the button disabled until a valid imput is made.*/
 		gtk_widget_set_sensitive (update_configuration_button, false);
 
-		g_signal_connect (update_configuration_button, "clicked", G_CALLBACK (update_configuration_click), NULL);
+		g_signal_connect (update_configuration_button, "clicked", G_CALLBACK (update_configuration_click), nullptr);
 
 		delete_configuration_button = gtk_button_new_with_label ("Delete");
 		gautier_rss_ui_app::set_css_class (delete_configuration_button, "button");
 
 		gtk_widget_set_sensitive (delete_configuration_button, false);
 
-		g_signal_connect (delete_configuration_button, "clicked", G_CALLBACK (delete_configuration_click), NULL);
+		g_signal_connect (delete_configuration_button, "clicked", G_CALLBACK (delete_configuration_click), nullptr);
 
 		/*
 			Reset
@@ -479,7 +479,7 @@ layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_e
 
 		gtk_widget_set_sensitive (reset_configuration_button, true);
 
-		g_signal_connect (reset_configuration_button, "clicked", G_CALLBACK (reset_configuration_click), NULL);
+		g_signal_connect (reset_configuration_button, "clicked", G_CALLBACK (reset_configuration_click), nullptr);
 
 		/*
 			Layout and arrange
@@ -545,7 +545,7 @@ update_configuration_click (GtkButton* button, gpointer user_data)
 			populate_rss_tree_view (rss_tree_view);
 
 			rss_tree_view_selected_signal_id = g_signal_connect (rss_tree_selection_manager, "changed",
-			                                   G_CALLBACK (rss_tree_view_selected), NULL);
+			                                   G_CALLBACK (rss_tree_view_selected), nullptr);
 
 			select_rss_tree_row();
 		}
@@ -578,7 +578,7 @@ void
 reset_configuration_click (GtkButton* button, gpointer user_data)
 {
 	if (button) {
-		if (user_data != NULL) {
+		if (user_data != nullptr) {
 			std::cout << __func__ << " called with user_data\n";
 		}
 
@@ -636,7 +636,7 @@ layout_rss_tree_view (GtkWidget* tree_view)
 		*/
 		GtkCellRenderer* column_renderer_feed_name = gtk_cell_renderer_text_new();
 		GtkTreeViewColumn* column_feed_name = gtk_tree_view_column_new_with_attributes ("Feed",
-		                                      column_renderer_feed_name, "text", col_pos_feed_name, NULL);
+		                                      column_renderer_feed_name, "text", col_pos_feed_name, nullptr);
 		gtk_tree_view_append_column (GTK_TREE_VIEW (tree_view), column_feed_name);
 
 		/*
@@ -644,7 +644,7 @@ layout_rss_tree_view (GtkWidget* tree_view)
 		*/
 		GtkCellRenderer* column_renderer_feed_article_count = gtk_cell_renderer_text_new();
 		GtkTreeViewColumn* column_feed_article_count = gtk_tree_view_column_new_with_attributes ("Article Count",
-		        column_renderer_feed_article_count, "text", col_pos_feed_article_count, NULL);
+		        column_renderer_feed_article_count, "text", col_pos_feed_article_count, nullptr);
 		gtk_tree_view_append_column (GTK_TREE_VIEW (tree_view), column_feed_article_count);
 
 		/*
@@ -652,7 +652,7 @@ layout_rss_tree_view (GtkWidget* tree_view)
 		*/
 		GtkCellRenderer* column_renderer_feed_last_retrieved = gtk_cell_renderer_text_new();
 		GtkTreeViewColumn* column_feed_last_retrieved = gtk_tree_view_column_new_with_attributes ("Last updated",
-		        column_renderer_feed_last_retrieved, "text", col_pos_feed_retrieved, NULL);
+		        column_renderer_feed_last_retrieved, "text", col_pos_feed_retrieved, nullptr);
 		gtk_tree_view_append_column (GTK_TREE_VIEW (tree_view), column_feed_last_retrieved);
 
 		/*
@@ -660,7 +660,7 @@ layout_rss_tree_view (GtkWidget* tree_view)
 		*/
 		GtkCellRenderer* column_renderer_feed_retention_period = gtk_cell_renderer_text_new();
 		GtkTreeViewColumn* column_feed_retention_period = gtk_tree_view_column_new_with_attributes ("Retention (days)",
-		        column_renderer_feed_retention_period, "text", col_pos_feed_retention_days, NULL);
+		        column_renderer_feed_retention_period, "text", col_pos_feed_retention_days, nullptr);
 		gtk_tree_view_append_column (GTK_TREE_VIEW (tree_view), column_feed_retention_period);
 
 		/*
@@ -668,7 +668,7 @@ layout_rss_tree_view (GtkWidget* tree_view)
 		*/
 		GtkCellRenderer* column_renderer_feed_retrieve_limit_hrs = gtk_cell_renderer_text_new();
 		GtkTreeViewColumn* column_feed_retrieve_limit_hrs = gtk_tree_view_column_new_with_attributes ("Refresh (hrs)",
-		        column_renderer_feed_retrieve_limit_hrs, "text", col_pos_feed_retrieve_limit_hrs, NULL);
+		        column_renderer_feed_retrieve_limit_hrs, "text", col_pos_feed_retrieve_limit_hrs, nullptr);
 		gtk_tree_view_append_column (GTK_TREE_VIEW (tree_view), column_feed_retrieve_limit_hrs);
 
 
@@ -677,7 +677,7 @@ layout_rss_tree_view (GtkWidget* tree_view)
 		*/
 		GtkCellRenderer* column_renderer_feed_url = gtk_cell_renderer_text_new();
 		GtkTreeViewColumn* column_feed_url = gtk_tree_view_column_new_with_attributes ("Web address",
-		                                     column_renderer_feed_url, "text", col_pos_feed_webaddress, NULL);
+		                                     column_renderer_feed_url, "text", col_pos_feed_webaddress, nullptr);
 		gtk_tree_view_append_column (GTK_TREE_VIEW (tree_view), column_feed_url);
 
 		/*
@@ -801,7 +801,7 @@ rss_tree_view_selected (GtkTreeSelection* tree_selection, gpointer user_data)
 	gtk_button_set_label (GTK_BUTTON (reset_configuration_button), "Clear");
 
 	if (tree_selection) {
-		if (user_data != NULL) {
+		if (user_data != nullptr) {
 			std::cout << __func__ << " called with user_data\n";
 		}
 
@@ -923,7 +923,7 @@ void
 feed_name_inserted (GtkEntryBuffer* buffer, guint position, gchar* chars, guint n_chars, gpointer user_data)
 {
 	if (buffer) {
-		if (user_data == NULL) {
+		if (user_data == nullptr) {
 			std::cout << __func__ << " called without user_data\n";
 		}
 
@@ -932,7 +932,8 @@ feed_name_inserted (GtkEntryBuffer* buffer, guint position, gchar* chars, guint 
 
 		check_feed_keys (feed_name_buffer, feed_url_buffer);
 	} else {
-		std::cout << __func__ << " called with NULL BUFFER: pos " << position << " char count " << n_chars << " chars "
+		std::cout << __func__ << " called with nullptr BUFFER: pos " << position << " char count " << n_chars <<
+		          " chars "
 		          << chars << "\n";
 	}
 
@@ -943,7 +944,7 @@ void
 feed_name_deleted (GtkEntryBuffer* buffer, guint position, guint n_chars, gpointer user_data)
 {
 	if (buffer) {
-		if (user_data == NULL) {
+		if (user_data == nullptr) {
 			std::cout << __func__ << " called without user_data\n";
 		}
 
@@ -952,7 +953,7 @@ feed_name_deleted (GtkEntryBuffer* buffer, guint position, guint n_chars, gpoint
 
 		check_feed_keys (feed_name_buffer, feed_url_buffer);
 	} else {
-		std::cout << __func__ << " called with NULL BUFFER: pos " << position << " char count " << n_chars << "\n";
+		std::cout << __func__ << " called with nullptr BUFFER: pos " << position << " char count " << n_chars << "\n";
 	}
 
 	return;
@@ -967,7 +968,7 @@ void
 feed_url_preedit (GtkEntry* entry, gchar* preedit, gpointer user_data)
 {
 	if (entry) {
-		if (user_data == NULL) {
+		if (user_data == nullptr) {
 			std::cout << __func__ << " called without user_data\n";
 		}
 
@@ -984,7 +985,7 @@ void
 feed_url_inserted (GtkEntryBuffer* buffer, guint position, gchar* chars, guint n_chars, gpointer user_data)
 {
 	if (buffer) {
-		if (user_data == NULL) {
+		if (user_data == nullptr) {
 			std::cout << __func__ << " called without user_data\n";
 		}
 
@@ -993,7 +994,8 @@ feed_url_inserted (GtkEntryBuffer* buffer, guint position, gchar* chars, guint n
 
 		check_feed_keys (feed_name_buffer, feed_url_buffer);
 	} else {
-		std::cout << __func__ << " called with NULL BUFFER: pos " << position << " char count " << n_chars << " chars "
+		std::cout << __func__ << " called with nullptr BUFFER: pos " << position << " char count " << n_chars <<
+		          " chars "
 		          << chars << "\n";
 	}
 
@@ -1004,7 +1006,7 @@ void
 feed_url_deleted (GtkEntryBuffer* buffer, guint position, guint n_chars, gpointer user_data)
 {
 	if (buffer) {
-		if (user_data == NULL) {
+		if (user_data == nullptr) {
 			std::cout << __func__ << " called without user_data\n";
 		}
 
@@ -1013,7 +1015,7 @@ feed_url_deleted (GtkEntryBuffer* buffer, guint position, guint n_chars, gpointe
 
 		check_feed_keys (feed_name_buffer, feed_url_buffer);
 	} else {
-		std::cout << __func__ << " called with NULL BUFFER: pos " << position << " char count " << n_chars << "\n";
+		std::cout << __func__ << " called with nullptr BUFFER: pos " << position << " char count " << n_chars << "\n";
 	}
 
 	return;
@@ -1305,9 +1307,9 @@ gautier_rss_win_rss_manage::show_dialog (GtkApplication* app, GtkWindow* parent,
 	rss_tree_selection_manager = gtk_tree_view_get_selection (GTK_TREE_VIEW (rss_tree_view));
 	gtk_tree_selection_set_mode (rss_tree_selection_manager, GTK_SELECTION_SINGLE);
 	rss_tree_view_selected_signal_id = g_signal_connect (rss_tree_selection_manager, "changed",
-	                                   G_CALLBACK (rss_tree_view_selected), NULL);
+	                                   G_CALLBACK (rss_tree_view_selected), nullptr);
 
-	GtkWidget* scroll_win = gtk_scrolled_window_new (NULL, NULL);
+	GtkWidget* scroll_win = gtk_scrolled_window_new (nullptr, nullptr);
 	gtk_widget_set_valign (scroll_win, GTK_ALIGN_FILL);
 
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll_win), GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);

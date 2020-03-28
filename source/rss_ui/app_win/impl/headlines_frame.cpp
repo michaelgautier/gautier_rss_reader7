@@ -72,7 +72,7 @@ initialize_headlines_list_view (GtkWidget* scroll_container, GtkWidget* headline
 	*/
 	GtkCellRenderer* column_renderer_headline_text = gtk_cell_renderer_text_new();
 	GtkTreeViewColumn* column_headline_text = gtk_tree_view_column_new_with_attributes ("Headlines",
-	        column_renderer_headline_text, "text", col_pos_headline_text, NULL);
+	        column_renderer_headline_text, "text", col_pos_headline_text, nullptr);
 	gtk_tree_view_append_column (GTK_TREE_VIEW (headlines_list_view), column_headline_text);
 
 	/*
@@ -95,7 +95,7 @@ initialize_headlines_list_view (GtkWidget* scroll_container, GtkWidget* headline
 		            headlines_list_view));
 		gtk_tree_selection_set_mode (rss_headline_selection_manager, GTK_SELECTION_SINGLE);
 
-		g_signal_connect (rss_headline_selection_manager, "changed", G_CALLBACK (headline_view_select_row), NULL);
+		g_signal_connect (rss_headline_selection_manager, "changed", G_CALLBACK (headline_view_select_row), nullptr);
 	}
 
 	return;
@@ -163,7 +163,7 @@ void
 gautier_rss_win_main_headlines_frame::add_headline_page (GtkWidget* headlines_view, const std::string feed_name,
         const int position, void (*headline_view_select_row) (GtkTreeSelection*, gpointer))
 {
-	GtkWidget* scroll_win = gtk_scrolled_window_new (NULL, NULL);
+	GtkWidget* scroll_win = gtk_scrolled_window_new (nullptr, nullptr);
 
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll_win), GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
 
@@ -211,13 +211,13 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 	const int64_t range_end = (int64_t) (headline_count);
 
 	if (range_end > -1) {
-		GtkWidget* headlines_list_view = NULL;
+		GtkWidget* headlines_list_view = nullptr;
 
 		/*
 			Tab (contents)
 		*/
 		{
-			GtkWidget* tab = NULL;
+			GtkWidget* tab = nullptr;
 
 			const gint tab_i = get_tab_contents_container_by_feed_name (GTK_NOTEBOOK (headlines_view), feed_name, &tab);
 
@@ -234,7 +234,7 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 		/*
 			Populate list box.
 		*/
-		if (headlines_list_view != NULL) {
+		if (headlines_list_view != nullptr) {
 			GtkTreeModel* list_model = gtk_tree_view_get_model (GTK_TREE_VIEW (headlines_list_view));
 			GtkListStore* list_store = GTK_LIST_STORE (list_model);
 
@@ -322,13 +322,13 @@ void
 gautier_rss_win_main_headlines_frame::select_headline_row (GtkWidget* headlines_view,
         const std::string feed_name, const std::string article_url)
 {
-	GtkWidget* headlines_list_view = NULL;
+	GtkWidget* headlines_list_view = nullptr;
 
 	/*
 		Tab (contents)
 	*/
 	if (feed_name.empty() == false) {
-		GtkWidget* tab = NULL;
+		GtkWidget* tab = nullptr;
 
 		const gint page_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
 
@@ -358,7 +358,7 @@ gautier_rss_win_main_headlines_frame::select_headline_row (GtkWidget* headlines_
 	/*
 		Select row.
 	*/
-	if (headlines_list_view != NULL) {
+	if (headlines_list_view != nullptr) {
 		GtkTreeSelection* rss_tree_selection_manager = gtk_tree_view_get_selection (GTK_TREE_VIEW (
 		            headlines_list_view));
 
@@ -413,13 +413,13 @@ void
 gautier_rss_win_main_headlines_frame::clear_row_selection (GtkWidget* headlines_view,
         const std::string feed_name)
 {
-	GtkWidget* headlines_list_view = NULL;
+	GtkWidget* headlines_list_view = nullptr;
 
 	/*
 		Tab (contents)
 	*/
 	if (feed_name.empty() == false) {
-		GtkWidget* tab = NULL;
+		GtkWidget* tab = nullptr;
 
 		const gint page_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
 
@@ -449,7 +449,7 @@ gautier_rss_win_main_headlines_frame::clear_row_selection (GtkWidget* headlines_
 	/*
 		Clear row selection.
 	*/
-	if (headlines_list_view != NULL) {
+	if (headlines_list_view != nullptr) {
 		GtkTreeSelection* rss_tree_selection_manager = gtk_tree_view_get_selection (GTK_TREE_VIEW (
 		            headlines_list_view));
 
@@ -466,7 +466,7 @@ gautier_rss_win_main_headlines_frame::set_headlines_title (GtkWidget* headlines_
         const std::string title)
 {
 	if (title.empty() == false && tab_number > -1) {
-		GtkWidget* headlines_list_view = NULL;
+		GtkWidget* headlines_list_view = nullptr;
 
 		/*
 			Tab (contents)
@@ -487,7 +487,7 @@ gautier_rss_win_main_headlines_frame::set_headlines_title (GtkWidget* headlines_
 		/*
 			Select row.
 		*/
-		if (headlines_list_view != NULL) {
+		if (headlines_list_view != nullptr) {
 			const gint visible_column_number = 0;
 
 			GtkTreeViewColumn* headline_column = gtk_tree_view_get_column (GTK_TREE_VIEW (headlines_list_view),

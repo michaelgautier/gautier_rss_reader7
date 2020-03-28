@@ -83,7 +83,7 @@ gautier_rss_data_read::get_feed (const std::string db_file_name, const std::stri
 {
 	namespace ns_db = gautier_rss_database;
 
-	sqlite3* db = NULL;
+	sqlite3* db = nullptr;
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;
@@ -120,7 +120,7 @@ gautier_rss_data_read::get_feed_by_row_id (const std::string db_file_name, const
 {
 	namespace ns_db = gautier_rss_database;
 
-	sqlite3* db = NULL;
+	sqlite3* db = nullptr;
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;
@@ -157,7 +157,7 @@ gautier_rss_data_read::get_feeds (const std::string db_file_name, std::vector <r
 {
 	namespace ns_db = gautier_rss_database;
 
-	sqlite3* db = NULL;
+	sqlite3* db = nullptr;
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;
@@ -195,7 +195,7 @@ gautier_rss_data_read::get_feed_headlines (const std::string db_file_name, const
 {
 	namespace ns_db = gautier_rss_database;
 
-	sqlite3* db = NULL;
+	sqlite3* db = nullptr;
 	ns_db::open_db (db_file_name, &db);
 
 	std::string sort_direction = "ASC";
@@ -239,7 +239,7 @@ gautier_rss_data_read::get_feed_headlines_after_row_id (const std::string db_fil
 {
 	namespace ns_db = gautier_rss_database;
 
-	sqlite3* db = NULL;
+	sqlite3* db = nullptr;
 	ns_db::open_db (db_file_name, &db);
 
 	std::string sort_direction = "ASC";
@@ -286,7 +286,7 @@ gautier_rss_data_read::get_feed_article_summary (const std::string db_file_name,
 {
 	namespace ns_db = gautier_rss_database;
 
-	sqlite3* db = NULL;
+	sqlite3* db = nullptr;
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;
@@ -335,7 +335,7 @@ gautier_rss_data_read::get_feed_headline_count (const std::string db_file_name, 
 
 	namespace ns_db = gautier_rss_database;
 
-	sqlite3* db = NULL;
+	sqlite3* db = nullptr;
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;
@@ -369,7 +369,7 @@ gautier_rss_data_read::get_row_id (const std::string db_file_name, const std::st
 
 	namespace ns_db = gautier_rss_database;
 
-	sqlite3* db = NULL;
+	sqlite3* db = nullptr;
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;
@@ -405,7 +405,7 @@ gautier_rss_data_read::get_article_row_id (const std::string db_file_name, const
 
 	namespace ns_db = gautier_rss_database;
 
-	sqlite3* db = NULL;
+	sqlite3* db = nullptr;
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;
@@ -441,7 +441,7 @@ gautier_rss_data_read::get_feed_article_max_row_id (const std::string db_file_na
 
 	namespace ns_db = gautier_rss_database;
 
-	sqlite3* db = NULL;
+	sqlite3* db = nullptr;
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;

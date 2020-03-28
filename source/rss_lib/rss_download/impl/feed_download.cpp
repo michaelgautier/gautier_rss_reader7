@@ -49,7 +49,7 @@ extern "C" {
 		mem->memory = (char*)realloc (mem->memory, mem->size + realsize + 1);
 
 		/*May indicate out of memory.*/
-		bool is_bad_memory_allocation = (mem->memory == NULL);
+		bool is_bad_memory_allocation = (mem->memory == nullptr);
 
 		if (is_bad_memory_allocation) {
 			std::cout << __FILE__ << " in " << __func__ << " at line: " << __LINE__ << "\n";
@@ -148,7 +148,7 @@ gautier_rss_data_read::download_rss_feed (const std::string feed_url, std::strin
 		/*
 			HTTP header.
 		*/
-		struct curl_slist* curl_http_header = NULL;
+		struct curl_slist* curl_http_header = nullptr;
 		curl_http_header = curl_slist_append (curl_http_header, "Accept: application/xhtml+xml, application/xml");
 		curl_http_header = curl_slist_append (curl_http_header, "Cache-Control: max-age=0");
 		curl_http_header = curl_slist_append (curl_http_header, "Robots: off");
@@ -184,7 +184,7 @@ gautier_rss_data_read::download_rss_feed (const std::string feed_url, std::strin
 		free (chunk.memory);
 	}
 
-	curl_client = NULL;
+	curl_client = nullptr;
 
 	return response_code;
 }

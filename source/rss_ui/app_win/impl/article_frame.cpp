@@ -17,8 +17,8 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 void
 gautier_rss_win_main_article_frame:: initialize_article_frame (GtkWidget* article_frame)
 {
-	if (article_frame == NULL) {
-		std::cout << __func__ << " LINE: " << __LINE__ << "article_frame NULL\n";
+	if (article_frame == nullptr) {
+		std::cout << __func__ << " LINE: " << __LINE__ << "article_frame nullptr\n";
 	}
 
 	return;
@@ -51,7 +51,7 @@ gautier_rss_win_main_article_frame::layout_article_frame (GtkWidget* article_fra
 	/*
 		Always wrap a text label or text area in a scroll window to control text resize.
 	*/
-	GtkWidget* scroll_win = gtk_scrolled_window_new (NULL, NULL);
+	GtkWidget* scroll_win = gtk_scrolled_window_new (nullptr, nullptr);
 	gtk_widget_set_hexpand (scroll_win, true);
 	gtk_widget_set_vexpand (scroll_win, true);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll_win), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);

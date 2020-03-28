@@ -60,13 +60,13 @@ gautier_rss_data_write::initialize_db (const std::string db_file_name)
 	const std::string sql_text =
 	    "BEGIN TRANSACTION; \
 			CREATE TABLE IF NOT EXISTS \"feeds_articles\" ( \
-			    \"feed_name\" TEXT NOT NULL, \
-			    \"headline_text\" TEXT NOT NULL, \
+			    \"feed_name\" TEXT NOT nullptr, \
+			    \"headline_text\" TEXT NOT nullptr, \
 			    \"article_summary\" TEXT, \
 			    \"article_text\" TEXT, \
 			    \"article_date\" TEXT, \
-			    \"article_url\" TEXT NOT NULL, \
-			    \"row_insert_date_time\" TEXT NOT NULL DEFAULT 'datetime(''now'')' \
+			    \"article_url\" TEXT NOT nullptr, \
+			    \"row_insert_date_time\" TEXT NOT nullptr DEFAULT 'datetime(''now'')' \
 			); \
 			 \
 			CREATE TABLE IF NOT EXISTS \"feeds\" ( \
@@ -102,7 +102,7 @@ gautier_rss_data_write::initialize_db (const std::string db_file_name)
 
 	ns_db::sql_parameter_list_type params;
 
-	sqlite3* db = NULL;
+	sqlite3* db = nullptr;
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;
@@ -152,7 +152,7 @@ gautier_rss_data_write::set_feed_config (const std::string db_file_name,
 		retention_days
 	};
 
-	sqlite3* db = NULL;
+	sqlite3* db = nullptr;
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;
@@ -201,7 +201,7 @@ gautier_rss_data_write::update_feed_config (const std::string db_file_name,
 		std::to_string (row_id)
 	};
 
-	sqlite3* db = NULL;
+	sqlite3* db = nullptr;
 
 	ns_db::open_db (db_file_name, &db);
 
@@ -234,7 +234,7 @@ gautier_rss_data_write::update_feed_config_related (const std::string db_file_na
 		feed_name_old
 	};
 
-	sqlite3* db = NULL;
+	sqlite3* db = nullptr;
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;
@@ -278,7 +278,7 @@ gautier_rss_data_write::delete_feed (const std::string db_file_name, const std::
 		feed_url
 	};
 
-	sqlite3* db = NULL;
+	sqlite3* db = nullptr;
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;
@@ -333,7 +333,7 @@ gautier_rss_data_write::set_feed_headline (const std::string db_file_name,
 		article.url
 	};
 
-	sqlite3* db = NULL;
+	sqlite3* db = nullptr;
 	ns_db::open_db (db_file_name, &db);
 
 	ns_db::sql_rowset_type rows;
@@ -482,7 +482,7 @@ gautier_rss_data_write::update_feed_retrieved (const std::string db_file_name, c
 		feed_url
 	};
 
-	sqlite3* db = NULL;
+	sqlite3* db = nullptr;
 
 	ns_db::open_db (db_file_name, &db);
 
@@ -696,7 +696,7 @@ gautier_rss_data_write::remove_expired_articles (const std::string db_file_name)
 
 	ns_db::sql_parameter_list_type params;
 
-	sqlite3* db = NULL;
+	sqlite3* db = nullptr;
 
 	ns_db::open_db (db_file_name, &db);
 
@@ -717,7 +717,7 @@ gautier_rss_data_write::de_initialize_db (const std::string db_file_name)
 
 		ns_db::sql_parameter_list_type params;
 
-		sqlite3* db = NULL;
+		sqlite3* db = nullptr;
 		ns_db::open_db (db_file_name, &db);
 
 		ns_db::sql_rowset_type rows;

@@ -53,7 +53,7 @@ void
 parse_rss_feed (xmlNode* parent_xml_node, std::vector<gautier_rss_data_read::rss_article>& feed_lines,
                 gautier_rss_data_read::rss_article* previous_article)
 {
-	xmlNode* xml_node = NULL;
+	xmlNode* xml_node = nullptr;
 
 	gautier_rss_data_read::rss_article* article = previous_article;
 
@@ -129,7 +129,7 @@ void
 get_xml_attr_value (xmlNode* xml_node, const std::string attr_name, std::string& value)
 {
 	if (xml_node->properties) {
-		xmlAttr* attr = NULL;
+		xmlAttr* attr = nullptr;
 
 		for (attr = xml_node->properties; attr; attr = attr->next) {
 			std::string name;
@@ -175,8 +175,8 @@ void
 gautier_rss_data_parse::get_feed_lines (const std::string feed_data,
                                         std::vector<gautier_rss_data_read::rss_article>& feed_lines)
 {
-	xmlDoc* doc = NULL;
-	xmlNode* root_element = NULL;
+	xmlDoc* doc = nullptr;
+	xmlNode* root_element = nullptr;
 
 	/*
 	 * this initialize the library and check potential ABI mismatches
