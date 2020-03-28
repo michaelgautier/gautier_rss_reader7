@@ -35,19 +35,19 @@ create_article_from_sql_row (gautier_rss_database::sql_row_type& row,
 void
 create_feed_from_sql_row (gautier_rss_database::sql_row_type& row, gautier_rss_data_read::rss_feed& feed)
 {
-	for (gautier_rss_database::sql_row_type::value_type field : row) {
-		if (field.first == "feed_name") {
-			feed.feed_name = field.second;
-		} else if (field.first == "feed_url") {
-			feed.feed_url = field.second;
-		} else if (field.first == "last_retrieved") {
-			feed.last_retrieved = field.second;
-		} else if (field.first == "retrieve_limit_hrs") {
-			feed.retrieve_limit_hrs = field.second;
-		} else if (field.first == "retention_days") {
-			feed.retention_days = field.second;
-		} else if (field.first == "article_count") {
-			feed.article_count = std::stoll (field.second);
+	for (auto [name, value] : row) {
+		if (name == "feed_name") {
+			feed.feed_name = value;
+		} else if (name == "feed_url") {
+			feed.feed_url = value;
+		} else if (name == "last_retrieved") {
+			feed.last_retrieved = value;
+		} else if (name == "retrieve_limit_hrs") {
+			feed.retrieve_limit_hrs = value;
+		} else if (name == "retention_days") {
+			feed.retention_days = value;
+		} else if (name == "article_count") {
+			feed.article_count = std::stoll (value);
 		}
 	}
 
@@ -58,19 +58,19 @@ void
 create_article_from_sql_row (gautier_rss_database::sql_row_type& row,
                              gautier_rss_data_read::rss_article& article)
 {
-	for (gautier_rss_database::sql_row_type::value_type field : row) {
-		if (field.first == "feed_name") {
-			article.feed_name = field.second;
-		} else if (field.first == "headline_text") {
-			article.headline = field.second;
-		} else if (field.first == "article_summary") {
-			article.article_summary = field.second;
-		} else if (field.first == "article_text") {
-			article.article_text = field.second;
-		} else if (field.first == "article_date") {
-			article.article_date = field.second;
-		} else if (field.first == "article_url") {
-			article.url = field.second;
+	for (auto [name, value] : row) {
+		if (name == "feed_name") {
+			article.feed_name = value;
+		} else if (name == "headline_text") {
+			article.headline = value;
+		} else if (name == "article_summary") {
+			article.article_summary = value;
+		} else if (name == "article_text") {
+			article.article_text = value;
+		} else if (name == "article_date") {
+			article.article_date = value;
+		} else if (name == "article_url") {
+			article.url = value;
 		}
 	}
 
@@ -307,15 +307,15 @@ gautier_rss_data_read::get_feed_article_summary (const std::string db_file_name,
 	article.headline = headline;
 
 	for (ns_db::sql_row_type row : rows) {
-		for (ns_db::sql_row_type::value_type field : row) {
-			if (field.first == "article_summary") {
-				article.article_summary = field.second;
-			} else if (field.first == "article_text") {
-				article.article_text = field.second;
-			} else if (field.first == "article_date") {
-				article.article_date = field.second;
-			} else if (field.first == "article_url") {
-				article.url = field.second;
+		for (auto [name, value] : row) {
+			if (name == "article_summary") {
+				article.article_summary = value;
+			} else if (name == "article_text") {
+				article.article_text = value;
+			} else if (name == "article_date") {
+				article.article_date = value;
+			} else if (name == "article_url") {
+				article.url = value;
 			}
 		}
 
@@ -350,9 +350,9 @@ gautier_rss_data_read::get_feed_headline_count (const std::string db_file_name, 
 	ns_db::process_sql (&db, sql_text, params, rows);
 
 	for (ns_db::sql_row_type row : rows) {
-		for (ns_db::sql_row_type::value_type field : row) {
-			if (field.first == "article_count") {
-				size = (int64_t) (std::stoll (field.second));
+		for (auto [name, value] : row) {
+			if (name == "article_count") {
+				size = (int64_t) (std::stoll (value));
 			}
 		}
 	}
@@ -384,9 +384,9 @@ gautier_rss_data_read::get_row_id (const std::string db_file_name, const std::st
 	ns_db::process_sql (&db, sql_text, params, rows);
 
 	for (ns_db::sql_row_type row : rows) {
-		for (ns_db::sql_row_type::value_type field : row) {
-			if (field.first == "rowid") {
-				row_id = std::stoll (field.second);
+		for (auto [name, value] : row) {
+			if (name == "rowid") {
+				row_id = std::stoll (value);
 
 				break;
 			}
@@ -420,9 +420,9 @@ gautier_rss_data_read::get_article_row_id (const std::string db_file_name, const
 	ns_db::process_sql (&db, sql_text, params, rows);
 
 	for (ns_db::sql_row_type row : rows) {
-		for (ns_db::sql_row_type::value_type field : row) {
-			if (field.first == "rowid") {
-				row_id = std::stoll (field.second);
+		for (auto [name, value] : row) {
+			if (name == "rowid") {
+				row_id = std::stoll (value);
 
 				break;
 			}
@@ -457,9 +457,9 @@ gautier_rss_data_read::get_feed_article_max_row_id (const std::string db_file_na
 	ns_db::process_sql (&db, sql_text, params, rows);
 
 	for (ns_db::sql_row_type row : rows) {
-		for (ns_db::sql_row_type::value_type field : row) {
-			if (field.first == "rowid") {
-				row_id = std::stoll (field.second);
+		for (auto [name, value] : row) {
+			if (name == "rowid") {
+				row_id = std::stoll (value);
 
 				break;
 			}

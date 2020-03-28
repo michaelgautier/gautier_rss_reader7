@@ -287,9 +287,7 @@ finalize_rss_modifications()
 
 			Implement actual modifications.
 		*/
-		for (std::pair<std::string, ns_data_read::rss_feed> feed_entry : feed_model_updated) {
-			ns_data_read::rss_feed feed_item = feed_entry.second;
-
+		for (auto [feed_item_name, feed_item] : feed_model_updated) {
 			const int64_t row_id = feed_item.row_id;
 
 			const std::string feed_name = feed_item.feed_name;
@@ -349,15 +347,11 @@ finalize_rss_modifications()
 		/*
 			Deletions
 		*/
-		for (std::pair<std::string, ns_data_read::rss_feed> feed_entry : feed_model_original) {
-			ns_data_read::rss_feed feed_item_original = feed_entry.second;
-
+		for (auto [feed_item_original_name, feed_item_original] : feed_model_original) {
 			bool exists_in_update = false;
 			const int64_t orig_rowid = feed_item_original.row_id;
 
-			for (std::pair<std::string, ns_data_read::rss_feed> feed_entry_updated : feed_model_updated) {
-				ns_data_read::rss_feed feed_item_update = feed_entry_updated.second;
-
+			for (auto [feed_item_update_name, feed_item_update] : feed_model_updated) {
 				const int64_t updt_rowid = feed_item_update.row_id;
 
 				exists_in_update = (orig_rowid == updt_rowid);
@@ -701,15 +695,11 @@ populate_rss_tree_view (GtkWidget* tree_view)
 
 		std::map<std::string, std::string> name_to_url;
 
-		for (std::pair<std::string, ns_data_read::rss_feed> feed_entry : feed_model_updated) {
-			ns_data_read::rss_feed feed = feed_entry.second;
-
+		for (auto [feed_name, feed] : feed_model_updated) {
 			name_to_url[feed.feed_name] = feed.feed_url;
 		}
 
-		for (std::pair<std::string, std::string> name_to_url_entry : name_to_url) {
-			std::string feed_url_value = name_to_url_entry.second;
-
+		for (auto [feed_entry_name, feed_url_value] : name_to_url) {
 			ns_data_read::rss_feed feed = feed_model_updated[feed_url_value];
 
 			std::string article_count_text = std::to_string (feed.article_count);
@@ -1094,9 +1084,7 @@ update_feed_config (const std::string feed_name, const std::string feed_url,
 
 		const int64_t id = feed_row_id;
 
-		for (std::pair<std::string, ns_data_read::rss_feed> feed_entry : feed_model_original) {
-			ns_data_read::rss_feed feed_item = feed_entry.second;
-
+		for (auto [feed_item_name, feed_item] : feed_model_original) {
 			const std::string existing_url = feed_item.feed_url;
 			const int64_t existing_id = feed_item.row_id;
 
@@ -1147,9 +1135,7 @@ update_feed_config (const std::string feed_name, const std::string feed_url,
 			The approach here is to simply clear the list of *any*
 			matching entries. A later step will re-add the entry.
 		*/
-		for (std::pair<std::string, ns_data_read::rss_feed> feed_entry : feed_model_updated) {
-			ns_data_read::rss_feed feed_item = feed_entry.second;
-
+		for (auto [feed_item_name, feed_item] : feed_model_updated) {
 			const std::string existing_url = feed_item.feed_url;
 			const int64_t existing_id = feed_item.row_id;
 
@@ -1231,8 +1217,8 @@ gautier_rss_win_rss_manage::set_feed_model (feed_by_name_type feed_model)
 
 	const std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
 
-	for (std::pair<std::string, ns_data_read::rss_feed> feed_entry : feed_model) {
-		const std::string feed_url = feed_entry.second.feed_url;
+	for (auto [feed_item_name, feed_item] : feed_model) {
+		const std::string feed_url = feed_item.feed_url;
 
 		const int64_t row_id = ns_data_read::get_row_id (db_file_name, feed_url);
 
@@ -1242,10 +1228,10 @@ gautier_rss_win_rss_manage::set_feed_model (feed_by_name_type feed_model)
 		ns_data_read::rss_feed* feed_original = &feed_model_original[feed_url];
 		ns_data_read::rss_feed* feed_updated = &feed_model_updated[feed_url];
 
-		feed_entry.second.row_id = row_id;
+		feed_item.row_id = row_id;
 
-		ns_data_read::copy_feed (&feed_entry.second, feed_original);
-		ns_data_read::copy_feed (&feed_entry.second, feed_updated);
+		ns_data_read::copy_feed (&feed_item, feed_original);
+		ns_data_read::copy_feed (&feed_item, feed_updated);
 	}
 
 	return;

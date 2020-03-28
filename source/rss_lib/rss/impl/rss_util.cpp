@@ -60,9 +60,9 @@ gautier_rss_util::get_time_difference_in_seconds (const std::string date1, const
 	ns_db::process_sql (&db, sql_text, params, rows);
 
 	for (ns_db::sql_row_type row : rows) {
-		for (ns_db::sql_row_type::value_type field : row) {
-			if (field.first == "result") {
-				std::string result = field.second;
+		for (auto [name, value] : row) {
+			if (name == "result") {
+				std::string result = value;
 
 				if (result.empty() == false) {
 					seconds = std::stoi (result);

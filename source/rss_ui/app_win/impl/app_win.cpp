@@ -532,9 +532,7 @@ synchronize_feeds_to_configuration (std::map<std::string, gautier_rss_data_read:
 {
 	g_signal_handler_disconnect (headlines_view, headline_view_switch_page_signal_id);
 
-	for (std::pair<std::string, ns_data_read::rss_feed_mod> modification_entry : feed_changes) {
-		ns_data_read::rss_feed_mod modification = modification_entry.second;
-
+	for (auto [feed_name, modification] : feed_changes) {
 		const ns_data_read::rss_feed_mod_status status = modification.status;
 
 		if (status != ns_data_read::rss_feed_mod_status::none) {
@@ -1470,12 +1468,12 @@ download_data()
 			std::cout << "DOWNLOAD COMPLETE (" << last_download_datetime << ") \t\t\t"
 			          << downloaded_feeds.size() << " feeds:\n";
 
-			for (std::pair<std::string, ns_data_read::rss_feed> feed_entry : downloaded_feeds) {
+			for (auto [downloaded_feed_name, downloaded_feed] : downloaded_feeds) {
 				std::cout << "\t\t\t\t\t"
-				          << feed_entry.first
-				          << "\t\t" << feed_entry.second.feed_url
+				          << downloaded_feed_name
+				          << "\t\t" << downloaded_feed.feed_url
 				          << " \t\tLAST RETRIEVED: "
-				          << feed_entry.second.last_retrieved << "\n";
+				          << downloaded_feed.last_retrieved << "\n";
 			}
 
 			download_available = (downloaded_feeds.size() > 0);
