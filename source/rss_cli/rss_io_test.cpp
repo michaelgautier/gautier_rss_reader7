@@ -20,14 +20,74 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 #include "external/argtable/argtable3.h"
 
-static bool
+namespace {
+bool
 feed_expire_time_enabled = true;
 
-static void
+void
 flatten_rss_xml_to_text (std::string feed_name);
 
-static int
+int
 cleanup_argtable (void** argtable, int exit_code);
+
+void
+flatten_rss_xml_to_text (std::string feed_name)
+{
+	namespace ns_read = gautier_rss_data_read;
+
+	namespace ns_parse = gautier_rss_data_parse;
+
+	std::string file_name = feed_name;
+	std::string file_data;
+
+	ns_parse::get_feed_data_from_file (file_name, ".xml", file_data);
+	{
+		std::vector<ns_read::rss_article> feed_lines;
+
+		ns_parse::get_feed_lines (file_data, feed_lines);
+
+		std::string rss_parse_results;
+
+		for (ns_read::rss_article a : feed_lines) {
+			std::string feed_name = file_name;
+			std::string headline = a.headline;
+			std::string article_date = a.article_date;
+			std::string article_text = a.article_text;
+			std::string url = a.url;
+
+			rss_parse_results = rss_parse_results + feed_name + "\n";
+			rss_parse_results = rss_parse_results + "\t" + article_date + "\n";
+			rss_parse_results = rss_parse_results + "\t" + url + "\n";
+			rss_parse_results = rss_parse_results + "\t\t" + headline + "\n";
+			rss_parse_results = rss_parse_results + "\t\t\t" + article_text + "\n";
+			rss_parse_results = rss_parse_results + "\n";
+		}
+
+		file_data = rss_parse_results;
+	}
+
+	file_name = feed_name + " TEST -- RSS flat";
+
+	ns_parse::save_feed_data_to_file (file_name, ".txt", file_data);
+
+	return;
+}
+
+int
+cleanup_argtable (void** argtable, int exit_code)
+{
+	if (exit_code != 0) {
+		std::cout << "Exiting program with one or more errors. Exit code: " << exit_code << "\n";
+	} else {
+		std::cout << "done.\n";
+	}
+
+	/* deallocate each non-null entry in argtable[] */
+	arg_freetable (argtable, sizeof (argtable) / sizeof (argtable[0]));
+
+	return exit_code;
+}
+}
 
 int
 main (int argc, char** argv)
@@ -290,60 +350,3 @@ main (int argc, char** argv)
 	return cleanup_argtable (argtable, exit_code);
 }
 
-void
-flatten_rss_xml_to_text (std::string feed_name)
-{
-	namespace ns_read = gautier_rss_data_read;
-
-	namespace ns_parse = gautier_rss_data_parse;
-
-	std::string file_name = feed_name;
-	std::string file_data;
-
-	ns_parse::get_feed_data_from_file (file_name, ".xml", file_data);
-	{
-		std::vector<ns_read::rss_article> feed_lines;
-
-		ns_parse::get_feed_lines (file_data, feed_lines);
-
-		std::string rss_parse_results;
-
-		for (ns_read::rss_article a : feed_lines) {
-			std::string feed_name = file_name;
-			std::string headline = a.headline;
-			std::string article_date = a.article_date;
-			std::string article_text = a.article_text;
-			std::string url = a.url;
-
-			rss_parse_results = rss_parse_results + feed_name + "\n";
-			rss_parse_results = rss_parse_results + "\t" + article_date + "\n";
-			rss_parse_results = rss_parse_results + "\t" + url + "\n";
-			rss_parse_results = rss_parse_results + "\t\t" + headline + "\n";
-			rss_parse_results = rss_parse_results + "\t\t\t" + article_text + "\n";
-			rss_parse_results = rss_parse_results + "\n";
-		}
-
-		file_data = rss_parse_results;
-	}
-
-	file_name = feed_name + " TEST -- RSS flat";
-
-	ns_parse::save_feed_data_to_file (file_name, ".txt", file_data);
-
-	return;
-}
-
-int
-cleanup_argtable (void** argtable, int exit_code)
-{
-	if (exit_code != 0) {
-		std::cout << "Exiting program with one or more errors. Exit code: " << exit_code << "\n";
-	} else {
-		std::cout << "done.\n";
-	}
-
-	/* deallocate each non-null entry in argtable[] */
-	arg_freetable (argtable, sizeof (argtable) / sizeof (argtable[0]));
-
-	return exit_code;
-}

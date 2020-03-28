@@ -30,129 +30,13 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include "rss_lib/rss_parse/feed_parse.hpp"
 #include "rss_lib/rss/rss_util.hpp"
 
-static void
+namespace {
+void
 parse_rss_feed (xmlNode* parent_xml_node, std::vector<gautier_rss_data_read::rss_article>& feed_lines,
                 gautier_rss_data_read::rss_article* previous_article);
 
-static void
+void
 get_xml_attr_value (xmlNode* xml_node, std::string attr_name, std::string& value);
-
-/*
-	RSS FEED READER
-
-	CENTRAL function of the entire program.
-
-	Receives RSS data in XML format. Converts this XML to a flat format. The result is easier to reproduce on screen.
-
-	The following function contents is taken directly from the LibXml2 website.
-
-	Example code was indexed at:		libxml/examples/index.html#tree1.c
-*/
-void
-gautier_rss_data_parse::get_feed_lines (const std::string feed_data,
-                                        std::vector<gautier_rss_data_read::rss_article>& feed_lines)
-{
-	xmlDoc* doc = NULL;
-	xmlNode* root_element = NULL;
-
-	/*
-	 * this initialize the library and check potential ABI mismatches
-	 * between the version it was compiled for and the actual shared
-	 * library used.
-	 */
-	LIBXML_TEST_VERSION
-
-	/*parse the file and get the DOM */
-	const size_t feed_data_size = feed_data.size();
-
-	if (feed_data.empty() == false) {
-		doc = xmlRecoverMemory (feed_data.data(), (int) (feed_data_size));
-
-		if (doc) {
-			/*Get the root element node */
-			root_element = xmlDocGetRootElement (doc);
-
-			parse_rss_feed (root_element, feed_lines, nullptr);
-
-			/*free the document */
-			xmlFreeDoc (doc);
-		}
-
-		/*
-		 *Free the global variables that may
-		 *have been allocated by the parser.
-		 */
-		xmlCleanupParser();
-	}
-
-	return;
-}
-
-/*
-	FILE I/O	output -> file
-
-		Uses C File I/O		Simplifies code without being obtuse.
-
-	Overwrites the file if it exists or makes a new file.
-
-	Unless the operating system prevents it, there will be a file.
-*/
-void
-gautier_rss_data_parse::save_feed_data_to_file (const std::string file_name, const std::string ext,
-        const std::string file_data)
-{
-	const std::string data_file_name = file_name + ext;
-
-	FILE* data_file = fopen (data_file_name.data(), "w");
-
-	if (data_file) {
-		const char* str = file_data.data();
-
-		fputs (str, data_file);
-
-		fflush (data_file);
-
-		fclose (data_file);
-	}
-
-	return;
-}
-
-/*
-	FILE I/O	file -> C++ string
-
-		Uses C File I/O		Simplifies code without being obtuse.
-
-	If the requested file does not exist, the file_data variable remains an empty string.
-
-	The appropriate application level error check is none-technical. Check for an empty string.
-*/
-void
-gautier_rss_data_parse::get_feed_data_from_file (const std::string file_name, const std::string ext,
-        std::string& file_data)
-{
-	const std::string data_file_name = file_name + ext;
-
-	FILE* data_file = fopen (data_file_name.data(), "r");
-
-	if (data_file) {
-		while (true) {
-			int c = fgetc (data_file);
-
-			if (c == EOF) {
-				break;
-			}
-
-			char data = (char)c;
-
-			file_data.push_back (data);
-		}
-
-		fclose (data_file);
-	}
-
-	return;
-}
 
 /*
 
@@ -270,6 +154,124 @@ get_xml_attr_value (xmlNode* xml_node, const std::string attr_name, std::string&
 				break;
 			}
 		}
+	}
+
+	return;
+}
+}
+
+/*
+	RSS FEED READER
+
+	CENTRAL function of the entire program.
+
+	Receives RSS data in XML format. Converts this XML to a flat format. The result is easier to reproduce on screen.
+
+	The following function contents is taken directly from the LibXml2 website.
+
+	Example code was indexed at:		libxml/examples/index.html#tree1.c
+*/
+void
+gautier_rss_data_parse::get_feed_lines (const std::string feed_data,
+                                        std::vector<gautier_rss_data_read::rss_article>& feed_lines)
+{
+	xmlDoc* doc = NULL;
+	xmlNode* root_element = NULL;
+
+	/*
+	 * this initialize the library and check potential ABI mismatches
+	 * between the version it was compiled for and the actual shared
+	 * library used.
+	 */
+	LIBXML_TEST_VERSION
+
+	/*parse the file and get the DOM */
+	const size_t feed_data_size = feed_data.size();
+
+	if (feed_data.empty() == false) {
+		doc = xmlRecoverMemory (feed_data.data(), (int) (feed_data_size));
+
+		if (doc) {
+			/*Get the root element node */
+			root_element = xmlDocGetRootElement (doc);
+
+			parse_rss_feed (root_element, feed_lines, nullptr);
+
+			/*free the document */
+			xmlFreeDoc (doc);
+		}
+
+		/*
+		 *Free the global variables that may
+		 *have been allocated by the parser.
+		 */
+		xmlCleanupParser();
+	}
+
+	return;
+}
+
+/*
+	FILE I/O	output -> file
+
+		Uses C File I/O		Simplifies code without being obtuse.
+
+	Overwrites the file if it exists or makes a new file.
+
+	Unless the operating system prevents it, there will be a file.
+*/
+void
+gautier_rss_data_parse::save_feed_data_to_file (const std::string file_name, const std::string ext,
+        const std::string file_data)
+{
+	const std::string data_file_name = file_name + ext;
+
+	FILE* data_file = fopen (data_file_name.data(), "w");
+
+	if (data_file) {
+		const char* str = file_data.data();
+
+		fputs (str, data_file);
+
+		fflush (data_file);
+
+		fclose (data_file);
+	}
+
+	return;
+}
+
+/*
+	FILE I/O	file -> C++ string
+
+		Uses C File I/O		Simplifies code without being obtuse.
+
+	If the requested file does not exist, the file_data variable remains an empty string.
+
+	The appropriate application level error check is none-technical. Check for an empty string.
+*/
+void
+gautier_rss_data_parse::get_feed_data_from_file (const std::string file_name, const std::string ext,
+        std::string& file_data)
+{
+	const std::string data_file_name = file_name + ext;
+
+	FILE* data_file = fopen (data_file_name.data(), "r");
+
+	if (data_file) {
+		while (true) {
+			int c = fgetc (data_file);
+
+			if (c == EOF) {
+				break;
+			}
+
+			char data = (char)c;
+
+			file_data.push_back (data);
+		}
+
+		fclose (data_file);
 	}
 
 	return;

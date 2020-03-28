@@ -24,14 +24,58 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 
 #include "rss_lib/rss_download/feed_download.hpp"
 
-static const long
+extern "C" {
+	/*
+		99% of this code comes from cURL Documentation almost verbatim.
+
+		It is essentially C code that use curl directly to download rss data in xml format.
+
+		   https://ec.haxx.se/libcurlexamples.html
+		   https://ec.haxx.se/libcurl-http-requests.html
+	*/
+	struct MemoryStruct
+	{
+		char* memory;
+		size_t size;
+	};
+
+	static size_t
+	WriteMemoryCallback (void* contents, const size_t size, const size_t nmemb, void* userp)
+	{
+		size_t realsize = size * nmemb;
+
+		struct MemoryStruct* mem = (struct MemoryStruct*)userp;
+
+		mem->memory = (char*)realloc (mem->memory, mem->size + realsize + 1);
+
+		/*May indicate out of memory.*/
+		bool is_bad_memory_allocation = (mem->memory == NULL);
+
+		if (is_bad_memory_allocation) {
+			std::cout << __FILE__ << " in " << __func__ << " at line: " << __LINE__ << "\n";
+			std::cout << "Bad memory allocation. Possibly out of memory.\n";
+
+			realsize = 0;
+		} else {
+			memcpy (& (mem->memory[mem->size]), contents, realsize);
+			mem->size += realsize;
+			mem->memory[mem->size] = 0;
+		}
+
+		return realsize;
+	}
+}
+
+namespace {
+const long
 http_version = CURL_HTTP_VERSION_2TLS;
 
-static const long
+const long
 http_response_min_good = 200;
 
-static const long
+const long
 http_response_max_good = 399;
+}
 
 void
 gautier_rss_data_read::initialize_network()
@@ -40,45 +84,6 @@ gautier_rss_data_read::initialize_network()
 	curl_global_init (CURL_GLOBAL_ALL);
 
 	return;
-}
-/*
-	99% of this code comes from cURL Documentation almost verbatim.
-
-	It is essentially C code that use curl directly to download rss data in xml format.
-
-	   https://ec.haxx.se/libcurlexamples.html
-	   https://ec.haxx.se/libcurl-http-requests.html
-*/
-struct MemoryStruct
-{
-	char* memory;
-	size_t size;
-};
-
-static size_t
-WriteMemoryCallback (void* contents, const size_t size, const size_t nmemb, void* userp)
-{
-	size_t realsize = size * nmemb;
-
-	struct MemoryStruct* mem = (struct MemoryStruct*)userp;
-
-	mem->memory = (char*)realloc (mem->memory, mem->size + realsize + 1);
-
-	/*May indicate out of memory.*/
-	bool is_bad_memory_allocation = (mem->memory == NULL);
-
-	if (is_bad_memory_allocation) {
-		std::cout << __FILE__ << " in " << __func__ << " at line: " << __LINE__ << "\n";
-		std::cout << "Bad memory allocation. Possibly out of memory.\n";
-
-		realsize = 0;
-	} else {
-		memcpy (& (mem->memory[mem->size]), contents, realsize);
-		mem->size += realsize;
-		mem->memory[mem->size] = 0;
-	}
-
-	return realsize;
 }
 
 long
