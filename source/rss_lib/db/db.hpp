@@ -24,11 +24,12 @@ namespace gautier_rss_database {
 	using sql_rowset_type = std::vector<sql_row_type>;
 	using sql_parameter_list_type = std::vector<std::string>;
 
+	extern "C" {
+		int create_sql_row (void* generic_object, const int col_count, char** col_values, char** col_names);
+	}
+
 	bool
 	open_db (const std::string db_file_name, sqlite3** db);
-
-	extern "C" int
-	create_sql_row (void* generic_object, const int col_count, char** col_values, char** col_names);
 
 	void
 	process_sql_simple (sqlite3** db, const std::string sql_text, sql_rowset_type& rows);

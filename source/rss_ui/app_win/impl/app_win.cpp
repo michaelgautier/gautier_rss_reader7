@@ -46,6 +46,19 @@ using single_article_by_feed_type = std::map<std::string, ns_data_read::rss_arti
 using articles_by_feed_type = std::map<std::string, std::vector<ns_data_read::rss_article>>;
 using feed_by_name_type = std::map<std::string, ns_data_read::rss_feed>;
 
+extern "C"
+{
+	void headline_view_switch_page (GtkNotebook* rss_tabs, GtkWidget* page, guint page_num, gpointer user_data);
+
+	void manage_feeds_click (GtkButton* button, gpointer user_data);
+	void rss_operation_click (GtkButton* button, gpointer user_data);
+
+	void select_headline_row (GtkTreeSelection* tree_selection, gpointer user_data);
+
+	void window_size_allocate (GtkWidget* widget, GdkRectangle* allocation, gpointer user_data);
+	void window_destroy (GtkWidget* window, gpointer user_data);
+}
+
 /*Concurrency Control*/
 static
 bool shutting_down = false;
@@ -156,9 +169,6 @@ static
 bool feed_expire_time_enabled = false;
 
 /*RSS Configuration Updates*/
-extern "C"
-void
-manage_feeds_click (GtkButton* button, gpointer user_data);
 
 static void
 process_rss_feed_configuration (const ns_data_read::rss_feed_mod modification);
@@ -172,25 +182,12 @@ synchronize_feeds_to_configuration (std::map<std::string, gautier_rss_data_read:
 static gulong
 headline_view_switch_page_signal_id = -1UL;
 
-extern "C"
-void
-headline_view_switch_page (GtkNotebook* rss_tabs,
-                           GtkWidget*   page,
-                           guint        page_num,
-                           gpointer     user_data);
-
-extern "C"
-void
-select_headline_row (GtkTreeSelection* tree_selection, gpointer user_data);
-
 static void
 show_article (const ns_data_read::rss_article article);
+
 /*
 	Main screen button operations.
 */
-extern "C"
-void
-rss_operation_click (GtkButton* button, gpointer user_data);
 
 //C++ style enumeration.
 enum class
@@ -268,23 +265,11 @@ layout_rss_view (GtkWidget* window_layout, GtkWidget* rss_tabs, GtkWidget* artic
 /*
 	UI Window Construction
 */
-extern "C"
-void
-window_size_allocate (GtkWidget* widget, GdkRectangle* allocation, gpointer user_data);
-
 static void
 get_screen_dimensions (GtkWindow* window);
 
 static void
 set_window_attributes (GtkWidget* window, const std::string title, const int width, const int height);
-
-/*
-	UI Window Shutdown
-*/
-extern "C"
-void
-window_destroy (GtkWidget* window, gpointer user_data);
-
 
 /*
 	Application GUI Entry Point. The program starts here.

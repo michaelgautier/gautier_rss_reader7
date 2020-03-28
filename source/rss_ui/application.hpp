@@ -19,11 +19,12 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include <gtk/gtk.h>
 
 namespace gautier_rss_ui_app {
+	extern "C" {
+		void activate (GtkApplication * application, gpointer user_data);
+	}
+
 	int
 	create();
-
-	extern "C" void
-	activate (GtkApplication* application, gpointer user_data);
 
 	void
 	set_css_class (GtkWidget* widget, const std::string css_class_name);

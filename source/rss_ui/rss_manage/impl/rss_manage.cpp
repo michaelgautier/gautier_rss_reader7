@@ -37,6 +37,27 @@ namespace ns_data_write = gautier_rss_data_write;
 using feed_by_name_type = std::map<std::string, ns_data_read::rss_feed>;
 using feed_mod_by_name_type = std::map<std::string, ns_data_read::rss_feed_mod>;
 
+extern "C" {
+	void delete_configuration_click (GtkButton* button, gpointer user_data);
+
+	void feed_name_deleted (GtkEntryBuffer* buffer, guint position, guint n_chars, gpointer user_data);
+	void feed_name_inserted (GtkEntryBuffer* buffer, guint position, gchar* chars, guint n_chars,
+	                         gpointer user_data);
+	void feed_name_preedit (GtkEntry* entry, gchar* preedit, gpointer user_data);
+
+	void feed_url_deleted (GtkEntryBuffer* buffer, guint position, guint n_chars, gpointer user_data);
+	void feed_url_inserted (GtkEntryBuffer* buffer, guint position, gchar* chars, guint n_chars,
+	                        gpointer user_data);
+	void feed_url_preedit (GtkEntry* entry, gchar* preedit, gpointer user_data);
+
+	void reset_configuration_click (GtkButton* button, gpointer user_data);
+	void update_configuration_click (GtkButton* button, gpointer user_data);
+
+	void rss_tree_view_selected (GtkTreeSelection* tree_selection, gpointer user_data);
+
+	void rss_manage_window_destroy (GtkWidget* window, gpointer user_data);
+}
+
 static
 feed_mod_by_name_type feed_changes;
 
@@ -93,10 +114,6 @@ col_pos_feed_rowid = 6;
 static const int
 col_pos_stop = -1;
 
-extern "C"
-void
-rss_tree_view_selected (GtkTreeSelection* tree_selection, gpointer user_data);
-
 static gulong
 rss_tree_view_selected_signal_id = -1UL;
 
@@ -121,27 +138,15 @@ feed_row_id = -1;
 */
 GtkWidget* update_configuration_button;
 
-extern "C"
-void
-update_configuration_click (GtkButton* button, gpointer user_data);
-
 /*
 	Delete Button
 */
 static GtkWidget* delete_configuration_button;
 
-extern "C"
-void
-delete_configuration_click (GtkButton* button, gpointer user_data);
-
 /*
 	Reset Button
 */
 static GtkWidget* reset_configuration_button;
-
-extern "C"
-void
-reset_configuration_click (GtkButton* button, gpointer user_data);
 
 static void
 reset_data_entry();
@@ -151,40 +156,6 @@ reset_data_entry();
 */
 static GtkWidget* feed_name_entry;
 static GtkWidget* feed_url_entry;
-
-/*
-	Feed Name Entry - Callbacks
-
-	These callbacks work together to "indicate"" a change has occurred.
-*/
-extern "C"
-void
-feed_name_preedit (GtkEntry* entry, gchar* preedit, gpointer user_data);
-
-extern "C"
-void
-feed_name_inserted (GtkEntryBuffer* buffer, guint position, gchar* chars, guint n_chars, gpointer user_data);
-
-extern "C"
-void
-feed_name_deleted (GtkEntryBuffer* buffer, guint position, guint n_chars, gpointer user_data);
-
-/*
-	Feed Url Entry - Callbacks
-
-	These callbacks work together to "indicate"" a change has occurred.
-*/
-extern "C"
-void
-feed_url_preedit (GtkEntry* entry, gchar* preedit, gpointer user_data);
-
-extern "C"
-void
-feed_url_inserted (GtkEntryBuffer* buffer, guint position, gchar* chars, guint n_chars, gpointer user_data);
-
-extern "C"
-void
-feed_url_deleted (GtkEntryBuffer* buffer, guint position, guint n_chars, gpointer user_data);
 
 /*
 	Validate feed name and url.
@@ -201,13 +172,6 @@ validate_values (const std::string feed_name, const std::string feed_url, const 
 */
 static GtkWidget* feed_refresh_interval;
 static GtkWidget* feed_retention_option;
-
-/*
-	UI Window Shutdown
-*/
-extern "C"
-void
-rss_manage_window_destroy (GtkWidget* window, gpointer user_data);
 
 /*
 	RSS Modification Operations
