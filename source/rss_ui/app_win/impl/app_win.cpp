@@ -1099,7 +1099,7 @@ async_initialize_tabs (gpointer data)
 
 				make_user_note ("Setting up " + feed_name);
 
-				feed_exists = ns_data_read::contains_feed<decltype (feed_index), decltype (feed_name)> (feed_index, feed_name);
+				feed_exists = ns_data_read::contains_feed (feed_index, feed_name);
 			}
 		}
 	}
