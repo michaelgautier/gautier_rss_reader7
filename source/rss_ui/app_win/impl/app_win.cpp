@@ -46,61 +46,80 @@ using single_article_by_feed_type = std::map<std::string, ns_data_read::rss_arti
 using articles_by_feed_type = std::map<std::string, std::vector<ns_data_read::rss_article>>;
 using feed_by_name_type = std::map<std::string, ns_data_read::rss_feed>;
 
-extern "C"
-{
-	void headline_view_switch_page (GtkNotebook* rss_tabs, GtkWidget* page, guint page_num, gpointer user_data);
+namespace {
+extern "C" {
+	void headline_view_switch_page (GtkNotebook * rss_tabs, GtkWidget * page, guint page_num, gpointer user_data);
 
-	void manage_feeds_click (GtkButton* button, gpointer user_data);
-	void rss_operation_click (GtkButton* button, gpointer user_data);
+	void manage_feeds_click (GtkButton * button, gpointer user_data);
+	void rss_operation_click (GtkButton * button, gpointer user_data);
 
-	void select_headline_row (GtkTreeSelection* tree_selection, gpointer user_data);
+	void select_headline_row (GtkTreeSelection * tree_selection, gpointer user_data);
 
-	void window_size_allocate (GtkWidget* widget, GdkRectangle* allocation, gpointer user_data);
-	void window_destroy (GtkWidget* window, gpointer user_data);
+	void window_size_allocate (GtkWidget * widget, GdkRectangle * allocation, gpointer user_data);
+	void window_destroy (GtkWidget * window, gpointer user_data);
 }
 
-/*Concurrency Control*/
-static
-bool shutting_down = false;
-
-static
-bool download_running = false;
-
-static
-bool download_available = false;
-
-static
-bool download_in_progress = false;
-
-static
-bool rss_management_running = false;
 /*
-	RSS Data Index
+	User Interface Pointers
 */
-static
-feed_by_name_type feed_index;
+GtkWidget*
+headlines_view = NULL;
 
-static
-feed_by_name_type downloaded_feeds;
+GtkWidget*
+header_bar = NULL;
 
-static
-articles_by_feed_type feeds_articles;
+GtkWidget*
+article_date = NULL;
 
-static
-articles_by_feed_type downloaded_articles;
+GtkWidget*
+article_summary = NULL;
 
-static
-single_article_by_feed_type feed_article_selection;
+GtkWidget*
+article_details = NULL;
+
+GtkWidget*
+info_bar = NULL;
+
+GtkWidget*
+view_article_button = NULL;
+
+GtkWidget*
+manage_feeds_button = NULL;
+
+GtkWindow*
+win = NULL;
+
+GtkWidget*
+layout_pane = NULL;
+
+std::thread
+thread_download_data;
+
+std::thread
+thread_synchronize_ui;
+
+//C++ style enumeration.
+enum class
+rss_operation_enum
+{
+	view_article
+};
+
 /*
-	Async UI
+	UI Window Construction
 */
-std::thread thread_synchronize_ui;
+void
+get_screen_dimensions (GtkWindow* window);
 
-static
+void
+set_window_attributes (GtkWidget* window, const std::string title, const int width, const int height);
+
+void
+layout_rss_view (GtkWidget* window_layout, GtkWidget* rss_tabs, GtkWidget* articles_layout);
+
 void
 initialize_ui_threads();
 
-static
 void
 synchronize_ui();
 
@@ -109,22 +128,15 @@ synchronize_ui();
 	This is what produces a responsive UI on start-up when the
 	size of the database exceeds what can be initially shown.
 */
-static
 void
 populate_rss_tabs();
 
-static
 gboolean
 async_initialize_tabs (gpointer data);
 
-static
 gboolean
 async_initialize_rss_management (gpointer data);
 
-static
-gint next_notebook_tab_index = -1;
-
-static
 gboolean
 flush_tabs (gpointer data);
 /*
@@ -133,7 +145,6 @@ flush_tabs (gpointer data);
 	UI while the program continues to saturate each tab with all available
 	information.
 */
-static
 gboolean
 async_load_tabs (gpointer data);
 
@@ -143,7 +154,6 @@ async_load_tabs (gpointer data);
 	UI while the program continues to saturate each tab with all available
 	information.
 */
-static
 gboolean
 async_load_tabs_with_downloaded_data (gpointer data);
 
@@ -153,297 +163,111 @@ async_load_tabs_with_downloaded_data (gpointer data);
 	Retrieves new RSS information and updates the database.
 	Modifies the RSS Data Index to indicate the range of data uploaded.
 */
-static void
+void
 download_data();
 
-static int
-data_download_thread_wait_in_seconds = 6;
-
-static
-std::thread thread_download_data;
-
-static void
+void
 initialize_data_threads();
 
-static
-bool feed_expire_time_enabled = false;
+/*
+	RSS Data Index
+*/
+feed_by_name_type
+feed_index;
+
+feed_by_name_type
+downloaded_feeds;
+
+articles_by_feed_type
+feeds_articles;
+
+articles_by_feed_type
+downloaded_articles;
+
+single_article_by_feed_type
+feed_article_selection;
+
+/*
+	Selected RSS Feed in a Tab
+*/
+ns_data_read::rss_article
+visible_feed_article;
 
 /*RSS Configuration Updates*/
 
-static void
+void
 process_rss_feed_configuration (const ns_data_read::rss_feed_mod modification);
 
-static void
+void
 synchronize_feeds_to_configuration (std::map<std::string, gautier_rss_data_read::rss_feed_mod> feed_changes);
 
 /*
 	RSS Tabs - Switch Handlers.
 */
-static gulong
-headline_view_switch_page_signal_id = -1UL;
 
-static void
+void
 show_article (const ns_data_read::rss_article article);
 
 /*
 	Main screen button operations.
 */
 
-//C++ style enumeration.
-enum class
-rss_operation_enum
-{
-	view_article
-};
-
-static rss_operation_enum
-rss_op_view_article = rss_operation_enum::view_article;
-
-static void
+void
 make_user_note (std::string note);
 
-/*
-	Selected RSS Feed in a Tab
-*/
-static ns_data_read::rss_article
-visible_feed_article;
+rss_operation_enum
+rss_op_view_article = rss_operation_enum::view_article;
 
-/*
-	User Interface
-*/
-static GtkWidget*
-headlines_view = NULL;
+gulong
+headline_view_switch_page_signal_id = -1UL;
 
-static GtkWidget*
-header_bar = NULL;
+gint
+next_notebook_tab_index = -1;
 
-static GtkWidget*
-article_date = NULL;
+int
+data_download_thread_wait_in_seconds = 6;
 
-static GtkWidget*
-article_summary = NULL;
-
-static GtkWidget*
-article_details = NULL;
-
-static GtkWidget*
-info_bar = NULL;
-
-static GtkWidget*
-view_article_button = NULL;
-
-static GtkWidget*
-manage_feeds_button = NULL;
-
-static int
+int
 monitor_width = 0;
 
-static int
+int
 monitor_height = 0;
 
-static int
+int
 monitor_x = 0;
 
-static int
+int
 monitor_y = 0;
 
-static int
+int
 window_width = 0;
 
-static int
+int
 window_height = 0;
 
-static GtkWindow*
-win = NULL;
+bool
+feed_expire_time_enabled = false;
 
-static GtkWidget*
-layout_pane = NULL;
+/*Concurrency Control*/
+bool
+shutting_down = false;
 
-static void
-layout_rss_view (GtkWidget* window_layout, GtkWidget* rss_tabs, GtkWidget* articles_layout);
+bool
+download_running = false;
 
-/*
-	UI Window Construction
-*/
-static void
-get_screen_dimensions (GtkWindow* window);
+bool
+download_available = false;
 
-static void
-set_window_attributes (GtkWidget* window, const std::string title, const int width, const int height);
+bool
+download_in_progress = false;
 
-/*
-	Application GUI Entry Point. The program starts here.
-*/
-void
-gautier_rss_win_main::create (
-    GtkApplication* application, gpointer user_data)
-{
-	/*
-		Operating in a valid instance of a GTK application.
-	*/
-	if (application && user_data) {
-		std::cout << "UI Initialized: " << gautier_rss_util::get_current_date_time_utc() << "\n";
-	}
-
-	/*
-		Window
-	*/
-	GtkWidget* window = gtk_application_window_new (application);
-
-	g_signal_connect (window, "size-allocate", G_CALLBACK (window_size_allocate), NULL);
-	g_signal_connect (window, "destroy", G_CALLBACK (window_destroy), NULL);
-
-	win = GTK_WINDOW (window);
-	get_screen_dimensions (win);
-	set_window_attributes (window, gautier_rss_ui_app::get_application_name(), monitor_width, monitor_height);
-
-	/*
-		Header Bar
-	*/
-	header_bar = gtk_header_bar_new();
-	g_object_ref_sink (header_bar);
-	gautier_rss_ui_app::set_css_class (header_bar, "header_bar");
-	{
-		namespace ns = gautier_rss_win_main_article_header;
-		ns::initialize_article_header_bar (header_bar);
-	}
-
-	/*
-		Article Summary
-	*/
-	article_summary = gtk_text_view_new();
-	g_object_ref_sink (article_summary);
-	gautier_rss_ui_app::set_css_class (article_summary, "article_summary");
-	{
-		gtk_text_view_set_editable (GTK_TEXT_VIEW (article_summary), false);
-		gtk_text_view_set_cursor_visible (GTK_TEXT_VIEW (article_summary), false);
-		gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (article_summary), GTK_WRAP_WORD_CHAR);
-		gtk_text_view_set_accepts_tab (GTK_TEXT_VIEW (article_summary), true);
-	}
-
-	/*
-		Article Text
-	*/
-	{
-		WebKitSettings* settings = webkit_settings_new();
-
-		/*Do not want images, just HTML*/
-		webkit_settings_set_auto_load_images (settings, false);
-
-		/*The objective is to render HTML, but no JavaScript, local HTML databases, etc*/
-		webkit_settings_set_enable_html5_database (settings, false);
-		webkit_settings_set_enable_html5_local_storage (settings, false);
-		webkit_settings_set_enable_java (settings, false);
-		webkit_settings_set_enable_javascript (settings, false);
-		webkit_settings_set_enable_offline_web_application_cache (settings, false);
-		webkit_settings_set_enable_plugins (settings, false);
-		webkit_settings_set_enable_webaudio (settings, false);
-		webkit_settings_set_enable_webgl (settings, false);
-		webkit_settings_set_enable_page_cache (settings, false);
-		webkit_settings_set_enable_media_stream (settings, false);
-
-		WebKitWebContext* web_context = webkit_web_context_new_ephemeral();
-		article_details = webkit_web_view_new_with_context (web_context);
-		g_object_ref_sink (article_details);
-		webkit_web_view_set_settings (WEBKIT_WEB_VIEW (article_details), settings);
-	}
-
-	/*
-		Article Date
-	*/
-	article_date = gtk_label_new (NULL);
-	g_object_ref_sink (article_date);
-	gautier_rss_ui_app::set_css_class (article_date, "article_date");
-
-	gtk_widget_set_halign (article_date, GTK_ALIGN_END);
-
-	/*
-		Primary Functions
-	*/
-	GtkWidget* primary_function_buttons = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
-	gautier_rss_ui_app::set_css_class (primary_function_buttons, "rss_main_button_container");
-	gtk_button_box_set_layout (GTK_BUTTON_BOX (primary_function_buttons), GTK_BUTTONBOX_START);
-	{
-		/*
-			View Article
-		*/
-		view_article_button = gtk_button_new_with_label ("View Article");
-		gautier_rss_ui_app::set_css_class (view_article_button, "button");
-
-		g_signal_connect (view_article_button, "clicked", G_CALLBACK (rss_operation_click), &rss_op_view_article);
-
-		/*
-			Manage Feeds
-		*/
-		manage_feeds_button = gtk_button_new_with_label ("Manage Feeds");
-		gtk_widget_set_sensitive (manage_feeds_button, false);
-
-		gautier_rss_ui_app::set_css_class (manage_feeds_button, "button");
-
-		g_signal_connect (manage_feeds_button, "clicked", G_CALLBACK (manage_feeds_click), NULL);
-
-		gtk_container_add (GTK_CONTAINER (primary_function_buttons), view_article_button);
-		gtk_container_add (GTK_CONTAINER (primary_function_buttons), manage_feeds_button);
-	}
-
-	/*
-		Info Bar
-	*/
-	info_bar = gtk_label_new ("Status");
-	g_object_ref_sink (info_bar);
-	gautier_rss_ui_app::set_css_class (info_bar, "feed_status");
-	gtk_widget_set_halign (info_bar, GTK_ALIGN_START);
-
-	/*
-		RSS Headlines Tab
-	*/
-	headlines_view = gtk_notebook_new();
-	g_object_ref_sink (headlines_view);
-	{
-		namespace ns_rss_tabs = gautier_rss_win_main_headlines_frame;
-
-		ns_rss_tabs::initialize_headline_view (headlines_view, monitor_width, monitor_height);
-
-		populate_rss_tabs();
-
-		next_notebook_tab_index = 0;
-
-		initialize_ui_threads();
-	}
-
-	/*
-		Article Frame
-	*/
-	GtkWidget* article_frame = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	gautier_rss_ui_app::set_css_class (article_frame, "article_frame");
-	{
-		namespace ns = gautier_rss_win_main_article_frame;
-		ns::initialize_article_frame (article_frame);
-		ns::layout_article_frame (article_frame, header_bar, article_summary, article_details, article_date,
-		                          primary_function_buttons,
-		                          info_bar);
-	}
-
-	/*
-		Window Layout
-	*/
-	layout_pane = gtk_paned_new (GTK_ORIENTATION_HORIZONTAL);
-	g_object_ref_sink (layout_pane);
-	{
-		layout_rss_view (layout_pane, headlines_view, article_frame);
-
-		gtk_container_add (GTK_CONTAINER (window), layout_pane);
-	}
-
-	gtk_widget_show_all (window);
-
-	return;
-}
+bool
+rss_management_running = false;
 
 /*
 	Window and Screen
 */
-static void
+void
 get_screen_dimensions (GtkWindow* window)
 {
 	GdkScreen* screen = gtk_window_get_screen (window);
@@ -466,7 +290,7 @@ get_screen_dimensions (GtkWindow* window)
 	return;
 }
 
-static void
+void
 set_window_attributes (GtkWidget* window, const std::string title, const int width, const int height)
 {
 	gtk_window_set_title (GTK_WINDOW (window), title.data());
@@ -476,7 +300,7 @@ set_window_attributes (GtkWidget* window, const std::string title, const int wid
 	return;
 }
 
-static void
+void
 layout_rss_view (GtkWidget* window_layout, GtkWidget* rss_tabs, GtkWidget* articles_layout)
 {
 	namespace ns_rss_tabs = gautier_rss_win_main_headlines_frame;
@@ -607,7 +431,7 @@ select_headline_row (GtkTreeSelection* tree_selection, gpointer user_data)
 	return;
 }
 
-static void
+void
 show_article (const ns_data_read::rss_article article)
 {
 	namespace ns_rss_tabs = gautier_rss_win_main_headlines_frame;
@@ -703,7 +527,7 @@ manage_feeds_click (GtkButton* button,
 	return;
 }
 
-static void
+void
 synchronize_feeds_to_configuration (std::map<std::string, gautier_rss_data_read::rss_feed_mod> feed_changes)
 {
 	g_signal_handler_disconnect (headlines_view, headline_view_switch_page_signal_id);
@@ -726,7 +550,7 @@ synchronize_feeds_to_configuration (std::map<std::string, gautier_rss_data_read:
 	return;
 }
 
-static void
+void
 process_rss_feed_configuration (const ns_data_read::rss_feed_mod modification)
 {
 	namespace ns_rss_tabs = gautier_rss_win_main_headlines_frame;
@@ -936,7 +760,7 @@ window_destroy (GtkWidget* window, gpointer user_data)
 	return;
 }
 
-static void
+void
 populate_rss_tabs()
 {
 	namespace ns_rss_tabs = gautier_rss_win_main_headlines_frame;
@@ -977,7 +801,7 @@ populate_rss_tabs()
 /*
 	UI threads
 */
-static void
+void
 initialize_ui_threads()
 {
 	thread_synchronize_ui = std::thread (synchronize_ui);
@@ -985,7 +809,7 @@ initialize_ui_threads()
 	return;
 }
 
-static void
+void
 synchronize_ui()
 {
 	while (shutting_down == false) {
@@ -1057,7 +881,6 @@ synchronize_ui()
 	return;
 }
 
-static
 gboolean
 async_initialize_tabs (gpointer data)
 {
@@ -1119,7 +942,6 @@ async_initialize_tabs (gpointer data)
 	return false;
 }
 
-static
 gboolean
 async_initialize_rss_management (gpointer data)
 {
@@ -1155,7 +977,6 @@ async_initialize_rss_management (gpointer data)
 	return false;
 }
 
-static
 gboolean
 async_load_tabs (gpointer data)
 {
@@ -1228,7 +1049,6 @@ async_load_tabs (gpointer data)
 	return false;
 }
 
-static
 gboolean
 async_load_tabs_with_downloaded_data (gpointer data)
 {
@@ -1333,7 +1153,6 @@ async_load_tabs_with_downloaded_data (gpointer data)
 	return false;
 }
 
-static
 gboolean
 flush_tabs (gpointer data)
 {
@@ -1354,7 +1173,7 @@ flush_tabs (gpointer data)
 	return false;
 }
 
-static void
+void
 make_user_note (std::string note)
 {
 	gtk_label_set_text (GTK_LABEL (info_bar), note.data());
@@ -1365,7 +1184,7 @@ make_user_note (std::string note)
 /*
 	Database threads - NO UI
 */
-static void
+void
 initialize_data_threads()
 {
 	thread_download_data = std::thread (download_data);
@@ -1381,7 +1200,7 @@ initialize_data_threads()
 
 	This function does not interact with the user interface.
 */
-static void
+void
 download_data()
 {
 	/*
@@ -1666,6 +1485,176 @@ download_data()
 
 		download_in_progress = false;
 	}
+
+	return;
+}
+}
+
+/*
+	Application GUI Entry Point. The program starts here.
+*/
+void
+gautier_rss_win_main::create (
+    GtkApplication* application, gpointer user_data)
+{
+	/*
+		Operating in a valid instance of a GTK application.
+	*/
+	if (application && user_data) {
+		std::cout << "UI Initialized: " << gautier_rss_util::get_current_date_time_utc() << "\n";
+	}
+
+	/*
+		Window
+	*/
+	GtkWidget* window = gtk_application_window_new (application);
+
+	g_signal_connect (window, "size-allocate", G_CALLBACK (window_size_allocate), NULL);
+	g_signal_connect (window, "destroy", G_CALLBACK (window_destroy), NULL);
+
+	win = GTK_WINDOW (window);
+	get_screen_dimensions (win);
+	set_window_attributes (window, gautier_rss_ui_app::get_application_name(), monitor_width, monitor_height);
+
+	/*
+		Header Bar
+	*/
+	header_bar = gtk_header_bar_new();
+	g_object_ref_sink (header_bar);
+	gautier_rss_ui_app::set_css_class (header_bar, "header_bar");
+	{
+		namespace ns = gautier_rss_win_main_article_header;
+		ns::initialize_article_header_bar (header_bar);
+	}
+
+	/*
+		Article Summary
+	*/
+	article_summary = gtk_text_view_new();
+	g_object_ref_sink (article_summary);
+	gautier_rss_ui_app::set_css_class (article_summary, "article_summary");
+	{
+		gtk_text_view_set_editable (GTK_TEXT_VIEW (article_summary), false);
+		gtk_text_view_set_cursor_visible (GTK_TEXT_VIEW (article_summary), false);
+		gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (article_summary), GTK_WRAP_WORD_CHAR);
+		gtk_text_view_set_accepts_tab (GTK_TEXT_VIEW (article_summary), true);
+	}
+
+	/*
+		Article Text
+	*/
+	{
+		WebKitSettings* settings = webkit_settings_new();
+
+		/*Do not want images, just HTML*/
+		webkit_settings_set_auto_load_images (settings, false);
+
+		/*The objective is to render HTML, but no JavaScript, local HTML databases, etc*/
+		webkit_settings_set_enable_html5_database (settings, false);
+		webkit_settings_set_enable_html5_local_storage (settings, false);
+		webkit_settings_set_enable_java (settings, false);
+		webkit_settings_set_enable_javascript (settings, false);
+		webkit_settings_set_enable_offline_web_application_cache (settings, false);
+		webkit_settings_set_enable_plugins (settings, false);
+		webkit_settings_set_enable_webaudio (settings, false);
+		webkit_settings_set_enable_webgl (settings, false);
+		webkit_settings_set_enable_page_cache (settings, false);
+		webkit_settings_set_enable_media_stream (settings, false);
+
+		WebKitWebContext* web_context = webkit_web_context_new_ephemeral();
+		article_details = webkit_web_view_new_with_context (web_context);
+		g_object_ref_sink (article_details);
+		webkit_web_view_set_settings (WEBKIT_WEB_VIEW (article_details), settings);
+	}
+
+	/*
+		Article Date
+	*/
+	article_date = gtk_label_new (NULL);
+	g_object_ref_sink (article_date);
+	gautier_rss_ui_app::set_css_class (article_date, "article_date");
+
+	gtk_widget_set_halign (article_date, GTK_ALIGN_END);
+
+	/*
+		Primary Functions
+	*/
+	GtkWidget* primary_function_buttons = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
+	gautier_rss_ui_app::set_css_class (primary_function_buttons, "rss_main_button_container");
+	gtk_button_box_set_layout (GTK_BUTTON_BOX (primary_function_buttons), GTK_BUTTONBOX_START);
+	{
+		/*
+			View Article
+		*/
+		view_article_button = gtk_button_new_with_label ("View Article");
+		gautier_rss_ui_app::set_css_class (view_article_button, "button");
+
+		g_signal_connect (view_article_button, "clicked", G_CALLBACK (rss_operation_click), &rss_op_view_article);
+
+		/*
+			Manage Feeds
+		*/
+		manage_feeds_button = gtk_button_new_with_label ("Manage Feeds");
+		gtk_widget_set_sensitive (manage_feeds_button, false);
+
+		gautier_rss_ui_app::set_css_class (manage_feeds_button, "button");
+
+		g_signal_connect (manage_feeds_button, "clicked", G_CALLBACK (manage_feeds_click), NULL);
+
+		gtk_container_add (GTK_CONTAINER (primary_function_buttons), view_article_button);
+		gtk_container_add (GTK_CONTAINER (primary_function_buttons), manage_feeds_button);
+	}
+
+	/*
+		Info Bar
+	*/
+	info_bar = gtk_label_new ("Status");
+	g_object_ref_sink (info_bar);
+	gautier_rss_ui_app::set_css_class (info_bar, "feed_status");
+	gtk_widget_set_halign (info_bar, GTK_ALIGN_START);
+
+	/*
+		RSS Headlines Tab
+	*/
+	headlines_view = gtk_notebook_new();
+	g_object_ref_sink (headlines_view);
+	{
+		namespace ns_rss_tabs = gautier_rss_win_main_headlines_frame;
+
+		ns_rss_tabs::initialize_headline_view (headlines_view, monitor_width, monitor_height);
+
+		populate_rss_tabs();
+
+		next_notebook_tab_index = 0;
+
+		initialize_ui_threads();
+	}
+
+	/*
+		Article Frame
+	*/
+	GtkWidget* article_frame = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	gautier_rss_ui_app::set_css_class (article_frame, "article_frame");
+	{
+		namespace ns = gautier_rss_win_main_article_frame;
+		ns::initialize_article_frame (article_frame);
+		ns::layout_article_frame (article_frame, header_bar, article_summary, article_details, article_date,
+		                          primary_function_buttons,
+		                          info_bar);
+	}
+
+	/*
+		Window Layout
+	*/
+	layout_pane = gtk_paned_new (GTK_ORIENTATION_HORIZONTAL);
+	g_object_ref_sink (layout_pane);
+	{
+		layout_rss_view (layout_pane, headlines_view, article_frame);
+
+		gtk_container_add (GTK_CONTAINER (window), layout_pane);
+	}
+
+	gtk_widget_show_all (window);
 
 	return;
 }

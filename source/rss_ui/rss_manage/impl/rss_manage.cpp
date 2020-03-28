@@ -37,277 +37,175 @@ namespace ns_data_write = gautier_rss_data_write;
 using feed_by_name_type = std::map<std::string, ns_data_read::rss_feed>;
 using feed_mod_by_name_type = std::map<std::string, ns_data_read::rss_feed_mod>;
 
+namespace {
 extern "C" {
-	void delete_configuration_click (GtkButton* button, gpointer user_data);
+	void delete_configuration_click (GtkButton * button, gpointer user_data);
 
-	void feed_name_deleted (GtkEntryBuffer* buffer, guint position, guint n_chars, gpointer user_data);
-	void feed_name_inserted (GtkEntryBuffer* buffer, guint position, gchar* chars, guint n_chars,
+	void feed_name_deleted (GtkEntryBuffer * buffer, guint position, guint n_chars, gpointer user_data);
+	void feed_name_inserted (GtkEntryBuffer * buffer, guint position, gchar * chars, guint n_chars,
 	                         gpointer user_data);
-	void feed_name_preedit (GtkEntry* entry, gchar* preedit, gpointer user_data);
+	void feed_name_preedit (GtkEntry * entry, gchar * preedit, gpointer user_data);
 
-	void feed_url_deleted (GtkEntryBuffer* buffer, guint position, guint n_chars, gpointer user_data);
-	void feed_url_inserted (GtkEntryBuffer* buffer, guint position, gchar* chars, guint n_chars,
+	void feed_url_deleted (GtkEntryBuffer * buffer, guint position, guint n_chars, gpointer user_data);
+	void feed_url_inserted (GtkEntryBuffer * buffer, guint position, gchar * chars, guint n_chars,
 	                        gpointer user_data);
-	void feed_url_preedit (GtkEntry* entry, gchar* preedit, gpointer user_data);
+	void feed_url_preedit (GtkEntry * entry, gchar * preedit, gpointer user_data);
 
-	void reset_configuration_click (GtkButton* button, gpointer user_data);
-	void update_configuration_click (GtkButton* button, gpointer user_data);
+	void reset_configuration_click (GtkButton * button, gpointer user_data);
+	void update_configuration_click (GtkButton * button, gpointer user_data);
 
-	void rss_tree_view_selected (GtkTreeSelection* tree_selection, gpointer user_data);
+	void rss_tree_view_selected (GtkTreeSelection * tree_selection, gpointer user_data);
 
-	void rss_manage_window_destroy (GtkWidget* window, gpointer user_data);
+	void rss_manage_window_destroy (GtkWidget * window, gpointer user_data);
 }
 
-static
-feed_mod_by_name_type feed_changes;
-
-static
-feed_by_name_type feed_model_original;
-
-static
-feed_by_name_type feed_model_updated;
-
-static GtkWindow*
+GtkWindow*
 win = NULL;
 
-static GtkWindow*
+GtkWindow*
 parent_win = NULL;
 
-static
-gautier_rss_win_rss_manage::feed_mod_cb_type* feed_mod_cb;
+GtkWidget*
+rss_tree_view;
 
-static
-void
-finalize_rss_modifications();
+GtkListStore*
+list_store;
 
-static void
-create_window (GtkApplication* app, GtkWindow* parent, const int window_width, const int window_height);
+GtkTreeSelection*
+rss_tree_selection_manager;
 
-static void
-layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_entry_layout_row2,
-                            GtkWindow* window);
-
-/*
-	RSS Table
-*/
-static const int
-col_pos_feed_name = 0;
-
-static const int
-col_pos_feed_article_count = 1;
-
-static const int
-col_pos_feed_retrieved = 2;
-
-static const int
-col_pos_feed_retention_days = 3;
-
-static const int
-col_pos_feed_retrieve_limit_hrs = 4;
-
-static const int
-col_pos_feed_webaddress = 5;
-
-static const int
-col_pos_feed_rowid = 6;
-
-static const int
-col_pos_stop = -1;
-
-static gulong
-rss_tree_view_selected_signal_id = -1UL;
-
-static void
-layout_rss_tree_view (GtkWidget* rss_tree_view);
-
-static void
-populate_rss_tree_view (GtkWidget* rss_tree_view);
-
-static void
-select_rss_tree_row();
-
-static GtkWidget* rss_tree_view;
-static GtkListStore* list_store;
-static GtkTreeSelection* rss_tree_selection_manager;
-
-static int64_t
-feed_row_id = -1;
-
-/*
-	Update Button
-*/
-GtkWidget* update_configuration_button;
-
-/*
-	Delete Button
-*/
-static GtkWidget* delete_configuration_button;
-
-/*
-	Reset Button
-*/
-static GtkWidget* reset_configuration_button;
-
-static void
-reset_data_entry();
-
-/*
-	Feed name/url
-*/
-static GtkWidget* feed_name_entry;
-static GtkWidget* feed_url_entry;
-
-/*
-	Validate feed name and url.
-*/
-static void
-check_feed_keys (GtkEntryBuffer* feed_name_buffer, GtkEntryBuffer* feed_url_buffer);
-
-static bool
-validate_values (const std::string feed_name, const std::string feed_url, const std::string retrieve_limit_hrs,
-                 const std::string retention_days);
+gautier_rss_win_rss_manage::feed_mod_cb_type*
+feed_mod_cb;
 
 /*
 	RSS configuration options.
 */
-static GtkWidget* feed_refresh_interval;
-static GtkWidget* feed_retention_option;
+GtkWidget*
+feed_refresh_interval;
+
+GtkWidget*
+feed_retention_option;
+
+/*
+	Update Button
+*/
+GtkWidget*
+update_configuration_button;
+
+/*
+	Delete Button
+*/
+GtkWidget*
+delete_configuration_button;
+
+/*
+	Reset Button
+*/
+GtkWidget*
+reset_configuration_button;
+
+/*
+	Feed name/url
+*/
+GtkWidget*
+feed_name_entry;
+
+GtkWidget*
+feed_url_entry;
+
+feed_mod_by_name_type
+feed_changes;
+
+feed_by_name_type
+feed_model_original;
+
+feed_by_name_type
+feed_model_updated;
+
+void
+finalize_rss_modifications();
+
+void
+create_window (GtkApplication* app, GtkWindow* parent, const int window_width, const int window_height);
+
+void
+layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_entry_layout_row2,
+                            GtkWindow* window);
+
+gulong
+rss_tree_view_selected_signal_id = -1UL;
+
+int64_t
+feed_row_id = -1;
+
+/*
+	RSS Table
+*/
+const int
+col_pos_feed_name = 0;
+
+const int
+col_pos_feed_article_count = 1;
+
+const int
+col_pos_feed_retrieved = 2;
+
+const int
+col_pos_feed_retention_days = 3;
+
+const int
+col_pos_feed_retrieve_limit_hrs = 4;
+
+const int
+col_pos_feed_webaddress = 5;
+
+const int
+col_pos_feed_rowid = 6;
+
+const int
+col_pos_stop = -1;
+
+void
+reset_data_entry();
+
+void
+check_feed_keys (GtkEntryBuffer* feed_name_buffer, GtkEntryBuffer* feed_url_buffer);
+
+bool
+validate_values (const std::string feed_name, const std::string feed_url, const std::string retrieve_limit_hrs,
+                 const std::string retention_days);
+
+void
+layout_rss_tree_view (GtkWidget* rss_tree_view);
+
+void
+populate_rss_tree_view (GtkWidget* rss_tree_view);
+
+void
+select_rss_tree_row();
 
 /*
 	RSS Modification Operations
 */
-static void
+void
 modify_feed (ns_data_read::rss_feed* feed, const std::string feed_name, const std::string feed_url,
              const std::string retrieve_limit_hrs, const std::string retention_days);
 
-static void
+void
 update_feed_config (const std::string feed_name, const std::string feed_url,
                     const std::string retrieve_limit_hrs, const std::string retention_days);
 
-static void
+void
 delete_feed (const std::string feed_url);
 
 /*
 	RSS Feed Retrieval
 */
-static bool
+bool
 check_feed_exist_by_url (feed_by_name_type feed_model,
                          const std::string feed_url);
 
-/*
-	RSS Management Entry Points
-*/
 void
-gautier_rss_win_rss_manage::set_feed_model (feed_by_name_type feed_model)
-{
-	feed_model_original.clear();
-	feed_model_updated.clear();
-
-	const std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
-
-	for (std::pair<std::string, ns_data_read::rss_feed> feed_entry : feed_model) {
-		const std::string feed_url = feed_entry.second.feed_url;
-
-		const int64_t row_id = ns_data_read::get_row_id (db_file_name, feed_url);
-
-		feed_model_original.try_emplace (feed_url, ns_data_read::rss_feed());
-		feed_model_updated.try_emplace (feed_url, ns_data_read::rss_feed());
-
-		ns_data_read::rss_feed* feed_original = &feed_model_original[feed_url];
-		ns_data_read::rss_feed* feed_updated = &feed_model_updated[feed_url];
-
-		feed_entry.second.row_id = row_id;
-
-		ns_data_read::copy_feed (&feed_entry.second, feed_original);
-		ns_data_read::copy_feed (&feed_entry.second, feed_updated);
-	}
-
-	return;
-}
-
-void
-gautier_rss_win_rss_manage::set_modification_callback (feed_mod_cb_type* feed_mod_callback)
-{
-	feed_mod_cb = feed_mod_callback;
-
-	return;
-}
-
-void
-gautier_rss_win_rss_manage::show_dialog (GtkApplication* app, GtkWindow* parent, const int window_width,
-        const int window_height)
-{
-	/*
-		RSS Management Window.
-	*/
-	create_window (app, parent, window_width, window_height);
-
-	/*
-		Vertical layout for the window's contents.
-	*/
-	GtkWidget* window_layout = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-	gtk_container_add (GTK_CONTAINER (win), window_layout);
-
-	/*
-		Horizontal Layout 1: RSS entry fields.
-	*/
-	GtkWidget* feed_entry_layout_row1 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-
-	/*
-		Horizontal Layout 2: Buttons.
-	*/
-	GtkWidget* feed_entry_layout_row2 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-	gtk_widget_set_halign (feed_entry_layout_row2, GTK_ALIGN_END);
-
-	/*
-		Setup the feed entry area.
-	*/
-	layout_rss_feed_entry_area (feed_entry_layout_row1, feed_entry_layout_row2, win);
-
-	/*
-		Add feed entry area to main layout.
-	*/
-	bool content_expands = false;
-	bool content_fills = false;
-
-	gtk_box_pack_start (GTK_BOX (window_layout), feed_entry_layout_row1, content_expands, content_fills, 0);
-	gtk_box_pack_start (GTK_BOX (window_layout), feed_entry_layout_row2, content_expands, content_fills, 0);
-
-	/*
-		RSS Configuration Table
-	*/
-	rss_tree_view = gtk_tree_view_new();
-	gtk_widget_set_size_request (rss_tree_view, -1, window_height * 2);
-	rss_tree_selection_manager = gtk_tree_view_get_selection (GTK_TREE_VIEW (rss_tree_view));
-	gtk_tree_selection_set_mode (rss_tree_selection_manager, GTK_SELECTION_SINGLE);
-	rss_tree_view_selected_signal_id = g_signal_connect (rss_tree_selection_manager, "changed",
-	                                   G_CALLBACK (rss_tree_view_selected), NULL);
-
-	GtkWidget* scroll_win = gtk_scrolled_window_new (NULL, NULL);
-	gtk_widget_set_valign (scroll_win, GTK_ALIGN_FILL);
-
-	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll_win), GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
-	gtk_container_add (GTK_CONTAINER (scroll_win), rss_tree_view);
-
-	layout_rss_tree_view (rss_tree_view);
-
-	content_expands = false;
-	content_fills = true;
-
-	gtk_widget_set_hexpand (scroll_win, true);
-	gtk_widget_set_vexpand (scroll_win, true);
-
-	gtk_box_pack_start (GTK_BOX (window_layout), scroll_win, content_expands, content_fills, 0);
-
-	/*
-		Window Presentation
-	*/
-	gtk_widget_show_all ((GtkWidget*)win);
-
-	return;
-}
-
-static void
 create_window (GtkApplication* app, GtkWindow* parent, const int window_width, const int window_height)
 {
 	/*
@@ -495,7 +393,7 @@ finalize_rss_modifications()
 	return;
 }
 
-static void
+void
 layout_rss_feed_entry_area (GtkWidget* feed_entry_layout_row1, GtkWidget* feed_entry_layout_row2,
                             GtkWindow* window)
 {
@@ -1124,7 +1022,7 @@ feed_url_deleted (GtkEntryBuffer* buffer, guint position, guint n_chars, gpointe
 /*
 	Validate feed name and url.
 */
-static void
+void
 check_feed_keys (GtkEntryBuffer* feed_name_buffer, GtkEntryBuffer* feed_url_buffer)
 {
 	if (feed_name_buffer && feed_url_buffer) {
@@ -1141,7 +1039,7 @@ check_feed_keys (GtkEntryBuffer* feed_name_buffer, GtkEntryBuffer* feed_url_buff
 	return;
 }
 
-static bool
+bool
 validate_values (const std::string feed_name, const std::string feed_url, const std::string retrieve_limit_hrs,
                  const std::string retention_days)
 {
@@ -1154,7 +1052,7 @@ validate_values (const std::string feed_name, const std::string feed_url, const 
 /*
 	RSS Feed Retrieval
 */
-static bool
+bool
 check_feed_exist_by_url (feed_by_name_type feed_model,
                          const std::string feed_url)
 {
@@ -1166,7 +1064,7 @@ check_feed_exist_by_url (feed_by_name_type feed_model,
 /*
 	RSS Modification Operations
 */
-static void
+void
 modify_feed (ns_data_read::rss_feed* feed, const std::string feed_name, const std::string feed_url,
              const std::string retrieve_limit_hrs, const std::string retention_days)
 {
@@ -1180,7 +1078,7 @@ modify_feed (ns_data_read::rss_feed* feed, const std::string feed_name, const st
 	return;
 }
 
-static void
+void
 update_feed_config (const std::string feed_name, const std::string feed_url,
                     const std::string retrieve_limit_hrs, const std::string retention_days)
 {
@@ -1303,7 +1201,7 @@ update_feed_config (const std::string feed_name, const std::string feed_url,
 	return;
 }
 
-static void
+void
 delete_feed (const std::string feed_url)
 {
 	const bool value_valid = (feed_url.empty() == false);
@@ -1315,6 +1213,120 @@ delete_feed (const std::string feed_url)
 			feed_model_updated.erase (feed_url);
 		}
 	}
+
+	return;
+}
+}
+
+/*
+	RSS Management Entry Points
+*/
+void
+gautier_rss_win_rss_manage::set_feed_model (feed_by_name_type feed_model)
+{
+	feed_model_original.clear();
+	feed_model_updated.clear();
+
+	const std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
+
+	for (std::pair<std::string, ns_data_read::rss_feed> feed_entry : feed_model) {
+		const std::string feed_url = feed_entry.second.feed_url;
+
+		const int64_t row_id = ns_data_read::get_row_id (db_file_name, feed_url);
+
+		feed_model_original.try_emplace (feed_url, ns_data_read::rss_feed());
+		feed_model_updated.try_emplace (feed_url, ns_data_read::rss_feed());
+
+		ns_data_read::rss_feed* feed_original = &feed_model_original[feed_url];
+		ns_data_read::rss_feed* feed_updated = &feed_model_updated[feed_url];
+
+		feed_entry.second.row_id = row_id;
+
+		ns_data_read::copy_feed (&feed_entry.second, feed_original);
+		ns_data_read::copy_feed (&feed_entry.second, feed_updated);
+	}
+
+	return;
+}
+
+void
+gautier_rss_win_rss_manage::set_modification_callback (feed_mod_cb_type* feed_mod_callback)
+{
+	feed_mod_cb = feed_mod_callback;
+
+	return;
+}
+
+void
+gautier_rss_win_rss_manage::show_dialog (GtkApplication* app, GtkWindow* parent, const int window_width,
+        const int window_height)
+{
+	/*
+		RSS Management Window.
+	*/
+	create_window (app, parent, window_width, window_height);
+
+	/*
+		Vertical layout for the window's contents.
+	*/
+	GtkWidget* window_layout = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+	gtk_container_add (GTK_CONTAINER (win), window_layout);
+
+	/*
+		Horizontal Layout 1: RSS entry fields.
+	*/
+	GtkWidget* feed_entry_layout_row1 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+
+	/*
+		Horizontal Layout 2: Buttons.
+	*/
+	GtkWidget* feed_entry_layout_row2 = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+	gtk_widget_set_halign (feed_entry_layout_row2, GTK_ALIGN_END);
+
+	/*
+		Setup the feed entry area.
+	*/
+	layout_rss_feed_entry_area (feed_entry_layout_row1, feed_entry_layout_row2, win);
+
+	/*
+		Add feed entry area to main layout.
+	*/
+	bool content_expands = false;
+	bool content_fills = false;
+
+	gtk_box_pack_start (GTK_BOX (window_layout), feed_entry_layout_row1, content_expands, content_fills, 0);
+	gtk_box_pack_start (GTK_BOX (window_layout), feed_entry_layout_row2, content_expands, content_fills, 0);
+
+	/*
+		RSS Configuration Table
+	*/
+	rss_tree_view = gtk_tree_view_new();
+	gtk_widget_set_size_request (rss_tree_view, -1, window_height * 2);
+	rss_tree_selection_manager = gtk_tree_view_get_selection (GTK_TREE_VIEW (rss_tree_view));
+	gtk_tree_selection_set_mode (rss_tree_selection_manager, GTK_SELECTION_SINGLE);
+	rss_tree_view_selected_signal_id = g_signal_connect (rss_tree_selection_manager, "changed",
+	                                   G_CALLBACK (rss_tree_view_selected), NULL);
+
+	GtkWidget* scroll_win = gtk_scrolled_window_new (NULL, NULL);
+	gtk_widget_set_valign (scroll_win, GTK_ALIGN_FILL);
+
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll_win), GTK_POLICY_ALWAYS, GTK_POLICY_ALWAYS);
+	gtk_container_add (GTK_CONTAINER (scroll_win), rss_tree_view);
+
+	layout_rss_tree_view (rss_tree_view);
+
+	content_expands = false;
+	content_fills = true;
+
+	gtk_widget_set_hexpand (scroll_win, true);
+	gtk_widget_set_vexpand (scroll_win, true);
+
+	gtk_box_pack_start (GTK_BOX (window_layout), scroll_win, content_expands, content_fills, 0);
+
+	/*
+		Window Presentation
+	*/
+	gtk_widget_show_all ((GtkWidget*)win);
 
 	return;
 }

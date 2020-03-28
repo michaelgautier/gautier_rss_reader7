@@ -48,6 +48,8 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 */
 #include <grp.h>
 #include <pwd.h>
+
+namespace {
 /*
 	- End all directory paths in this program with / to make concatenation trivial.
 	- Referencing root_user_data_directory fails under the following conditions:
@@ -55,115 +57,108 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 		* If ~/ is used as the root of the tree. Does not expand to /home/<you>.
 	- user_home_directory is modified by calls to create_user_root_directory.
 */
-static
 std::string
 user_home_directory = "";
 
-static
 const std::string
 root_user_data_directory = ".local/share/newsreader/";
 
-static
+const std::string
+app_name = "michael.gautier.rss.v7";
+
 int
 create_user_root_directory();
 
-static
 int
 create_user_data_directory();
 
-static
 int
 create_directory (const std::string directory_path);
 
-static
 void
 load_application_icon();
 
-static const
-std::string app_name = "michael.gautier.rss.v7";
-
-/*
-	Program start-up.
-*/
 int
-main (int argc, char** argv)
+create_directory (const std::string directory_path)
 {
-	const std::string program_time_started =  gautier_rss_util::get_current_date_time_utc();
+	const std::string directory_name = directory_path;
 
-	std::cout << "Gautier RSS Reader 7, compiled under C++ std " <<  __cplusplus << "\n";
-	std::cout << "Originally created by Michael Gautier, https://michaelgautier.github.io/gautier_rss_reader7/ \n";
-	std::cout << "This is free software under LGPLv2; see the source for copying conditions.\n";
-	std::cout << "NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n";
-	std::cout << "--------------------------------------------------------------------------------\n";
-	std::cout << "--------------------------------------------------------------------------------\n";
-	std::cout << "--------------------------------------------------------------------------------\n";
-	std::cout << "--------------------------------------------------------------------------------\n";
-	std::cout << "--------------------------------------------------------------------------------\n";
-	std::cout << "--------------------------------------------------------------------------------\n";
-	std::cout << "--------------------------------------------------------------------------------\n";
+	int directory_status = mkdir (directory_name.data(), S_IRWXU | S_IRWXG | S_IRWXO);
 
-	std::cout << "\n\nProgram started: " << program_time_started << ".\n";
-
-	if (argc > 0 && argv) {
+	if (directory_status != 0) {
 		/*
-			Ignore passed args and print a message instead.
+			Ignore errors (in 'this' context) where the directory already exist.
+			Our objective is to have a directory with the given path. If it exists, that is good.
+			Checking the error return code is in this case faster and simpler than 20 lines of directory scan code.
 		*/
-		std::cout << "Program does not accept any command arguments.\n";
-	}
+		const int c_error_no = errno;
 
-	namespace ns_ui_app = gautier_rss_ui_app;
-
-	int status = 0;
-
-	/*
-		Initialize User's directory to hold data files.
-	*/
-	{
-		status = create_user_root_directory();
-
-		if (status == 0) {
-			status = create_user_data_directory();
+		if (c_error_no == EEXIST) { //Directory exists when we tried to create it.
+			directory_status = 0;
+		} else { //All other errors are critical and must abort the program.
+			/*
+				Most common errors:
+					Permissions
+					Directory cannot be the same name as the executable when both would exist in the same working directory.
+			*/
+			std::cout << "Cannot create directory: " << directory_name << ". Error: " << strerror (
+			              errno) << ", errno: " << errno << "\n";
 		}
 	}
 
-	/*
-		Initialize database to hold RSS feed data.
-	*/
-	if (status == 0) {
-		const std::string db_file_name = ns_ui_app::get_db_file_name();
+	return directory_status;
+}
 
-		gautier_rss_data_write::initialize_db (db_file_name);
+int
+create_user_root_directory()
+{
+	int status  = -1;
 
-		gautier_rss_data_write::remove_expired_articles (db_file_name);
+	const uid_t user_id = getuid();
+	struct passwd* user_info = getpwuid (user_id);
+
+	if (!user_info) {
+		status = -1;
+		std::cout << "Could not determine user directory\n";
+
+		exit (EXIT_FAILURE);
+	} else {
+		status = 0;
+
+		user_home_directory = user_info->pw_dir;
+		user_home_directory = user_home_directory + "/";
 	}
 
-	/*
-		Initialize UI
-	*/
 	if (status == 0) {
-		gtk_init (NULL, NULL);
+		const std::string directory_name = user_home_directory + root_user_data_directory;
 
-		std::cout << "Creating user interface - main screen.\n";
-
-		status = ns_ui_app::create();
+		status = create_directory (directory_name);
 	}
-
-	const std::string program_time_ended_precleanup =  gautier_rss_util::get_current_date_time_utc();
-
-	const int_fast32_t time_difference_in_seconds = gautier_rss_util::get_time_difference_in_seconds (
-	            program_time_started, program_time_ended_precleanup);
-
-	std::cout << "--------------------------------------------------------------------------------\n";
-	std::cout << "--------------------------------------------------------------------------------\n";
-	std::cout << "--------------------------------------------------------------------------------\n";
-	std::cout << "--------------------------------------------------------------------------------\n";
-	std::cout << "--------------------------------------------------------------------------------\n";
-	std::cout << "--------------------------------------------------------------------------------\n";
-	std::cout << "--------------------------------------------------------------------------------\n";
-	std::cout << "Program ended " << program_time_ended_precleanup << ".\n";
-	std::cout << "Program running time: " << time_difference_in_seconds << " seconds.\n";
 
 	return status;
+}
+
+int
+create_user_data_directory()
+{
+	const std::string directory_name = gautier_rss_ui_app::get_user_directory_name();
+
+	const int directory_status = create_directory (directory_name);
+
+	return directory_status;
+}
+
+void
+load_application_icon()
+{
+	const std::string app_icon_resource_path = "/newsreader/app_icon.png";
+
+	GdkPixbuf* application_icon_pixbuf = gdk_pixbuf_new_from_resource (app_icon_resource_path.data(), NULL);
+
+	gtk_window_set_default_icon (application_icon_pixbuf);
+
+	return;
+}
 }
 
 int
@@ -325,88 +320,86 @@ gautier_rss_ui_app::get_user_directory_name()
 	return base_directory;
 }
 
-static
+/*
+	Program start-up.
+*/
 int
-create_directory (const std::string directory_path)
+main (int argc, char** argv)
 {
-	const std::string directory_name = directory_path;
+	const std::string program_time_started =  gautier_rss_util::get_current_date_time_utc();
 
-	int directory_status = mkdir (directory_name.data(), S_IRWXU | S_IRWXG | S_IRWXO);
+	std::cout << "Gautier RSS Reader 7, compiled under C++ std " <<  __cplusplus << "\n";
+	std::cout << "Originally created by Michael Gautier, https://michaelgautier.github.io/gautier_rss_reader7/ \n";
+	std::cout << "This is free software under LGPLv2; see the source for copying conditions.\n";
+	std::cout << "NO warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n";
+	std::cout << "--------------------------------------------------------------------------------\n";
+	std::cout << "--------------------------------------------------------------------------------\n";
+	std::cout << "--------------------------------------------------------------------------------\n";
+	std::cout << "--------------------------------------------------------------------------------\n";
+	std::cout << "--------------------------------------------------------------------------------\n";
+	std::cout << "--------------------------------------------------------------------------------\n";
+	std::cout << "--------------------------------------------------------------------------------\n";
 
-	if (directory_status != 0) {
+	std::cout << "\n\nProgram started: " << program_time_started << ".\n";
+
+	if (argc > 0 && argv) {
 		/*
-			Ignore errors (in 'this' context) where the directory already exist.
-			Our objective is to have a directory with the given path. If it exists, that is good.
-			Checking the error return code is in this case faster and simpler than 20 lines of directory scan code.
+			Ignore passed args and print a message instead.
 		*/
-		const int c_error_no = errno;
+		std::cout << "Program does not accept any command arguments.\n";
+	}
 
-		if (c_error_no == EEXIST) { //Directory exists when we tried to create it.
-			directory_status = 0;
-		} else { //All other errors are critical and must abort the program.
-			/*
-				Most common errors:
-					Permissions
-					Directory cannot be the same name as the executable when both would exist in the same working directory.
-			*/
-			std::cout << "Cannot create directory: " << directory_name << ". Error: " << strerror (
-			              errno) << ", errno: " << errno << "\n";
+	namespace ns_ui_app = gautier_rss_ui_app;
+
+	int status = 0;
+
+	/*
+		Initialize User's directory to hold data files.
+	*/
+	{
+		status = create_user_root_directory();
+
+		if (status == 0) {
+			status = create_user_data_directory();
 		}
 	}
 
-	return directory_status;
-}
-
-static
-int
-create_user_root_directory()
-{
-	int status  = -1;
-
-	const uid_t user_id = getuid();
-	struct passwd* user_info = getpwuid (user_id);
-
-	if (!user_info) {
-		status = -1;
-		std::cout << "Could not determine user directory\n";
-
-		exit (EXIT_FAILURE);
-	} else {
-		status = 0;
-
-		user_home_directory = user_info->pw_dir;
-		user_home_directory = user_home_directory + "/";
-	}
-
+	/*
+		Initialize database to hold RSS feed data.
+	*/
 	if (status == 0) {
-		const std::string directory_name = user_home_directory + root_user_data_directory;
+		const std::string db_file_name = ns_ui_app::get_db_file_name();
 
-		status = create_directory (directory_name);
+		gautier_rss_data_write::initialize_db (db_file_name);
+
+		gautier_rss_data_write::remove_expired_articles (db_file_name);
 	}
+
+	/*
+		Initialize UI
+	*/
+	if (status == 0) {
+		gtk_init (NULL, NULL);
+
+		std::cout << "Creating user interface - main screen.\n";
+
+		status = ns_ui_app::create();
+	}
+
+	const std::string program_time_ended_precleanup =  gautier_rss_util::get_current_date_time_utc();
+
+	const int_fast32_t time_difference_in_seconds = gautier_rss_util::get_time_difference_in_seconds (
+	            program_time_started, program_time_ended_precleanup);
+
+	std::cout << "--------------------------------------------------------------------------------\n";
+	std::cout << "--------------------------------------------------------------------------------\n";
+	std::cout << "--------------------------------------------------------------------------------\n";
+	std::cout << "--------------------------------------------------------------------------------\n";
+	std::cout << "--------------------------------------------------------------------------------\n";
+	std::cout << "--------------------------------------------------------------------------------\n";
+	std::cout << "--------------------------------------------------------------------------------\n";
+	std::cout << "Program ended " << program_time_ended_precleanup << ".\n";
+	std::cout << "Program running time: " << time_difference_in_seconds << " seconds.\n";
 
 	return status;
-}
-
-static
-int
-create_user_data_directory()
-{
-	const std::string directory_name = gautier_rss_ui_app::get_user_directory_name();
-
-	const int directory_status = create_directory (directory_name);
-
-	return directory_status;
-}
-
-static
-void
-load_application_icon()
-{
-	const std::string app_icon_resource_path = "/newsreader/app_icon.png";
-
-	GdkPixbuf* application_icon_pixbuf = gdk_pixbuf_new_from_resource (app_icon_resource_path.data(), NULL);
-
-	gtk_window_set_default_icon (application_icon_pixbuf);
-
-	return;
 }
