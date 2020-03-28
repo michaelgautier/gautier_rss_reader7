@@ -588,10 +588,10 @@ headline_view_switch_page (GtkNotebook* rss_tabs,
 	gtk_label_set_text (GTK_LABEL (article_date), date_status.data());
 
 	if (headline_count > 0) {
-		gautier_rss_win_main_headlines_frame::set_headlines_title (GTK_WIDGET (rss_tabs), page_num,
+		gautier_rss_win_main_headlines_frame::set_headlines_title (GTK_WIDGET (rss_tabs), (gint)page_num,
 		        feed_name + " " + std::to_string (headline_count) + " records");
 	} else {
-		gautier_rss_win_main_headlines_frame::set_headlines_title (GTK_WIDGET (rss_tabs), page_num, feed_name);
+		gautier_rss_win_main_headlines_frame::set_headlines_title (GTK_WIDGET (rss_tabs), (gint)page_num, feed_name);
 	}
 
 	make_user_note (std::to_string (headline_count) + " articles since " + date_status);
