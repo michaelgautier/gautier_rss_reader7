@@ -971,6 +971,8 @@ namespace {
 			std::cout << __func__ << " called with user_data\n";
 		}
 
+		const gint tab_visible_i = gtk_notebook_get_current_page (GTK_NOTEBOOK (headlines_view));
+
 		const gint tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
 
 		for (gint tab_i = 0; tab_i <= tab_count; tab_i++) {
@@ -982,6 +984,12 @@ namespace {
 				if (sensitive_value == false) {
 					gtk_widget_set_sensitive (tab, true);
 				}
+			}
+
+			if (visible_feed_article.feed_name.empty() && tab_i == tab_visible_i) {
+				const std::string feed_name = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
+
+				visible_feed_article.feed_name = feed_name;
 			}
 		}
 
