@@ -220,6 +220,14 @@ namespace gautier_rss_data_write {
 	                            const std::string feed_url,
 	                            const std::string retrieve_limit_hrs,
 	                            const std::string retention_days,
+	                            std::vector<std::string>& headlines);
+
+	long
+	update_rss_db_from_network (const std::string db_file_name,
+	                            const std::string feed_name,
+	                            const std::string feed_url,
+	                            const std::string retrieve_limit_hrs,
+	                            const std::string retention_days,
 	                            std::vector<gautier_rss_data_read::rss_article>& articles);
 
 	void

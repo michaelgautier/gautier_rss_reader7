@@ -22,6 +22,8 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include <string>
 #include <thread>
 #include <vector>
+#include <typeinfo>
+#include <type_traits>
 
 #include "rss_lib/db/db.hpp"
 #include "rss_lib/rss_download/feed_download.hpp"
@@ -34,6 +36,45 @@ namespace ns_data_read = gautier_rss_data_read;
 namespace ns_db = gautier_rss_database;
 namespace ns_parse = gautier_rss_data_parse;
 
+namespace {
+	long
+	update_rss_db_from_network_impl (const std::string db_file_name,
+	                                 const std::string feed_name,
+	                                 const std::string feed_url,
+	                                 const std::string retrieve_limit_hrs,
+	                                 const std::string retention_days)
+	{
+		long response_code = 0;
+
+		gautier_rss_data_write::set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
+
+		const bool is_feed_still_fresh = ns_data_read::is_feed_still_fresh (db_file_name, feed_name, false);
+
+		if (is_feed_still_fresh == false) {
+			std::string feed_data;
+
+			response_code = ns_data_read::download_rss_feed (feed_url, feed_data);
+
+			const bool response_good = ns_data_read::is_network_response_ok (response_code);
+
+			if (response_good) {
+				gautier_rss_data_write::update_feed_retrieved (db_file_name, feed_url);
+
+				std::vector<ns_data_read::rss_article> feed_lines;
+
+				ns_parse::get_feed_lines (feed_data, feed_lines);
+
+				for (ns_data_read::rss_article article : feed_lines) {
+					article.feed_name = feed_name;
+
+					gautier_rss_data_write::set_feed_headline (db_file_name, article);
+				}
+			}
+		}
+
+		return response_code;
+	}
+}
 /*
 	REQUIRED!
 
@@ -643,37 +684,30 @@ gautier_rss_data_write::update_rss_db_from_network (const std::string db_file_na
         const std::string retention_days,
         std::vector<ns_data_read::rss_article>& articles)
 {
-	long response_code = 0;
+	const int64_t rowid = ns_data_read::get_feed_article_max_row_id (db_file_name, feed_name);
 
-	set_feed_config (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days);
+	const long response_code = update_rss_db_from_network_impl (db_file_name, feed_name, feed_url,
+	                           retrieve_limit_hrs, retention_days);
 
-	const bool is_feed_still_fresh = ns_data_read::is_feed_still_fresh (db_file_name, feed_name, false);
+	ns_data_read::get_feed_articles_after_row_id (db_file_name, feed_name, articles, true, rowid);
 
-	if (is_feed_still_fresh == false) {
-		const int64_t rowid = ns_data_read::get_feed_article_max_row_id (db_file_name, feed_name);
+	return response_code;
+}
 
-		std::string feed_data;
+long
+gautier_rss_data_write::update_rss_db_from_network (const std::string db_file_name,
+        const std::string feed_name,
+        const std::string feed_url,
+        const std::string retrieve_limit_hrs,
+        const std::string retention_days,
+        std::vector<std::string>& headlines)
+{
+	const int64_t rowid = ns_data_read::get_feed_article_max_row_id (db_file_name, feed_name);
 
-		response_code = ns_data_read::download_rss_feed (feed_url, feed_data);
+	const long response_code = update_rss_db_from_network_impl (db_file_name, feed_name, feed_url,
+	                           retrieve_limit_hrs, retention_days);
 
-		const bool response_good = ns_data_read::is_network_response_ok (response_code);
-
-		if (response_good) {
-			update_feed_retrieved (db_file_name, feed_url);
-
-			std::vector<ns_data_read::rss_article> feed_lines;
-
-			ns_parse::get_feed_lines (feed_data, feed_lines);
-
-			for (ns_data_read::rss_article article : feed_lines) {
-				article.feed_name = feed_name;
-
-				set_feed_headline (db_file_name, article);
-			}
-
-			ns_data_read::get_feed_articles_after_row_id (db_file_name, feed_name, articles, true, rowid);
-		}
-	}
+	ns_data_read::get_feed_headlines_after_row_id (db_file_name, feed_name, headlines, true, rowid);
 
 	return response_code;
 }
