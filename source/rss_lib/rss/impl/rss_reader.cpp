@@ -33,6 +33,9 @@ namespace {
 	                             gautier_rss_data_read::rss_article& article);
 
 	void
+	create_headline_text_from_sql_row (gautier_rss_database::sql_row_type& row, std::string& headline_text);
+
+	void
 	create_feed_from_sql_row (gautier_rss_database::sql_row_type& row, gautier_rss_data_read::rss_feed& feed)
 	{
 		for (auto [name, value] : row) {
@@ -71,6 +74,20 @@ namespace {
 				article.article_date = value;
 			} else if (name == "article_url") {
 				article.url = value;
+			}
+		}
+
+		return;
+	}
+
+	void
+	create_headline_text_from_sql_row (gautier_rss_database::sql_row_type& row, std::string& headline_text)
+	{
+		for (auto [name, value] : row) {
+			if (name == "headline_text") {
+				headline_text = value;
+
+				break;
 			}
 		}
 
@@ -190,7 +207,7 @@ gautier_rss_data_read::get_feeds (const std::string db_file_name, std::vector <r
 }
 
 void
-gautier_rss_data_read::get_feed_headlines (const std::string db_file_name, const std::string feed_name,
+gautier_rss_data_read::get_feed_articles (const std::string db_file_name, const std::string feed_name,
         std::vector <rss_article>& headlines, const bool descending)
 {
 	namespace ns_db = gautier_rss_database;
@@ -206,8 +223,11 @@ gautier_rss_data_read::get_feed_headlines (const std::string db_file_name, const
 
 	ns_db::sql_rowset_type rows;
 	const std::string sql_text =
-	    "SELECT feed_name, headline_text, article_summary, article_text, article_date, article_url \
-		FROM feeds_articles WHERE feed_name = @feed_name ORDER BY rowid " + sort_direction + ";";
+	    "SELECT feed_name, headline_text, \
+		article_summary, article_text, article_date, article_url \
+		FROM feeds_articles \
+		WHERE feed_name = @feed_name \
+		ORDER BY rowid " + sort_direction + ";";
 
 	ns_db::sql_parameter_list_type params = {
 		feed_name
@@ -233,7 +253,52 @@ gautier_rss_data_read::get_feed_headlines (const std::string db_file_name, const
 }
 
 void
-gautier_rss_data_read::get_feed_headlines_after_row_id (const std::string db_file_name,
+gautier_rss_data_read::get_feed_headlines (const std::string db_file_name, const std::string feed_name,
+        std::vector <std::string>& headlines, const bool descending)
+{
+	namespace ns_db = gautier_rss_database;
+
+	sqlite3* db = nullptr;
+	ns_db::open_db (db_file_name, &db);
+
+	std::string sort_direction = "ASC";
+
+	if (descending) {
+		sort_direction = "DESC";
+	}
+
+	ns_db::sql_rowset_type rows;
+	const std::string sql_text =
+	    "SELECT headline_text \
+		FROM feeds_articles \
+		WHERE feed_name = @feed_name \
+		ORDER BY rowid " + sort_direction + ";";
+
+	ns_db::sql_parameter_list_type params = {
+		feed_name
+	};
+
+	ns_db::process_sql (&db, sql_text, params, rows);
+
+	headlines.reserve (rows.size());
+
+	for (ns_db::sql_row_type row : rows) {
+		std::string headline_text;
+
+		create_headline_text_from_sql_row (row, headline_text);
+
+		if (headline_text.empty() == false) {
+			headlines.emplace_back (headline_text);
+		}
+	}
+
+	ns_db::close_db (&db);
+
+	return;
+}
+
+void
+gautier_rss_data_read::get_feed_articles_after_row_id (const std::string db_file_name,
         const std::string feed_name,
         std::vector <rss_article>& headlines, const bool descending, const int64_t row_id)
 {
@@ -250,10 +315,10 @@ gautier_rss_data_read::get_feed_headlines_after_row_id (const std::string db_fil
 
 	ns_db::sql_rowset_type rows;
 	const std::string sql_text =
-	    "SELECT feed_name, headline_text, article_summary, article_text, article_date, article_url \
+	    "SELECT feed_name, headline_text, \
+		article_summary, article_text, article_date, article_url \
 		FROM feeds_articles \
-		WHERE feed_name = @feed_name \
-		and rowid > @rowid \
+		WHERE feed_name = @feed_name and rowid > @rowid \
 		ORDER BY rowid " + sort_direction + ";";
 
 	ns_db::sql_parameter_list_type params = {
@@ -272,6 +337,53 @@ gautier_rss_data_read::get_feed_headlines_after_row_id (const std::string db_fil
 
 		if (article.feed_name.empty() == false && article.feed_name == feed_name) {
 			headlines.emplace_back (article);
+		}
+	}
+
+	ns_db::close_db (&db);
+
+	return;
+}
+
+void
+gautier_rss_data_read::get_feed_headlines_after_row_id (const std::string db_file_name,
+        const std::string feed_name,
+        std::vector <std::string>& headlines, const bool descending, const int64_t row_id)
+{
+	namespace ns_db = gautier_rss_database;
+
+	sqlite3* db = nullptr;
+	ns_db::open_db (db_file_name, &db);
+
+	std::string sort_direction = "ASC";
+
+	if (descending) {
+		sort_direction = "DESC";
+	}
+
+	ns_db::sql_rowset_type rows;
+	const std::string sql_text =
+	    "SELECT headline_text \
+		FROM feeds_articles \
+		WHERE feed_name = @feed_name and rowid > @rowid \
+		ORDER BY rowid " + sort_direction + ";";
+
+	ns_db::sql_parameter_list_type params = {
+		feed_name,
+		std::to_string (row_id)
+	};
+
+	ns_db::process_sql (&db, sql_text, params, rows);
+
+	headlines.reserve (rows.size());
+
+	for (ns_db::sql_row_type row : rows) {
+		std::string headline_text;
+
+		create_headline_text_from_sql_row (row, headline_text);
+
+		if (headline_text.empty() == false) {
+			headlines.emplace_back (headline_text);
 		}
 	}
 
