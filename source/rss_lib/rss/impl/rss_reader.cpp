@@ -25,57 +25,57 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include "rss_lib/db/db.hpp"
 
 namespace {
-void
-create_feed_from_sql_row (gautier_rss_database::sql_row_type& row, gautier_rss_data_read::rss_feed& feed);
+	void
+	create_feed_from_sql_row (gautier_rss_database::sql_row_type& row, gautier_rss_data_read::rss_feed& feed);
 
-void
-create_article_from_sql_row (gautier_rss_database::sql_row_type& row,
-                             gautier_rss_data_read::rss_article& article);
+	void
+	create_article_from_sql_row (gautier_rss_database::sql_row_type& row,
+	                             gautier_rss_data_read::rss_article& article);
 
-void
-create_feed_from_sql_row (gautier_rss_database::sql_row_type& row, gautier_rss_data_read::rss_feed& feed)
-{
-	for (auto [name, value] : row) {
-		if (name == "feed_name") {
-			feed.feed_name = value;
-		} else if (name == "feed_url") {
-			feed.feed_url = value;
-		} else if (name == "last_retrieved") {
-			feed.last_retrieved = value;
-		} else if (name == "retrieve_limit_hrs") {
-			feed.retrieve_limit_hrs = value;
-		} else if (name == "retention_days") {
-			feed.retention_days = value;
-		} else if (name == "article_count") {
-			feed.article_count = std::stoll (value);
+	void
+	create_feed_from_sql_row (gautier_rss_database::sql_row_type& row, gautier_rss_data_read::rss_feed& feed)
+	{
+		for (auto [name, value] : row) {
+			if (name == "feed_name") {
+				feed.feed_name = value;
+			} else if (name == "feed_url") {
+				feed.feed_url = value;
+			} else if (name == "last_retrieved") {
+				feed.last_retrieved = value;
+			} else if (name == "retrieve_limit_hrs") {
+				feed.retrieve_limit_hrs = value;
+			} else if (name == "retention_days") {
+				feed.retention_days = value;
+			} else if (name == "article_count") {
+				feed.article_count = std::stoll (value);
+			}
 		}
+
+		return;
 	}
 
-	return;
-}
-
-void
-create_article_from_sql_row (gautier_rss_database::sql_row_type& row,
-                             gautier_rss_data_read::rss_article& article)
-{
-	for (auto [name, value] : row) {
-		if (name == "feed_name") {
-			article.feed_name = value;
-		} else if (name == "headline_text") {
-			article.headline = value;
-		} else if (name == "article_summary") {
-			article.article_summary = value;
-		} else if (name == "article_text") {
-			article.article_text = value;
-		} else if (name == "article_date") {
-			article.article_date = value;
-		} else if (name == "article_url") {
-			article.url = value;
+	void
+	create_article_from_sql_row (gautier_rss_database::sql_row_type& row,
+	                             gautier_rss_data_read::rss_article& article)
+	{
+		for (auto [name, value] : row) {
+			if (name == "feed_name") {
+				article.feed_name = value;
+			} else if (name == "headline_text") {
+				article.headline = value;
+			} else if (name == "article_summary") {
+				article.article_summary = value;
+			} else if (name == "article_text") {
+				article.article_text = value;
+			} else if (name == "article_date") {
+				article.article_date = value;
+			} else if (name == "article_url") {
+				article.url = value;
+			}
 		}
-	}
 
-	return;
-}
+		return;
+	}
 }
 
 void

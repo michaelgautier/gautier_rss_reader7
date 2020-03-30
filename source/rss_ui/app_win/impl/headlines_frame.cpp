@@ -25,119 +25,119 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include "rss_ui/app_win/headlines_frame.hpp"
 
 namespace {
-int
-headlines_section_width = 0;
-
-/*
-	Headline Model
-*/
-int
-col_pos_feed_name = 0;
-
-int
-col_pos_headline_text = 1;
-
-int
-col_pos_article_summary = 2;
-
-int
-col_pos_article_text = 3;
-
-int
-col_pos_article_date = 4;
-
-int
-col_pos_article_url = 5;
-
-int
-col_pos_stop = -1;
-
-void
-initialize_headlines_list_view (GtkWidget* scroll_container, GtkWidget* headlines_list_view,
-                                void (*headline_view_select_row) (GtkTreeSelection*, gpointer));
-
-void
-get_row_data (GtkTreeSelection* tree_selection, std::string& feed_name, std::string& headline_text,
-              std::string& article_summary, std::string& article_text, std::string& article_date, std::string& article_url);
-
-
-void
-initialize_headlines_list_view (GtkWidget* scroll_container, GtkWidget* headlines_list_view,
-                                void (*headline_view_select_row) (GtkTreeSelection*, gpointer))
-{
-	gtk_widget_set_size_request (headlines_list_view, headlines_section_width, -1);
+	int
+	headlines_section_width = 0;
 
 	/*
-		Column: Feed Name
+		Headline Model
 	*/
-	GtkCellRenderer* column_renderer_headline_text = gtk_cell_renderer_text_new();
-	GtkTreeViewColumn* column_headline_text = gtk_tree_view_column_new_with_attributes ("Headlines",
-	        column_renderer_headline_text, "text", col_pos_headline_text, nullptr);
-	gtk_tree_view_append_column (GTK_TREE_VIEW (headlines_list_view), column_headline_text);
+	int
+	col_pos_feed_name = 0;
 
-	/*
-		Tree Model to describe the columns
-	*/
-	GtkListStore* list_store = gtk_list_store_new (6 /*6 columns*/,
-	                           G_TYPE_STRING,/*feed name*/
-	                           G_TYPE_STRING,/*headline*/
-	                           G_TYPE_STRING,/*article summary*/
-	                           G_TYPE_STRING,/*article text*/
-	                           G_TYPE_STRING,/*article date*/
-	                           G_TYPE_STRING /*article url*/);
+	int
+	col_pos_headline_text = 1;
 
-	gtk_tree_view_set_model (GTK_TREE_VIEW (headlines_list_view), GTK_TREE_MODEL (list_store));
+	int
+	col_pos_article_summary = 2;
 
-	gtk_container_add (GTK_CONTAINER (scroll_container), headlines_list_view);
+	int
+	col_pos_article_text = 3;
 
-	if (headline_view_select_row) {
-		GtkTreeSelection* rss_headline_selection_manager = gtk_tree_view_get_selection (GTK_TREE_VIEW (
-		            headlines_list_view));
-		gtk_tree_selection_set_mode (rss_headline_selection_manager, GTK_SELECTION_SINGLE);
+	int
+	col_pos_article_date = 4;
 
-		g_signal_connect (rss_headline_selection_manager, "changed", G_CALLBACK (headline_view_select_row), nullptr);
+	int
+	col_pos_article_url = 5;
+
+	int
+	col_pos_stop = -1;
+
+	void
+	initialize_headlines_list_view (GtkWidget* scroll_container, GtkWidget* headlines_list_view,
+	                                void (*headline_view_select_row) (GtkTreeSelection*, gpointer));
+
+	void
+	get_row_data (GtkTreeSelection* tree_selection, std::string& feed_name, std::string& headline_text,
+	              std::string& article_summary, std::string& article_text, std::string& article_date, std::string& article_url);
+
+
+	void
+	initialize_headlines_list_view (GtkWidget* scroll_container, GtkWidget* headlines_list_view,
+	                                void (*headline_view_select_row) (GtkTreeSelection*, gpointer))
+	{
+		gtk_widget_set_size_request (headlines_list_view, headlines_section_width, -1);
+
+		/*
+			Column: Feed Name
+		*/
+		GtkCellRenderer* column_renderer_headline_text = gtk_cell_renderer_text_new();
+		GtkTreeViewColumn* column_headline_text = gtk_tree_view_column_new_with_attributes ("Headlines",
+		        column_renderer_headline_text, "text", col_pos_headline_text, nullptr);
+		gtk_tree_view_append_column (GTK_TREE_VIEW (headlines_list_view), column_headline_text);
+
+		/*
+			Tree Model to describe the columns
+		*/
+		GtkListStore* list_store = gtk_list_store_new (6 /*6 columns*/,
+		                           G_TYPE_STRING,/*feed name*/
+		                           G_TYPE_STRING,/*headline*/
+		                           G_TYPE_STRING,/*article summary*/
+		                           G_TYPE_STRING,/*article text*/
+		                           G_TYPE_STRING,/*article date*/
+		                           G_TYPE_STRING /*article url*/);
+
+		gtk_tree_view_set_model (GTK_TREE_VIEW (headlines_list_view), GTK_TREE_MODEL (list_store));
+
+		gtk_container_add (GTK_CONTAINER (scroll_container), headlines_list_view);
+
+		if (headline_view_select_row) {
+			GtkTreeSelection* rss_headline_selection_manager = gtk_tree_view_get_selection (GTK_TREE_VIEW (
+			            headlines_list_view));
+			gtk_tree_selection_set_mode (rss_headline_selection_manager, GTK_SELECTION_SINGLE);
+
+			g_signal_connect (rss_headline_selection_manager, "changed", G_CALLBACK (headline_view_select_row), nullptr);
+		}
+
+		return;
 	}
 
-	return;
-}
+	void
+	get_row_data (GtkTreeSelection* tree_selection, std::string& feed_name, std::string& headline_text,
+	              std::string& article_summary, std::string& article_text, std::string& article_date, std::string& article_url)
+	{
+		/*
+			GTK documentation says this will not work if the selection mode is GTK_SELECTION_MULTIPLE.
+		*/
+		GtkTreeModel* tree_model;
+		GtkTreeIter tree_iterator;
 
-void
-get_row_data (GtkTreeSelection* tree_selection, std::string& feed_name, std::string& headline_text,
-              std::string& article_summary, std::string& article_text, std::string& article_date, std::string& article_url)
-{
-	/*
-		GTK documentation says this will not work if the selection mode is GTK_SELECTION_MULTIPLE.
-	*/
-	GtkTreeModel* tree_model;
-	GtkTreeIter tree_iterator;
+		bool row_selected = gtk_tree_selection_get_selected (tree_selection, &tree_model, &tree_iterator);
 
-	bool row_selected = gtk_tree_selection_get_selected (tree_selection, &tree_model, &tree_iterator);
+		if (row_selected) {
+			gchar* feed_name_data;
+			gchar* headline_text_data;
+			gchar* article_summary_data;
+			gchar* article_text_data;
+			gchar* article_date_data;
+			gchar* article_url_data;
 
-	if (row_selected) {
-		gchar* feed_name_data;
-		gchar* headline_text_data;
-		gchar* article_summary_data;
-		gchar* article_text_data;
-		gchar* article_date_data;
-		gchar* article_url_data;
+			gtk_tree_model_get (tree_model, &tree_iterator, col_pos_feed_name, &feed_name_data, -1);
+			gtk_tree_model_get (tree_model, &tree_iterator, col_pos_headline_text, &headline_text_data, -1);
+			gtk_tree_model_get (tree_model, &tree_iterator, col_pos_article_summary, &article_summary_data, -1);
+			gtk_tree_model_get (tree_model, &tree_iterator, col_pos_article_text, &article_text_data, -1);
+			gtk_tree_model_get (tree_model, &tree_iterator, col_pos_article_date, &article_date_data, -1);
+			gtk_tree_model_get (tree_model, &tree_iterator, col_pos_article_url, &article_url_data, -1);
 
-		gtk_tree_model_get (tree_model, &tree_iterator, col_pos_feed_name, &feed_name_data, -1);
-		gtk_tree_model_get (tree_model, &tree_iterator, col_pos_headline_text, &headline_text_data, -1);
-		gtk_tree_model_get (tree_model, &tree_iterator, col_pos_article_summary, &article_summary_data, -1);
-		gtk_tree_model_get (tree_model, &tree_iterator, col_pos_article_text, &article_text_data, -1);
-		gtk_tree_model_get (tree_model, &tree_iterator, col_pos_article_date, &article_date_data, -1);
-		gtk_tree_model_get (tree_model, &tree_iterator, col_pos_article_url, &article_url_data, -1);
+			feed_name = feed_name_data;
+			headline_text = headline_text_data;
+			article_summary = article_summary_data;
+			article_text = article_text_data;
+			article_date = article_date_data;
+			article_url = article_url_data;
+		}
 
-		feed_name = feed_name_data;
-		headline_text = headline_text_data;
-		article_summary = article_summary_data;
-		article_text = article_text_data;
-		article_date = article_date_data;
-		article_url = article_url_data;
+		return;
 	}
-
-	return;
-}
 }
 
 void

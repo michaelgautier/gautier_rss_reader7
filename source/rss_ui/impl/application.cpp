@@ -50,115 +50,115 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include <pwd.h>
 
 namespace {
-/*
-	- End all directory paths in this program with / to make concatenation trivial.
-	- Referencing root_user_data_directory fails under the following conditions:
-		* ./local/share does not exist
-		* If ~/ is used as the root of the tree. Does not expand to /home/<you>.
-	- user_home_directory is modified by calls to create_user_root_directory.
-*/
-std::string
-user_home_directory = "";
+	/*
+		- End all directory paths in this program with / to make concatenation trivial.
+		- Referencing root_user_data_directory fails under the following conditions:
+			* ./local/share does not exist
+			* If ~/ is used as the root of the tree. Does not expand to /home/<you>.
+		- user_home_directory is modified by calls to create_user_root_directory.
+	*/
+	std::string
+	user_home_directory = "";
 
-const std::string
-root_user_data_directory = ".local/share/newsreader/";
+	const std::string
+	root_user_data_directory = ".local/share/newsreader/";
 
-const std::string
-app_name = "michael.gautier.rss.v7";
+	const std::string
+	app_name = "michael.gautier.rss.v7";
 
-int
-create_user_root_directory();
+	int
+	create_user_root_directory();
 
-int
-create_user_data_directory();
+	int
+	create_user_data_directory();
 
-int
-create_directory (const std::string directory_path);
+	int
+	create_directory (const std::string directory_path);
 
-void
-load_application_icon();
+	void
+	load_application_icon();
 
-int
-create_directory (const std::string directory_path)
-{
-	const std::string directory_name = directory_path;
+	int
+	create_directory (const std::string directory_path)
+	{
+		const std::string directory_name = directory_path;
 
-	int directory_status = mkdir (directory_name.data(), S_IRWXU | S_IRWXG | S_IRWXO);
+		int directory_status = mkdir (directory_name.data(), S_IRWXU | S_IRWXG | S_IRWXO);
 
-	if (directory_status != 0) {
-		/*
-			Ignore errors (in 'this' context) where the directory already exist.
-			Our objective is to have a directory with the given path. If it exists, that is good.
-			Checking the error return code is in this case faster and simpler than 20 lines of directory scan code.
-		*/
-		const int c_error_no = errno;
-
-		if (c_error_no == EEXIST) { //Directory exists when we tried to create it.
-			directory_status = 0;
-		} else { //All other errors are critical and must abort the program.
+		if (directory_status != 0) {
 			/*
-				Most common errors:
-					Permissions
-					Directory cannot be the same name as the executable when both would exist in the same working directory.
+				Ignore errors (in 'this' context) where the directory already exist.
+				Our objective is to have a directory with the given path. If it exists, that is good.
+				Checking the error return code is in this case faster and simpler than 20 lines of directory scan code.
 			*/
-			std::cout << "Cannot create directory: " << directory_name << ". Error: " << strerror (
-			              errno) << ", errno: " << errno << "\n";
+			const int c_error_no = errno;
+
+			if (c_error_no == EEXIST) { //Directory exists when we tried to create it.
+				directory_status = 0;
+			} else { //All other errors are critical and must abort the program.
+				/*
+					Most common errors:
+						Permissions
+						Directory cannot be the same name as the executable when both would exist in the same working directory.
+				*/
+				std::cout << "Cannot create directory: " << directory_name << ". Error: " << strerror (
+				              errno) << ", errno: " << errno << "\n";
+			}
 		}
+
+		return directory_status;
 	}
 
-	return directory_status;
-}
+	int
+	create_user_root_directory()
+	{
+		int status  = -1;
 
-int
-create_user_root_directory()
-{
-	int status  = -1;
+		const uid_t user_id = getuid();
+		struct passwd* user_info = getpwuid (user_id);
 
-	const uid_t user_id = getuid();
-	struct passwd* user_info = getpwuid (user_id);
+		if (!user_info) {
+			status = -1;
+			std::cout << "Could not determine user directory\n";
 
-	if (!user_info) {
-		status = -1;
-		std::cout << "Could not determine user directory\n";
+			exit (EXIT_FAILURE);
+		} else {
+			status = 0;
 
-		exit (EXIT_FAILURE);
-	} else {
-		status = 0;
+			user_home_directory = user_info->pw_dir;
+			user_home_directory = user_home_directory + "/";
+		}
 
-		user_home_directory = user_info->pw_dir;
-		user_home_directory = user_home_directory + "/";
+		if (status == 0) {
+			const std::string directory_name = user_home_directory + root_user_data_directory;
+
+			status = create_directory (directory_name);
+		}
+
+		return status;
 	}
 
-	if (status == 0) {
-		const std::string directory_name = user_home_directory + root_user_data_directory;
+	int
+	create_user_data_directory()
+	{
+		const std::string directory_name = gautier_rss_ui_app::get_user_directory_name();
 
-		status = create_directory (directory_name);
+		const int directory_status = create_directory (directory_name);
+
+		return directory_status;
 	}
 
-	return status;
-}
+	void
+	load_application_icon()
+	{
+		const std::string app_icon_resource_path = "/newsreader/app_icon.png";
 
-int
-create_user_data_directory()
-{
-	const std::string directory_name = gautier_rss_ui_app::get_user_directory_name();
+		GdkPixbuf* application_icon_pixbuf = gdk_pixbuf_new_from_resource (app_icon_resource_path.data(), nullptr);
 
-	const int directory_status = create_directory (directory_name);
+		gtk_window_set_default_icon (application_icon_pixbuf);
 
-	return directory_status;
-}
-
-void
-load_application_icon()
-{
-	const std::string app_icon_resource_path = "/newsreader/app_icon.png";
-
-	GdkPixbuf* application_icon_pixbuf = gdk_pixbuf_new_from_resource (app_icon_resource_path.data(), nullptr);
-
-	gtk_window_set_default_icon (application_icon_pixbuf);
-
-	return;
-}
+		return;
+	}
 }
 
 int

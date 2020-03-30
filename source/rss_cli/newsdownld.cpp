@@ -24,23 +24,23 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include "external/argtable/argtable3.h"
 
 namespace {
-int
-cleanup_argtable (void** argtable, int exit_code);
+	int
+	cleanup_argtable (void** argtable, int exit_code);
 
-int
-cleanup_argtable (void** argtable, int exit_code)
-{
-	if (exit_code != 0) {
-		std::cout << "Exiting program with one or more errors. Exit code: " << exit_code << "\n";
-	} else {
-		std::cout << "done.\n";
+	int
+	cleanup_argtable (void** argtable, int exit_code)
+	{
+		if (exit_code != 0) {
+			std::cout << "Exiting program with one or more errors. Exit code: " << exit_code << "\n";
+		} else {
+			std::cout << "done.\n";
+		}
+
+		/* deallocate each non-null entry in argtable[] */
+		arg_freetable (argtable, sizeof (argtable) / sizeof (argtable[0]));
+
+		return exit_code;
 	}
-
-	/* deallocate each non-null entry in argtable[] */
-	arg_freetable (argtable, sizeof (argtable) / sizeof (argtable[0]));
-
-	return exit_code;
-}
 }
 
 int

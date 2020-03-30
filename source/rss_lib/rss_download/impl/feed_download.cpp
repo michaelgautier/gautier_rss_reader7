@@ -67,14 +67,14 @@ extern "C" {
 }
 
 namespace {
-const long
-http_version = CURL_HTTP_VERSION_2TLS;
+	const long
+	http_version = CURL_HTTP_VERSION_2TLS;
 
-const long
-http_response_min_good = 200;
+	const long
+	http_response_min_good = 200;
 
-const long
-http_response_max_good = 399;
+	const long
+	http_response_max_good = 399;
 }
 
 void

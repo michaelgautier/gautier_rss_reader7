@@ -31,133 +31,133 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include "rss_lib/rss/rss_util.hpp"
 
 namespace {
-void
-parse_rss_feed (xmlNode* parent_xml_node, std::vector<gautier_rss_data_read::rss_article>& feed_lines,
-                gautier_rss_data_read::rss_article* previous_article);
+	void
+	parse_rss_feed (xmlNode* parent_xml_node, std::vector<gautier_rss_data_read::rss_article>& feed_lines,
+	                gautier_rss_data_read::rss_article* previous_article);
 
-void
-get_xml_attr_value (xmlNode* xml_node, std::string attr_name, std::string& value);
+	void
+	get_xml_attr_value (xmlNode* xml_node, std::string attr_name, std::string& value);
 
-/*
+	/*
 
-	PRIMARY CODE
+		PRIMARY CODE
 
-		Parses an RSS or ATOM feed.
+			Parses an RSS or ATOM feed.
 
-		Parse conducted based on rough approximation of an RSS/ATOM schema.
+			Parse conducted based on rough approximation of an RSS/ATOM schema.
 
-		The parse does not validate RSS/ATOM schema and takes a simpler approach
-			based on the element sequence expected in RSS/ATOM documents.
-*/
-void
-parse_rss_feed (xmlNode* parent_xml_node, std::vector<gautier_rss_data_read::rss_article>& feed_lines,
-                gautier_rss_data_read::rss_article* previous_article)
-{
-	xmlNode* xml_node = nullptr;
+			The parse does not validate RSS/ATOM schema and takes a simpler approach
+				based on the element sequence expected in RSS/ATOM documents.
+	*/
+	void
+	parse_rss_feed (xmlNode* parent_xml_node, std::vector<gautier_rss_data_read::rss_article>& feed_lines,
+	                gautier_rss_data_read::rss_article* previous_article)
+	{
+		xmlNode* xml_node = nullptr;
 
-	gautier_rss_data_read::rss_article* article = previous_article;
+		gautier_rss_data_read::rss_article* article = previous_article;
 
-	for (xml_node = parent_xml_node; xml_node; xml_node = xml_node->next) {
-		if (xml_node->type != XML_ELEMENT_NODE) {
-			continue;
-		}
-
-		std::string node_name;
-
-		std::string xml_value;
-		{
-			std::stringstream xml_text;
-
-			xml_text << xml_node->name;
-
-			xml_value = xml_text.str();
-		}
-
-		gautier_rss_util::convert_chars_to_lower_case_string (xml_value.data(), node_name);
-
-		if (node_name == "item" || node_name == "entry") {
-			feed_lines.emplace_back (gautier_rss_data_read::rss_article());
-
-			article = &feed_lines.back();
-		}
-
-		if (article && node_name == "title") {
-			std::string text = (char*)xmlNodeGetContent (xml_node);
-
-			article->headline = text;
-		} else if (article && node_name == "link") {
-			std::string text = (char*)xmlNodeGetContent (xml_node);
-
-			//Some feed formats use an href attribute for the link
-			if (text.empty() && xml_node->properties) {
-				get_xml_attr_value (xml_node, "href", text);
+		for (xml_node = parent_xml_node; xml_node; xml_node = xml_node->next) {
+			if (xml_node->type != XML_ELEMENT_NODE) {
+				continue;
 			}
 
-			article->url = text;
-		} else if (article && (node_name == "pubdate" ||
-		                       node_name == "published" ||
-		                       node_name == "updated" ||
-		                       node_name == "date")) {
-			std::string text = (char*)xmlNodeGetContent (xml_node);
+			std::string node_name;
 
-			article->article_date = text;
-		} else if (article && (node_name == "description" ||
-		                       node_name == "summary"
-		                      )) {
-			std::string text = (char*)xmlNodeGetContent (xml_node);
-
-			article->article_summary = text;
-		} else if (article && (node_name == "content" ||
-		                       node_name == "encoded"
-		                      )) {
-			std::string text = (char*)xmlNodeGetContent (xml_node);
-
-			article->article_text = article->article_text + text;
-		}
-
-		parse_rss_feed (xml_node->children, feed_lines, article);
-	}
-
-	return;
-}
-
-/*
-	Find an xml attribute in an element based on the attribute's name.
-	Returns the value of that xml attribute if found.
-*/
-void
-get_xml_attr_value (xmlNode* xml_node, const std::string attr_name, std::string& value)
-{
-	if (xml_node->properties) {
-		xmlAttr* attr = nullptr;
-
-		for (attr = xml_node->properties; attr; attr = attr->next) {
-			std::string name;
-
-			if (attr_name.empty() == false) {
+			std::string xml_value;
+			{
 				std::stringstream xml_text;
 
-				xml_text << attr->name;
+				xml_text << xml_node->name;
 
-				name = xml_text.str();
+				xml_value = xml_text.str();
 			}
 
-			;
+			gautier_rss_util::convert_chars_to_lower_case_string (xml_value.data(), node_name);
 
-			if (name == attr_name) {
-				std::stringstream xml_text;
+			if (node_name == "item" || node_name == "entry") {
+				feed_lines.emplace_back (gautier_rss_data_read::rss_article());
 
-				xml_text << xmlNodeGetContent (attr->children);
-
-				value = xml_text.str();
-
-				break;
+				article = &feed_lines.back();
 			}
+
+			if (article && node_name == "title") {
+				std::string text = (char*)xmlNodeGetContent (xml_node);
+
+				article->headline = text;
+			} else if (article && node_name == "link") {
+				std::string text = (char*)xmlNodeGetContent (xml_node);
+
+				//Some feed formats use an href attribute for the link
+				if (text.empty() && xml_node->properties) {
+					get_xml_attr_value (xml_node, "href", text);
+				}
+
+				article->url = text;
+			} else if (article && (node_name == "pubdate" ||
+			                       node_name == "published" ||
+			                       node_name == "updated" ||
+			                       node_name == "date")) {
+				std::string text = (char*)xmlNodeGetContent (xml_node);
+
+				article->article_date = text;
+			} else if (article && (node_name == "description" ||
+			                       node_name == "summary"
+			                      )) {
+				std::string text = (char*)xmlNodeGetContent (xml_node);
+
+				article->article_summary = text;
+			} else if (article && (node_name == "content" ||
+			                       node_name == "encoded"
+			                      )) {
+				std::string text = (char*)xmlNodeGetContent (xml_node);
+
+				article->article_text = article->article_text + text;
+			}
+
+			parse_rss_feed (xml_node->children, feed_lines, article);
 		}
+
+		return;
 	}
 
-	return;
-}
+	/*
+		Find an xml attribute in an element based on the attribute's name.
+		Returns the value of that xml attribute if found.
+	*/
+	void
+	get_xml_attr_value (xmlNode* xml_node, const std::string attr_name, std::string& value)
+	{
+		if (xml_node->properties) {
+			xmlAttr* attr = nullptr;
+
+			for (attr = xml_node->properties; attr; attr = attr->next) {
+				std::string name;
+
+				if (attr_name.empty() == false) {
+					std::stringstream xml_text;
+
+					xml_text << attr->name;
+
+					name = xml_text.str();
+				}
+
+				;
+
+				if (name == attr_name) {
+					std::stringstream xml_text;
+
+					xml_text << xmlNodeGetContent (attr->children);
+
+					value = xml_text.str();
+
+					break;
+				}
+			}
+		}
+
+		return;
+	}
 }
 
 /*
