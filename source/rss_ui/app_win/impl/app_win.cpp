@@ -43,7 +43,7 @@ namespace ns_data_read = gautier_rss_data_read;
 namespace ns_data_write = gautier_rss_data_write;
 
 using single_article_by_feed_type = std::map<std::string, ns_data_read::rss_article>;
-using headlines_by_feed_type = std::map<std::string, std::vector<ns_data_read::rss_article>>;
+using headlines_by_feed_type = std::map<std::string, std::vector<std::string>>;
 using feed_by_name_type = std::map<std::string, ns_data_read::rss_feed>;
 
 namespace {
@@ -596,15 +596,16 @@ namespace {
 			ns_data_read::rss_feed* feed_clone = &feed_index[feed_name];
 			feed_clone->last_index = -1;
 
-			feeds_articles.insert_or_assign (feed_name, std::vector<ns_data_read::rss_article>());
+			feeds_articles.insert_or_assign (feed_name, ns_rss_tabs::headlines_list_type());
 		}
 
-		namespace ns = gautier_rss_win_main_headlines_frame;
+		namespace ns_rss_tabs = gautier_rss_win_main_headlines_frame;
 
 		if (is_insert == false) {
 			GtkWidget* tab = nullptr;
 
-			const gint tab_i = ns::get_tab_contents_container_by_feed_name (GTK_NOTEBOOK (headlines_view), feed_name, &tab);
+			const gint tab_i = ns_rss_tabs::get_tab_contents_container_by_feed_name (GTK_NOTEBOOK (headlines_view),
+			                   feed_name, &tab);
 
 			if (tab_i > -1 && tab) {
 				if (status == ns_data_read::rss_feed_mod_status::remove) {
@@ -651,7 +652,7 @@ namespace {
 			*/
 			gint tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
 
-			ns::add_headline_page (headlines_view, feed_name, tab_count + 1, select_headline_row);
+			ns_rss_tabs::add_headline_page (headlines_view, feed_name, tab_count + 1, select_headline_row);
 
 			tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
 
@@ -671,14 +672,14 @@ namespace {
 					std::string retrieve_limit_hrs = feed_in_use->retrieve_limit_hrs;
 					std::string retention_days = feed_in_use->retention_days;
 
-					std::vector<ns_data_read::rss_article> articles;
+					ns_rss_tabs::headlines_list_type headlines;
 
 					long response_code = ns_data_write::update_rss_db_from_network (db_file_name,
 					                     feed_name,
 					                     feed_url,
 					                     retrieve_limit_hrs,
 					                     retention_days,
-					                     articles);
+					                     headlines);
 
 					const bool network_response_good = ns_data_read::is_network_response_ok (response_code);
 
@@ -695,7 +696,7 @@ namespace {
 						const int64_t index_end = in_use_count - 1;
 
 						if (index_start < index_end) {
-							ns_rss_tabs::show_headlines (headlines_view, feed_name, index_start, index_end, articles, true);
+							ns_rss_tabs::show_headlines (headlines_view, feed_name, index_start, index_end, headlines, true);
 
 							gtk_widget_show_all (tab);
 						}
@@ -797,7 +798,7 @@ namespace {
 
 		ns_data_read::get_feeds (db_file_name, feed_names);
 
-		std::vector<ns_data_read::rss_article> headline_snapshot;
+		ns_rss_tabs::headlines_list_type headline_snapshot;
 
 		for (ns_data_read::rss_feed feed : feed_names) {
 			const std::string feed_name = feed.feed_name;
@@ -807,7 +808,7 @@ namespace {
 			ns_data_read::rss_feed* feed_clone = &feed_index[feed_name];
 			feed_clone->last_index = -1;
 
-			ns_data_read::get_feed_articles (db_file_name, feed_name, headline_snapshot, true);
+			ns_data_read::get_feed_headlines (db_file_name, feed_name, headline_snapshot, true);
 
 			feeds_articles.insert_or_assign (feed_name, headline_snapshot);
 
@@ -937,7 +938,7 @@ namespace {
 			/*
 				RSS headlines.
 			*/
-			std::vector<ns_data_read::rss_article> headlines = feeds_articles[feed_name];
+			ns_rss_tabs::headlines_list_type headlines = feeds_articles[feed_name];
 
 			ns_data_read::rss_feed* feed = &feed_index[feed_name];
 
@@ -1034,7 +1035,7 @@ namespace {
 		}
 
 		if (download_active == false && feed_exists && feed_name.empty() == false) {
-			std::vector<ns_data_read::rss_article> headlines = feeds_articles[feed_name];
+			ns_rss_tabs::headlines_list_type headlines = feeds_articles[feed_name];
 
 			ns_data_read::rss_feed* feed = &feed_index[feed_name];
 
@@ -1109,7 +1110,7 @@ namespace {
 		if (feed_exists && feed_name.empty() == false) {
 			std::cout << __FILE__ << " \t\t\t\t\t" << __func__ << " feed " << feed_name << "  \n";
 
-			std::vector<ns_data_read::rss_article> headlines = downloaded_articles[feed_name];
+			ns_rss_tabs::headlines_list_type headlines = downloaded_articles[feed_name];
 
 			ns_data_read::rss_feed* feed = &downloaded_feeds[feed_name];
 
@@ -1224,6 +1225,8 @@ namespace {
 	void
 	download_data()
 	{
+		namespace ns_rss_tabs = gautier_rss_win_main_headlines_frame;
+
 		/*
 			KEEP ALL the std::cout << calls. They are an intentional part of
 			this function. That way, when the program is initiated from a
@@ -1407,7 +1410,7 @@ namespace {
 				}
 
 				if (is_feed_still_fresh == false && (shutting_down == false && download_running)) {
-					std::vector<ns_data_read::rss_article> articles;
+					ns_rss_tabs::headlines_list_type articles;
 
 					/*
 						The download of a given feed will be retried a few times.
