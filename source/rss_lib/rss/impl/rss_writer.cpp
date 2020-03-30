@@ -671,7 +671,7 @@ gautier_rss_data_write::update_rss_db_from_network (const std::string db_file_na
 				set_feed_headline (db_file_name, article);
 			}
 
-			ns_data_read::get_feed_headlines_after_row_id (db_file_name, feed_name, articles, true, rowid);
+			ns_data_read::get_feed_articles_after_row_id (db_file_name, feed_name, articles, true, rowid);
 		}
 	}
 
