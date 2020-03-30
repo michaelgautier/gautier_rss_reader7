@@ -31,25 +31,10 @@ namespace {
 	/*
 		Headline Model
 	*/
-	int
-	col_pos_feed_name = 0;
+	const int
+	col_pos_headline_text = 0;
 
-	int
-	col_pos_headline_text = 1;
-
-	int
-	col_pos_article_summary = 2;
-
-	int
-	col_pos_article_text = 3;
-
-	int
-	col_pos_article_date = 4;
-
-	int
-	col_pos_article_url = 5;
-
-	int
+	const int
 	col_pos_stop = -1;
 
 	void
@@ -57,9 +42,7 @@ namespace {
 	                                void (*headline_view_select_row) (GtkTreeSelection*, gpointer));
 
 	void
-	get_row_data (GtkTreeSelection* tree_selection, std::string& feed_name, std::string& headline_text,
-	              std::string& article_summary, std::string& article_text, std::string& article_date, std::string& article_url);
-
+	get_row_data (GtkTreeSelection* tree_selection, std::string& headline_text);
 
 	void
 	initialize_headlines_list_view (GtkWidget* scroll_container, GtkWidget* headlines_list_view,
@@ -78,13 +61,8 @@ namespace {
 		/*
 			Tree Model to describe the columns
 		*/
-		GtkListStore* list_store = gtk_list_store_new (6 /*6 columns*/,
-		                           G_TYPE_STRING,/*feed name*/
-		                           G_TYPE_STRING,/*headline*/
-		                           G_TYPE_STRING,/*article summary*/
-		                           G_TYPE_STRING,/*article text*/
-		                           G_TYPE_STRING,/*article date*/
-		                           G_TYPE_STRING /*article url*/);
+		GtkListStore* list_store = gtk_list_store_new (1 /*1 column*/,
+		                           G_TYPE_STRING/*headline*/);
 
 		gtk_tree_view_set_model (GTK_TREE_VIEW (headlines_list_view), GTK_TREE_MODEL (list_store));
 
@@ -102,8 +80,7 @@ namespace {
 	}
 
 	void
-	get_row_data (GtkTreeSelection* tree_selection, std::string& feed_name, std::string& headline_text,
-	              std::string& article_summary, std::string& article_text, std::string& article_date, std::string& article_url)
+	get_row_data (GtkTreeSelection* tree_selection, std::string& headline_text)
 	{
 		/*
 			GTK documentation says this will not work if the selection mode is GTK_SELECTION_MULTIPLE.
@@ -114,26 +91,11 @@ namespace {
 		bool row_selected = gtk_tree_selection_get_selected (tree_selection, &tree_model, &tree_iterator);
 
 		if (row_selected) {
-			gchar* feed_name_data;
 			gchar* headline_text_data;
-			gchar* article_summary_data;
-			gchar* article_text_data;
-			gchar* article_date_data;
-			gchar* article_url_data;
 
-			gtk_tree_model_get (tree_model, &tree_iterator, col_pos_feed_name, &feed_name_data, -1);
 			gtk_tree_model_get (tree_model, &tree_iterator, col_pos_headline_text, &headline_text_data, -1);
-			gtk_tree_model_get (tree_model, &tree_iterator, col_pos_article_summary, &article_summary_data, -1);
-			gtk_tree_model_get (tree_model, &tree_iterator, col_pos_article_text, &article_text_data, -1);
-			gtk_tree_model_get (tree_model, &tree_iterator, col_pos_article_date, &article_date_data, -1);
-			gtk_tree_model_get (tree_model, &tree_iterator, col_pos_article_url, &article_url_data, -1);
 
-			feed_name = feed_name_data;
 			headline_text = headline_text_data;
-			article_summary = article_summary_data;
-			article_text = article_text_data;
-			article_date = article_date_data;
-			article_url = article_url_data;
 		}
 
 		return;
@@ -255,12 +217,7 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 
 				gautier_rss_data_read::rss_article rss_data = headlines.at (headline_i);
 
-				gchar* feed_name_data = feed_name.data();
 				gchar* headline_text_data = rss_data.headline.data();
-				gchar* article_summary_data = rss_data.article_summary.data();
-				gchar* article_text_data = rss_data.article_text.data();
-				gchar* article_date_data = rss_data.article_date.data();
-				gchar* article_url_data = rss_data.url.data();
 
 				/*
 					Adds a new row in the Tree Model.
@@ -275,12 +232,7 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 					Links specific data to column positions in the row.
 				*/
 				gtk_list_store_set (list_store, &iter,
-				                    col_pos_feed_name, feed_name_data,
 				                    col_pos_headline_text, headline_text_data,
-				                    col_pos_article_summary, article_summary_data,
-				                    col_pos_article_text, article_text_data,
-				                    col_pos_article_date, article_date_data,
-				                    col_pos_article_url, article_url_data,
 				                    col_pos_stop);
 
 				if (prepend && headline_index_start > -1) {
@@ -294,25 +246,11 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 }
 
 void
-gautier_rss_win_main_headlines_frame::update_rss_article (GtkTreeSelection* headline_row,
-        gautier_rss_data_read::rss_article& rss_data)
+gautier_rss_win_main_headlines_frame::get_selected_headline_text (GtkTreeSelection* headline_row,
+        std::string& headline_text)
 {
 	if (headline_row) {
-		std::string feed_name;
-		std::string headline_text;
-		std::string article_summary;
-		std::string article_text;
-		std::string article_date;
-		std::string article_url;
-
-		get_row_data (headline_row, feed_name, headline_text, article_summary, article_text, article_date, article_url);
-
-		rss_data.feed_name = feed_name;
-		rss_data.headline = headline_text;
-		rss_data.article_summary = article_summary;
-		rss_data.article_text = article_text;
-		rss_data.article_date = article_date;
-		rss_data.url = article_url;
+		get_row_data (headline_row, headline_text);
 	}
 
 	return;
@@ -320,7 +258,7 @@ gautier_rss_win_main_headlines_frame::update_rss_article (GtkTreeSelection* head
 
 void
 gautier_rss_win_main_headlines_frame::select_headline_row (GtkWidget* headlines_view,
-        const std::string feed_name, const std::string article_url)
+        const std::string feed_name, const std::string headline_text)
 {
 	GtkWidget* headlines_list_view = nullptr;
 
@@ -366,28 +304,24 @@ gautier_rss_win_main_headlines_frame::select_headline_row (GtkWidget* headlines_
 
 		GtkTreeIter tree_iterator;
 
-		gboolean iter_is_valid = false;
+		gboolean iter_is_valid = gtk_tree_model_get_iter_first (tree_model, &tree_iterator);
 		bool selected = false;
 
-		if (article_url.empty()) {
-			iter_is_valid = gtk_tree_model_get_iter_first (tree_model, &tree_iterator);
-
+		if (headline_text.empty()) {
 			if (iter_is_valid) {
 				gtk_tree_selection_select_iter (rss_tree_selection_manager, &tree_iterator);
 			}
 
 			selected = iter_is_valid;
 		} else {
-			iter_is_valid = gtk_tree_model_get_iter_first (tree_model, &tree_iterator);
-
 			while (iter_is_valid) {
 				gchar* data;
 
-				gtk_tree_model_get (tree_model, &tree_iterator, col_pos_article_url, &data, -1);
+				gtk_tree_model_get (tree_model, &tree_iterator, col_pos_headline_text, &data, -1);
 
-				const std::string row_article_url = data;
+				const std::string row_headline = data;
 
-				if (article_url == row_article_url) {
+				if (headline_text == row_headline) {
 					gtk_tree_selection_select_iter (rss_tree_selection_manager, &tree_iterator);
 
 					selected = true;
