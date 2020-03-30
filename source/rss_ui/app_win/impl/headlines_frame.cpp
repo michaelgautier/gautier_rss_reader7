@@ -157,8 +157,8 @@ gautier_rss_win_main_headlines_frame::add_headline_page (GtkWidget* headlines_vi
 
 void
 gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view, std::string feed_name,
-        const int64_t headline_index_start, const int64_t headline_index_end,
-        std::vector<gautier_rss_data_read::rss_article>& headlines, const bool prepend)
+        const int64_t headline_index_start, const int64_t headline_index_end, headlines_list_type& headlines,
+        const bool prepend)
 {
 	std::cout << __func__ << " \t\t" << feed_name << " index from \t" << headline_index_start << " to " <<
 	          headline_index_end << ", list contains " << headlines.size() << " articles\n";
@@ -215,9 +215,9 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 			for (int64_t i = headline_index_start; i <= headline_index_end && i < range_end; i++) {
 				const size_t headline_i = (size_t) (i);
 
-				gautier_rss_data_read::rss_article rss_data = headlines.at (headline_i);
+				std::string headline = headlines.at (headline_i);
 
-				gchar* headline_text_data = rss_data.headline.data();
+				gchar* headline_text_data = headline.data();
 
 				/*
 					Adds a new row in the Tree Model.
