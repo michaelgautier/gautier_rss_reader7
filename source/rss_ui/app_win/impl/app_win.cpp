@@ -43,7 +43,7 @@ namespace ns_data_read = gautier_rss_data_read;
 namespace ns_data_write = gautier_rss_data_write;
 
 using single_article_by_feed_type = std::map<std::string, ns_data_read::rss_article>;
-using articles_by_feed_type = std::map<std::string, std::vector<ns_data_read::rss_article>>;
+using headlines_by_feed_type = std::map<std::string, std::vector<ns_data_read::rss_article>>;
 using feed_by_name_type = std::map<std::string, ns_data_read::rss_feed>;
 
 namespace {
@@ -178,10 +178,10 @@ namespace {
 	feed_by_name_type
 	downloaded_feeds;
 
-	articles_by_feed_type
+	headlines_by_feed_type
 	feeds_articles;
 
-	articles_by_feed_type
+	headlines_by_feed_type
 	downloaded_articles;
 
 	single_article_by_feed_type
@@ -391,7 +391,17 @@ namespace {
 
 			visible_feed_article = feed_article_selection[feed_name];
 
-			ns_rss_tabs::select_headline_row (GTK_WIDGET (rss_tabs), feed_name, visible_feed_article.url);
+			/*
+				Immediately designate feed name for row_select signal.
+					Value of current_page is modified *after* signal handler returns.
+					The *changed* signal handler has no visibiliity into the *proposed* value of *current_page*.
+					Store feed name to provide a means to *peeK* into the proposed value of current_page.
+			*/
+			visible_feed_article.feed_name = feed_name;
+
+			const std::string headline_text = visible_feed_article.headline;
+
+			ns_rss_tabs::select_headline_row (GTK_WIDGET (rss_tabs), feed_name, headline_text);
 		}
 
 		gtk_label_set_text (GTK_LABEL (article_date), date_status.data());
@@ -423,7 +433,20 @@ namespace {
 				std::cout << __func__ << " called with user_data\n";
 			}
 
-			ns_rss_tabs::update_rss_article (tree_selection, visible_feed_article);
+			const std::string db_file_name = gautier_rss_ui_app::get_db_file_name();
+			const std::string feed_name = visible_feed_article.feed_name;
+
+			if (feed_name.empty() == false) {
+				std::string headline_text;
+
+				ns_rss_tabs::get_selected_headline_text (tree_selection, headline_text);
+
+				if (headline_text.empty() == false) {
+					visible_feed_article.headline = headline_text;
+
+					ns_data_read::get_feed_article_summary (db_file_name, feed_name, headline_text, visible_feed_article);
+				}
+			}
 
 			show_article (visible_feed_article);
 		}
