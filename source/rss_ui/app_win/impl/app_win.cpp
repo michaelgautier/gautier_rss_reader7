@@ -784,7 +784,7 @@ namespace {
 			ns_data_read::rss_feed* feed_clone = &feed_index[feed_name];
 			feed_clone->last_index = -1;
 
-			ns_data_read::get_feed_headlines (db_file_name, feed_name, headline_snapshot, true);
+			ns_data_read::get_feed_articles (db_file_name, feed_name, headline_snapshot, true);
 
 			feeds_articles.insert_or_assign (feed_name, headline_snapshot);
 
