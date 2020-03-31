@@ -13,12 +13,17 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #ifndef michael_gautier_rss_data_rss_feed_source_h
 #define michael_gautier_rss_data_rss_feed_source_h
 
-#include <string>
-#include <cstdint>
-#include <vector>
 #include <algorithm>
+#include <cstdint>
+#include <map>
+#include <string>
+#include <vector>
 
 namespace gautier_rss_data_read {
+	struct rss_feed;
+
+	using feed_by_name_type = std::map<std::string, rss_feed>;
+
 	struct rss_feed
 	{
 		public:
@@ -57,22 +62,6 @@ namespace gautier_rss_data_read {
 	copy_feed (rss_feed* feed_in, rss_feed* feed_out);
 
 	bool
-	contains_feed (std::vector<rss_feed> feeds, const std::string feed_name);
-
-	template<typename T1, typename T2> bool
-	contains_feed (T1 container, const T2 value)
-	{
-		bool exists = false;
-
-		for (auto entry : container) {
-			exists = (entry.first == value);
-
-			if (exists) {
-				break;
-			}
-		}
-
-		return exists;
-	}
+	contains_feed (feed_by_name_type feeds, const std::string feed_name);
 }
 #endif

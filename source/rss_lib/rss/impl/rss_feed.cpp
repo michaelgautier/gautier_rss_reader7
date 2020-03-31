@@ -102,3 +102,20 @@ gautier_rss_data_read::copy_feed (rss_feed* feed_in, rss_feed* feed_out)
 
 	return;
 }
+
+bool
+gautier_rss_data_read::contains_feed (feed_by_name_type feeds, const std::string feed_name)
+{
+	bool exists = false;
+
+	for (auto [feed_name_match, feed] : feeds) {
+		exists = (feed_name_match == feed_name);
+
+		if (exists) {
+			break;
+		}
+	}
+
+	return exists;
+}
+
