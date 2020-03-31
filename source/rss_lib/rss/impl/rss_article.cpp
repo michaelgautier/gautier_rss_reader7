@@ -18,11 +18,12 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include <cuchar>
 #include <cwchar>
 #include <string>
+#include <string_view>
 
 #include "rss_lib/rss/rss_article.hpp"
 
 bool
-gautier_rss_data_read::validate_feed_info_missing (const std::string feed_name, const std::string feed_url)
+gautier_rss_data_read::validate_feed_info_missing (std::string_view feed_name, std::string_view feed_url)
 {
 	bool is_missing = false;
 
@@ -34,7 +35,7 @@ gautier_rss_data_read::validate_feed_info_missing (const std::string feed_name, 
 }
 
 bool
-gautier_rss_data_read::indicates_html (const std::string& text)
+gautier_rss_data_read::indicates_html (std::string_view& text)
 {
 	bool probably_has_html = false;
 

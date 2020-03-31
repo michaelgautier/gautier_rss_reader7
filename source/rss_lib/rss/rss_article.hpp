@@ -14,6 +14,7 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #define michael_gautier_rss_data_read_article_h
 
 #include <string>
+#include <string_view>
 
 namespace gautier_rss_data_read {
 	struct rss_article
@@ -28,9 +29,9 @@ namespace gautier_rss_data_read {
 	};
 
 	bool
-	validate_feed_info_missing (const std::string feed_name, const std::string feed_url);
+	validate_feed_info_missing (std::string_view feed_name, std::string_view feed_url);
 
 	bool
-	indicates_html (const std::string& text);
+	indicates_html (std::string_view& text);
 }
 #endif
