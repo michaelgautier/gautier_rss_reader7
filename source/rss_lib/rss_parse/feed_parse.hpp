@@ -13,17 +13,18 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #ifndef michael_gautier_rss_data_parse_api_h
 #define michael_gautier_rss_data_parse_api_h
 
-#include <vector>
 #include <string>
+#include <string_view>
+#include <vector>
 
 #include "rss_lib/rss/rss_article.hpp"
 
 namespace gautier_rss_data_parse {
 	void
-	get_feed_lines (const std::string feed_data, std::vector<gautier_rss_data_read::rss_article>& feed_lines);
+	get_feed_lines (std::string_view feed_data, std::vector<gautier_rss_data_read::rss_article>& feed_lines);
 
 	void
-	save_feed_data_to_file (const std::string file_name, const std::string ext, const std::string file_data);
+	save_feed_data_to_file (const std::string file_name, const std::string ext, std::string_view file_data);
 
 	void
 	get_feed_data_from_file (const std::string file_name, const std::string ext, std::string& file_data);

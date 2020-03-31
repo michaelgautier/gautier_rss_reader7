@@ -22,6 +22,7 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include "libxml/parser.h"
@@ -36,7 +37,7 @@ namespace {
 	                gautier_rss_data_read::rss_article* previous_article);
 
 	void
-	get_xml_attr_value (xmlNode* xml_node, std::string attr_name, std::string& value);
+	get_xml_attr_value (xmlNode* xml_node, std::string_view attr_name, std::string& value);
 
 	/*
 
@@ -81,16 +82,18 @@ namespace {
 				article = &feed_lines.back();
 			}
 
-			if (article && node_name == "title") {
-				std::string text = (char*)xmlNodeGetContent (xml_node);
+			std::string attr_value;
+			std::string_view text = (char*) xmlNodeGetContent (xml_node);
 
+			if (article && node_name == "title") {
 				article->headline = text;
 			} else if (article && node_name == "link") {
-				std::string text = (char*)xmlNodeGetContent (xml_node);
-
 				//Some feed formats use an href attribute for the link
 				if (text.empty() && xml_node->properties) {
-					get_xml_attr_value (xml_node, "href", text);
+
+					get_xml_attr_value (xml_node, "href", attr_value);
+
+					text = attr_value;
 				}
 
 				article->url = text;
@@ -98,21 +101,15 @@ namespace {
 			                       node_name == "published" ||
 			                       node_name == "updated" ||
 			                       node_name == "date")) {
-				std::string text = (char*)xmlNodeGetContent (xml_node);
-
 				article->article_date = text;
 			} else if (article && (node_name == "description" ||
 			                       node_name == "summary"
 			                      )) {
-				std::string text = (char*)xmlNodeGetContent (xml_node);
-
 				article->article_summary = text;
 			} else if (article && (node_name == "content" ||
 			                       node_name == "encoded"
 			                      )) {
-				std::string text = (char*)xmlNodeGetContent (xml_node);
-
-				article->article_text = article->article_text + text;
+				article->article_text = article->article_text + std::string (text);
 			}
 
 			parse_rss_feed (xml_node->children, feed_lines, article);
@@ -126,7 +123,7 @@ namespace {
 		Returns the value of that xml attribute if found.
 	*/
 	void
-	get_xml_attr_value (xmlNode* xml_node, const std::string attr_name, std::string& value)
+	get_xml_attr_value (xmlNode* xml_node, std::string_view attr_name, std::string& value)
 	{
 		if (xml_node->properties) {
 			xmlAttr* attr = nullptr;
@@ -172,7 +169,7 @@ namespace {
 	Example code was indexed at:		libxml/examples/index.html#tree1.c
 */
 void
-gautier_rss_data_parse::get_feed_lines (const std::string feed_data,
+gautier_rss_data_parse::get_feed_lines (std::string_view feed_data,
                                         std::vector<gautier_rss_data_read::rss_article>& feed_lines)
 {
 	xmlDoc* doc = nullptr;
@@ -222,9 +219,9 @@ gautier_rss_data_parse::get_feed_lines (const std::string feed_data,
 */
 void
 gautier_rss_data_parse::save_feed_data_to_file (const std::string file_name, const std::string ext,
-        const std::string file_data)
+        std::string_view file_data)
 {
-	const std::string data_file_name = file_name + ext;
+	const std::string data_file_name = (file_name + ext);
 
 	FILE* data_file = fopen (data_file_name.data(), "w");
 
@@ -254,7 +251,7 @@ void
 gautier_rss_data_parse::get_feed_data_from_file (const std::string file_name, const std::string ext,
         std::string& file_data)
 {
-	const std::string data_file_name = file_name + ext;
+	const std::string data_file_name = (file_name + ext);
 
 	FILE* data_file = fopen (data_file_name.data(), "r");
 
