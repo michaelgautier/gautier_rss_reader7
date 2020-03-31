@@ -24,8 +24,6 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include "rss_lib/rss/rss_article.hpp"
 
 namespace gautier_rss_win_main_headlines_frame {
-	using headlines_list_type = std::vector<std::string>;
-
 	void
 	initialize_headline_view (GtkWidget* headlines_view, const int monitor_width, const int monitor_height);
 
@@ -35,7 +33,7 @@ namespace gautier_rss_win_main_headlines_frame {
 
 	void
 	show_headlines (GtkWidget* headlines_view, std::string feed_name, const int64_t headline_index_start,
-	                const int64_t headline_index_end, headlines_list_type& headlines, const bool prepend);
+	                const int64_t headline_index_end, gautier_rss_data_read::headlines_list_type& headlines, const bool prepend);
 
 	void
 	get_selected_headline_text (GtkTreeSelection* headline_row, std::string& headline_text);

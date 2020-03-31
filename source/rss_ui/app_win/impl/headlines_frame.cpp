@@ -157,7 +157,8 @@ gautier_rss_win_main_headlines_frame::add_headline_page (GtkWidget* headlines_vi
 
 void
 gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view, std::string feed_name,
-        const int64_t headline_index_start, const int64_t headline_index_end, headlines_list_type& headlines,
+        const int64_t headline_index_start, const int64_t headline_index_end,
+        gautier_rss_data_read::headlines_list_type& headlines,
         const bool prepend)
 {
 	std::cout << __func__ << " \t\t" << feed_name << " index from \t" << headline_index_start << " to " <<
