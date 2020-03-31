@@ -22,13 +22,10 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include <string>
 #include <thread>
 #include <vector>
-#include <typeinfo>
-#include <type_traits>
 
 #include "rss_lib/db/db.hpp"
 #include "rss_lib/rss_download/feed_download.hpp"
 #include "rss_lib/rss_parse/feed_parse.hpp"
-#include "rss_lib/rss/rss_reader.hpp"
 #include "rss_lib/rss/rss_util.hpp"
 #include "rss_lib/rss/rss_writer.hpp"
 
@@ -60,7 +57,7 @@ namespace {
 			if (response_good) {
 				gautier_rss_data_write::update_feed_retrieved (db_file_name, feed_url);
 
-				std::vector<ns_data_read::rss_article> feed_lines;
+				ns_data_read::articles_list_type feed_lines;
 
 				ns_parse::get_feed_lines (feed_data, feed_lines);
 
@@ -403,7 +400,7 @@ gautier_rss_data_write::set_feed_headline (const std::string db_file_name,
 */
 void
 gautier_rss_data_write::update_rss_feeds (const std::string db_file_name,
-        std::map<std::string, std::vector<ns_data_read::rss_article>>& feed_data)
+        articles_by_feed_type& feed_data)
 {
 	std::vector<ns_data_read::rss_feed> rss_feeds;
 
@@ -411,11 +408,12 @@ gautier_rss_data_write::update_rss_feeds (const std::string db_file_name,
 
 	for (ns_data_read::rss_feed feed : rss_feeds) {
 		const std::string feed_name = feed.feed_name;
+
 		const std::string feed_url = feed.feed_url;
 		const std::string retrieve_limit_hrs = feed.retrieve_limit_hrs;
 		const std::string retention_days = feed.retention_days;
 
-		std::vector<ns_data_read::rss_article> articles;
+		ns_data_read::articles_list_type articles;
 
 		update_rss_db_from_network (db_file_name, feed_name, feed_url, retrieve_limit_hrs, retention_days, articles);
 
@@ -440,9 +438,9 @@ gautier_rss_data_write::update_rss_feeds (const std::string db_file_name,
 		Includes articles downloaded for the updated feeds.
 */
 void
-gautier_rss_data_write::download_feeds (const std::string& db_file_name, int_fast32_t pause_interval_in_seconds,
+gautier_rss_data_write::download_feeds (const std::string db_file_name, int_fast32_t pause_interval_in_seconds,
                                         std::vector<std::pair<ns_data_read::rss_feed, ns_data_read::rss_feed>>& changed_feeds,
-                                        std::map<std::string, std::vector<ns_data_read::rss_article>> articles)
+                                        articles_by_feed_type articles)
 {
 	std::vector<ns_data_read::rss_feed> rss_feeds_old;
 	std::vector<ns_data_read::rss_feed> rss_feeds_new;
@@ -454,7 +452,7 @@ gautier_rss_data_write::download_feeds (const std::string& db_file_name, int_fas
 		Aborts the attempt if feed metadata is absent.
 	*/
 	if (rss_feeds_old.size() > 0) {
-		std::map<std::string, std::vector<ns_data_read::rss_article>> feeds_articles;
+		articles_by_feed_type feeds_articles;
 
 		update_rss_feeds (db_file_name, feeds_articles);
 
@@ -560,7 +558,7 @@ gautier_rss_data_write::update_rss_db_from_rss_xml (const std::string db_file_na
 
 	ns_parse::get_feed_data_from_file (feed_name, ".xml", feed_data);
 
-	std::vector<ns_data_read::rss_article> feed_lines;
+	ns_data_read::articles_list_type feed_lines;
 
 	ns_parse::get_feed_lines (feed_data, feed_lines);
 
@@ -651,7 +649,7 @@ gautier_rss_data_write::update_rss_xml_db_from_network (const std::string db_fil
 
 			ns_parse::save_feed_data_to_file (feed_name, ".xml", feed_data);
 
-			std::vector<ns_data_read::rss_article> feed_lines;
+			ns_data_read::articles_list_type feed_lines;
 
 			ns_parse::get_feed_lines (feed_data, feed_lines);
 
@@ -682,7 +680,7 @@ gautier_rss_data_write::update_rss_db_from_network (const std::string db_file_na
         const std::string feed_url,
         const std::string retrieve_limit_hrs,
         const std::string retention_days,
-        std::vector<ns_data_read::rss_article>& articles)
+        ns_data_read::articles_list_type& articles)
 {
 	const int64_t rowid = ns_data_read::get_feed_article_max_row_id (db_file_name, feed_name);
 
@@ -700,7 +698,7 @@ gautier_rss_data_write::update_rss_db_from_network (const std::string db_file_na
         const std::string feed_url,
         const std::string retrieve_limit_hrs,
         const std::string retention_days,
-        std::vector<std::string>& headlines)
+        ns_data_read::headlines_list_type& headlines)
 {
 	const int64_t rowid = ns_data_read::get_feed_article_max_row_id (db_file_name, feed_name);
 

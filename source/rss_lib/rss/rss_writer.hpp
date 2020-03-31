@@ -13,15 +13,18 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #ifndef michael_gautier_rss_data_write_api_h
 #define michael_gautier_rss_data_write_api_h
 
+#include <cstdint>
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
-#include <cstdint>
 
 #include "rss_article.hpp"
 #include "rss_lib/rss/rss_feed.hpp"
+#include "rss_lib/rss/rss_reader.hpp"
 
 namespace gautier_rss_data_write {
+	using articles_by_feed_type = std::map<std::string, gautier_rss_data_read::articles_list_type>;
+	using headlines_by_feed_type = std::map<std::string, gautier_rss_data_read::headlines_list_type>;
 	/*
 		REQUIRED!
 
@@ -115,7 +118,7 @@ namespace gautier_rss_data_write {
 	*/
 	void
 	update_rss_feeds (const std::string db_file_name,
-	                  std::map<std::string, std::vector<gautier_rss_data_read::rss_article>>& feed_data);
+	                  articles_by_feed_type& feed_data);
 
 	/*
 		Convenience RSS function, application-level.
@@ -132,9 +135,9 @@ namespace gautier_rss_data_write {
 		Includes articles downloaded for the updated feeds.
 	*/
 	void
-	download_feeds (const std::string& db_file_name, const int_fast32_t pause_interval_in_seconds,
+	download_feeds (const std::string db_file_name, const int_fast32_t pause_interval_in_seconds,
 	                std::vector<std::pair<gautier_rss_data_read::rss_feed, gautier_rss_data_read::rss_feed>>& changed_feeds,
-	                std::map<std::string, std::vector<gautier_rss_data_read::rss_article>> articles);
+	                articles_by_feed_type articles);
 
 	/*
 		RSS FEED Retrieve Date
@@ -220,7 +223,7 @@ namespace gautier_rss_data_write {
 	                            const std::string feed_url,
 	                            const std::string retrieve_limit_hrs,
 	                            const std::string retention_days,
-	                            std::vector<std::string>& headlines);
+	                            gautier_rss_data_read::headlines_list_type& headlines);
 
 	long
 	update_rss_db_from_network (const std::string db_file_name,
@@ -228,7 +231,7 @@ namespace gautier_rss_data_write {
 	                            const std::string feed_url,
 	                            const std::string retrieve_limit_hrs,
 	                            const std::string retention_days,
-	                            std::vector<gautier_rss_data_read::rss_article>& articles);
+	                            gautier_rss_data_read::articles_list_type& articles);
 
 	void
 	remove_expired_articles (const std::string db_file_name);
