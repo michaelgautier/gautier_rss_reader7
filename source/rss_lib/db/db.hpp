@@ -13,14 +13,14 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #ifndef michael_gautier_rss_database_api_h
 #define michael_gautier_rss_database_api_h
 
-#include <vector>
 #include <string>
-#include  <unordered_map>
+#include <unordered_map>
+#include <vector>
 
 #include <sqlite3.h>
 
 namespace gautier_rss_database {
-	using sql_row_type = std::unordered_map < std::string, std::string >;
+	using sql_row_type = std::unordered_map<std::string, std::string>;
 	using sql_rowset_type = std::vector<sql_row_type>;
 	using sql_parameter_list_type = std::vector<std::string>;
 
@@ -41,11 +41,11 @@ namespace gautier_rss_database {
 	close_db (sqlite3** db);
 
 	void
-	process_sql (sqlite3** db, const std::string sql_text, sql_parameter_list_type& sql_param_values,
+	process_sql (sqlite3** db, const std::string sql_text, sql_parameter_list_type sql_param_values,
 	             sql_rowset_type& rows);
 
 	void
-	process_sql (sqlite3** db, const std::string sql_text, sql_parameter_list_type& sql_param_values);
+	process_sql (sqlite3** db, const std::string sql_text, sql_parameter_list_type sql_param_values);
 
 }
 #endif

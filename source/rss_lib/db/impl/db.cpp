@@ -89,7 +89,7 @@ gautier_rss_database::process_sql_simple (sqlite3** db, const std::string sql_te
 
 void
 gautier_rss_database::process_sql (sqlite3** db, const std::string sql_text,
-                                   sql_parameter_list_type& sql_param_values, sql_rowset_type& rows)
+                                   sql_parameter_list_type sql_param_values, sql_rowset_type& rows)
 {
 	sqlite3_stmt* sql_statement;
 
@@ -102,12 +102,10 @@ gautier_rss_database::process_sql (sqlite3** db, const std::string sql_text,
 		sqlite3_bind_text (sql_statement, i, sql_parameter.data(), -1, SQLITE_TRANSIENT);
 	}
 
-	int sql_result = SQLITE_DONE;
+	int sql_result = sqlite3_step (sql_statement);
 
-	do {
-		sql_result = sqlite3_step (sql_statement);
-
-		if (sql_result == SQLITE_ROW) {
+	while (sql_result == SQLITE_OK || sql_result == SQLITE_ROW) {
+		if (sql_result == SQLITE_OK || sql_result == SQLITE_ROW) {
 			const int col_count = sqlite3_data_count (sql_statement);
 
 			rows.emplace_back (sql_row_type());
@@ -124,9 +122,22 @@ gautier_rss_database::process_sql (sqlite3** db, const std::string sql_text,
 				row->insert_or_assign (col_name, col_value.str());
 			}
 
-		}
+			sql_result = sqlite3_step (sql_statement);
+		} else if (sql_result == SQLITE_DONE) {
+			sqlite3_reset (sql_statement);
 
-	} while (sql_result == SQLITE_ROW);
+			break;
+		} else {
+			const std::string sqlerror_message = sqlite3_errmsg (*db);
+
+			if (sqlerror_message.empty() == false) {
+				const std::string sqlerror_text = sqlite3_errstr (sql_result);
+
+				std::cout << __FILE__ << " " << __func__ << " line (" << __LINE__ << ") MESSAGE: " << sqlerror_message << "\n";
+				std::cout << "\t\t\t\t\t" << sqlerror_text << "\n";
+			}
+		}
+	}
 
 	sqlite3_finalize (sql_statement);
 
@@ -135,7 +146,7 @@ gautier_rss_database::process_sql (sqlite3** db, const std::string sql_text,
 
 void
 gautier_rss_database::process_sql (sqlite3** db, const std::string sql_text,
-                                   sql_parameter_list_type& sql_param_values)
+                                   sql_parameter_list_type sql_param_values)
 {
 	sql_rowset_type rows;
 
