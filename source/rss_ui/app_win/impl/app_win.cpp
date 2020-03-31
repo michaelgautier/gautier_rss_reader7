@@ -43,8 +43,6 @@ namespace ns_data_read = gautier_rss_data_read;
 namespace ns_data_write = gautier_rss_data_write;
 
 using single_article_by_feed_type = std::map<std::string, ns_data_read::rss_article>;
-using headlines_by_feed_type = std::map<std::string, std::vector<std::string>>;
-using feed_by_name_type = std::map<std::string, ns_data_read::rss_feed>;
 
 namespace {
 	extern "C" {
@@ -172,16 +170,16 @@ namespace {
 	/*
 		RSS Data Index
 	*/
-	feed_by_name_type
+	ns_data_read::feed_by_name_type
 	feed_index;
 
-	feed_by_name_type
+	ns_data_read::feed_by_name_type
 	downloaded_feeds;
 
-	headlines_by_feed_type
+	ns_data_write::headlines_by_feed_type
 	feeds_articles;
 
-	headlines_by_feed_type
+	ns_data_write::headlines_by_feed_type
 	downloaded_articles;
 
 	single_article_by_feed_type
@@ -199,7 +197,7 @@ namespace {
 	process_rss_feed_configuration (const ns_data_read::rss_feed_mod modification);
 
 	void
-	synchronize_feeds_to_configuration (std::map<std::string, gautier_rss_data_read::rss_feed_mod> feed_changes);
+	synchronize_feeds_to_configuration (std::map<std::string, ns_data_read::rss_feed_mod> feed_changes);
 
 	/*
 		RSS Tabs - Switch Handlers.
@@ -477,12 +475,14 @@ namespace {
 			{
 				GtkTextBuffer* text_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (article_summary));
 
-				const bool indicates_html = ns_data_read::indicates_html (article.article_summary);
+				std::string_view article_summary_text = article.article_summary;
+
+				const bool indicates_html = ns_data_read::indicates_html (article_summary_text);
 
 				std::string article_text = article.headline;
 
-				if (article.article_summary.empty() == false && indicates_html == false) {
-					article_text = article.article_summary;
+				if (article_summary_text.empty() == false && indicates_html == false) {
+					article_text = article_summary_text;
 				}
 
 				const size_t article_text_size = article_text.size();
@@ -551,7 +551,7 @@ namespace {
 	}
 
 	void
-	synchronize_feeds_to_configuration (std::map<std::string, gautier_rss_data_read::rss_feed_mod> feed_changes)
+	synchronize_feeds_to_configuration (std::map<std::string, ns_data_read::rss_feed_mod> feed_changes)
 	{
 		g_signal_handler_disconnect (headlines_view, headline_view_switch_page_signal_id);
 
@@ -596,7 +596,7 @@ namespace {
 			ns_data_read::rss_feed* feed_clone = &feed_index[feed_name];
 			feed_clone->last_index = -1;
 
-			feeds_articles.insert_or_assign (feed_name, ns_rss_tabs::headlines_list_type());
+			feeds_articles.insert_or_assign (feed_name, ns_data_read::headlines_list_type());
 		}
 
 		namespace ns_rss_tabs = gautier_rss_win_main_headlines_frame;
@@ -672,7 +672,7 @@ namespace {
 					std::string retrieve_limit_hrs = feed_in_use->retrieve_limit_hrs;
 					std::string retention_days = feed_in_use->retention_days;
 
-					ns_rss_tabs::headlines_list_type headlines;
+					ns_data_read::headlines_list_type headlines;
 
 					long response_code = ns_data_write::update_rss_db_from_network (db_file_name,
 					                     feed_name,
@@ -798,7 +798,7 @@ namespace {
 
 		ns_data_read::get_feeds (db_file_name, feed_names);
 
-		ns_rss_tabs::headlines_list_type headline_snapshot;
+		ns_data_read::headlines_list_type headline_snapshot;
 
 		for (ns_data_read::rss_feed feed : feed_names) {
 			const std::string feed_name = feed.feed_name;
@@ -813,6 +813,10 @@ namespace {
 			feeds_articles.insert_or_assign (feed_name, headline_snapshot);
 
 			ns_rss_tabs::add_headline_page (headlines_view, feed_name, -1, select_headline_row);
+
+			/*std::cout << feed_name << " feed " << feed_name << "\n";
+			std::cout << feed_name << " headline_snapshot.size() " << headline_snapshot.size() << "\n";
+			std::cout << feed_name << " feed_clone->last_index " << feed_clone->last_index << "\n";*/
 
 			headline_snapshot.clear();
 		}
@@ -938,7 +942,7 @@ namespace {
 			/*
 				RSS headlines.
 			*/
-			ns_rss_tabs::headlines_list_type headlines = feeds_articles[feed_name];
+			ns_data_read::headlines_list_type headlines = feeds_articles[feed_name];
 
 			ns_data_read::rss_feed* feed = &feed_index[feed_name];
 
@@ -1037,13 +1041,13 @@ namespace {
 				if (tab) {
 					feed_name = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
 
-					feed_exists = ns_data_read::contains_feed<decltype (feed_index), decltype (feed_name)> (feed_index, feed_name);
+					feed_exists = ns_data_read::contains_feed (feed_index, feed_name);
 				}
 			}
 		}
 
 		if (download_active == false && feed_exists && feed_name.empty() == false) {
-			ns_rss_tabs::headlines_list_type headlines = feeds_articles[feed_name];
+			ns_data_read::headlines_list_type headlines = feeds_articles[feed_name];
 
 			ns_data_read::rss_feed* feed = &feed_index[feed_name];
 
@@ -1109,8 +1113,7 @@ namespace {
 				if (tab) {
 					feed_name = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
 
-					feed_exists = ns_data_read::contains_feed<decltype (downloaded_feeds), decltype (feed_name)> (downloaded_feeds,
-					              feed_name);
+					feed_exists = ns_data_read::contains_feed (downloaded_feeds, feed_name);
 				}
 			}
 		}
@@ -1118,7 +1121,7 @@ namespace {
 		if (feed_exists && feed_name.empty() == false) {
 			std::cout << __FILE__ << " \t\t\t\t\t" << __func__ << " feed " << feed_name << "  \n";
 
-			ns_rss_tabs::headlines_list_type headlines = downloaded_articles[feed_name];
+			ns_data_read::headlines_list_type headlines = downloaded_articles[feed_name];
 
 			ns_data_read::rss_feed* feed = &downloaded_feeds[feed_name];
 
@@ -1405,7 +1408,7 @@ namespace {
 				/*
 					Aborts the download attempt if a download has already occured within the allowed time frame.
 				*/
-				const bool is_feed_still_fresh = gautier_rss_data_read::is_feed_still_fresh (db_file_name, feed_name,
+				const bool is_feed_still_fresh = ns_data_read::is_feed_still_fresh (db_file_name, feed_name,
 				                                 feed_expire_time_enabled);
 
 				/*
@@ -1418,7 +1421,7 @@ namespace {
 				}
 
 				if (is_feed_still_fresh == false && (shutting_down == false && download_running)) {
-					ns_rss_tabs::headlines_list_type articles;
+					ns_data_read::headlines_list_type articles;
 
 					/*
 						The download of a given feed will be retried a few times.
