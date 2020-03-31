@@ -13,14 +13,18 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #ifndef michael_gautier_rss_data_read_api_h
 #define michael_gautier_rss_data_read_api_h
 
-#include <vector>
-#include <string>
 #include <cstdint>
+#include <string>
+#include <vector>
 
 #include "rss_article.hpp"
 #include "rss_feed.hpp"
 
 namespace gautier_rss_data_read {
+	using feeds_list_type = std::vector<rss_feed>;
+	using articles_list_type = std::vector<gautier_rss_data_read::rss_article>;
+	using headlines_list_type = std::vector<std::string>;
+
 	void
 	get_feed (const std::string db_file_name, const std::string feed_name, rss_feed& feed);
 
@@ -28,23 +32,23 @@ namespace gautier_rss_data_read {
 	get_feed_by_row_id (const std::string db_file_name, const int64_t row_id, rss_feed& feed);
 
 	void
-	get_feeds (const std::string db_file_name, std::vector < rss_feed >& feeds);
+	get_feeds (const std::string db_file_name, feeds_list_type& feeds);
 
 	void
 	get_feed_articles (const std::string db_file_name, const std::string feed_name,
-	                   std::vector < rss_article >& headlines, const bool descending);
+	                   articles_list_type& headlines, const bool descending);
 
 	void
 	get_feed_headlines (const std::string db_file_name, const std::string feed_name,
-	                    std::vector < std::string >& headlines, const bool descending);
+	                    headlines_list_type& headlines, const bool descending);
 
 	void
 	get_feed_articles_after_row_id (const std::string db_file_name, const std::string feed_name,
-	                                std::vector <rss_article>& headlines, const bool descending, const int64_t row_id);
+	                                articles_list_type& headlines, const bool descending, const int64_t row_id);
 
 	void
 	get_feed_headlines_after_row_id (const std::string db_file_name, const std::string feed_name,
-	                                 std::vector <std::string>& headlines, const bool descending, const int64_t row_id);
+	                                 headlines_list_type& headlines, const bool descending, const int64_t row_id);
 
 	void
 	get_feed_article_summary (const std::string db_file_name, const std::string feed_name,
