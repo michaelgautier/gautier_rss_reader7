@@ -26,6 +26,7 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include "rss_lib/db/db.hpp"
 #include "rss_lib/rss_download/feed_download.hpp"
 #include "rss_lib/rss_parse/feed_parse.hpp"
+#include "rss_lib/rss/rss_article.hpp"
 #include "rss_lib/rss/rss_util.hpp"
 #include "rss_lib/rss/rss_writer.hpp"
 
@@ -55,6 +56,8 @@ namespace {
 			const bool response_good = ns_data_read::is_network_response_ok (response_code);
 
 			if (response_good) {
+				const std::string download_date = gautier_rss_util::get_current_date_time_utc();
+
 				gautier_rss_data_write::update_feed_retrieved (db_file_name, feed_url);
 
 				ns_data_read::articles_list_type feed_lines;
@@ -62,9 +65,11 @@ namespace {
 				ns_parse::get_feed_lines (feed_data, feed_lines);
 
 				for (ns_data_read::rss_article article : feed_lines) {
-					article.feed_name = feed_name;
+					const bool article_good = ns_data_read::finalize_rss_article (feed_name, download_date, article);
 
-					gautier_rss_data_write::set_feed_headline (db_file_name, article);
+					if (article_good) {
+						gautier_rss_data_write::set_feed_headline (db_file_name, article);
+					}
 				}
 			}
 		}
@@ -562,10 +567,14 @@ gautier_rss_data_write::update_rss_db_from_rss_xml (const std::string db_file_na
 
 	ns_parse::get_feed_lines (feed_data, feed_lines);
 
-	for (ns_data_read::rss_article article : feed_lines) {
-		article.feed_name = feed_name;
+	const std::string download_date = gautier_rss_util::get_current_date_time_utc();
 
-		set_feed_headline (db_file_name, article);
+	for (ns_data_read::rss_article article : feed_lines) {
+		const bool article_good = ns_data_read::finalize_rss_article (feed_name, download_date, article);
+
+		if (article_good) {
+			gautier_rss_data_write::set_feed_headline (db_file_name, article);
+		}
 	}
 
 	return;
@@ -653,10 +662,14 @@ gautier_rss_data_write::update_rss_xml_db_from_network (const std::string db_fil
 
 			ns_parse::get_feed_lines (feed_data, feed_lines);
 
-			for (ns_data_read::rss_article article : feed_lines) {
-				article.feed_name = feed_name;
+			const std::string download_date = gautier_rss_util::get_current_date_time_utc();
 
-				set_feed_headline (db_file_name, article);
+			for (ns_data_read::rss_article article : feed_lines) {
+				const bool article_good = ns_data_read::finalize_rss_article (feed_name, download_date, article);
+
+				if (article_good) {
+					gautier_rss_data_write::set_feed_headline (db_file_name, article);
+				}
 			}
 		}
 	}

@@ -18,7 +18,7 @@ Author: Michael Gautier <michaelgautier.wordpress.com>
 #include <string>
 #include <vector>
 
-#include "rss_article.hpp"
+#include "rss_lib/rss/rss_article.hpp"
 #include "rss_lib/rss/rss_feed.hpp"
 #include "rss_lib/rss/rss_reader.hpp"
 
