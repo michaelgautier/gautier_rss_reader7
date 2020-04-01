@@ -475,16 +475,7 @@ namespace {
 			{
 				GtkTextBuffer* text_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (article_summary));
 
-				std::string_view article_summary_text = article.article_summary;
-
-				const bool indicates_html = ns_data_read::indicates_html (article_summary_text);
-
-				std::string article_text = article.headline;
-
-				if (article_summary_text.empty() == false && indicates_html == false) {
-					article_text = article_summary_text;
-				}
-
+				const std::string article_text = article.article_summary;
 				const size_t article_text_size = article_text.size();
 
 				gtk_text_buffer_set_text (text_buffer, article_text.data(), (gint) (article_text_size));
@@ -494,13 +485,9 @@ namespace {
 				Article text.
 			*/
 			{
-				std::string article_text = article.article_text;
-
-				if (article_text.empty()) {
-					article_text = article.article_summary;
-				}
-
 				if (article_details) {
+					const std::string article_text = article.article_text;
+
 					if (article_text.empty() == false) {
 						webkit_web_view_load_html (WEBKIT_WEB_VIEW (article_details), article_text.data(), nullptr);
 					} else {
@@ -509,7 +496,9 @@ namespace {
 				}
 			}
 
-			gtk_widget_set_tooltip_text (view_article_button, article.url.data());
+			if (article.url.empty() == false) {
+				gtk_widget_set_tooltip_text (view_article_button, article.url.data());
+			}
 		}
 
 		return;
