@@ -25,6 +25,15 @@ namespace gautier_rss_data_read {
 	using articles_list_type = std::vector<gautier_rss_data_read::rss_article>;
 	using headlines_list_type = std::vector<std::string>;
 
+	using headline_range_type = std::pair<int64_t, int64_t>;
+
+	headline_range_type
+	acquire_headline_range (const std::string feed_name, feed_by_name_type& feeds,
+	                        const size_t& headline_count, const int64_t& headline_max);
+
+	bool
+	headline_range_valid (const headline_range_type& range);
+
 	void
 	get_feed (const std::string db_file_name, const std::string feed_name, rss_feed& feed);
 

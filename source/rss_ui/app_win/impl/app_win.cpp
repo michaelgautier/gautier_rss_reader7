@@ -206,10 +206,6 @@ namespace {
 	void
 	show_article (const ns_data_read::rss_article article);
 
-	/*
-		Main screen button operations.
-	*/
-
 	void
 	make_user_note (std::string note);
 
@@ -684,8 +680,11 @@ namespace {
 						const int64_t index_start = 0;
 						const int64_t index_end = in_use_count - 1;
 
+						ns_data_read::headline_range_type
+						range = std::make_pair (index_start, index_end);
+
 						if (index_start < index_end) {
-							ns_rss_tabs::show_headlines (headlines_view, feed_name, index_start, index_end, headlines, true);
+							ns_rss_tabs::show_headlines (headlines_view, feed_name, range, headlines, true);
 
 							gtk_widget_show_all (tab);
 						}
@@ -933,24 +932,14 @@ namespace {
 			*/
 			ns_data_read::headlines_list_type headlines = feeds_articles[feed_name];
 
-			ns_data_read::rss_feed* feed = &feed_index[feed_name];
-
 			const size_t headline_count = headlines.size();
+			const int64_t headline_max = 32;
 
-			const int64_t max_lines = 32;
-			const int64_t range_end = (int64_t) (headline_count);
+			ns_data_read::headline_range_type
+			range = acquire_headline_range (feed_name, feed_index, headline_count, headline_max);
 
-			const int64_t index_start = (feed->last_index + 1);
-			int64_t index_end = (index_start + (max_lines - 1));
-
-			if (index_end > range_end) {
-				index_end = range_end;
-			}
-
-			feed->last_index = index_end;
-
-			if (index_start > -1 && index_start < index_end) {
-				ns_rss_tabs::show_headlines (headlines_view, feed_name, index_start, index_end, headlines, false);
+			if (ns_data_read::headline_range_valid (range)) {
+				ns_rss_tabs::show_headlines (headlines_view, feed_name, range, headlines, false);
 			}
 		}
 
@@ -1038,27 +1027,17 @@ namespace {
 		if (download_active == false && feed_exists && feed_name.empty() == false) {
 			ns_data_read::headlines_list_type headlines = feeds_articles[feed_name];
 
-			ns_data_read::rss_feed* feed = &feed_index[feed_name];
-
 			const size_t headline_count = headlines.size();
+			const int64_t headline_max = 32;
 
-			const int64_t max_lines = 32;
-			const int64_t range_end = (int64_t) (headline_count);
+			ns_data_read::headline_range_type
+			range = acquire_headline_range (feed_name, feed_index, headline_count, headline_max);
 
-			const int64_t index_start = (feed->last_index + 1);
-			int64_t index_end = (index_start + (max_lines - 1));
+			if (ns_data_read::headline_range_valid (range)) {
+				ns_rss_tabs::show_headlines (headlines_view, feed_name, range, headlines, false);
 
-			if (index_end > range_end) {
-				index_end = range_end;
-			}
-
-			feed->last_index = index_end;
-
-			if (index_start > -1 && index_start < index_end) {
-				ns_rss_tabs::show_headlines (headlines_view, feed_name, index_start, index_end, headlines, false);
-
-				make_user_note (feed_name +  " added articles " + std::to_string (index_start + 1) + " to " + std::to_string (
-				                    index_end + 1));
+				make_user_note (feed_name +  " added articles " + std::to_string (range.first + 1) + " to " + std::to_string (
+				                    range.second + 1));
 			} else {
 				/*
 					Reclaim the memory consumed by the snapshot.
@@ -1112,31 +1091,21 @@ namespace {
 
 			ns_data_read::headlines_list_type headlines = downloaded_articles[feed_name];
 
-			ns_data_read::rss_feed* feed = &downloaded_feeds[feed_name];
-
 			const size_t headline_count = headlines.size();
+			const int64_t headline_max = 32;
 
-			const int64_t max_lines = 32;
-			const int64_t range_end = (int64_t) (headline_count);
+			ns_data_read::headline_range_type
+			range = ns_data_read::acquire_headline_range (feed_name, downloaded_feeds, headline_count, headline_max);
 
-			const int64_t index_start = (feed->last_index + 1);
-			int64_t index_end = (index_start + (max_lines - 1));
-
-			if (index_end > range_end) {
-				index_end = range_end;
-			}
-
-			feed->last_index = index_end;
-
-			if (index_start > -1 && index_start < index_end) {
+			if (ns_data_read::headline_range_valid (range)) {
 				std::cout << __func__ << " add download to tab\n";
 				std::cout << __func__ << " \t\t" << feed_name << ": headlines " << headlines.size() << "\n";
-				std::cout << __func__ << " \t\t" << feed_name << ": indices " << index_start << " to " << index_end << "\n";
+				std::cout << __func__ << " \t\t" << feed_name << ": indices " << range.first << " to " << range.second << "\n";
 
-				ns_rss_tabs::show_headlines (headlines_view, feed_name, index_start, index_end, headlines, true);
+				ns_rss_tabs::show_headlines (headlines_view, feed_name, range, headlines, true);
 
 				make_user_note ("Downloaded " + std::to_string (headline_count) + " entries " + feed_name +  " adding articles "
-				                + std::to_string (index_start + 1) + " to " + std::to_string (index_end + 1));
+				                + std::to_string (range.first + 1) + " to " + std::to_string (range.second + 1));
 			} else {
 				std::cout << __FILE__ << " \t\t\t\t\t" << __func__ << " feed " << feed_name << "\t *erase*  \n";
 
