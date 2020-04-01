@@ -103,12 +103,10 @@ namespace {
 			                       node_name == "date")) {
 				article->article_date = text;
 			} else if (article && (node_name == "description" ||
-			                       node_name == "summary"
-			                      )) {
+			                       node_name == "summary")) {
 				article->article_summary = text;
 			} else if (article && (node_name == "content" ||
-			                       node_name == "encoded"
-			                      )) {
+			                       node_name == "encoded")) {
 				article->article_text = article->article_text + std::string (text);
 			}
 
