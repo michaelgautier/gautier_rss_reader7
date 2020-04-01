@@ -35,7 +35,7 @@ gautier_rss_data_read::validate_feed_info_missing (std::string_view feed_name, s
 }
 
 bool
-gautier_rss_data_read::indicates_html (std::string_view& text)
+gautier_rss_data_read::indicates_html (std::string_view text)
 {
 	bool probably_has_html = false;
 
