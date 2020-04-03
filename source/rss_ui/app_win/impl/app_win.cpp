@@ -212,6 +212,9 @@ namespace {
 	rss_operation_enum
 	rss_op_view_article = rss_operation_enum::view_article;
 
+	const int64_t
+	headline_max = 32;
+
 	gulong
 	headline_view_switch_page_signal_id = -1UL;
 
@@ -802,11 +805,21 @@ namespace {
 
 			ns_rss_tabs::add_headline_page (headlines_view, feed_name, -1, select_headline_row);
 
-			/*std::cout << feed_name << " feed " << feed_name << "\n";
-			std::cout << feed_name << " headline_snapshot.size() " << headline_snapshot.size() << "\n";
-			std::cout << feed_name << " feed_clone->last_index " << feed_clone->last_index << "\n";*/
-
 			headline_snapshot.clear();
+		}
+
+		const gint tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
+
+		if (tab_count > 0) {
+			const gint tab_i = 0;
+
+			GtkWidget* tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
+
+			if (tab) {
+				const std::string feed_name = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
+
+				gautier_rss_win_main_headlines_frame::set_headlines_title (headlines_view, tab_i, feed_name);
+			}
 		}
 
 		return;
@@ -850,14 +863,15 @@ namespace {
 
 		g_main_context_invoke (nullptr, flush_tabs, nullptr);
 
-		int cycles = 0;
+		size_t cycles = 0;
 		bool download_update_active = false;
 
 		next_notebook_tab_index = -1;
 
-		while (shutting_down == false) {
-			const int async_tab_load_wait_in_milliseconds = 220;
+		const int default_async_wait_in_milliseconds = 208;
+		int async_tab_load_wait_in_milliseconds = default_async_wait_in_milliseconds;
 
+		while (shutting_down == false) {
 			std::this_thread::sleep_for (std::chrono::milliseconds (async_tab_load_wait_in_milliseconds));
 
 			next_notebook_tab_index++;
@@ -869,10 +883,20 @@ namespace {
 				next_notebook_tab_index = 0;
 			}
 
-			if (cycles >= 10) {
+			if (cycles >= 4 && cycles >= feed_index.size()) {
 				cycles = 0;
 
 				g_main_context_invoke (nullptr, flush_tabs, nullptr);
+
+				async_tab_load_wait_in_milliseconds = (default_async_wait_in_milliseconds / 2);
+			}
+
+			int64_t all_articles_count = 0;
+
+			if (feeds_articles.size() > 0) {
+				for (auto [feed_name, headlines] : feeds_articles) {
+					all_articles_count = all_articles_count + headlines.size();
+				}
 			}
 
 			if (download_available) {
@@ -882,13 +906,68 @@ namespace {
 				}
 
 				g_main_context_invoke (nullptr, async_load_tabs_with_downloaded_data, nullptr);
-			} else {
+			} else if (all_articles_count > 0) {
 				if (download_update_active) {
 					download_update_active = false;
 					next_notebook_tab_index = 0;
 				}
 
 				g_main_context_invoke (nullptr, async_load_tabs, nullptr);
+			} else if (all_articles_count == 0) {
+				std::cout << " No feeds left to process\n";
+
+				async_tab_load_wait_in_milliseconds = default_async_wait_in_milliseconds;
+
+				break;
+			}
+		}
+
+		while (shutting_down == false) {
+			std::this_thread::sleep_for (std::chrono::milliseconds (async_tab_load_wait_in_milliseconds));
+
+			next_notebook_tab_index++;
+			cycles++;
+
+			const gint tab_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
+
+			if (next_notebook_tab_index > tab_count) {
+				next_notebook_tab_index = 0;
+			}
+
+			if (cycles >= 4 && cycles >= downloaded_feeds.size()) {
+				cycles = 0;
+
+				g_main_context_invoke (nullptr, flush_tabs, nullptr);
+
+				async_tab_load_wait_in_milliseconds = (default_async_wait_in_milliseconds / 2);
+			}
+
+			int64_t all_articles_count = 0;
+
+			if (feeds_articles.size() > 0) {
+				for (auto [feed_name, headlines] : downloaded_articles) {
+					all_articles_count = all_articles_count + headlines.size();
+				}
+			}
+
+			if (download_available) {
+				if (download_update_active == false) {
+					download_update_active = true;
+					next_notebook_tab_index = 0;
+				}
+
+				g_main_context_invoke (nullptr, async_load_tabs_with_downloaded_data, nullptr);
+			} else if (all_articles_count > 0) {
+				if (download_update_active) {
+					download_update_active = false;
+					next_notebook_tab_index = 0;
+
+					g_main_context_invoke (nullptr, flush_tabs, nullptr);
+				}
+
+				async_tab_load_wait_in_milliseconds = default_async_wait_in_milliseconds;
+			} else if (all_articles_count == 0) {
+				async_tab_load_wait_in_milliseconds = (default_async_wait_in_milliseconds / 2);
 			}
 		}
 
@@ -927,19 +1006,10 @@ namespace {
 		}
 
 		if (feed_exists && feed_name.empty() == false) {
-			/*
-				RSS headlines.
-			*/
-			ns_data_read::headlines_list_type headlines = feeds_articles[feed_name];
-
-			const size_t headline_count = headlines.size();
-			const int64_t headline_max = 32;
-
-			ns_data_read::headline_range_type
-			range = acquire_headline_range (feed_name, feed_index, headline_count, headline_max);
+			const ns_data_read::headline_range_type range = acquire_headline_range (feed_name, feed_index, headline_max);
 
 			if (ns_data_read::headline_range_valid (range)) {
-				ns_rss_tabs::show_headlines (headlines_view, feed_name, range, headlines, false);
+				ns_rss_tabs::show_headlines (headlines_view, feed_name, range, feeds_articles[feed_name], false);
 			}
 		}
 
@@ -1025,26 +1095,26 @@ namespace {
 		}
 
 		if (download_active == false && feed_exists && feed_name.empty() == false) {
-			ns_data_read::headlines_list_type headlines = feeds_articles[feed_name];
-
-			const size_t headline_count = headlines.size();
-			const int64_t headline_max = 32;
-
-			ns_data_read::headline_range_type
-			range = acquire_headline_range (feed_name, feed_index, headline_count, headline_max);
+			ns_data_read::headline_range_type range = acquire_headline_range (feed_name, feed_index, headline_max);
 
 			if (ns_data_read::headline_range_valid (range)) {
-				ns_rss_tabs::show_headlines (headlines_view, feed_name, range, headlines, false);
+				ns_rss_tabs::show_headlines (headlines_view, feed_name, range, feeds_articles[feed_name], false);
 
-				make_user_note (feed_name +  " added articles " + std::to_string (range.first + 1) + " to " + std::to_string (
-				                    range.second + 1));
+				make_user_note (feed_name +  " added record " + std::to_string (range.second));
 			} else {
 				/*
 					Reclaim the memory consumed by the snapshot.
 
 					No further need for it in the current program design (3/2/2020).
 				*/
+				gautier_rss_data_read::headlines_list_type* headlines = &feeds_articles[feed_name];
+
+				headlines->clear();
+				headlines->shrink_to_fit();
+
 				feeds_articles.erase (feed_name);
+
+				feed_index.erase (feed_name);
 			}
 		}
 
@@ -1089,25 +1159,24 @@ namespace {
 		if (feed_exists && feed_name.empty() == false) {
 			std::cout << __FILE__ << " \t\t\t\t\t" << __func__ << " feed " << feed_name << "  \n";
 
-			ns_data_read::headlines_list_type headlines = downloaded_articles[feed_name];
-
-			const size_t headline_count = headlines.size();
-			const int64_t headline_max = 32;
+			const size_t headline_count = downloaded_articles[feed_name].size();
 
 			ns_data_read::headline_range_type
-			range = ns_data_read::acquire_headline_range (feed_name, downloaded_feeds, headline_count, headline_max);
+			range = acquire_headline_range (feed_name, downloaded_feeds, headline_max);
 
 			if (ns_data_read::headline_range_valid (range)) {
-				std::cout << __func__ << " add download to tab\n";
-				std::cout << __func__ << " \t\t" << feed_name << ": headlines " << headlines.size() << "\n";
-				std::cout << __func__ << " \t\t" << feed_name << ": indices " << range.first << " to " << range.second << "\n";
+				ns_rss_tabs::show_headlines (headlines_view, feed_name, range, downloaded_articles[feed_name], true);
 
-				ns_rss_tabs::show_headlines (headlines_view, feed_name, range, headlines, true);
+				std::cout << __FILE__ << " " << __func__ << " download \t" << feed_name << " all records: " << headline_count <<
+				          "\n";
+				std::cout << feed_name << " downloaded \t\t" << range.first << " to " << range.second << "\n";
 
-				make_user_note ("Downloaded " + std::to_string (headline_count) + " entries " + feed_name +  " adding articles "
-				                + std::to_string (range.first + 1) + " to " + std::to_string (range.second + 1));
+				make_user_note (feed_name + " downloaded record " + std::to_string (range.second));
 			} else {
-				std::cout << __FILE__ << " \t\t\t\t\t" << __func__ << " feed " << feed_name << "\t *erase*  \n";
+				gautier_rss_data_read::headlines_list_type* headlines = &downloaded_articles[feed_name];
+
+				headlines->clear();
+				headlines->shrink_to_fit();
 
 				downloaded_feeds.erase (feed_name);
 				downloaded_articles.erase (feed_name);
@@ -1117,9 +1186,6 @@ namespace {
 				download_available = (feed_count > 0);
 			}
 		} else {
-			std::cout << "********************* feed [ |" << feed_name << "| ] exists == " << feed_exists <<
-			          "\t article count: " << downloaded_articles[feed_name].size() << "\n";
-
 			const gint tab_i = gtk_notebook_get_current_page (GTK_NOTEBOOK (headlines_view));
 			GtkWidget* tab = nullptr;
 			std::string visible_feed_name;
@@ -1139,7 +1205,7 @@ namespace {
 			}
 		}
 
-		std::cout << __FILE__ << " \t\t\t\t\t" << __func__ << " feed " << feed_name << "\t EXIT  \n";
+		std::cout << __FILE__ << " DOWNLOAD PROCESS EXIT\t\t\t\t" << __func__ << feed_name << "\t EXIT\n";
 
 		return false;
 	}
