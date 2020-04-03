@@ -108,7 +108,7 @@ gautier_rss_data_read::get_feed (const std::string db_file_name, const std::stri
 	    "SELECT \
 			f.feed_name, f.feed_url, \
 			f.last_retrieved, f.retrieve_limit_hrs, f.retention_days, \
-			COUNT(*) AS article_count \
+			COUNT(fa.rowid) AS article_count \
 		FROM feeds AS f LEFT OUTER JOIN \
 			feeds_articles AS fa ON f.feed_name = fa.feed_name \
 		WHERE f.feed_name = @feed_name \
@@ -147,7 +147,7 @@ gautier_rss_data_read::get_feed_by_row_id (const std::string db_file_name, const
 	    "SELECT \
 			f.feed_name, f.feed_url, \
 			f.last_retrieved, f.retrieve_limit_hrs, f.retention_days, \
-			COUNT(*) AS article_count \
+			COUNT(fa.rowid) AS article_count \
 		FROM feeds AS f LEFT OUTER JOIN \
 			feeds_articles AS fa ON f.feed_name = fa.feed_name \
 		WHERE f.rowid = @row_id \
@@ -186,7 +186,7 @@ gautier_rss_data_read::get_feeds (const std::string db_file_name, feeds_list_typ
 	    "SELECT \
 			f.feed_name, f.feed_url, \
 			f.last_retrieved, f.retrieve_limit_hrs, f.retention_days, \
-			COUNT(*) AS article_count \
+			COUNT(fa.rowid) AS article_count \
 		FROM feeds AS f LEFT OUTER JOIN \
 			feeds_articles AS fa ON f.feed_name = fa.feed_name \
 		GROUP BY f.feed_name, f.feed_url, \
