@@ -201,12 +201,6 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 			GtkTreeModel* list_model = gtk_tree_view_get_model (GTK_TREE_VIEW (headlines_list_view));
 			GtkListStore* list_store = GTK_LIST_STORE (list_model);
 
-			if (range.first == 0 && prepend == false) {
-				std::cout << __func__ << " " << feed_name << " LINE: " << __LINE__ << ", clear list\n";
-
-				gtk_list_store_clear (list_store);
-			}
-
 			GtkTreeIter iter;
 
 			GtkTreeIter start_iter;
