@@ -606,12 +606,12 @@ gautier_rss_data_read::get_feed_article_max_row_id (const std::string db_file_na
 }
 
 gautier_rss_data_read::headline_range_type
-gautier_rss_data_read::acquire_headline_range (const std::string feed_name, feed_by_name_type& feeds,
-        const size_t& headline_count, const int64_t& headline_max)
+gautier_rss_data_read::acquire_headline_range (const std::string& feed_name, feed_by_name_type& feeds,
+        const int64_t& headline_max)
 {
 	rss_feed* feed = &feeds[feed_name];
 
-	const int64_t range_end = (int64_t) (headline_count);
+	const int64_t range_end = feed->article_count;
 
 	const int64_t index_start = (feed->last_index + 1);
 	int64_t index_end = (index_start + (headline_max - 1));

@@ -28,51 +28,55 @@ namespace gautier_rss_data_read {
 	using headline_range_type = std::pair<int64_t, int64_t>;
 
 	headline_range_type
-	acquire_headline_range (const std::string feed_name, feed_by_name_type& feeds,
-	                        const size_t& headline_count, const int64_t& headline_max);
-
-	bool
-	headline_range_valid (const headline_range_type& range);
-
-	void
-	get_feed (const std::string db_file_name, const std::string feed_name, rss_feed& feed);
-
-	void
-	get_feed_by_row_id (const std::string db_file_name, const int64_t row_id, rss_feed& feed);
-
-	void
-	get_feeds (const std::string db_file_name, feeds_list_type& feeds);
-
-	void
-	get_feed_articles (const std::string db_file_name, const std::string feed_name,
-	                   articles_list_type& headlines, const bool descending);
-
-	void
-	get_feed_headlines (const std::string db_file_name, const std::string feed_name,
-	                    headlines_list_type& headlines, const bool descending);
-
-	void
-	get_feed_articles_after_row_id (const std::string db_file_name, const std::string feed_name,
-	                                articles_list_type& headlines, const bool descending, const int64_t row_id);
-
-	void
-	get_feed_headlines_after_row_id (const std::string db_file_name, const std::string feed_name,
-	                                 headlines_list_type& headlines, const bool descending, const int64_t row_id);
-
-	void
-	get_feed_article_summary (const std::string db_file_name, const std::string feed_name,
-	                          const std::string headline, rss_article& article);
-
-	int64_t
-	get_feed_headline_count (const std::string db_file_name, const std::string feed_name);
-
-	int64_t
-	get_row_id (const std::string db_file_name, const std::string feed_url);
+	acquire_headline_range (const std::string& feed_name, feed_by_name_type& feeds, const int64_t& headline_max);
 
 	int64_t
 	get_article_row_id (const std::string db_file_name, const std::string article_url);
 
 	int64_t
 	get_feed_article_max_row_id (const std::string db_file_name, const std::string feed_name);
+
+	void
+	get_feed_articles_after_row_id (const std::string db_file_name, const std::string feed_name,
+	                                articles_list_type& headlines, const bool descending, const int64_t row_id);
+
+	void
+	get_feed_articles (const std::string db_file_name, const std::string feed_name, articles_list_type& headlines,
+	                   const bool descending);
+
+	void
+	get_feed_article_summary (const std::string db_file_name, const std::string feed_name,
+	                          const std::string headline, rss_article& article);
+
+	void
+	get_feed_by_row_id (const std::string db_file_name, const int64_t row_id, rss_feed& feed);
+
+	void
+	get_feed (const std::string db_file_name, const std::string feed_name, rss_feed& feed);
+
+	int64_t
+	get_feed_headline_count (const std::string db_file_name, const std::string feed_name);
+
+	void
+	get_feed_headlines_after_row_id (const std::string db_file_name, const std::string feed_name,
+	                                 headlines_list_type& headlines, const bool descending, const int64_t row_id);
+
+	void
+	get_feed_headlines_by_range (const std::string db_file_name, const std::string feed_name,
+	                             headlines_list_type& headlines, const bool descending, const headline_range_type range);
+
+	void
+	get_feed_headlines (const std::string db_file_name, const std::string feed_name, headlines_list_type& headlines,
+	                    const bool descending);
+
+	void
+	get_feeds (const std::string db_file_name, feeds_list_type& feeds);
+
+	int64_t
+	get_row_id (const std::string db_file_name, const std::string feed_url);
+
+	bool
+	headline_range_valid (const headline_range_type& range);
+
 }
 #endif
