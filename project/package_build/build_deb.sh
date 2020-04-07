@@ -13,7 +13,7 @@
 ## **	Delete stale build files.
 mkdir -p ~/debbuild/
 rm -rf ~/debbuild/
-mkdir -p ~/debbuild/packaging/
+mkdir -p ~/debbuild/newsreader-7.7/
 
 mkdir -p ~/debbuild_tmp/
 rm -rf ~/debbuild_tmp/
@@ -24,8 +24,7 @@ pwd
 ls -gGh
 #DEB Package Configuration
 ## **	Establish build configuration under the debian/ build tree.
-rsync --human-readable --times --executability --preallocate --update --delay-updates --recursive ../project/package_build/debian ~/debbuild/packaging/
-cp --update --preserve ../LICENSE ~/debbuild/packaging/debian/copyright
+rsync --human-readable --times --executability --preallocate --update --delay-updates --recursive ../project/package_build/debian ~/debbuild/newsreader-7.7
 
 #Source Archive - Part 1
 ## **	Populate archive setup directories. The goal is to add files to the setup directories pertinent to the installation.
@@ -39,7 +38,7 @@ rsync --human-readable --times --executability --preallocate --update --delay-up
 #Source Archive - Part 2a
 ## **	Transform newsreader makefile to the default file name expected by the make program.
 cp --update --preserve ./buildscripts/build_newsreader.mk ~/debbuild_tmp/makefile
-cp --update --preserve ./buildscripts/build_newsreader.mk ~/debbuild/packaging/makefile
+cp --update --preserve ./buildscripts/build_newsreader.mk ~/debbuild/newsreader-7.7/makefile
 
 #Source Archive - Part 3
 ## **	Generate a source tarball that works with the debian/ubuntu build program of choice.
@@ -52,7 +51,7 @@ cp --recursive --preserve * ~/debbuild/
 
 tar -czf newsreader.tar.gz *
 
-cp --preserve newsreader.tar.gz ~/debbuild/newsreader_7.6.0.orig.tar.gz
+cp --preserve newsreader.tar.gz ~/debbuild/newsreader_7.7.0.orig.tar.gz
 
 pwd
 ls -gGh ~/debbuild_tmp/
@@ -66,12 +65,12 @@ ls -gGh ~/debbuild/
 ## **	A source DEB will contain instruction on how a package should be configured on a system.
 ## **	However, success building a source DEB does not mean it can be transformed into an installable DEB.
 ## **	Consider building an installable DEB (also called a binary DEB) to verify correct definition.
-cd ~/debbuild/packaging/
+cd ~/debbuild/newsreader-7.7/
 debuild -us -uc
 
 echo "-------------------------------------------------------------"
 pwd
-ls -gGh ~/debbuild/packaging/
+ls -gGh ~/debbuild/newsreader-7.7/
 
 cd ~/debbuild/
 echo "-------------------------------------------------------------"
