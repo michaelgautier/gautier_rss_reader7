@@ -391,6 +391,23 @@ main (int argc, char** argv)
 	const int_fast32_t time_difference_in_seconds = gautier_rss_util::get_time_difference_in_seconds (
 	            program_time_started, program_time_ended_precleanup);
 
+	if (time_difference_in_seconds > 0) {
+		const double sec = 59.99;
+		const double min = (sec * sec);
+
+		const double runtime = (double) time_difference_in_seconds;
+
+		std::cout << "Program running time: ";
+
+		if (runtime <= sec) {
+			std::cout << runtime << " seconds.\n";
+		} else if (runtime <= min) {
+			std::cout << (runtime / sec) << " minutes.\n";
+		} else {
+			std::cout << (runtime / min) << " hours.\n";
+		}
+	}
+
 	std::cout << "--------------------------------------------------------------------------------\n";
 	std::cout << "--------------------------------------------------------------------------------\n";
 	std::cout << "--------------------------------------------------------------------------------\n";
@@ -399,7 +416,6 @@ main (int argc, char** argv)
 	std::cout << "--------------------------------------------------------------------------------\n";
 	std::cout << "--------------------------------------------------------------------------------\n";
 	std::cout << "Program ended " << program_time_ended_precleanup << ".\n";
-	std::cout << "Program running time: " << time_difference_in_seconds << " seconds.\n";
 
 	return status;
 }
