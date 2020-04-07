@@ -56,7 +56,6 @@ gautier_rss_win_main_article_frame::layout_article_frame (GtkWidget* article_fra
 	gtk_widget_set_vexpand (scroll_win, true);
 	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scroll_win), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 
-	/*If we are running on Microsoft Windows, this widget will likely not exist at all. Check and make sure widget exists.*/
 	if (article_text) {
 		gtk_container_add (GTK_CONTAINER (scroll_win), article_text);
 	}
