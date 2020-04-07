@@ -103,9 +103,29 @@ all: bin/libgresources.a bin/newsreader
 
 install: install_newsreader
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/icons/hicolor/48x48/apps/
-	(cd ../source/rss_ui ; $(INSTALL) -m 644  app_icon.png $(DESTDIR)$(PREFIX)/share/icons/hicolor/48x48/apps/)
+	(cd ../source/rss_ui ; $(INSTALL) -m 644  newsreader.png $(DESTDIR)$(PREFIX)/share/icons/hicolor/48x48/apps/)
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/icons/HighContrast/48x48/apps/
+	(cd ../source/rss_ui ; $(INSTALL) -m 644  newsreader.png $(DESTDIR)$(PREFIX)/share/icons/HighContrast/48x48/apps/)
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/icons/HighContrast/22x22/apps/
+	(cd ../source/rss_ui ; $(INSTALL) -m 644  newsreader.png $(DESTDIR)$(PREFIX)/share/icons/HighContrast/22x22/apps/)
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/icons/HighContrast/24x24/apps/
+	(cd ../source/rss_ui ; $(INSTALL) -m 644  newsreader.png $(DESTDIR)$(PREFIX)/share/icons/HighContrast/24x24/apps/)
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/icons/HighContrast/32x32/apps/
+	(cd ../source/rss_ui ; $(INSTALL) -m 644  newsreader.png $(DESTDIR)$(PREFIX)/share/icons/HighContrast/32x32/apps/)
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/icons/HighContrast/256x256/apps/
+	(cd ../source/rss_ui ; $(INSTALL) -m 644  newsreader.png $(DESTDIR)$(PREFIX)/share/icons/HighContrast/256x256/apps/)
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/icons/HighContrast/16x16/apps/
+	(cd ../source/rss_ui ; $(INSTALL) -m 644  newsreader.png $(DESTDIR)$(PREFIX)/share/icons/HighContrast/16x16/apps/)
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/icons/hicolor/64x64/apps/
+	(cd ../source/rss_ui ; $(INSTALL) -m 644  newsreader.png $(DESTDIR)$(PREFIX)/share/icons/hicolor/64x64/apps/)
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/icons/hicolor/32x32/apps/
+	(cd ../source/rss_ui ; $(INSTALL) -m 644  newsreader.png $(DESTDIR)$(PREFIX)/share/icons/hicolor/32x32/apps/)
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/icons/hicolor/128x128/apps/
+	(cd ../source/rss_ui ; $(INSTALL) -m 644  newsreader.png $(DESTDIR)$(PREFIX)/share/icons/hicolor/128x128/apps/)
+	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/icons/hicolor/16x16/apps/
+	(cd ../source/rss_ui ; $(INSTALL) -m 644  newsreader.png $(DESTDIR)$(PREFIX)/share/icons/hicolor/16x16/apps/)
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/pixmaps/
-	(cd ../source/rss_ui ; $(INSTALL) -m 644  app_icon.xpm $(DESTDIR)$(PREFIX)/share/pixmaps/)
+	(cd ../source/rss_ui ; $(INSTALL) -m 644  newsreader.xpm $(DESTDIR)$(PREFIX)/share/pixmaps/)
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/applications/
 	(cd ../desktop ; $(INSTALL) -m 644  newsreader.desktop $(DESTDIR)$(PREFIX)/share/applications/)
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/share/metainfo/
@@ -114,8 +134,18 @@ install: install_newsreader
 	(cd ../doc ; $(INSTALL) -m 644  newsreader.7 newsreader.7.gz $(DESTDIR)$(PREFIX)/share/man/man7/)
 
 uninstall: uninstall_newsreader
-	(cd $(DESTDIR)$(PREFIX)/share/icons/hicolor/48x48/apps/ ; rm -f app_icon.png)
-	(cd $(DESTDIR)$(PREFIX)/share/pixmaps/ ; rm -f app_icon.xpm)
+	(cd $(DESTDIR)$(PREFIX)/share/icons/hicolor/48x48/apps/ ; rm -f newsreader.png)
+	(cd $(DESTDIR)$(PREFIX)/share/icons/HighContrast/48x48/apps/ ; rm -f newsreader.png)
+	(cd $(DESTDIR)$(PREFIX)/share/icons/HighContrast/22x22/apps/ ; rm -f newsreader.png)
+	(cd $(DESTDIR)$(PREFIX)/share/icons/HighContrast/24x24/apps/ ; rm -f newsreader.png)
+	(cd $(DESTDIR)$(PREFIX)/share/icons/HighContrast/32x32/apps/ ; rm -f newsreader.png)
+	(cd $(DESTDIR)$(PREFIX)/share/icons/HighContrast/256x256/apps/ ; rm -f newsreader.png)
+	(cd $(DESTDIR)$(PREFIX)/share/icons/HighContrast/16x16/apps/ ; rm -f newsreader.png)
+	(cd $(DESTDIR)$(PREFIX)/share/icons/hicolor/64x64/apps/ ; rm -f newsreader.png)
+	(cd $(DESTDIR)$(PREFIX)/share/icons/hicolor/32x32/apps/ ; rm -f newsreader.png)
+	(cd $(DESTDIR)$(PREFIX)/share/icons/hicolor/128x128/apps/ ; rm -f newsreader.png)
+	(cd $(DESTDIR)$(PREFIX)/share/icons/hicolor/16x16/apps/ ; rm -f newsreader.png)
+	(cd $(DESTDIR)$(PREFIX)/share/pixmaps/ ; rm -f newsreader.xpm)
 	(cd $(DESTDIR)$(PREFIX)/share/applications/ ; rm -f newsreader.desktop)
 	(cd $(DESTDIR)$(PREFIX)/share/metainfo/ ; rm -f newsreader.appdata.xml)
 	(cd $(DESTDIR)$(PREFIX)/share/man/man7/ ; rm -f newsreader.7 newsreader.7.gz)
@@ -129,7 +159,7 @@ clean:
 bin: 
 	@mkdir -p bin
 
-bin/libgresources.a: $(GRESOURCES_OBJECTS) bin ../source/rss_ui/app_style.css ../source/rss_ui/app_icon.png ../source/rss_ui/app_resources.xml
+bin/libgresources.a: $(GRESOURCES_OBJECTS) bin ../source/rss_ui/app_style.css ../source/rss_ui/newsreader.png ../source/rss_ui/app_resources.xml
 	rm -f $@
 	$(AR) rcu $@ $(GRESOURCES_OBJECTS)
 	$(RANLIB) $@

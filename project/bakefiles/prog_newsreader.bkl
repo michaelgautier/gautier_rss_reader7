@@ -17,7 +17,7 @@
 		<dirname>bin</dirname>
 
 		<depends-on-file>../source/rss_ui/app_style.css</depends-on-file>
-		<depends-on-file>../source/rss_ui/app_icon.png</depends-on-file>
+		<depends-on-file>../source/rss_ui/newsreader.png</depends-on-file>
 		<depends-on-file>../source/rss_ui/app_resources.xml</depends-on-file>
 
 		<!--Dependent headers -->
@@ -56,15 +56,67 @@
 		<cflags>-D_FORTIFY_SOURCE=2</cflags>
 	</lib>
 
+	<!-- ICONS -->
+	<!-- The first entry works on Fedora, the other entries are for Ubuntu -->
 	<data-files>
 		<srcdir>../source/rss_ui</srcdir>
-		<files>app_icon.png</files>
+		<files>newsreader.png</files>
 		<install-to>$(DATADIR)/icons/hicolor/48x48/apps/</install-to>
+	</data-files>
+	<data-files>
+		<srcdir>../source/rss_ui</srcdir>
+		<files>newsreader.png</files>
+		<install-to>$(DATADIR)/icons/HighContrast/48x48/apps/</install-to>
+	</data-files>
+	<data-files>
+		<srcdir>../source/rss_ui</srcdir>
+		<files>newsreader.png</files>
+		<install-to>$(DATADIR)/icons/HighContrast/22x22/apps/</install-to>
+	</data-files>
+	<data-files>
+		<srcdir>../source/rss_ui</srcdir>
+		<files>newsreader.png</files>
+		<install-to>$(DATADIR)/icons/HighContrast/24x24/apps/</install-to>
+	</data-files>
+	<data-files>
+		<srcdir>../source/rss_ui</srcdir>
+		<files>newsreader.png</files>
+		<install-to>$(DATADIR)/icons/HighContrast/32x32/apps/</install-to>
+	</data-files>
+	<data-files>
+		<srcdir>../source/rss_ui</srcdir>
+		<files>newsreader.png</files>
+		<install-to>$(DATADIR)/icons/HighContrast/256x256/apps/</install-to>
+	</data-files>
+	<data-files>
+		<srcdir>../source/rss_ui</srcdir>
+		<files>newsreader.png</files>
+		<install-to>$(DATADIR)/icons/HighContrast/16x16/apps/</install-to>
+	</data-files>
+	<data-files>
+		<srcdir>../source/rss_ui</srcdir>
+		<files>newsreader.png</files>
+		<install-to>$(DATADIR)/icons/hicolor/64x64/apps/</install-to>
+	</data-files>
+	<data-files>
+		<srcdir>../source/rss_ui</srcdir>
+		<files>newsreader.png</files>
+		<install-to>$(DATADIR)/icons/hicolor/32x32/apps/</install-to>
+	</data-files>
+	<data-files>
+		<srcdir>../source/rss_ui</srcdir>
+		<files>newsreader.png</files>
+		<install-to>$(DATADIR)/icons/hicolor/128x128/apps/</install-to>
+	</data-files>
+	<data-files>
+		<srcdir>../source/rss_ui</srcdir>
+		<files>newsreader.png</files>
+		<install-to>$(DATADIR)/icons/hicolor/16x16/apps/</install-to>
 	</data-files>
 
 	<data-files>
 		<srcdir>../source/rss_ui</srcdir>
-		<files>app_icon.xpm</files>
+		<files>newsreader.xpm</files>
 		<install-to>$(DATADIR)/pixmaps/</install-to>
 	</data-files>
 

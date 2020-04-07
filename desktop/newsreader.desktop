@@ -1,11 +1,10 @@
 [Desktop Entry]
 Type=Application
 Categories=Network;WebBrowser;Office;
-Encoding=UTF-8
 Name=Gautier RSS Reader
 Exec=newsreader
 Terminal=false
-Icon=michael.gautier.rss.v7.png
+Icon=newsreader
 Comment=Shows RSS/Atom feeds in a simple and clean window
 Keywords=rss;atom;rss feed;atom feed;news feed;news reader;news aggregator;feed aggregator;rss reader;newsreader;gautier rss;gautier rss reader;
 
