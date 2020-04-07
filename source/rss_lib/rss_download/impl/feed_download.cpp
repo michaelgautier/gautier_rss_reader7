@@ -101,6 +101,10 @@ gautier_rss_data_read::download_rss_feed (const std::string feed_url, std::strin
 
 		/*
 			CURL setup.
+
+			ALWAYS KEEP THE VERBOSITY LEVEL SET ON.
+			Good to have response codes but they are for program control flow.
+			The verbose messages are far better for diagnostic and optimization purposes.
 		*/
 		curl_easy_setopt (curl_client, CURLOPT_VERBOSE, 1L);//1 = true; show everything
 		curl_easy_setopt (curl_client, CURLOPT_NOPROGRESS, 1L);//1 = true; except don't show progress text
