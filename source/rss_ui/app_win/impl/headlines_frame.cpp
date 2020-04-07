@@ -161,9 +161,10 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
         const gautier_rss_data_read::headlines_list_type& headlines,
         const bool prepend)
 {
+#ifdef DEBUG
 	std::cout << __func__ << " \t\t" << feed_name << " index from \t" << range.first << " to " <<
 	          range.second << ", list contains " << headlines.size() << " articles\n";
-
+#endif
 	/*
 		Tab Contents (in this case a scroll window containing a list box)
 
@@ -182,12 +183,28 @@ gautier_rss_win_main_headlines_frame::show_headlines (GtkWidget* headlines_view,
 		{
 			GtkWidget* tab = nullptr;
 
-			const gint tab_i = get_tab_contents_container_by_feed_name (GTK_NOTEBOOK (headlines_view), feed_name, &tab);
+			gint tab_n = -1;
+
+			const gint page_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
+
+			if (page_count > 0) {
+				for (gint tab_i = 0; tab_i < page_count; tab_i++) {
+					tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
+
+					const std::string tab_label = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
+
+					if (feed_name == tab_label) {
+						tab_n = tab_i;
+
+						break;
+					}
+				}
+			}
 
 			/*
 				Headlines List Widget
 			*/
-			if (tab_i > -1 && tab) {
+			if (tab_n > -1 && tab) {
 				GtkScrolledWindow* scroll_win = GTK_SCROLLED_WINDOW (tab);
 
 				gautier_rss_ui_app::get_scroll_content_as_list_view (scroll_win, &headlines_list_view);
@@ -437,26 +454,42 @@ gautier_rss_win_main_headlines_frame::get_default_headlines_view_content_width()
 	return headlines_section_width;
 }
 
-int
-gautier_rss_win_main_headlines_frame::get_tab_contents_container_by_feed_name (GtkNotebook* headlines_view,
-        const std::string feed_name, GtkWidget** notebook_tab)
+bool
+gautier_rss_win_main_headlines_frame::is_tab_selected (GtkWidget* headlines_view, const std::string tab_name)
 {
-	int tab_n = -1;
+	bool selected = false;
 
-	const gint page_count = gtk_notebook_get_n_pages (GTK_NOTEBOOK (headlines_view));
+	if (tab_name.empty() == false) {
+		const std::string selected_tab_name = get_selected_tab_name (headlines_view);
 
-	for (gint tab_i = 0; tab_i < page_count; tab_i++) {
+		selected = (selected_tab_name == tab_name);
+	}
+
+	return selected;
+}
+
+gint
+gautier_rss_win_main_headlines_frame::get_selected_tab_numb (GtkWidget* headlines_view)
+{
+	const gint tab_i = gtk_notebook_get_current_page (GTK_NOTEBOOK (headlines_view));
+
+	return tab_i;
+}
+
+std::string
+gautier_rss_win_main_headlines_frame::get_selected_tab_name (GtkWidget* headlines_view)
+{
+	std::string tab_name;
+
+	const gint tab_i = get_selected_tab_numb (headlines_view);
+
+	if (tab_i > -1) {
 		GtkWidget* tab = gtk_notebook_get_nth_page (GTK_NOTEBOOK (headlines_view), tab_i);
 
-		const std::string tab_label = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
-
-		if (feed_name == tab_label) {
-			tab_n = tab_i;
-
-			*notebook_tab = tab;
-			break;
+		if (tab) {
+			tab_name = gtk_notebook_get_tab_label_text (GTK_NOTEBOOK (headlines_view), tab);
 		}
 	}
 
-	return tab_n;
+	return tab_name;
 }

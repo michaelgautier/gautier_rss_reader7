@@ -52,8 +52,13 @@ namespace gautier_rss_win_main_headlines_frame {
 	int
 	get_default_headlines_view_content_width();
 
-	int
-	get_tab_contents_container_by_feed_name (GtkNotebook* headlines_view, const std::string feed_name,
-	        GtkWidget** notebook_tab);
+	bool
+	is_tab_selected (GtkWidget* headlines_view, const std::string tab_name);
+
+	gint
+	get_selected_tab_numb (GtkWidget* headlines_view);
+
+	std::string
+	get_selected_tab_name (GtkWidget* headlines_view);
 }
 #endif
