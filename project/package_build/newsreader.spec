@@ -1,5 +1,5 @@
 Name:           newsreader
-Version:        7.6.0
+Version:        7.7.0
 Release:        1%{?dist}
 Summary:        Ultra simple desktop feed reader
 
@@ -54,9 +54,6 @@ cd %{_builddir}/%{name}-%{version}/build/
 
 strip --strip-all %{buildroot}%{_bindir}/%{name}
 
-mv %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/app_icon.png %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/michael.gautier.rss.v7.png
-mv %{buildroot}%{_datadir}/pixmaps/app_icon.xpm %{buildroot}%{_datadir}/pixmaps/michael.gautier.rss.v7.xpm
-
 desktop-file-install --dir=%{buildroot}%{_datadir}/applications/ %{buildroot}%{_datadir}/applications/%{name}.desktop
 desktop-file-validate %{buildroot}%{_datadir}/applications/%{name}.desktop
 appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/%{name}.appdata.xml
@@ -70,11 +67,21 @@ rm -rf %{buildroot}
 %license LICENSE
 %{_bindir}/%{name}
 %{_datadir}/applications/%{name}.desktop
-%{_datadir}/icons/hicolor/48x48/apps/michael.gautier.rss.v7.png
-%{_datadir}/pixmaps/michael.gautier.rss.v7.xpm
+%{_datadir}/icons/HighContrast/16x16/apps/newsreader.png
+%{_datadir}/icons/HighContrast/22x22/apps/newsreader.png
+%{_datadir}/icons/HighContrast/24x24/apps/newsreader.png
+%{_datadir}/icons/HighContrast/256x256/apps/newsreader.png
+%{_datadir}/icons/HighContrast/32x32/apps/newsreader.png
+%{_datadir}/icons/HighContrast/48x48/apps/newsreader.png
+%{_datadir}/icons/hicolor/128x128/apps/newsreader.png
+%{_datadir}/icons/hicolor/16x16/apps/newsreader.png
+%{_datadir}/icons/hicolor/32x32/apps/newsreader.png
+%{_datadir}/icons/hicolor/48x48/apps/newsreader.png
+%{_datadir}/icons/hicolor/64x64/apps/newsreader.png
+%{_datadir}/pixmaps/newsreader.xpm
 %{_mandir}/man7/%{name}.7*
 %{_metainfodir}/%{name}.appdata.xml
 
 %changelog
-* Wed Mar 18 2020 Michael Gautier <michaelgautier.wordpress.com> - 7.6.0-1
-- A Microsoft Windows Version exists that resulted in some code changes.
+* Tue Apr 07 2020 Michael Gautier <michaelgautier.wordpress.com> - 7.7.0-1
+- Performance and feed translation improvements
