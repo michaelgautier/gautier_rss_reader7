@@ -1150,8 +1150,6 @@ namespace {
 				headlines->shrink_to_fit();
 
 				feeds_articles.erase (feed_name);
-
-				feed_index.erase (feed_name);
 			}
 		}
 
