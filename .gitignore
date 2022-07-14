@@ -6,10 +6,12 @@ build/RPMS/
 build/SRPMS/
 data/
 doc/newsreader.7.gz
+project/bin
 project/*.*~
 project/*.css
 project/*.db
 project/xfer/*.sh
 project/xfer_deb/*.sh
 project/*.xml
-
+*.o
+*.d
