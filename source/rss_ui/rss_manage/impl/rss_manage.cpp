@@ -1175,7 +1175,7 @@ namespace {
 				}
 			}
 
-			for (const std::string invalid_feed_url : urls_to_invalidate) {
+			for (auto invalid_feed_url : urls_to_invalidate) {
 				delete_feed (invalid_feed_url);
 			}
 
