@@ -1630,7 +1630,7 @@ gautier_rss_win_main::create (
 		webkit_settings_set_enable_java (settings, false);
 		webkit_settings_set_enable_javascript (settings, false);
 		webkit_settings_set_enable_offline_web_application_cache (settings, false);
-		webkit_settings_set_enable_plugins (settings, false);
+		//webkit_settings_set_enable_plugins (settings, false); /*GTK+ 3 marks this as deprecated since version 2.32*/
 		webkit_settings_set_enable_webaudio (settings, false);
 		webkit_settings_set_enable_webgl (settings, false);
 		webkit_settings_set_enable_page_cache (settings, false);
