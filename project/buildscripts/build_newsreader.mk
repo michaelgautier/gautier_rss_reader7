@@ -53,30 +53,90 @@ PREFIX = /usr
 GRESOURCES_CFLAGS = -I../source -c -std=c17 -pipe -O3 \
 	-fasynchronous-unwind-tables -fcf-protection=full -fno-common \
 	-fnon-call-exceptions -fsplit-stack -fstack-clash-protection \
-	-fstack-protector-all -ftrapv `pkg-config gtk+-3.0 --cflags` \
+	-fstack-protector-all -ftrapv \
+	`pkg-config gtk+-3.0 --cflags` \
+	`pkg-config gio-2.0 --cflags` \
 	-D_FORTIFY_SOURCE=2 $(CPPFLAGS) $(CFLAGS)
 GRESOURCES_OBJECTS =  \
 	gresources_app_resources.o
-NEWSREADER_CXXFLAGS = -I../source -std=c++17 -pipe -O2 -ggdb `pkg-config gtk+-3.0 \
-	--cflags` `pkg-config webkit2gtk-4.0 --cflags` `pkg-config libxml-2.0 \
-	--cflags` `pkg-config gthread-2.0 --cflags` -D_FORTIFY_SOURCE=2 -DNDEBUG \
-	-fasynchronous-unwind-tables -fcf-protection=full \
-	-fdelete-null-pointer-checks -feliminate-unused-debug-symbols -fexceptions \
-	-fno-common -fnon-call-exceptions -fsized-deallocation -fsplit-stack \
-	-fstack-clash-protection -fstack-protector-all -fstrict-aliasing -ftrapv \
-	-fvisibility=hidden -Werror -Wfatal-errors -pedantic-errors -Wall -Walloca \
-	-Walloc-zero -Wcast-align=strict -Wcast-function-type -Wcast-qual \
-	-Wcatch-value=3 -Wconversion -Wdate-time -Wdisabled-optimization \
-	-Wdouble-promotion -Wduplicated-branches -Wduplicated-cond -Wextra \
-	-Wextra-semi -Wfloat-equal -Wformat=2 -Wformat-overflow=2 \
-	-Wformat-signedness -Wformat-truncation=2 -Wlogical-op -Wno-unused-function \
-	-Wno-maybe-uninitialized -Wmissing-profile -Wparentheses -Wpedantic \
-	-Wplacement-new=2 -Wredundant-decls -Wshadow -Wstack-protector \
-	-Wstrict-overflow=5 -Wstringop-overflow=4 -Wstringop-truncation \
-	-Wsuggest-final-methods -Wsuggest-final-types -Wsuggest-override \
-	-Wtrampolines -Wundef -Wuninitialized -Wunknown-pragmas \
-	-Wunused-const-variable=2 -Wunused-macros -Wunused-parameter \
+NEWSREADER_CXXFLAGS = -I../source -std=c++17 -pipe -O2 -ggdb \
+	`pkg-config gtk+-3.0 --cflags` \
+	`pkg-config gio-2.0 --cflags` \
+	`pkg-config webkit2gtk-4.0 --cflags` \
+	`pkg-config libxml-2.0 --cflags` \
+	`pkg-config gthread-2.0 --cflags` \
+	-D_FORTIFY_SOURCE=2 -DNDEBUG \
+	-fasynchronous-unwind-tables \
+	-fcf-protection=full \
+	-fdelete-null-pointer-checks \
+	-feliminate-unused-debug-symbols \
+	-fexceptions \
+	-fno-common \
+	-fnon-call-exceptions \
+	-fsized-deallocation \
+	-fsplit-stack \
+	-fstack-clash-protection \
+	-fstack-protector-all \
+	-fstrict-aliasing \
+	-ftrapv \
+	-fvisibility=hidden \
+	-pedantic-errors \
+	-Wall \
+	-Walloca \
+	-Walloc-zero \
+	-Wcast-align=strict \
+	-Wcast-function-type \
+	-Wcast-qual \
+	-Wcatch-value=3 \
+	-Wconversion \
+	-Wdate-time \
+	-Wdisabled-optimization \
+	-Wdouble-promotion \
+	-Wduplicated-branches \
+	-Wduplicated-cond \
+	-Werror \
+	-Wextra \
+	-Wextra-semi \
+	-Wfatal-errors \
+	-Wfloat-equal \
+	-Wformat=2 \
+	-Wformat-overflow=2 \
+	-Wformat-signedness \
+	-Wformat-truncation=2 \
+	-Wlogical-op \
+	-Wmissing-profile \
+	-Wno-deprecated-declarations \
+	-Wno-maybe-uninitialized \
+	-Wno-unused-function \
+	-Wparentheses \
+	-Wpedantic \
+	-Wplacement-new=2 \
+	-Wredundant-decls \
+	-Wshadow \
+	-Wstack-protector \
+	-Wstrict-overflow=5 \
+	-Wstringop-overflow=4 \
+	-Wstringop-truncation \
+	-Wsuggest-final-methods \
+	-Wsuggest-final-types \
+	-Wsuggest-override \
+	-Wtrampolines \
+	-Wundef \
+	-Wuninitialized \
+	-Wunknown-pragmas \
+	-Wunused-const-variable=2 \
+	-Wunused-macros \
+	-Wunused-parameter \
 	-Wzero-as-null-pointer-constant $(CPPFLAGS) $(CXXFLAGS)
+NEWSREADER_LDFLAGS = gresources_app_resources.o -std=c++17 -pipe -O2 -flto -ggdb -flinker-output=pie \
+	`pkg-config gio-2.0 --libs` \
+	`pkg-config gtk+-3.0 --libs` \
+	`pkg-config sqlite3 --libs` \
+	`pkg-config libcurl --libs` \
+	`pkg-config webkit2gtk-4.0 --libs` \
+	`pkg-config libxml-2.0 --libs` \
+	`pkg-config gthread-2.0 --libs` \
+	$(LDFLAGS)
 NEWSREADER_OBJECTS =  \
 	newsreader_application.o \
 	newsreader_app_win.o \
@@ -165,7 +225,7 @@ bin/libgresources.a: $(GRESOURCES_OBJECTS) bin ../source/rss_ui/app_style.css ..
 	$(RANLIB) $@
 
 bin/newsreader: $(NEWSREADER_OBJECTS) bin bin/libgresources.a
-	$(CXX) -o $@ $(NEWSREADER_OBJECTS)  gresources_app_resources.o -std=c++17 -pipe -O2 -flto -ggdb -flinker-output=pie `pkg-config gtk+-3.0 --libs` `pkg-config sqlite3 --libs` `pkg-config libcurl --libs` `pkg-config webkit2gtk-4.0 --libs` `pkg-config libxml-2.0 --libs` `pkg-config gthread-2.0 --libs` $(LDFLAGS)
+	$(CXX) -o $@ $(NEWSREADER_OBJECTS) $(NEWSREADER_LDFLAGS)
 
 install_newsreader: bin/newsreader
 	$(INSTALL) -d $(DESTDIR)$(PREFIX)/bin
